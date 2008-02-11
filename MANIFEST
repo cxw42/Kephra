@@ -10,6 +10,7 @@ doc/interna/perlrules.txt
 doc/interna/sketch.txt
 doc/interna/v.txt
 doc/interna/verzeichnisbaum.txt
+doc/Releases
 lib/Kephra.pm
 lib/Kephra/API/CommandList.pm
 lib/Kephra/API/EventTable.pm

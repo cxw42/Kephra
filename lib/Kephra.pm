@@ -6,7 +6,7 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__; # name of entire application
-our $VERSION    = '0.3.6.4';   # version of entire app
+our $VERSION    = '0.3.6.5';   # version of entire app
 our @ISA        = 'Wx::App';   # $NAME is a wx application
 
 # Configuration Phase
@@ -142,46 +142,52 @@ __END__
 
 =pod
 
-NAME
-    Kephra - crossplatform, CPAN-installable GUI-Texteditor for Programmers,
+=head1 NAME
+
+Kephra - crossplatform, CPAN-installable GUI-Texteditor for Programmers,
              UI designed along Perl's Paradigms 
 
-SYNOPSIS
-        > kephra [<files>]   # start with certain files open
+=head1 SYNOPSIS
 
-DESCRIPTION
-    This module installs a complete editor application with all its configs,
-    and documentation for your programming, web and text authoring. 
-    
-  Philosophy
-    I know, i know, there are plenty text editors out there, even some really
-    mighty IDE, but this is my attempt to make it better. And by that i don't
-    meant to make a better vi or emacs nor kommodo, but to carry over to text
-    editing, what makes perl a great language: A low entry barrier, a high end
-    and to have a choice between different styles, like the vi command line
-    input style, the emacs keyboard combinations style and the GUI style. We're
-    currently not that far but already achieved a good portion.
-    
-    The other thing is that CPAN, perl's great toolbox has already many modules,
-    that cover most of the feature, a good IDE needs today. Why don't we use it
-    for our own programming?
+    > kephra [<files>]   # start with certain files open
+        
 
-  Features
-    Beside all the basic stuff that would you expect from a notepad, we have
-    file sessions, simple templates, recent closed files, and file functions
-    applied to all files, where it makes sense.
+=head1 DESCRIPTION
 
-    We have also a pile of advanced text navigation, undo, editing, line editing,
-    and formating funtions like, brace and block navigation, goto last edit,
-    find in files, fast undo, blockformat and so on, and of cource doc spanning
-    bookmarks.
-    
-    Documents have several properties like syntax styling, auto indention, tab
-    width, tab use, write protection.
-    
-    View options contain switches for any GUI element and marker for: current
-    line, end of line bytes, right margin, indetion guides, bracehiglighting,
-    line wrap and font.
+This module installs a complete editor application with all its configs,
+and documentation for your programming, web and text authoring. 
+
+=head2 Philosophy
+
+I know, i know, there are plenty text editors out there, even some really
+mighty IDE, but this is my attempt to make it better. And by that i don't
+meant to make a better vi or emacs nor kommodo, but to carry over to text
+editing, what makes perl a great language: A low entry barrier, a high end
+and to have a choice between different styles, like the vi command line
+input style, the emacs keyboard combinations style and the GUI style. We're
+currently not that far but already achieved a good portion.
+
+The other thing is that CPAN, perl's great toolbox has already many modules,
+that cover most of the feature, a good IDE needs today. Why don't we use it
+for our own programming?
+
+=head2 Features
+
+Beside all the basic stuff that would you expect from a notepad, we have
+file sessions, simple templates, recent closed files, and file functions
+applied to all files, where it makes sense.
+
+We have also a pile of advanced text navigation, undo, editing, line editing,
+and formating funtions like, brace and block navigation, goto last edit,
+find in files, fast undo, blockformat and so on, and of cource doc spanning
+bookmarks.
+
+Documents have several properties like syntax styling, auto indention, tab
+width, tab use, write protection.
+
+View options contain switches for any GUI element and marker for: current
+line, end of line bytes, right margin, indetion guides, bracehiglighting,
+line wrap and font.
 
 
 =head1 TO DO
@@ -200,23 +206,23 @@ For other issues, contact the author.
 
 =head1 AUTHORS
 
-    * Herbert Breunung E<lt>lichtkind@cpan.orgE<gt> (main author)
+* Herbert Breunung E<lt>lichtkind@cpan.orgE<gt> (main author)
 
-    * Jens Neuwerk E<lt>jenne@gmxpro.netE<gt> (author of icons, GUI advisor)
+* Jens Neuwerk E<lt>jenne@gmxpro.netE<gt> (author of icons, GUI advisor)
 
-    * Adam Kennedy E<lt>adamk@cpan.orgE<gt> (cpanification)
+* Adam Kennedy E<lt>adamk@cpan.orgE<gt> (cpanification)
 
 =head1 COPYRIGHT
 
-    This Copyright applies only to the "Kephra" Perl software distribution, not 
-    the icons bundled within.
-    
-    Copyright 2004 - 2008 Herbert Breunung. All rights reserved.
+This Copyright applies only to the "Kephra" Perl software distribution, not 
+the icons bundled within.
 
-    This program is free software; you can redistribute
-    it and/or modify it under the terms of the GNU GPL.
-    
-    The full text of the license can be found in the
-    LICENSE file included with this module.
+Copyright 2004 - 2008 Herbert Breunung. All rights reserved.
+
+This program is free software; you can redistribute
+it and/or modify it under the terms of the GNU GPL.
+
+The full text of the license can be found in the
+LICENSE file included with this module.
     
 =cut
