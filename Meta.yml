@@ -1,0 +1,13 @@
+name: Kephra
+version: 0.3.6.6
+abstract: crossplatform GUI Editor
+author: lichtkind@cpan.org
+license: GPL
+distribution_type: script
+generated_by: Module::Install version 0.68
+no_index: 
+  directory: 
+    - inc
+    - t
+requires: 
+  perl: 5.006
