@@ -1,5 +1,5 @@
 package Kephra::API::EventTable;
-$VERSION = '0.08';
+$VERSION = '0.09';
 
 =pod
  internal app events handling
@@ -17,6 +17,7 @@ use Wx::Event qw(
 	EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_CLOSE EVT_DROP_FILES EVT_MENU_OPEN
 	EVT_STC_CHANGE EVT_STC_UPDATEUI EVT_STC_MARGINCLICK
 	EVT_STC_SAVEPOINTREACHED EVT_STC_SAVEPOINTLEFT
+	EVT_TIMER EVT_IDLE
 );
 # EVT_STC_CHARADDED EVT_STC_MODIFIED
 
@@ -30,13 +31,32 @@ sub connect_all {
 	my $ep  = Kephra::App::EditPanel::_get();
 	$Kephra::app{eventtable}{test} = 1;
 	$Kephra::temp{eventtable}{test} = 1;
+	my $timer;
 
 	# events for whole window
 	EVT_CLOSE      ($win,  sub { trigger('app.close'); Kephra::quit() });
 	EVT_DROP_FILES ($win,  \&Kephra::File::add_dropped);
 	EVT_MENU_OPEN  ($win,  sub { trigger('menu.open') });
+	#EVT_IDLE       ($win,  sub { } );
 
+	# set or update timer events
+	if ($Kephra::config{file}{save}{auto_save}) {
+		$timer->{file_save} = Wx::Timer->new( $win, 1 );
+		$timer->{file_save}->Start
+			( $Kephra::config{file}{save}{auto_save} * 1000 );
+		EVT_TIMER( $win, 1, sub { Kephra::File::save_all_named() } );
+	}
+	else {$timer->{file_save}->Stop if $timer->{file_save} }
 
+	if ($Kephra::config{file}{open}{notify_change}) {
+		$timer->{file_notify} = Wx::Timer->new( $win, 2 );
+		$timer->{file_notify}->Start
+			( $Kephra::config{file}{open}{notify_change} * 1000 );
+		EVT_TIMER( $win, 2, sub { Kephra::File::changed_notify_check() } );
+	}
+	else {$timer->{file_notify}->Stop if $timer->{file_notify} }
+
+ 
 	# scintilla and editpanel events
 	return unless $ep;
 	connect_editpanel();

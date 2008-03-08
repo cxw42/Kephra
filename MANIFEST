@@ -21,7 +21,7 @@ inc/Module/Install/WriteAll.pm
 lib/Kephra.pm
 lib/Kephra/API/CommandList.pm
 lib/Kephra/API/EventTable.pm
-lib/Kephra/API/Module.pm
+lib/Kephra/API/Extension.pm
 lib/Kephra/App.pm
 lib/Kephra/App/ContextMenu.pm
 lib/Kephra/App/EditPanel.pm
@@ -45,6 +45,7 @@ lib/Kephra/Dialog/Config.pm
 lib/Kephra/Dialog/Exit.pm
 lib/Kephra/Dialog/Info.pm
 lib/Kephra/Dialog/Keymap.pm
+lib/Kephra/Dialog/Notify.pm
 lib/Kephra/Dialog/Search.pm
 lib/Kephra/Document.pm
 lib/Kephra/Document/Change.pm

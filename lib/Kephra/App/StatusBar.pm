@@ -110,7 +110,7 @@ sub caret_pos_info {
 
 	# caret pos display
 	if ( $line > 9999  or $lpos > 9999 ) {
-	       $frame->SetStatusText( " $line : $lpos", $cindex ) }
+		   $frame->SetStatusText( " $line : $lpos", $cindex ) }
 	else { $frame->SetStatusText( "  $line : $lpos", $cindex ) }
 
 	# selection or  pos % display
@@ -136,7 +136,7 @@ sub caret_pos_info {
 			$frame->SetStatusText( $value , $sindex );
 		} else {
 			my $lines = 1 + $ep->LineFromPosition($sel_end)
-			              - $ep->LineFromPosition($sel_beg);
+						  - $ep->LineFromPosition($sel_beg);
 			my $chars = $sel_end - $sel_beg - 
 				($lines - 1) * $Kephra::temp{'current_doc'}{'EOL_length'};
 			$lines = ' ' . $lines if $lines < 100;
@@ -219,7 +219,8 @@ sub _get_file_info {
 		my $ep = Kephra::App::EditPanel::_get();
 
 		return sprintf ' %s: %s   %s: %s',
-			$l10->{chars}, $ep->GetLength, $l10->{lines}, $ep->GetLineCount;
+			$l10->{chars}, _dotted_number( $ep->GetLength ),
+			$l10->{lines}, _dotted_number( $ep->GetLineCount );
 
 	# show how old file is
 	} elsif ( $selector == 2 ) {
@@ -236,5 +237,10 @@ sub _get_file_info {
 	}
 }
 
+sub _dotted_number {
+	local $_ = shift;
+	1 while s/^(\d+)(\d{3})/$1.$2/;
+	return $_;
+}
 
 1;

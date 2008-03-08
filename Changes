@@ -1,14 +1,36 @@
 BUGS:
  !!! new Alien::wxperl do not work
- !! fix Searchbar on lang change
+ !! old Searchbar on config reload won't go
  ! textchanged event triggers twice
- ! loose session on forced exit
 
 TODO 0.4:
  + open document menu 
  + nested menu prepare event
  + own statusbar
  + config dialog
+
+0.3.6.10
+ + autonotify Dialog
+ ] saner file open syntax
+ ~ no autosave on unnamed files
+ ~ autonify just once
+ ! false autonotify on config files
+
+0.3.6.9
+ + small fixes
+
+0.3.6.8
+ + autosave, define it under config key file > save > auto_save
+
+0.3.6.7
+ ~ StatusBar Info with dotted numers
+ ~ renamed API::Module.pm to Extention.pm
+
+0.3.6.6
+ + tools to make CPAN distro (make_cpan_pl)
+
+0.3.6.5
+ + added POD documentation
 
 0.3.6.4
  ' translated this_version.txt from de to en

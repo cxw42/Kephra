@@ -6,7 +6,7 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__; # name of entire application
-our $VERSION    = '0.3.6.6';   # version of entire app
+our $VERSION    = '0.3.6.10';   # version of entire app
 our @ISA        = 'Wx::App';   # $NAME is a wx application
 
 # Configuration Phase
@@ -75,7 +75,7 @@ use Wx::DND;                    # Drag'n Drop & Clipboard support
 # used internal modules, parts of pce
 use Kephra::API::CommandList;      # UI API
 use Kephra::API::EventTable;       # internal app API
-use Kephra::API::Module;           # Plugin API
+use Kephra::API::Extension;        # Plugin API
 use Kephra::App;                   # App start&exit, namespace 4 wx related things
 use Kephra::App::ContextMenu;      # contextmenu manager
 use Kephra::App::EditPanel;        #
@@ -120,6 +120,7 @@ use Kephra::Show;                  # -DEP display content: files, boxes
 #require Kephra::Dialog::Exit;     # select files to be saved while exit program
 #require Kephra::Dialog::Info;     # info box
 #require Kephra::Dialog::Keymap;   #
+#require Kephra::Dialog::Notify    # inform about filechanges from outside
 #require Kephra::Dialog::Search;   # find and replace dialog
 
 # global data
@@ -140,12 +141,9 @@ sub quit   { &Kephra::App::exit  }   # save files & settings as configured
 
 __END__
 
-=pod
-
 =head1 NAME
 
-Kephra - crossplatform, CPAN-installable GUI-Texteditor for Programmers,
-             UI designed along Perl's Paradigms 
+Kephra - crossplatform, CPAN-installable GUI-Texteditor along Perl's Paradigms 
 
 =head1 SYNOPSIS
 

@@ -1,5 +1,5 @@
 package Kephra::Document;
-$VERSION = '0.43';
+$VERSION = '0.44';
 
 =pod
  This module is in rewrite mode the purpose 
@@ -9,12 +9,13 @@ $VERSION = '0.43';
 =cut
 
 use strict;
-use Wx qw(
-	wxSTC_EOL_CR wxSTC_EOL_LF wxSTC_EOL_CRLF
-);
+use Wx qw( wxSTC_EOL_CR wxSTC_EOL_LF wxSTC_EOL_CRLF );
 
 # internal functions
 # doc number
+sub _stored_data { $Kephra::document{open} }
+sub _temp_data   { $Kephra::temp{document}{open} }
+
 sub _get_count      { @{ $Kephra::document{open} } }
 sub _get_previous_nr{ $Kephra::document{previous_nr} }
 sub _set_previous_nr{ $Kephra::document{previous_nr} = shift }
@@ -35,7 +36,7 @@ sub _get_nr_from_path {
 	$#answer == -1 ? return 0 : return \@answer;
 }
 
-sub _get_path_from_nr{
+sub _get_path_from_nr {
 	my $nr = shift;
 	$Kephra::document{open}[$nr]{file_path} if $nr <= _get_last_nr()
 }
@@ -109,6 +110,24 @@ sub set_attribute {
 	$nr = _get_current_nr() unless defined $nr;
 	$Kephra::document{open}[ $nr ]{$attr} = $value
 }
+
+sub get_tmp_value {
+	my $name = shift;
+	return unless $name;
+	my $nr = shift;
+	$nr = _get_current_nr() unless defined $nr;
+	$Kephra::temp{document}{open}[ $nr ]{$name};
+}
+
+sub set_tmp_value {
+	my $name = shift;
+	my $value = shift;
+	return unless $value;
+	my $nr = shift;
+	$nr = _get_current_nr() unless defined $nr;
+	$Kephra::temp{document}{open}[ $nr ]{$name} = $value
+}
+
 
 #########################################
 # getter/setter for Document properties

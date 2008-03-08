@@ -1,5 +1,5 @@
 package Kephra::File;
-$VERSION = '0.36';
+$VERSION = '0.37';
 
 ########################################################
 # file save events, drag n drop files, file menu calls #
@@ -31,6 +31,32 @@ sub savepoint_reached {
 sub can_save     { $Kephra::temp{current_doc}{modified} }
 sub can_save_all { $Kephra::temp{document}{modified} }
 
+sub changed_notify_check {
+	my $current_doc = Kephra::Document::_get_current_nr();
+	for my $file_nr ( 0 .. Kephra::Document::_get_last_nr() ) {
+		my $path = Kephra::Document::get_attribute('file_path', $file_nr);
+		next unless $path;
+		my $remembered = Kephra::Document::get_tmp_value('file_changed', $file_nr);
+		unless ( _file_age($path) == $remembered ) {
+			Kephra::Document::Change::to_number( $file_nr );
+			_remember_save_moment($path);
+			Kephra::Dialog::notify_file_change( $file_nr );
+		}
+	}
+	Kephra::Document::Change::to_number($current_doc) 
+		unless $current_doc == Kephra::Document::_get_current_nr();
+}
+
+sub _remember_save_moment {
+	my $path = shift;
+	Kephra::Document::set_tmp_value( 'file_changed', _file_age($path) );
+}
+
+sub _file_age {
+	my $file = shift;
+	return unless -e $file;
+	return $^T - (-M $file) * 86400;
+}
 ###############
 # drag n drop #
 ###############
@@ -94,6 +120,7 @@ sub open_all_of_dir{
 	add_dir( $dir );
 }
 
+sub reload { &reload_current } # alias
 sub reload_current {
 	my $file_path = Kephra::Document::_get_current_file_path();
 	my $nr = Kephra::Document::_get_current_nr();
@@ -109,6 +136,7 @@ sub reload_current {
 		Kephra::App::EditPanel::Margin::autosize_line_number()
 			if ($Kephra::config{editpanel}{margin}{linenumber}{autosize}
 			and $Kephra::config{editpanel}{margin}{linenumber}{width} );
+		_remember_save_moment($file_path);
 	} else {}
 }
 
@@ -152,6 +180,7 @@ sub save_current {
 				Kephra::Config::Global::eval_config_file($file_name)
 					if $save_config->{reload_config} == 1
 					and Kephra::Document::get_attribute('config_file');
+				_remember_save_moment($file_name);
 				$ep->SetSavePoint;
 			}
 		} else { save_as() }
@@ -179,6 +208,7 @@ sub save_as {
 		Kephra::Document::Internal::save_properties();
 		$Kephra::config{file}{current}{directory} = 
 			$Kephra::temp{current_do}{directory};
+		_remember_save_moment($file_name);
 		Kephra::API::EventTable::trigger('document.list');
 	}
 }
@@ -208,14 +238,36 @@ sub rename {
 		$Kephra::config{file}{current}{directory} = 
 			$Kephra::temp{current_doc}{directory};
 		Kephra::API::EventTable::trigger('document.list');
+		_remember_save_moment($new_path_name);
 	}
 }
 
 
 sub save_all {
-	Kephra::Document::do_with_all( sub {
-		save_current() if shift->{modified};
-	} );
+	my $unsaved = can_save_all();
+	return unless $unsaved;
+	if ($unsaved == 1 and can_save() ) {
+		save_current();
+	}
+	else {
+		Kephra::Document::do_with_all( sub {
+			save_current() if shift->{modified};
+		} );
+	}
+}
+
+sub save_all_named {
+	my $unsaved = can_save_all();
+	return unless $unsaved;
+	if ($unsaved == 1 and can_save() ) {
+		save_current() if Kephra::Document::_get_current_name();
+	}
+	else {
+		Kephra::Document::do_with_all( sub {
+			my $file = shift;
+			save_current() if $file->{modified} and $file->{name};
+		} );
+	}
 }
 
 sub print {

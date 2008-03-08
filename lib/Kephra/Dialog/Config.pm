@@ -56,7 +56,7 @@ sub main {
 		$cat_tree->Expand( $cat_tree->AppendItem( $fid, 'neu', -1,-1, td(undef)) );
 		$cat_tree->AppendItem( $fid, 'öffnen', -1,-1, td(undef));
 		$cat_tree->AppendItem( $fid, 'speichern',  -1,-1, td(undef));
-		$fid = $cat_tree->AppendItem( $root_id, 'Ansicht',-1,-1, td(undef));
+		$fid = $cat_tree->AppendItem( $root_id, $m_l10n->{view},-1,-1, td(undef));
 		$cat_tree->Expand( $fid );
 
 		# panels with config controls

@@ -118,6 +118,7 @@ sub load_in_current_buffer {
 	$edit_panel->EmptyUndoBuffer;
 	$edit_panel->SetSavePoint;
 	Kephra::Document::set_file_path($file_name);
+	Kephra::File::_remember_save_moment($file_name);
 	$Kephra::temp{document}{loaded}++;
 }
 
@@ -150,7 +151,7 @@ sub check_b4_overwite {
 # set the config default to the selected document
 sub reset_properties {
 	my $doc_nr = shift;
-	$doc_nr = $Kephra::document{current_nr} unless $doc_nr;
+	$doc_nr = Kephra::Document::_get_current_nr() unless defined $doc_nr;
 	my $defaults  = $Kephra::config{file}{defaultsettings};
 	my $doc_attr  = $Kephra::document{open}[$doc_nr];
 	my $file_name = $doc_attr->{file_path};
@@ -212,7 +213,7 @@ sub eval_properties {
 
 sub save_properties {
 	my $doc_nr = shift;
-	$doc_nr = $Kephra::document{current_nr} unless $doc_nr;
+	$doc_nr = Kephra::Document::_get_current_nr() unless defined $doc_nr;
 	my $doc_attr = $Kephra::document{open}[$doc_nr];
 	my $doc_data = $Kephra::temp{document}{open}[$doc_nr];
 	my $ep = Kephra::App::EditPanel::_get();

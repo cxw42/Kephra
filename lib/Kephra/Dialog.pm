@@ -69,16 +69,20 @@ sub replace {
 	&Kephra::Dialog::Search::replace;
 }
 
-sub info {
-	require Kephra::Dialog::Info;
-	&Kephra::Dialog::Info::combined;
-}
-
 sub config {
 	require Kephra::Dialog::Config;
 	&Kephra::Dialog::Config::main;
 }
 
+sub info {
+	require Kephra::Dialog::Info;
+	&Kephra::Dialog::Info::combined;
+}
+
+sub notify_file_change {
+	require Kephra::Dialog::Notify;
+	&Kephra::Dialog::Notify::file_changed;
+}
 sub save_on_exit {
 	require Kephra::Dialog::Exit;
 	&Kephra::Dialog::Exit::save_on_exit;

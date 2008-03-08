@@ -40,6 +40,7 @@ sub store {
 	my $type = _get_type($file_name);
 	if    ($type eq 'conf') { store_conf($file_name, $config) }
 	elsif ($type eq 'yaml') { store_yaml($file_name, $config) }
+	Kephra::File::_remember_save_moment($file_name);
 }
 
 sub store_node{

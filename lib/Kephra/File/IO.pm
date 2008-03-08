@@ -1,5 +1,5 @@
 package Kephra::File::IO;
-$VERSION = '0.14';
+$VERSION = '0.15';
 
 use strict;
 
@@ -17,7 +17,7 @@ sub open_pipe {
 			Kephra::Dialog::warning_box( undef,
 				$err_txt->{file_read} . " " . $file_name, $err_txt->{file} );
 		} else {
-			open my $FILE, "<$file_name"
+			open my $FILE,'<', $file_name
 				or Kephra::Dialog::warning_box( undef,
 				$err_txt->{file_read} . " $file_name", $err_txt->{file} );
 			binmode $FILE;    #binmode(FILE, ":encoding(cp1252)")
@@ -43,7 +43,7 @@ sub open_buffer {
 			Kephra::Dialog::warning_box( undef,
 				$err_txt->{file_read} . " " . $file_name, $err_txt->{file} );
 		} else {
-			open my $FILE, "<$file_name"
+			open my $FILE, '<', $file_name
 				or Kephra::Dialog::warning_box( undef,
 				$err_txt->{file_read} . " $file_name", $err_txt->{file} );
 			binmode $FILE;    #binmode(FILE, ":encoding(cp1252)")
@@ -62,7 +62,7 @@ sub write_buffer {
 		Kephra::Dialog::warning_box( undef,
 			"file_write " . $err_txt->{'no_param'}, $err_txt->{general} );
 	} else {
-		open my $FILE, ">$file_name"
+		open my $FILE, '>', $file_name
 			or Kephra::Dialog::warning_box( undef,
 			$err_txt->{file_write} . " $file_name", $err_txt->{file} );
 		binmode $FILE;
