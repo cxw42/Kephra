@@ -1,6 +1,6 @@
 name: kephra
-version: 0.3.6.7
-abstract: crossplatform GUI Editor
+version: 0.3.6.12
+abstract: crossplatform GUI Text-Editor
 author: lichtkind@cpan.org
 license: GPL
 distribution_type: script
