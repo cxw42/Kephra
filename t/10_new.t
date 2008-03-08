@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Construct a Kepher object, but don't start it
+# Construct a Kephra object, but don't start it
 
 use strict;
 BEGIN {
@@ -8,10 +8,10 @@ BEGIN {
 }
 
 use Test::More tests => 1;
-use Kepher;
+use Kephra;
 
-# Create the new Kepher object
-my $kepher = Kepher->new;
-isa_ok( $kepher, 'Kepher' );
+# Create the new Kephra object
+my $kephra = Kephra->new;
+isa_ok( $kephra, 'Kephra' );
 
 exit(0);

@@ -6,7 +6,7 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__; # name of entire application
-our $VERSION    = '0.3.6.10';   # version of entire app
+our $VERSION    = '0.3.6.11';   # version of entire app
 our @ISA        = 'Wx::App';   # $NAME is a wx application
 
 # Configuration Phase

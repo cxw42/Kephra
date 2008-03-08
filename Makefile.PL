@@ -1,6 +1,6 @@
 use inc::Module::Install;
 
-name           'Kephra';
+name           'kephra';
 all_from       'lib/Kephra.pm';   
 requires       'Clone';
 requires       'Config::General';

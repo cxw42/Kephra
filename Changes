@@ -9,6 +9,9 @@ TODO 0.4:
  + own statusbar
  + config dialog
 
+0.3.6.11
+ ] updated tests to ned app name
+
 0.3.6.10
  + autonotify Dialog
  ] saner file open syntax

@@ -12,7 +12,7 @@ use Test::Script;
 
 ok( $] >= 5.006, 'Your perl is new enough' );
 
-require_ok('Kepher');
-script_compiles_ok('bin/kepher');
+require_ok('Kephra');
+script_compiles_ok('bin/kephra');
 
 exit(0);

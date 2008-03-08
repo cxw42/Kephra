@@ -8,14 +8,14 @@ BEGIN {
 }
 
 use Test::More tests => 28;
-use Kepher;
+use Kephra;
 
 
 
 
 
 #####################################################################
-# Kepher::Config::color
+# Kephra::Config::color
 
 sub is_color {
 	my ($it, $r, $g, $b, $name) = @_;
@@ -26,10 +26,10 @@ sub is_color {
 }
 
 SCOPE: {
-	my $black1 = Kepher::Config::color('000000');
-	my $white1 = Kepher::Config::color('FFFFFF');
-	my $black2 = Kepher::Config::color('0,0,0');
-	my $white2 = Kepher::Config::color('255,255,255');
+	my $black1 = Kephra::Config::color('000000');
+	my $white1 = Kephra::Config::color('FFFFFF');
+	my $black2 = Kephra::Config::color('0,0,0');
+	my $white2 = Kephra::Config::color('255,255,255');
 	is_color( $black1, 0, 0, 0, 'hex black' );
 	is_color( $black2, 0, 0, 0, 'dec black' );
 	is_color( $white1, 255, 255, 255, 'hex white' );
@@ -37,11 +37,11 @@ SCOPE: {
 
 	# Check errors
 	eval {
-		Kepher::Config::color();
+		Kephra::Config::color();
 	};
 	like( $@, qr/Color string is not defined/, 'Caught undef error' );
 	eval {
-		Kepher::Config::color('black');
+		Kephra::Config::color('black');
 	};
 	like( $@, qr/Unknown color string/, 'Caught bad-string error' );
 }
@@ -51,7 +51,7 @@ SCOPE: {
 
 
 #####################################################################
-# Kepher::Config::icon_bitmap
+# Kephra::Config::icon_bitmap
 
 sub is_icon {
 	my $it = shift;
@@ -60,7 +60,7 @@ sub is_icon {
 
 SCOPE: {
 	# Set the default icon path for testing purposes
-	local $Kepher::config{app}->{iconset_path} = 'icon/set/jenne';
+	local $Kephra::config{app}->{iconset_path} = 'icon/set/jenne';
 
 	my @known_good = qw{
 		edit_delete
@@ -71,11 +71,11 @@ SCOPE: {
 		};
 	foreach my $name ( @known_good ) {
 		# Create using the raw name
-		my $icon1 = Kepher::Config::icon_bitmap( $name );
+		my $icon1 = Kephra::Config::icon_bitmap( $name );
 		is_icon( $icon1 );
 
 		# Create using the .xpm name
-		my $icon2 = Kepher::Config::icon_bitmap( $name . '.xpm' );
+		my $icon2 = Kephra::Config::icon_bitmap( $name . '.xpm' );
 		is_icon( $icon2 );
 	}
 }
