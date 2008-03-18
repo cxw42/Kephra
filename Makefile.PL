@@ -3,7 +3,7 @@ use strict;
 use inc::Module::Install;
 
 name           'kephra';
-all_from       'lib/Kephra.pm';   
+all_from       'bin/kephra';   
 requires       'Clone';
 requires       'Config::General';
 requires       'Cwd';

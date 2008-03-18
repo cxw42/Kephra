@@ -212,6 +212,8 @@
         tab_size = 4
         tab_use = 1
     </defaultsettings>
+    <editpanel>
+    </editpanel>
     <endings>
         ada = ada ads adb
         as = as
@@ -258,15 +260,15 @@
     </group>
     <history>
         length = 11
-        path = share\config\interface\appbars.yml
-        path = share\config\localisation\english.conf
-        path = share\config\localisation\deutsch.conf
-        path = share\config\interface\contextmenus.yml
-        path = share\config\localisation\cesky_iso.conf
-        path = share\config\interface\commands.conf
+        path = D:\src\perl\editor\dev\base\lib\Kephra\File\IO.pm
+        path = D:\src\perl\editor\dev\base\lib\Kephra\File\Session.pm
+        path = D:\src\perl\editor\dev\base\lib\Kephra\Document\SyntaxMode.pm
         path = D:\src\perl\editor\dev\base\share\config\global\autosaved.conf
-        path = D:\src\perl\editor\dev\base\share\config\session\current.conf
-        path = share\config\syntaxhighlighter\as.pm
+        path = share\config\localisation\deutsch.conf
+        path = D:\src\perl\editor\dev\base\share\config\global\default\default.conf
+        path = D:\src\perl\editor\dev\base\lib\Kephra\App\EditPanel.pm
+        path = D:\src\perl\editor\dev\base\lib\Kephra\Config.pm
+        path = D:\src\perl\editor\dev\base\lib\Kephra\Dialog.pm
     </history>
     <open>
         dir_recursive = 1
@@ -315,22 +317,26 @@
         match_word_begin = 0
     </attribute>
     <bookmark>
+        <1>
+            file = D:\src\perl\editor\dev\base\lib\Kephra\Document\Internal.pm
+            pos = 4790
+        </1>
     </bookmark>
     <history>
-        current_find_item = _store
+        current_find_item = config
         current_replace_item = b
+        find_item = config
+        find_item = file::history
+        find_item = history
+        find_item = _get_current_nr
+        find_item = change_pointer
+        find_item = new_if_allowed
+        find_item = reset_properties
+        find_item = eval_properties
+        find_item = file_path
         find_item = _store
         find_item = _write_hash
         find_item = sort
-        find_item = linebreaks
-        find_item = lineb
-        find_item = umbrechen
-        find_item = e
-        find_item = einen
-        find_item = e:
-        find_item = K
-        find_item = KE
-        find_item = h
         length = 12
         remember_only_matched = 1
         replace_item = b

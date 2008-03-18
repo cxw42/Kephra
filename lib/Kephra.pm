@@ -6,7 +6,7 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__; # name of entire application
-our $VERSION    = '0.3.6.12';   # version of entire app
+our $VERSION    = '0.3.7.3';   # version of entire app
 our @ISA        = 'Wx::App';   # $NAME is a wx application
 
 # Configuration Phase
@@ -138,3 +138,7 @@ sub OnInit { &Kephra::App::start }   # boot app: init core and load config files
 sub quit   { &Kephra::App::exit  }   # save files & settings as configured
 
 1;
+
+__END__
+
+=head1 Kephra - Base Module

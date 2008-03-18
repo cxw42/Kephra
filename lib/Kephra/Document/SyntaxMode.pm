@@ -15,8 +15,7 @@ sub get {$Kephra::document{current}{syntaxmode}
 
 sub _get_auto{ &_get_by_fileending }
 sub _get_by_fileending {
-	my $doc_nr = shift || Kephra::Document::_get_current_nr;
-	my $file_ending = $Kephra::temp{document}{open}[$doc_nr]{ending};
+	my $file_ending = Kephra::Document::get_tmp_value('ending', shift );
 	my $language_id;
 	chop $file_ending if $file_ending and (substr ($file_ending, -1) eq '~');
 	if ($file_ending) {

@@ -9,6 +9,19 @@ TODO 0.4:
  + own statusbar
  + config dialog
 
+0.3.7.3
+ ! more internal doc add fixes
+
+0.3.7.2
+ ~ move xml comment from <ctrl>+<b> to <ctrl>+<h>
+ ! lot of internal bugs ibntroduced due 0.3.7.1
+
+0.3.7.1
+ ! EOL status works on empty docs again
+ ! doc attributes and data is now deleted correctly while closing doc
+
+0.3.7
+
 0.3.6.12
  ! fix naming convention in CPAN distro
 
@@ -36,7 +49,7 @@ TODO 0.4:
  + tools to make CPAN distro (make_cpan_pl)
 
 0.3.6.5
- + added POD documentation
+ ' added POD documentation
 
 0.3.6.4
  ' translated this_version.txt from de to en
@@ -49,7 +62,7 @@ TODO 0.4:
  + wrote Documentation of Perl main module
  ~ join lines now leaves a space between joined lines
  ~ join lines has key binding : <ctrl>+<shift>+<J>
- ! search dialog holds correkt replace item when non text selected as new item
+ ! search dialog holds correct replace item when non text selected as new item
  ! fixing doc change in search bar input
 
 0.3.6.2

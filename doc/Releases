@@ -57,6 +57,16 @@
 
  
 0.3.7
+ + autonotify (conf key file > open > auto_notify )
+ + autosave (conf key file > save > auto_save )
+ + Perl 5.10 keywords in the perl lexer
+ + jump to doc begin and end from searchbar input whith <ctrl>+(<home>|<end>)
+ + change doc from searchbar input whith <ctrl>+(<pgup>|<pgdown>)
+ + added replace line Command to main menu: Edit > Line > Replace
+ ~ changed tablabel configfile : prefix $
+ ~ join lines now leaves a space between joined lines
+ ~ join lines has key binding : <ctrl>+<shift>+<J>
+ ' added POD documentation
 
 0.3.6
  + blockformat <ctrl>+<shift>+<b>, menu edit > format

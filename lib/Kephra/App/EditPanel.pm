@@ -1,5 +1,5 @@
 package Kephra::App::EditPanel;
-$VERSION = '0.09';
+$VERSION = '0.10';
 
 # visual settings of the Edit Panel
 
@@ -13,10 +13,9 @@ use Wx qw(
 #
 # internal API to config und app pointer
 #
-sub _get    { $Kephra::app{editpanel} }
-sub _set    { $Kephra::app{editpanel} = shift }
-
-sub _get_config { $Kephra::config{editpanel} }
+sub _get              { $Kephra::app{editpanel} }
+sub _set              { $Kephra::app{editpanel} = shift }
+sub _get_config       { $Kephra::config{editpanel} }
 sub _indicator_config { $Kephra::config{editpanel}{indicator} }
 #
 # settings
@@ -63,7 +62,9 @@ sub apply_settings {
 	#misc: scroll width, codepage, wordchars
 	apply_autowrap_settings();
 
-	$ep->SetScrollWidth( $ep->GetEndAtLastLine() );
+	$ep->SetScrollWidth($conf->{scroll_width}) 
+		unless $conf->{scroll_width} eq 'auto';
+
 	$ep->SetCodePage(0);
 	set_word_chars();
 

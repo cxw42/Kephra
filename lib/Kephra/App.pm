@@ -98,9 +98,9 @@ sub start {
 
 sub exit { 
 	my $t0 = new Benchmark;
+	Kephra::File::Session::autosave();
 	return if Kephra::Dialog::save_on_exit() eq 'cancel';
 	Kephra::Config::Global::update();
-	Kephra::File::Session::autosave();
 	Kephra::Config::Global::save_autosaved();
 	#Kephra::API::CommandList::store_cache();
 	Kephra::Config::set_xp_style(); #

@@ -1,5 +1,5 @@
 package Kephra::Document::Internal;
-$VERSION = '0.09';
+$VERSION = '0.10';
 
 use strict;
 use Wx qw(wxYES wxNO);
@@ -7,14 +7,16 @@ use Wx qw(wxYES wxNO);
 
 # make document empty and reset all document properties to default
 sub reset {
+	my $doc_nr = shift;
+	$doc_nr = Kephra::Document::_get_current_nr() if not defined $doc_nr;
 	my $edit_panel = Kephra::App::EditPanel::_get();
 	Kephra::Document::set_readonly(0);
 	$edit_panel->ClearAll;
 	$edit_panel->EmptyUndoBuffer;
 	$edit_panel->SetSavePoint;
-	Kephra::Document::set_file_path('');
-	reset_properties();
-	eval_properties();
+	reset_tmp_data($doc_nr);
+	reset_properties($doc_nr);
+	eval_properties($doc_nr);
 }
 
 # restore once opened file from his settings
@@ -44,6 +46,7 @@ sub restore {
 # add newly opened file
 sub add {
 	my $file_name = shift;
+	my $old_nr = Kephra::Document::_get_current_nr();
 	if ( defined $file_name and -e $file_name ) {
 
 		# open only text files and empty files
@@ -61,11 +64,14 @@ sub add {
 		}
 		save_properties();
 		my $doc_nr = new_if_allowed('add');
+		return if $old_nr == $doc_nr;
 		$file_name = File::Spec->canonpath( $file_name );
+		Kephra::Document::_set_previous_nr($old_nr);
+		reset_tmp_data($doc_nr);
 		load_in_current_buffer($file_name);
+		reset_properties($doc_nr, $file_name);
 		Kephra::Document::_set_current_nr($doc_nr);
-		reset_properties();
-		eval_properties();
+		eval_properties($doc_nr);
 		Kephra::App::Window::refresh_title();
 		Kephra::App::EditPanel::Margin::autosize_line_number();
 		Kephra::API::EventTable::trigger('document.list');
@@ -120,6 +126,7 @@ sub load_in_current_buffer {
 	Kephra::Document::set_file_path($file_name);
 	Kephra::File::_remember_save_moment($file_name);
 	$Kephra::temp{document}{loaded}++;
+	#if ($Kephra::config{editpanel}{scroll_width} eq 'auto'){}
 }
 
 
@@ -150,11 +157,13 @@ sub check_b4_overwite {
 
 # set the config default to the selected document
 sub reset_properties {
-	my $doc_nr = shift;
+	my ($doc_nr, $file_name) = @_;
 	$doc_nr = Kephra::Document::_get_current_nr() unless defined $doc_nr;
 	my $defaults  = $Kephra::config{file}{defaultsettings};
-	my $doc_attr  = $Kephra::document{open}[$doc_nr];
-	my $file_name = $doc_attr->{file_path};
+	my $doc_attr = $Kephra::document{open}[$doc_nr] = {
+		'file_path'=> $file_name,
+		'edit_pos' => -1,
+	};
 
 	$doc_attr->{syntaxmode} = $defaults->{syntaxmode} eq 'auto'
 		? Kephra::Document::SyntaxMode::_get_auto($doc_nr)
@@ -172,6 +181,16 @@ sub reset_properties {
 	$doc_attr->{cursor_pos} = 
 		$defaults->{cursor_pos} ? $defaults->{cursor_pos} : 0;
 	$doc_attr->{edit_pos} = -1;
+}
+
+sub reset_tmp_data {
+	my $doc_nr = shift;
+	$doc_nr = Kephra::Document::_get_current_nr() unless defined $doc_nr;
+	my $pointer = $Kephra::temp{document}{open}[$doc_nr]{pointer};
+	$Kephra::temp{document}{open}[$doc_nr] = {
+		'pointer'    => $pointer,
+		'cursor_pos' => 0,
+	};
 }
 
 
@@ -200,14 +219,14 @@ sub eval_properties {
 			if $doc_data->{directory};
 	} else { $Kephra::config{file}{current}{directory} = '' }
 	Kephra::Edit::_let_caret_visible();
-	#Kephra::App::StatusBar::refresh();
+	Kephra::App::StatusBar::refresh();
 	Kephra::App::EditPanel::set_word_chars();
 	Kephra::App::EditPanel::paint_bracelight()
 		if $Kephra::config{editpanel}{indicator}{bracelight}{visible};
 	Wx::Window::SetFocus($ep) unless $Kephra::temp{dialog}{control};
 	
 	# is that really necesary ?
-	Kephra::API::EventTable::trigger('document.savepoint','document.text.change');
+	#Kephra::API::EventTable::trigger('document.savepoint','document.text.change');
 }
 
 

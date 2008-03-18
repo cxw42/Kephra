@@ -116,7 +116,8 @@ sub get_tmp_value {
 	return unless $name;
 	my $nr = shift;
 	$nr = _get_current_nr() unless defined $nr;
-	$Kephra::temp{document}{open}[ $nr ]{$name};
+	my $tmp_data = $Kephra::temp{document}{open};
+	$tmp_data->[ $nr ]{$name} if ref $tmp_data->[ $nr ] eq 'HASH';
 }
 
 sub set_tmp_value {
@@ -138,7 +139,7 @@ sub set_codepage {
 	# my $app_win = shift;
 	#$ep->SetCodePage(65001); wxSTC_CP_UTF8 Wx::wxUNICODE()
 	#Kephra::Dialog::msg_box(undef, Wx::wxUNICODE(), '');
-#use Wx::STC qw(wxSTC_CP_UTF8);
+	#use Wx::STC qw(wxSTC_CP_UTF8);
 }
 
 #
@@ -197,12 +198,12 @@ sub set_EOL_mode {
 	my $eoll = \$Kephra::temp{current_doc}{EOL_length};
 	$$eoll = 1;
 	$mode = detect_EOL_mode() if $mode eq 'auto';
-	if    ( $mode eq 'lf' or $mode eq 'lin' ) { $ep->SetEOLMode(wxSTC_EOL_LF) } 
-	elsif ( $mode eq 'cr' or $mode eq 'mac' ) { $ep->SetEOLMode(wxSTC_EOL_CR) }
-	elsif ( $mode eq 'cr+lf'or $mode eq 'win'){ $ep->SetEOLMode(wxSTC_EOL_CRLF);
+	if    ( $mode eq 'lf'   or $mode eq 'lin') {$ep->SetEOLMode(wxSTC_EOL_LF) } 
+	elsif ( $mode eq 'cr'   or $mode eq 'mac') {$ep->SetEOLMode(wxSTC_EOL_CR) }
+	elsif ( $mode eq 'cr+lf'or $mode eq 'win') {$ep->SetEOLMode(wxSTC_EOL_CRLF);
 		$$eoll = 2;
 	}
-	$Kephra::document{current}{EOL} = $mode;
+	set_attribute('EOL', $mode);
 	Kephra::App::StatusBar::EOL_info($mode);
 }
 

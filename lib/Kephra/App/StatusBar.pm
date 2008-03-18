@@ -165,14 +165,14 @@ sub tab_info {
 	my $win   = Kephra::App::Window::_get();
 	my $mode  = Kephra::App::EditPanel::_get()->GetUseTabs;
 	my $index = $Kephra::temp{'app'}{'status'}{'tab'}{'index'};
-	#$mode = 0 unless $mode;
+	$mode = 0 unless $mode;
 	$mode ? $win->SetStatusText( " HT", $index ) 
 		  : $win->SetStatusText( " ST", $index );
 }
 
 sub EOL_info {
 	my ( $mode, $msg ) = shift;
-	$mode = $Kephra::temp{'file'}{'current'}{'one'}{'EOL'} if !$mode;
+	$mode = Kephra::Document::get_attribute('EOL') if !$mode;
 	if    ( $mode eq 'cr'    or $mode eq 'mac' ) { $msg = " Mac" }
 	elsif ( $mode eq 'lf'    or $mode eq 'lin' ) { $msg = "Linux" }
 	elsif ( $mode eq 'cr+lf' or $mode eq 'win' ) { $msg = " Win" }
