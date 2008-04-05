@@ -18,20 +18,6 @@
  + optional new and close icon in tabbar
  + rectangular selection with keyboard (<alt>+<shift>)
  + number of selected lines are displayed in statusbar
- ~ changed statusbar onclick behaviour
- ~ better goto line dialog
- ~ format and convert function much faster
- ~ block navigation now on <Alt>+<PgUp>|<PgDown>
- ~ document switch back now on <Ctrl>+<back>
- ~ much less flicker in toolbar and tabbar
- ~ menu und toolbar items can now disable, be checked by internal events
- [ checkable and disable menu items
- [ tooltips and status help on tabbar icons
- ] faster tab change
- [ shown pathes now OS compatibel
- ] new internal document property handling
- ] many internal cleanups and new designs
- ! many many bug fixes
  + blockformat <ctrl>+<shift>+<b>, menu edit > format
  + line wrap under menu edit > format
  + firstname: new document property holds filname without ending
@@ -40,22 +26,23 @@
  + move document line and page wise from searchbar input
  + tabbar tabs numbering optional config key: app > tabbar > number_tabs
  + tabbar filename ending optional: app > tabbar > file_info = [first]name
- ~ renamed 'global\sub\localisation' to 'global\sub\documentation'
- ~ renamed 'config\icon' to 'config\interface\icon\'
- ~ reneame 'feature.txt' to 'all_feature.txt'
- [ removed ambiguity in german mainmenu navigation with keyboard 
- [ use wx keycodes, less error prone
- ] less subconfigs
- ' some more documenting in default.conf
- ' advanced feature tour under 'special_feature.txt'
- ' some beginnings of czech localisation
- ! reload all docs switched to last doc
- ! move document line and page wise from searchbar input
- ! seach dialog icon shows again
- ! optimizing speed and undef value handling of menu data generation
- ! file first names now correct when it has no file ending
-
+ + autonotify (conf key file > open > auto_notify )
+ + autosave (conf key file > save > auto_save )
+ + Perl 5.10 keywords in the perl lexer
+ + doc navigation from searchbar (hold <ctrl>)
+ ~ changed statusbar onclick behaviour
+ ~ better goto line dialog
+ ~ format and convert function much faster
+ ~ block navigation now on <Alt>+<PgUp>|<PgDown>
+ ~ document switch back now on <Ctrl>+<back>
+ ~ much less flicker in toolbar and tabbar
+ ~ menu und toolbar items can now disable, be checked by internal events
+ [ checkable and disable menu items
+ [ shown pathes now OS compatibel
  
+ 
+0.3.8
+
 0.3.7
  + autonotify (conf key file > open > auto_notify )
  + autosave (conf key file > save > auto_save )

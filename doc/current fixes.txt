@@ -1,0 +1,4 @@
+Because measuring text is slow, Scintilla avoids doing this as much
+as possible. If you want to find the width of the widest line, ensure
+the document is all styled (SCI_COLOURISE) then call
+SCI_POINTXFROMPOSITION on the last position of each line. 

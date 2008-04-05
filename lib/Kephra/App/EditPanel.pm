@@ -28,6 +28,8 @@ sub create {
 	return $ep;
 }
 
+sub gets_focus { Wx::Window::SetFocus( _get() ) }
+
 sub apply_settings {
 	my $ep        = _get() or _create();
 	my $conf      = _get_config();

@@ -110,7 +110,7 @@ sub new_if_allowed {
 	$Kephra::temp{document}{buffer}++;
 
 	change_pointer($doc_nr);
-	Kephra::App::TabBar::add_page();
+	Kephra::App::TabBar::add_tab();
 	Kephra::App::TabBar::set_current_page($doc_nr);
 	return $doc_nr;
 }
@@ -213,7 +213,8 @@ sub eval_properties {
 		$doc_attr->{cursor_pos} < $doc_data->{selend}
 			? $ep->SetSelection( $doc_data->{selend},$doc_data->{selstart})
 			: $ep->SetSelection( $doc_data->{selstart},$doc_data->{selend});
-	} else { $ep->GotoPos( $doc_attr->{cursor_pos} ) }
+	} else { $ep->GotoPos( $doc_attr->{cursor_pos} ) 
+	}
 	if ($Kephra::config{file}{open}{in_current_dir}){
 		$Kephra::config{file}{current}{directory} = $doc_data->{directory}
 			if $doc_data->{directory};
@@ -224,9 +225,6 @@ sub eval_properties {
 	Kephra::App::EditPanel::paint_bracelight()
 		if $Kephra::config{editpanel}{indicator}{bracelight}{visible};
 	Wx::Window::SetFocus($ep) unless $Kephra::temp{dialog}{control};
-	
-	# is that really necesary ?
-	#Kephra::API::EventTable::trigger('document.savepoint','document.text.change');
 }
 
 

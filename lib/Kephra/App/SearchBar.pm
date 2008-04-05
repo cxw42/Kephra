@@ -77,6 +77,11 @@ sub create {
 					give_editpanel_focus_back()
 				} elsif ( $key == 70 ) { # F
 					give_editpanel_focus_back() if $event->ControlDown;
+				} elsif ( $key == 71 ) { # G
+					if ($event->ControlDown and $event->ShiftDown){
+						give_editpanel_focus_back();
+						Kephra::Edit::Goto::last_edit();
+					}
 				} elsif ( $key == 81 ) { # Q
 					switch_visibility() if $event->ControlDown;
 				} elsif ( $key == WXK_LEFT ){

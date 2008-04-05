@@ -18,6 +18,6 @@ requires       'YAML';
 build_requires 'Test::More'            => '0.47';
 build_requires 'Test::Script'          => '0.01';
 install_script 'bin/kephra';
-install_share;
+install_share  'share';
 
 WriteAll;

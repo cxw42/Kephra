@@ -89,8 +89,8 @@
         </default>
         icon = interface/icon/app/proton.ico
         max_number = 1
-        position_x = 58
-        position_y = 13
+        position_x = 51
+        position_y = 17
         save_position = 1
         size_x = 744
         size_y = 775
@@ -184,7 +184,7 @@
             min_width = 3
             start_with_min = 1
             visible = 1
-            width = 3
+            width = 4
         </linenumber>
         <marker>
             back_color = 0022ff
@@ -199,7 +199,7 @@
 <file>
     <current>
         directory = <<EOF
-        D:\src\perl\editor\dev\base\lib\Kephra\
+        D:\src\perl\editor\dev\base\bin\
         EOF
     </current>
     <defaultsettings>
@@ -260,14 +260,16 @@
     </group>
     <history>
         length = 11
-        path = D:\src\perl\editor\dev\base\lib\Kephra\File\IO.pm
-        path = D:\src\perl\editor\dev\base\lib\Kephra\File\Session.pm
-        path = D:\src\perl\editor\dev\base\lib\Kephra\Document\SyntaxMode.pm
+        path = C:\Dokumente und Einstellungen\Administrator\Eigene Dateien\phpbb-2.0.22_to_2.0.23.txt
+        path = C:\Dokumente und Einstellungen\Administrator\Eigene Dateien\admin_words.php
+        path = D:\src\perl\editor\dev\base\lib\Kephra.pm
+        path = D:\src\perl\editor\dev\base\share\config\localisation\deutsch_iso.conf
+        path = D:\src\perl\editor\dev\base\share\config\localisation\english.conf
+        path = D:\src\perl\editor\dev\base\share\config\localisation\cesky_iso.conf
+        path = share\config\localisation\english.conf
+        path = D:\src\perl\editor\dev\base\lib\Kephra\Document\Property.pm
         path = D:\src\perl\editor\dev\base\share\config\global\autosaved.conf
-        path = share\config\localisation\deutsch.conf
-        path = D:\src\perl\editor\dev\base\share\config\global\default\default.conf
-        path = D:\src\perl\editor\dev\base\lib\Kephra\App\EditPanel.pm
-        path = D:\src\perl\editor\dev\base\lib\Kephra\Config.pm
+        path = D:\src\perl\editor\dev\base\lib\Kephra\File\History.pm
         path = D:\src\perl\editor\dev\base\lib\Kephra\Dialog.pm
     </history>
     <open>
@@ -317,14 +319,11 @@
         match_word_begin = 0
     </attribute>
     <bookmark>
-        <1>
-            file = D:\src\perl\editor\dev\base\lib\Kephra\Document\Internal.pm
-            pos = 4790
-        </1>
     </bookmark>
     <history>
-        current_find_item = config
+        current_find_item = tabbar::
         current_replace_item = b
+        find_item = tabbar::
         find_item = config
         find_item = file::history
         find_item = history
@@ -336,7 +335,6 @@
         find_item = file_path
         find_item = _store
         find_item = _write_hash
-        find_item = sort
         length = 12
         remember_only_matched = 1
         replace_item = b

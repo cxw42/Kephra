@@ -42,23 +42,27 @@ sub change_to {
 	$style = _get_by_fileending() if $style eq 'auto';
 	$style = 'none' unless $style;
 
+	# do nothing when syntaxmode of new dox is the same
+	return if $Kephra::temp{document}{syntaxmode} eq $style;
+
 	# prevent clash between big lexer & indicator
 	if ( $style =~ /asp|html|php|xml/ ) { $ep->SetStyleBits(7) }
 	else                                { $ep->SetStyleBits(5) }
 
 	# clear style infos
-	$ep->StyleClearAll;
 	$ep->StyleResetDefault;
 	Kephra::App::EditPanel::load_font();
+	$ep->StyleClearAll;
 	$ep->SetKeyWords( 0, '' );
 
 	# load syntax style
 	if ( $style eq 'none' ) { 
-		$ep->SetLexer(wxSTC_LEX_NULL)
+		$ep->SetLexer(wxSTC_LEX_NULL);
 	} else {
 		eval("require syntaxhighlighter::$style");
 		eval("syntaxhighlighter::$style" . '::load($ep)');
 	}
+
 
 	# restore bracelight, bracebadlight indentguide colors
 	my $indicator = $Kephra::config{editpanel}{indicator};
@@ -75,11 +79,15 @@ sub change_to {
 	}
 
 	# cleanup
+	$Kephra::temp{document}{syntaxmode} = $style;
 	set($style);
 	$ep->Colourise( 0, $ep->GetTextLength ); # refresh editpanel painting
 	Kephra::App::EditPanel::Margin::apply_color();
 	Kephra::App::StatusBar::style_info($style);
 	return $style;
+}
+
+sub eval {
 }
 
 1;

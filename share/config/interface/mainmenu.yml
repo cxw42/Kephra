@@ -26,11 +26,13 @@ full_menubar:
           - item file-session-export
       -
       - item file-save
-      - item file-save-all
-      - item file-save-as
-      - item file-save-copy-as
-      - item file-rename
-      - item file-print#
+      - menu file_save:
+          - item file-save-all
+          - item file-save-as
+          - item file-save-copy-as
+          - item file-rename
+      -
+      - item file-print
       -
       - item file-close
       - item file-close-other
@@ -173,7 +175,8 @@ full_menubar:
           - item document-change-next 
           - item document-change-back
           -
-          - append menu document_list
+          - item document-move-left
+          - item document-move-right
       -
       - menu document_syntaxmode:
           - item document-syntaxmode-auto

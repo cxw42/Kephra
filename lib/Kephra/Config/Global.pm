@@ -85,6 +85,7 @@ print "  iface cnfg:", Benchmark::timestr( Benchmark::timediff( $t1, $t0 ) ), "\
 	# set interna to default
 	$Kephra::app{GUI}{masterID}     = 20;
 	$Kephra::temp{dialog}{control}  = 0;
+	$Kephra::temp{document}{syntaxmode} = 'none';
 	Kephra::Edit::Search::_init_history();
 	Kephra::Edit::Search::_refresh_search_flags();
 	Kephra::Config::build_fileendings2syntaxstyle_map();

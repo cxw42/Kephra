@@ -1,10 +1,10 @@
 package Kephra::App::TabBar;    # notebook file selector
 $VERSION = '0.11';
 
-###############################################################################
-# Tabbar is the visual element in top area of the main window which displays  #
-# end enables selection between all curently opened documents                 #
-###############################################################################
+=pod
+Tabbar is the visual element in top area of the main window which displays
+       end enables selection between all curently opened documents
+=cut
 
 use strict;
 use Wx qw(
@@ -31,7 +31,7 @@ sub create {
 	# create notebook if there is none
 	unless ( ref _get_tabs() eq 'Wx::Notebook' ) {
 		_set_tabs( Wx::Notebook->new($win, -1, [0,0], [-1,24]) );
-		add_page();
+		add_tab();
 	}
 	my $tabbar = _get();
 	my $tabbar_h_sizer = $tabbar->{h_sizer} = Wx::BoxSizer->new(wxHORIZONTAL);
@@ -104,19 +104,47 @@ sub left_off_tabs {
 		if $Kephra::temp{document}{b4tabchange} == $tabs->GetSelection;
 	$event->Skip;
 }
+
+##################################
+# tab functions
+##################################
+sub add_tab {
+	my $tabs = _get_tabs();
+	$tabs->AddPage( Wx::Panel->new( $tabs, -1, [ -1, -1 ], [ -1, 0 ] ), '', 0 );
+}
+
+sub switch_tab_content {
+	my ($old_nr, $new_nr) = @_;
+	return unless defined $new_nr;
+	my $tabs = _get_tabs();
+	my $text = $tabs->GetPageText($new_nr);
+	$tabs->SetPageText($new_nr, $tabs->GetPageText($old_nr) );
+	$tabs->SetPageText($old_nr, $text );
+}
+
+sub rot_tab_content {
+	my $dir = shift;
+	my $tabs = _get_tabs();
+	my $max = $tabs->GetPageCount() - 1;
+	if ($dir eq 'left'){
+		my $text = $tabs->GetPageText($max);
+		$tabs->SetPageText($_, $tabs->GetPageText($_-1)) for reverse 1 .. $max;
+		$tabs->SetPageText(0, $text);
+	}
+	elsif ($dir eq 'right'){
+		my $text = $tabs->GetPageText(0);
+		$tabs->SetPageText($_, $tabs->GetPageText($_+1)) for 0 .. $max - 1;
+		$tabs->SetPageText($max, $text);
+	}
+}
+
 sub change_tab {
 	my ( $frame, $event ) = @_;
 	Kephra::Document::Change::to_number( $event->GetSelection );
 	$event->Skip;
 }
-
-#
-sub add_page {
-	my $tabs = _get_tabs();
-	$tabs->AddPage( Wx::Panel->new( $tabs, -1, [ -1, -1 ], [ -1, 0 ] ), '', 0 );
-}
-sub delete_page { _get_tabs()->DeletePage(shift) }
-sub set_current_page { 
+sub delete_tab { _get_tabs()->DeletePage(shift) }
+sub set_current_page {
 	my $nr = shift;
 	my $tabbar = _get_tabs();
 	$tabbar->SetSelection($nr) unless $nr == $tabbar->GetSelection;
@@ -139,7 +167,7 @@ sub refresh_label {
 		$label = substr( $label, 0, $max_width - 3 ) . '...';
 	}
 	# set config files in square brackets
-	if (    $config->{mark_configs} 
+	if (    $config->{mark_configs}
 		and Kephra::Document::get_attribute('config_file', $doc_nr)
 		and $Kephra::config{file}{save}{reload_config}              ) {
 		$label = '$ ' . $label;

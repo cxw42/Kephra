@@ -14,7 +14,7 @@ use File::Spec ();
 use vars qw{$VERSION $STANDALONE};
 my %pathes;
 BEGIN {
-	$VERSION = '0.3.7.3';
+	$VERSION = '0.3.7.7'; 
 
 	# Is this the standalone Win32 implementation
 	$STANDALONE = 1;
@@ -103,7 +103,7 @@ kephra - crossplatform, CPAN-installable GUI-Texteditor along Perl's Paradigms
 
 =head1 DESCRIPTION
 
-This module installs a complete editor application with all its configs,
+This module installs a complete editor application with all its configs
 and documentation for your programming, web and text authoring. 
 
 =head2 Philosophy

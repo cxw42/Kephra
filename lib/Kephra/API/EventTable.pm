@@ -13,11 +13,13 @@ $VERSION = '0.09';
 use strict;
 use Wx qw( wxSTC_CMD_NEWLINE WXK_RETURN );
 use Wx::Event qw(
+	EVT_TIMER EVT_IDLE
 	EVT_KEY_UP EVT_KEY_DOWN
-	EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_CLOSE EVT_DROP_FILES EVT_MENU_OPEN
+	EVT_LEFT_UP EVT_LEFT_DOWN EVT_MOTION
+	EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_CLOSE 
+	EVT_DROP_FILES EVT_MENU_OPEN
 	EVT_STC_CHANGE EVT_STC_UPDATEUI EVT_STC_MARGINCLICK
 	EVT_STC_SAVEPOINTREACHED EVT_STC_SAVEPOINTLEFT
-	EVT_TIMER EVT_IDLE
 );
 # EVT_STC_CHARADDED EVT_STC_MODIFIED
 
@@ -29,9 +31,10 @@ sub _get_frozen { $Kephra::temp{eventtable} }
 sub connect_all {
 	my $win = Kephra::App::Window::_get();
 	my $ep  = Kephra::App::EditPanel::_get();
-	$Kephra::app{eventtable}{test} = 1;
-	$Kephra::temp{eventtable}{test} = 1;
+	my $tb  = Kephra::App::TabBar::_get();
 	my $timer;
+	#$Kephra::app{eventtable}{test} = 1;
+	#$Kephra::temp{eventtable}{test} = 1;
 
 	# events for whole window
 	EVT_CLOSE      ($win,  sub { trigger('app.close'); Kephra::quit() });
@@ -62,6 +65,11 @@ sub connect_all {
 	connect_editpanel();
 	init_key_events();
 	EVT_DROP_FILES ($ep,   \&Kephra::File::add_dropped); # override sci presets
+
+	# TabBar
+	#EVT_LEFT_UP();
+	#EVT_MOTION();
+	#EVT_LEFT_DOWN();
 
 	EVT_ENTER_WINDOW ($ep,   sub {
 		Wx::Window::SetFocus( $ep ) unless $Kephra::temp{dialog}{active};

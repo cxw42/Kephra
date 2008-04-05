@@ -7,6 +7,7 @@ $VERSION = '0.37';
 
 use strict;
 use Wx qw(wxYES wxNO wxCANCEL);
+use Wx::Print;
 
 ###############
 # file events #
@@ -70,9 +71,10 @@ sub add_dropped {
 # add all files of an dnd-held dir
 sub add_dir{
 	my $dir = shift;
-	opendir (DIR, $dir);
-	my @dir_items = readdir(DIR);
-	closedir(DIR);
+	return until -d $dir;
+	opendir (my $DH, $dir);
+	my @dir_items = readdir($DH);
+	closedir($DH);
 	my $path;
 	my $recursive = $Kephra::config{file}{open}{dir_recursive};
 
@@ -272,6 +274,16 @@ sub save_all_named {
 
 sub print {
 	my ( $frame, $event ) = @_;
+	my $ep       = Kephra::App::EditPanel::_get();
+	my $printer  = Wx::Printer->new;
+	my $printout = Wx::Printout->new(
+		"$Kephra::NAME $Kephra::VERSION : " .
+		Kephra::Document::_get_current_name()
+	);
+	#$ep->FormatRange(doDraw,startPos,endPos,draw,target,renderRect,pageRect);
+	#$printer->Print( $frame, $printout, 1 );
+
+	$printout->Destroy;
 }
 
 sub close_current {
@@ -317,7 +329,7 @@ sub close_current {
 		$Kephra::temp{document}{buffer}--;
 		$Kephra::temp{document}{loaded}--
 			if ( $Kephra::document{open}[$close_tab_nr]{file_path} );
-		Kephra::App::TabBar::delete_page($close_tab_nr);
+		Kephra::App::TabBar::delete_tab($close_tab_nr);
 
 		# release file data of closed file
 		if (ref $Kephra::document{open} eq 'ARRAY' ) {

@@ -31,14 +31,14 @@ sub switch_back { to_number( $Kephra::document{previous_nr} ) }
 
 # change to the previous used document
 sub tab_left {
-	my $new_doc_nr = $Kephra::document{current_nr} - 1;
+	my $new_doc_nr = Kephra::Document::current_nr() - 1;
 	$new_doc_nr = Kephra::Document::_get_last_nr() if $new_doc_nr == -1;
 	to_number($new_doc_nr);
 	$new_doc_nr;
 }
 
 sub tab_right {
-	my $new_doc_nr = $Kephra::document{current_nr} + 1;
+	my $new_doc_nr = Kephra::Document::current_nr() + 1;
 	$new_doc_nr = 0 if $new_doc_nr > Kephra::Document::_get_last_nr();
 	to_number($new_doc_nr);
 	$new_doc_nr;

@@ -9,6 +9,23 @@ TODO 0.4:
  + own statusbar
  + config dialog
 
+0.3.7.7
+ ! fixed color of syntax mpode "none" after switiching from php
+ ! rot tabs correctly while moving 
+
+0.3.7.6
+ ~ change Switch doc back to <ctrl>+<shift>+<back>
+ ~ redesigned file menu
+ ! added missing doclist event on doc switch
+ ! open all files of dir now appears in right dir
+
+0.3.7.5
+ + switch tabs with <ctrl>+<shift>+<pgup|pgdn>
+ ] cleaned up App::TabBar API
+
+0.3.7.4
+ + Ctrl+Shift+G works from the searchbar input
+
 0.3.7.3
  ! more internal doc add fixes
 

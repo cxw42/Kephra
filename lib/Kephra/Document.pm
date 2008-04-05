@@ -13,40 +13,49 @@ use Wx qw( wxSTC_EOL_CR wxSTC_EOL_LF wxSTC_EOL_CRLF );
 
 # internal functions
 # doc number
-sub _stored_data { $Kephra::document{open} }
-sub _temp_data   { $Kephra::temp{document}{open} }
+sub _attributes { $Kephra::document{open} }
+sub _temp_data  { $Kephra::temp{document}{open} }
 
-sub _get_count      { @{ $Kephra::document{open} } }
+sub _get_count      { @{ _attributes() } }
 sub _get_previous_nr{ $Kephra::document{previous_nr} }
 sub _set_previous_nr{ $Kephra::document{previous_nr} = shift }
 sub _get_current_nr { $Kephra::document{current_nr} }
 sub _set_current_nr {
 	my $nr = shift || 0;
 	$Kephra::document{current_nr} = $nr;
-	$Kephra::document{current}    = $Kephra::document{open}[$nr];
-	$Kephra::temp{current_doc}    = $Kephra::temp{document}{open}[$nr];
+	$Kephra::document{current}    = _attributes()->[$nr];
+	$Kephra::temp{current_doc}    = _temp_data()->[$nr];
+}
+sub current_nr {
+	my $nr = shift;
+	if (defined $nr) {
+		_set_current_nr($nr)
+	} else {
+		_get_current_nr()
+	}
 }
 sub _get_last_nr      { $#{ $Kephra::document{open} } }
 sub _get_nr_from_path {
 	my $given_path = shift;
+	my $attr = _attributes();
 	my @answer = ();
 	for ( 0 .. _get_last_nr() ) {
-		push @answer, $_ if $Kephra::document{open}[$_]{file_path} eq $given_path;
+		push @answer, $_ if $attr->[$_]{file_path} eq $given_path;
 	}
 	$#answer == -1 ? return 0 : return \@answer;
 }
 
 sub _get_path_from_nr {
 	my $nr = shift;
-	$Kephra::document{open}[$nr]{file_path} if $nr <= _get_last_nr()
+	_attributes()->[$nr]{file_path} if $nr <= _get_last_nr()
 }
 
 sub _get_current_file_path { $Kephra::document{current}{file_path} }
 
 sub _get_all_pathes {
 	my @pathes;
-	my $docs = $Kephra::document{open};
-	$pathes[$_] = $docs->[$_]{file_path} for 0 .. _get_last_nr();
+	my $attr = _attributes();
+	$pathes[$_] = $attr->[$_]{file_path} for 0 .. _get_last_nr();
 	return \@pathes;
 }
 
@@ -54,7 +63,7 @@ sub set_file_path {
 	my ( $file_path, $doc_nr ) = @_;
 	$doc_nr ||= 0;
 	$doc_nr = _get_current_nr() unless $doc_nr;
-	$Kephra::document{open}[$doc_nr]{file_path} = $file_path;
+	_attributes()->[$doc_nr]{file_path} = $file_path;
 	Kephra::Document::Internal::dissect_path( $file_path, $doc_nr );
 	Kephra::App::TabBar::refresh_label($doc_nr);
 	Kephra::App::Window::refresh_title();
@@ -99,7 +108,7 @@ sub get_attribute {
 	return unless $attr;
 	my $nr = shift;
 	$nr = _get_current_nr() unless defined $nr;
-	$Kephra::document{open}[ $nr ]{$attr};
+	_attributes()->[ $nr ]{$attr};
 }
 
 sub set_attribute {
@@ -108,7 +117,7 @@ sub set_attribute {
 	return unless $value;
 	my $nr = shift;
 	$nr = _get_current_nr() unless defined $nr;
-	$Kephra::document{open}[ $nr ]{$attr} = $value
+	_attributes()->[ $nr ]{$attr} = $value
 }
 
 sub get_tmp_value {
@@ -130,6 +139,68 @@ sub set_tmp_value {
 }
 
 
+#########################################
+
+sub move_left {
+	my $old_nr = current_nr();
+	my $new_nr = $old_nr - 1;
+	if ($new_nr > -1) { switch($old_nr, $new_nr) }
+	else { 
+		$new_nr = _get_last_nr();
+		my $attr = _attributes();
+		my $data = _temp_data();
+		my $doc_a = shift @$attr;
+		push @$attr, $doc_a;
+		my $doc_d = shift @$data;
+		push @$data, $doc_d;
+		_set_current_nr($new_nr);
+		Kephra::App::TabBar::rot_tab_content('right');
+		Kephra::App::TabBar::set_current_page($new_nr);
+		Kephra::App::EditPanel::gets_focus();
+		Kephra::API::EventTable::trigger('document.list');
+	}
+}
+
+sub move_right {
+	my $old_nr = current_nr(); 
+	my $new_nr = $old_nr + 1;
+	if ( $new_nr <= _get_last_nr() ) { switch($old_nr, $new_nr) }
+	else {
+		$new_nr = 0;
+		my $attr = _attributes();
+		my $data = _temp_data();
+		my $doc_a = pop @$attr;
+		unshift @$attr, $doc_a;
+		my $doc_d = pop @$data;
+		unshift @$data, $doc_d;
+		_set_current_nr($new_nr);
+		Kephra::App::TabBar::rot_tab_content('left');
+		Kephra::App::TabBar::set_current_page($new_nr);
+		Kephra::App::EditPanel::gets_focus();
+		Kephra::API::EventTable::trigger('document.list');
+	}
+}
+
+sub switch {
+	my ($old_nr, $new_nr) = @_;
+	return unless defined $new_nr;
+	my $cur_nr = current_nr(); 
+	my $attr = _attributes();
+	my $data = _temp_data();
+	($attr->[$old_nr], $attr->[$new_nr]) = ($attr->[$new_nr], $attr->[$old_nr]);
+	($data->[$old_nr], $data->[$new_nr]) = ($data->[$new_nr], $data->[$old_nr]);
+	Kephra::App::TabBar::switch_tab_content($old_nr, $new_nr);
+	if ($cur_nr == $old_nr) {
+		_set_current_nr($new_nr);
+		Kephra::App::TabBar::set_current_page($new_nr);
+	} 
+	elsif ($cur_nr == $new_nr) {
+		_set_current_nr($old_nr);
+		Kephra::App::TabBar::set_current_page($old_nr);
+	}
+	Kephra::App::EditPanel::gets_focus();
+	Kephra::API::EventTable::trigger('document.list');
+}
 #########################################
 # getter/setter for Document properties
 #########################################
