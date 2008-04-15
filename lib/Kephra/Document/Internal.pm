@@ -9,7 +9,7 @@ use Wx qw(wxYES wxNO);
 sub reset {
 	my $doc_nr = shift;
 	$doc_nr = Kephra::Document::_get_current_nr() if not defined $doc_nr;
-	my $edit_panel = Kephra::App::EditPanel::_get();
+	my $edit_panel = Kephra::App::EditPanel::_ref();
 	Kephra::Document::set_readonly(0);
 	$edit_panel->ClearAll;
 	$edit_panel->EmptyUndoBuffer;
@@ -17,6 +17,7 @@ sub reset {
 	reset_tmp_data($doc_nr);
 	reset_properties($doc_nr);
 	eval_properties($doc_nr);
+	Kephra::App::StatusBar::update_all();
 }
 
 # restore once opened file from his settings
@@ -54,9 +55,10 @@ sub add {
 			and $Kephra::config{file}{open}{only_text} == 1 );
 
 		# check if file is already open and goto this already opened
-		if ( $Kephra::config{file}{open}{each_once} == 1 ){
+		if ( $Kephra::config{file}{open}{each_once} == 1){
 			for ( 0 .. Kephra::Document::_get_last_nr() ) {
-				if ( $Kephra::document{open}[$_]{file_path} eq $file_name ){
+				my $path = Kephra::Document::_get_path_from_nr($_);
+				if ($path and $path eq $file_name ){
 					Kephra::Document::Change::to_number($_);
 					return;
 				}
@@ -64,7 +66,7 @@ sub add {
 		}
 		save_properties();
 		my $doc_nr = new_if_allowed('add');
-		return if $old_nr == $doc_nr;
+		#return if $old_nr == $doc_nr; why?
 		$file_name = File::Spec->canonpath( $file_name );
 		Kephra::Document::_set_previous_nr($old_nr);
 		reset_tmp_data($doc_nr);
@@ -82,7 +84,7 @@ sub add {
 # create a new document if settings allow it
 sub new_if_allowed {
 	my $mode = shift;	# new(empty), add(open) restore(open session)
-	my $ep  = Kephra::App::EditPanel::_get();
+	my $ep  = Kephra::App::EditPanel::_ref();
 	my $file_name = Kephra::Document::_get_current_file_path();
 	my $old_doc_nr= Kephra::Document::_get_current_nr();
 	my $doc_nr    = $Kephra::temp{document}{buffer};
@@ -118,7 +120,7 @@ sub new_if_allowed {
 
 sub load_in_current_buffer {
 	my $file_name = shift || '';
-	my $edit_panel = Kephra::App::EditPanel::_get();
+	my $edit_panel = Kephra::App::EditPanel::_ref();
 	$edit_panel->ClearAll();
 	Kephra::File::IO::open_pipe($file_name);
 	$edit_panel->EmptyUndoBuffer;
@@ -132,10 +134,10 @@ sub load_in_current_buffer {
 
 sub check_b4_overwite {
 	my $filename = shift;
-	$filename = Kephra::Document::_get_current_file_path() unless $filename;
+	$filename = Kephra::Document::_get_current_file_path() unless defined $filename;
 	my $allow = $Kephra::config{file}{save}{overwrite};
 	if ( -e $filename ) {
-		my $frame = &Kephra::App::Window::_get();
+		my $frame = &Kephra::App::Window::_ref();
 		my $label = $Kephra::localisation{dialog};
 		if ( $allow eq 'ask' ) {
 			my $answer = Kephra::Dialog::get_confirm_2( $frame,
@@ -199,7 +201,7 @@ sub eval_properties {
 	$doc_nr = Kephra::Document::_get_current_nr() if ( !$doc_nr );
 	my $doc_attr = \%{$Kephra::document{open}[$doc_nr]};
 	my $doc_data = \%{$Kephra::temp{document}{open}[$doc_nr]};
-	my $ep = Kephra::App::EditPanel::_get();
+	my $ep = Kephra::App::EditPanel::_ref();
 
 	$doc_attr->{syntaxmode} = "none" unless $doc_attr->{syntaxmode};
 	Kephra::Document::SyntaxMode::change_to( $doc_attr->{syntaxmode} );
@@ -220,7 +222,7 @@ sub eval_properties {
 			if $doc_data->{directory};
 	} else { $Kephra::config{file}{current}{directory} = '' }
 	Kephra::Edit::_let_caret_visible();
-	Kephra::App::StatusBar::refresh();
+	Kephra::App::StatusBar::refresh_cursor();
 	Kephra::App::EditPanel::set_word_chars();
 	Kephra::App::EditPanel::paint_bracelight()
 		if $Kephra::config{editpanel}{indicator}{bracelight}{visible};
@@ -233,7 +235,7 @@ sub save_properties {
 	$doc_nr = Kephra::Document::_get_current_nr() unless defined $doc_nr;
 	my $doc_attr = $Kephra::document{open}[$doc_nr];
 	my $doc_data = $Kephra::temp{document}{open}[$doc_nr];
-	my $ep = Kephra::App::EditPanel::_get();
+	my $ep = Kephra::App::EditPanel::_ref();
 
 	$doc_attr->{cursor_pos}= $ep->GetCurrentPos;
 	$doc_data->{selstart}  = $ep->GetSelectionStart;
@@ -246,7 +248,7 @@ sub change_pointer {
 	$newtab = 0 unless $newtab ;
 	my $oldtab  = Kephra::Document::_get_current_nr();
 	my $docsdata = $Kephra::temp{document}{open};
-	my $ep      = Kephra::App::EditPanel::_get();
+	my $ep      = Kephra::App::EditPanel::_ref();
 	$ep->AddRefDocument( $docsdata->[$oldtab]{pointer} );
 	$ep->SetDocPointer( $docsdata->[$newtab]{pointer} );
 	$ep->ReleaseDocument( $docsdata->[$newtab]{pointer} );

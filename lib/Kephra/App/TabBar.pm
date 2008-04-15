@@ -17,23 +17,25 @@ use Wx::Event qw(
 	EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_NOTEBOOK_PAGE_CHANGED
 );
 
-sub _get      { $Kephra::app{window}{tabbar} }
-sub _get_tabs { $Kephra::app{window}{tabbar}{tabs} }
-sub _set_tabs { $Kephra::app{window}{tabbar}{tabs} = shift }
+sub _ref { 
+	if ($_[0]) { $Kephra::app{window}{tabbar}{tabs} = $_[0] }
+	else       { $Kephra::app{window}{tabbar}{tabs} } 
+}
+sub _compound { $Kephra::app{window}{tabbar} }
 sub _get_sizer{ $Kephra::app{window}{tabbar}{sizer} }
 sub _set_sizer{ $Kephra::app{window}{tabbar}{sizer} = shift }
-sub _get_config{$Kephra::config{app}{tabbar} }
+sub _config{$Kephra::config{app}{tabbar} }
 #sub new{ return Kephra::App::Window::_get()->{notebook} = Wx::Notebook->new($frame, -1, [0,0], [1,1],)}
 
 sub create {
-	my $win = Kephra::App::Window::_get();
+	my $win = Kephra::App::Window::_ref();
 
 	# create notebook if there is none
-	unless ( ref _get_tabs() eq 'Wx::Notebook' ) {
-		_set_tabs( Wx::Notebook->new($win, -1, [0,0], [-1,24]) );
+	unless ( ref _ref() eq 'Wx::Notebook' ) {
+		_ref( Wx::Notebook->new($win, -1, [0,0], [-1,24]) );
 		add_tab();
 	}
-	my $tabbar = _get();
+	my $tabbar = _compound();
 	my $tabbar_h_sizer = $tabbar->{h_sizer} = Wx::BoxSizer->new(wxHORIZONTAL);
 	my $colour = $tabbar->{tabs}->GetBackgroundColour();
 	$tabbar_h_sizer->Add( $tabbar->{tabs} , 1, wxLEFT | wxGROW , 0 );
@@ -80,11 +82,11 @@ sub create {
 	EVT_LEFT_UP(   $tabbar->{tabs}, \&left_off_tabs);
 	EVT_LEFT_DOWN( $tabbar->{tabs}, \&left_on_tabs);
 	# Optional middle click over the tabs
-	if ( _get_config()->{middle_click} ) {
+	if ( _config()->{middle_click} ) {
 		EVT_MIDDLE_UP(
 			$tabbar->{tabs},
 			Kephra::API::CommandList::get_cmd_property
-				( _get_config()->{middle_click}, 'call' )
+				( _config()->{middle_click}, 'call' )
 		);
 	}
 	EVT_NOTEBOOK_PAGE_CHANGED($win,$tabbar->{tabs}, \&change_tab);
@@ -109,14 +111,14 @@ sub left_off_tabs {
 # tab functions
 ##################################
 sub add_tab {
-	my $tabs = _get_tabs();
+	my $tabs = _ref();
 	$tabs->AddPage( Wx::Panel->new( $tabs, -1, [ -1, -1 ], [ -1, 0 ] ), '', 0 );
 }
 
 sub switch_tab_content {
 	my ($old_nr, $new_nr) = @_;
 	return unless defined $new_nr;
-	my $tabs = _get_tabs();
+	my $tabs = _ref();
 	my $text = $tabs->GetPageText($new_nr);
 	$tabs->SetPageText($new_nr, $tabs->GetPageText($old_nr) );
 	$tabs->SetPageText($old_nr, $text );
@@ -124,7 +126,7 @@ sub switch_tab_content {
 
 sub rot_tab_content {
 	my $dir = shift;
-	my $tabs = _get_tabs();
+	my $tabs = _ref();
 	my $max = $tabs->GetPageCount() - 1;
 	if ($dir eq 'left'){
 		my $text = $tabs->GetPageText($max);
@@ -143,10 +145,10 @@ sub change_tab {
 	Kephra::Document::Change::to_number( $event->GetSelection );
 	$event->Skip;
 }
-sub delete_tab { _get_tabs()->DeletePage(shift) }
+sub delete_tab { _ref()->DeletePage(shift) }
 sub set_current_page {
 	my $nr = shift;
-	my $tabbar = _get_tabs();
+	my $tabbar = _ref();
 	$tabbar->SetSelection($nr) unless $nr == $tabbar->GetSelection;
 }
 
@@ -156,7 +158,7 @@ sub refresh_label {
 	$doc_nr = Kephra::Document::_get_current_nr() unless defined $doc_nr;
 	return unless defined $Kephra::temp{document}{open}[$doc_nr];
 
-	my $config   = _get_config();
+	my $config   = _config();
 	my $doc_info = $Kephra::temp{document}{open}[$doc_nr];
 	my $label    = $doc_info->{ $config->{file_info} } ||
 		"<$Kephra::localisation{app}{general}{untitled}>";
@@ -178,7 +180,7 @@ sub refresh_label {
 		$label .= ' #' if $doc_info->{readonly};
 		$label .= ' *' if $doc_info->{modified};
 	}
-	_get_tabs()->SetPageText( $doc_nr, $label );
+	_ref()->SetPageText( $doc_nr, $label );
 }
 
 sub refresh_current_label{ refresh_label(Kephra::Document::_get_current_nr()) }
@@ -191,23 +193,23 @@ sub refresh_all_label {
 }
 
 # set tabbar visibility
-sub get_visibility { _get_config()->{visible} }
+sub get_visibility { _config()->{visible} }
 sub switch_visibility {
-	_get_config()->{visible} ^= 1;
+	_config()->{visible} ^= 1;
 	show();
 }
 sub show {
-	my $main_sizer = Kephra::App::Window::_get()->GetSizer;
+	my $main_sizer = Kephra::App::Window::_ref()->GetSizer;
 
-	$main_sizer->Show( _get()->{v_sizer}, get_visibility() );
+	$main_sizer->Show( _ref()->{v_sizer}, get_visibility() );
 	refresh_layout();
 	$main_sizer->Layout();
 }
 
 # visibility of parts
 sub refresh_layout{
- my $tabbar     = _get();
- my $tab_config = _get_config();
+ my $tabbar     = _compound();
+ my $tab_config = _config();
  my $v          = $tab_config->{visible};
 	if ($tabbar->{seperator_line}) {
 		$tabbar->{seperator_line}->Show( $v && $tab_config->{seperator_line});
@@ -219,5 +221,11 @@ sub refresh_layout{
 		$tabbar->{button}{close} ->Show( $v && $tab_config->{button}{close} );
 	}
 }
+
+sub switch_contextmenu_visibility { 
+	_config()->{contextmenu_use} ^= 1;
+	Kephra::App::ContextMenu::connect_tabbar();
+}
+sub get_contextmenu_visibility { _config()->{contextmenu_use} }
 
 1;

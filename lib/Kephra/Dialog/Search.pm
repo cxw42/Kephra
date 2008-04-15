@@ -16,14 +16,16 @@ use Wx::Event qw(
 	EVT_CHAR EVT_TEXT_ENTER EVT_ENTER_WINDOW
 );
 
-sub _get { $Kephra::app{dialog}{search} }
-sub _set { $Kephra::app{dialog}{search} = $_[0] if ref $_[0] eq 'Wx::Frame'}
+sub _ref {
+	if (ref $_[0] eq 'Wx::Frame'){ $Kephra::app{dialog}{search} = $_[0] }
+	else                         { $Kephra::app{dialog}{search} }
+}
 
 ##########################
 # call as find dialog
 sub find {
 	my $d = ready();
-	my $selection = Kephra::App::EditPanel::_get()->GetSelectedText;
+	my $selection = Kephra::App::EditPanel::_ref()->GetSelectedText;
 	if ($selection and not $d->{selection_radio}->GetValue ) {
 		Kephra::Edit::Search::set_find_item( $selection );
 		$d->{find_input}->SetValue( $selection );
@@ -35,7 +37,7 @@ sub find {
 # call as replace dialog
 sub replace {
 	my $d = ready();
-	my $selection = Kephra::App::EditPanel::_get()->GetSelectedText;
+	my $selection = Kephra::App::EditPanel::_ref()->GetSelectedText;
 	if ( length $selection > 0 and not $d->{selection_radio}->GetValue ) {
 		Kephra::Edit::Search::set_replace_item( $selection );
 		$d->{replace_input}->SetValue( $selection );
@@ -51,7 +53,7 @@ sub ready {
 	if ( not $Kephra::temp{dialog}{search}{active} ) {
 
 		# prepare some internal var and for better handling
-		my $edit_panel      = Kephra::App::EditPanel::_get();
+		my $edit_panel      = Kephra::App::EditPanel::_ref();
 		my $attr            = $Kephra::config{search}{attribute};
 		my $dsettings       = $Kephra::config{dialog}{search};
 		my $label           = $Kephra::localisation{dialog}{search}{label};
@@ -75,14 +77,17 @@ sub ready {
 
 		# make dialog window and main panel
 		my $d = Wx::Frame->new( 
-			Kephra::App::Window::_get(), -1, 
+			Kephra::App::Window::_ref(), -1, 
 			$Kephra::localisation{dialog}{search}{title},
 			[ $dsettings->{position_x}, $dsettings->{position_y} ],
 			[ 436                       , 268                   ], $d_style );
-		Kephra::App::Window::load_icon
-			( $d, Kephra::Config::dirpath('interface/icon/app/find.ico') );
+		my $icon_bmp = Kephra::API::CommandList::get_cmd_property
+			('view-dialog-find', 'icon');
+		my $icon = Wx::Icon->new;
+		$icon->CopyFromBitmap($icon_bmp);
+		$d->SetIcon($icon) if ref $icon_bmp eq 'Wx::Bitmap';
 		my $panel = Wx::Panel->new( $d, -1 );
-		_set($d);
+		_ref($d);
 
 		# input boxes with labels
 		$d->{find_label}   = Wx::StaticText->new($panel, -1, $label->{search_for} );
@@ -305,7 +310,7 @@ sub ready {
 		$d->Show(1);
 		return $d;
 	} else {
-		my $d = _get();
+		my $d = _ref();
 		$d->Iconize(0);
 		$d->Raise;
 		return $d;

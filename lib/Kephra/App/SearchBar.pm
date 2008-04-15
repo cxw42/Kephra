@@ -16,20 +16,19 @@ use Wx::Event qw(
 );
 
 
-sub _get{ Kephra::App::ToolBar::_get('search' ) }
-sub _set{ Kephra::App::ToolBar::_set('search', $_[0] ) }
-sub _get_config { $Kephra::config{app}{toolbar}{search} }
+sub _ref{ Kephra::App::ToolBar::_ref('search', $_[0]) }
+sub _config { $Kephra::config{app}{toolbar}{search} }
 
 
 sub create {
 	# load searchbar definition
-	my $config = _get_config();
+	my $config = _config();
 	my $file_name = Kephra::Config::filepath( $config->{file} );
 	my $bar_def = Kephra::Config::File::load($file_name);
 	$bar_def = Kephra::Config::Tree::get_subtree( $bar_def, $config->{node});
 	# create searchbar with buttons
 	my $rest_widgets = Kephra::App::ToolBar::create_new( 'search', $bar_def);
-	my $bar = _get();
+	my $bar = _ref();
 	# apply special searchbar widgets
 	for my $item_data (@$rest_widgets){
 		if ($item_data->{type} eq 'combobox' and $item_data->{id} eq 'find'){
@@ -59,7 +58,7 @@ sub create {
 				my ( $fi, $event ) = @_;
 				my $found_something;
 				my $key = $event->GetKeyCode;
-				my $ep = Kephra::App::EditPanel::_get();
+				my $ep = Kephra::App::EditPanel::_ref();
 
 				if      ( $key == WXK_RETURN ) {
 					if    ( $event->ControlDown and $event->ShiftDown)   
@@ -135,7 +134,7 @@ sub create {
 			} );
 			#EVT_COMBOBOX( $find_input, -1, sub{ } );
 			EVT_ENTER_WINDOW( $find_input, sub{
-				Wx::Window::SetFocus($find_input) if _get_config()->{autofocus};
+				Wx::Window::SetFocus($find_input) if _config()->{autofocus};
 				disconnect_find_input();
 			});
 			EVT_LEAVE_WINDOW( $find_input, sub{ connect_find_input($find_input) });
@@ -165,7 +164,7 @@ sub disconnect_find_input{
 }
 
 sub refresh_find_input {
-	my $find_input     = _get()->{find_input};
+	my $find_input     = _ref()->{find_input};
 	my $new_find_item  = shift;
 	my $value  = $find_input->GetValue;
 	if ($new_find_item and $find_input->GetString(0) ne $value){
@@ -180,7 +179,7 @@ sub refresh_find_input {
 }
 
 sub colour_find_input{
-	my $find_input      = _get()->{find_input};
+	my $find_input      = _ref()->{find_input};
 	my $found_something = shift;
 	if ($found_something){
 		$find_input->SetForegroundColour( Wx::Colour->new( 0x00, 0x00, 0x33 ) );
@@ -193,36 +192,36 @@ sub colour_find_input{
 }
 
 sub enter_focus{
-	my $bar = _get();
+	my $bar = _ref();
 	switch_visibility() unless get_visibility();
 	Wx::Window::SetFocus($bar->{find_input}) if defined $bar->{find_input};
 }
-sub leave_focus{ switch_visibility() if _get_config()->{autohide} }
+sub leave_focus{ switch_visibility() if _config()->{autohide} }
 
 sub give_editpanel_focus_back{
 	leave_focus();
-	Wx::Window::SetFocus( Kephra::App::EditPanel::_get() );
+	Wx::Window::SetFocus( Kephra::App::EditPanel::_ref() );
 }
 
 
 # set visibility
 sub show {
-	_get()->Show( get_visibility() );
-	my $sizer = Kephra::App::Window::_get()->GetSizer;
+	_ref()->Show( get_visibility() );
+	my $sizer = Kephra::App::Window::_ref()->GetSizer;
 	$sizer->Layout() if $sizer;
 }
 
-sub get_visibility    { _get_config()->{visible} }
-sub switch_visibility { _get_config()->{visible} ^= 1;
+sub get_visibility    { _config()->{visible} }
+sub switch_visibility { _config()->{visible} ^= 1;
 	show();
 }
 
 
 sub position {
-	my $bar   = _get();
-	my $sizer = Kephra::App::Window::_get()->GetSizer;
+	my $bar   = _ref();
+	my $sizer = Kephra::App::Window::_ref()->GetSizer;
 	#$sizer->Detach($bar);
-	if (_get_config()->{position} eq 'below') {
+	if (_config()->{position} eq 'below') {
 		$sizer->Add($bar, 0, wxBOTTOM|wxGROW);
 	} else {
 		$sizer->Add($bar, 0, wxTOP|wxGROW);

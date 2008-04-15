@@ -13,11 +13,14 @@ requires       'File::HomeDir';
 requires       'File::UserConfig';
 requires       'Hash::Merge'           => 0;
 requires       'Text::Wrap';
-requires       'Wx';
+requires       'Wx';                   => '0.70'
+requires       'Wx::STC';
+requires       'Wx::DND';
+requires       'Wx::Print';
 requires       'YAML';
 build_requires 'Test::More'            => '0.47';
 build_requires 'Test::Script'          => '0.01';
-install_script 'bin/kephra';
 install_share  'share';
+install_script 'bin/kephra';
 
 WriteAll;

@@ -7,8 +7,10 @@ use Wx qw(:filedialog );    # :messagebox
 use Wx qw (wxDefaultPosition wxDefaultSize
 	wxOK wxYES wxYES_NO wxNO wxCANCEL wxID_CANCEL
 	wxICON_INFORMATION wxICON_QUESTION wxICON_WARNING
-	wxSAVE wxOPEN     wxMULTIPLE wxSTAY_ON_TOP
+	wxFD_SAVE wxFD_OPEN wxFD_MULTIPLE    wxSTAY_ON_TOP
 );
+
+sub _set_icon { my ($d, $cmd_id) = @_; }
 
 sub msg_box {
 	Wx::MessageBox( $_[1], $_[2], wxOK | wxSTAY_ON_TOP, $_[0], -1, -1 );
@@ -35,12 +37,12 @@ sub get_confirm_3 {
 }
 
 sub get_file_open {
-	Wx::FileSelector( $_[1], $_[2], '', '', $_[3], wxOPEN, $_[0], -1, -1 );
+	Wx::FileSelector( $_[1], $_[2], '', '', $_[3], wxFD_OPEN, $_[0], -1, -1 );
 }
 
 sub get_files_open {
 	my $dialog = Wx::FileDialog->new(
-		$_[0], $_[1], $_[2], '', $_[3], wxOPEN | wxMULTIPLE, [-1,-1] );
+		$_[0], $_[1], $_[2], '', $_[3], wxFD_OPEN | wxFD_MULTIPLE, [-1,-1] );
 	if ($dialog->ShowModal != wxID_CANCEL) {
 		my @files = $dialog->GetPaths;
 		return \@files;
@@ -48,7 +50,7 @@ sub get_files_open {
 }
 
 sub get_file_save {
-	Wx::FileSelector( $_[1], $_[2], '', '', $_[3], wxSAVE, $_[0], -1, -1)
+	Wx::FileSelector( $_[1], $_[2], '', '', $_[3], wxFD_SAVE, $_[0], -1, -1)
 }
 
 sub get_dir {

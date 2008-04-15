@@ -3,16 +3,18 @@ our $VERSION = '0.04';
 
 use strict;
 use Wx qw(
-	wxDefaultPosition wxDefaultSize   wxGROW wxTOP wxBOTTOM
-	wxVERTICAL 
+	wxDefaultPosition wxDefaultSize   wxGROW wxTOP wxBOTTOM wxVERTICAL 
 	wxSTAY_ON_TOP wxSIMPLE_BORDER wxFRAME_NO_TASKBAR
 	wxSPLASH_CENTRE_ON_SCREEN wxSPLASH_TIMEOUT 
 	wxBITMAP_TYPE_JPEG wxBITMAP_TYPE_PNG wxBITMAP_TYPE_ICO wxBITMAP_TYPE_XPM
+	wxLI_HORIZONTAL
 	wxTheClipboard
 );
 
-sub _get{ $Kephra::app{ref} };
-sub _set{ $Kephra::app{ref} = shift };
+sub _ref { 
+	if ($_[0]){ $Kephra::app{ref} = $_[0] }
+	else      { $Kephra::app{ref} }
+ }
 
 # main layout, main frame
 sub splashscreen {
@@ -29,30 +31,40 @@ sub splashscreen {
 }
 
 sub assemble_layout {
-	my $win = Kephra::App::Window::_get();
+	my $win = Kephra::App::Window::_ref();
 
 	my $main_sizer = $win->{sizer} = Wx::BoxSizer->new(wxVERTICAL);
-	$main_sizer->Add( Kephra::App::TabBar::_get_sizer(), 0, wxTOP|wxGROW, 0 );
-	#$main_sizer->AddSpace(8, 0) if ($^O eq 'linux'); #dirty lin hack remove asap
-	$main_sizer->Add( Kephra::App::EditPanel::_get(),    1, wxTOP|wxGROW, 0 );
-	if (Kephra::App::SearchBar::_get_config()->{position} eq 'top') {
-		$main_sizer->Prepend(Kephra::App::SearchBar::_get(), 0, wxTOP|wxGROW, 2)
-	} else {
-		$main_sizer->Add(Kephra::App::SearchBar::_get(), 0, wxBOTTOM|wxGROW, 3)
+	my $search_pos = Kephra::App::SearchBar::_config()->{position};
+	if ($search_pos eq 'top') {
+		$main_sizer->Add( Kephra::App::SearchBar::_ref(), 0, wxTOP|wxGROW, 0)
+	}
+	$main_sizer->Add( Kephra::App::TabBar::_get_sizer(), 0, wxTOP|wxGROW, 0);
+	if ($search_pos eq 'middle') {
+		$main_sizer->Add( Kephra::App::SearchBar::_ref(), 0, wxTOP|wxGROW, 0);
+		$main_sizer->Add( Wx::StaticLine->new
+			($win, -1, [-1,-1],[-1,2], wxLI_HORIZONTAL), 0, wxBOTTOM|wxGROW, 0);
+	}
+	$main_sizer->Add( Kephra::App::EditPanel::_ref(),    1, wxTOP|wxGROW, 0 );
+	if ($search_pos eq 'bottom') {
+		$main_sizer->Add( Kephra::App::SearchBar::_ref(), 0, wxBOTTOM|wxGROW, 0)
 	}
 	$win->SetSizer($main_sizer);
 	$win->SetAutoLayout(1);
 	$win->Layout;
-	$win->SetBackgroundColour(Kephra::App::TabBar::_get_tabs()->GetBackgroundColour);
+	$win->SetBackgroundColour(Kephra::App::TabBar::_ref()->GetBackgroundColour);
 	Kephra::App::TabBar::show();
-	$win;
+}
+
+sub clean_acc_table {
+	my $win = Kephra::App::Window::_ref();
+	$win->SetAcceleratorTable(Wx::AcceleratorTable->new());
 }
 
 sub start {
 	use Benchmark qw(:all);
 	my $t0 = new Benchmark;
 	my $app = shift;
-	_set($app);
+	_ref($app);
 	splashscreen();             # 2'nd splashscreen can close when app is ready
 	Wx::InitAllImageHandlers();
 	my $frame = Kephra::App::Window::create();

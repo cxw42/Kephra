@@ -35,21 +35,18 @@ sub create_all {
 
 
 # connect the static and build the dynamic
-sub connect_all{
+sub connect_all {
 	connect_editpanel();
+	connect_tabbar();
 	connect_widget(
-		Kephra::App::SearchBar::_get(),
-		Kephra::App::SearchBar::_get_config()->{contextmenu}
-	);
-	connect_widget(
-		Kephra::App::TabBar::_get_tabs(), 
-		Kephra::App::TabBar::_get_config()->{contextmenu}
+		Kephra::App::SearchBar::_ref(),
+		Kephra::App::SearchBar::_config()->{contextmenu}
 	);
 }
 
 # to editpanel can connect 2 menus, 
 sub connect_editpanel {
-	my $edit_panel = Kephra::App::EditPanel::_get();
+	my $edit_panel = Kephra::App::EditPanel::_ref();
 	my $config = $Kephra::config{editpanel}{contextmenu};
 	$config->{visible} eq 'default' ? $edit_panel->UsePopUp(1)
 	                                : $edit_panel->UsePopUp(0);
@@ -65,7 +62,16 @@ sub connect_editpanel {
 		} );
 	} else { disconnect_widget($edit_panel) }
 }
-sub connect_widget{
+sub connect_tabbar {
+	my $tabbar = Kephra::App::TabBar::_ref();
+	if ( Kephra::App::TabBar::get_contextmenu_visibility() ) {
+		connect_widget( $tabbar, Kephra::App::TabBar::_config()->{contextmenu} )
+	} else {
+		disconnect_widget($tabbar)
+	}
+}
+
+sub connect_widget {
 	my $widget = shift;
 	my $menu_id = shift;
 	EVT_RIGHT_DOWN ($widget, sub {
@@ -86,11 +92,11 @@ sub set_editpanel_none    { set_editpanel('none')   }
 sub set_editpanel {
 	my $mode = shift;
 	$mode = 'custom' unless $mode;
-	Kephra::App::EditPanel::_get_config()->{contextmenu}{visible} = $mode;
+	Kephra::App::EditPanel::_config()->{contextmenu}{visible} = $mode;
 	connect_editpanel();
 }
 sub get_editpanel { 
-	Kephra::App::EditPanel::_get_config()->{contextmenu}{visible} 
+	Kephra::App::EditPanel::_config()->{contextmenu}{visible} 
 }
 
 1;

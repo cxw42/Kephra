@@ -1,31 +1,31 @@
 package Kephra::App::StatusBar;
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 use strict;
 use Wx::Event qw( EVT_LEFT_DOWN EVT_RIGHT_DOWN ); 
 
 
-sub _get { $Kephra::app{statusbar} }
-sub _get_item {}
-sub _get_config { $Kephra::config{'app'}{'statusbar'} }
+sub _ref    { $Kephra::app{statusbar} }
+sub _item   { }
+sub _config { $Kephra::config{app}{statusbar} }
 
 sub create {
 	# StatusBar settings, will be removed by stusbar config file
-	$Kephra::temp{'app'}{'status'}{'cursor'}{'index'}    = 0;
-	$Kephra::temp{'app'}{'status'}{'selection'}{'index'} = 1;
-	$Kephra::temp{'app'}{'status'}{'style'}{'index'}     = 2;
-	$Kephra::temp{'app'}{'status'}{'tab'}{'index'}       = 3;
-	$Kephra::temp{'app'}{'status'}{'EOL'}{'index'}       = 4;
-	$Kephra::temp{'app'}{'status'}{'message'}{'index'}   = 5;
+	$Kephra::temp{app}{status}{cursor}{index}    = 0;
+	$Kephra::temp{app}{status}{selection}{index} = 1;
+	$Kephra::temp{app}{status}{style}{index}     = 2;
+	$Kephra::temp{app}{status}{tab}{index}       = 3;
+	$Kephra::temp{app}{status}{EOL}{index}       = 4;
+	$Kephra::temp{app}{status}{message}{index}   = 5;
 
-	my $win = Kephra::App::Window::_get();
+	my $win = Kephra::App::Window::_ref();
 	$win->CreateStatusBar(1);
 	my $bar = $win->GetStatusBar;
 
 	$bar->SetFieldsCount(6);
 	if ( $^O eq 'linux' ) { $bar->SetStatusWidths( 90, 66, 60, 40, 70, -1 ) }
 	else                  { $bar->SetStatusWidths( 66, 60, 50, 25, 32, -1 ) }
-	$win->SetStatusBarPane($Kephra::temp{'app'}{'status'}{'message'}{'index'});
+	$win->SetStatusBarPane($Kephra::temp{app}{status}{message}{index});
 
 	EVT_LEFT_DOWN ( $bar,  \&left_click);
 	EVT_RIGHT_DOWN( $bar,  \&right_click);
@@ -41,13 +41,13 @@ sub create {
 }
 
 
-sub get_visibility { _get_config()->{'visible'} }
+sub get_visibility { _config()->{'visible'} }
 sub switch_visibility {
-	_get_config()->{'visible'} ^= 1;
+	_config()->{'visible'} ^= 1;
 	show();
-	Kephra::App::Window::_get()->Layout();
+	Kephra::App::Window::_ref()->Layout();
 }
-sub show { Kephra::App::Window::_get()->GetStatusBar->Show( get_visibility() ) }
+sub show { Kephra::App::Window::_ref()->GetStatusBar->Show( get_visibility() ) }
 
 sub right_click {
 	return unless get_interactive();
@@ -88,24 +88,32 @@ sub left_click {
 	}
 }
 
-sub get_interactive { _get_config()->{'interactive'} }
-sub get_contexmenu_visibility { &get_interactive }
-sub switch_contexmenu_visibility { _get_config()->{'interactive'} ^= 1 }
+sub get_interactive { _config()->{interactive} }
+sub get_contextmenu_visibility { &get_interactive }
+sub switch_contextmenu_visibility { _config()->{interactive} ^= 1 }
 
 
-sub refresh {
+sub refresh_cursor {
 	caret_pos_info();
 	refresh_file_info();
 }
 
+sub update_all {
+	caret_pos_info();
+	style_info();
+	tab_info();
+	EOL_info();
+	info_msg();
+}
+
 sub caret_pos_info {
-	my $frame  = Kephra::App::Window::_get();
-	my $ep     = Kephra::App::EditPanel::_get();
+	my $frame  = Kephra::App::Window::_ref();
+	my $ep     = Kephra::App::EditPanel::_ref();
 	my $pos    = $ep->GetCurrentPos;
 	my $line   = $ep->LineFromPosition($pos) + 1;
 	my $lpos   = $ep->GetColumn($pos) + 1;
-	my $cindex = $Kephra::temp{'app'}{'status'}{'cursor'}{'index'};
-	my $sindex = $Kephra::temp{'app'}{'status'}{'selection'}{'index'};
+	my $cindex = $Kephra::temp{app}{status}{cursor}{index};
+	my $sindex = $Kephra::temp{app}{status}{selection}{index};
 	my ($value);
 
 	# caret pos display
@@ -115,7 +123,7 @@ sub caret_pos_info {
 
 	# selection or  pos % display
 	my ( $sel_beg, $sel_end ) = $ep->GetSelection;
-	unless ( $Kephra::temp{'current_doc'}{'text_selected'} ) {
+	unless ( $Kephra::temp{current_doc}{text_selected} ) {
 		my $chars = $ep->GetLength;
 		if ($chars) {
 			my $value = int 100 * $pos / $chars + .5;
@@ -123,7 +131,7 @@ sub caret_pos_info {
 			$value = ' ' . $value . ' ' if $value < 100;
 			$frame->SetStatusText( "    $value%", $sindex );
 		} else { $frame->SetStatusText( "    100%", $sindex ) }
-		$Kephra::temp{'edit'}{'selected'} = 0;
+		$Kephra::temp{edit}{selected} = 0;
 	} else {
 		if ( $ep->SelectionIsRectangle ) {
 			my $x = abs int $ep->GetColumn($sel_beg) - $ep->GetColumn($sel_end);
@@ -144,7 +152,7 @@ sub caret_pos_info {
 			else                { $value = "$lines:$chars" }
 			$frame->SetStatusText( $value, $sindex );
 		}
-		$Kephra::temp{'edit'}{'selected'} = 1;
+		$Kephra::temp{edit}{selected} = 1;
 	}
 	#status_msg();
 	#$sci->CallTipShow($pos-1, $match_before);
@@ -153,18 +161,16 @@ sub caret_pos_info {
 
 sub style_info {
 	my $style = shift;
-	if ( !$style ) {
-		my $doc_nr = &Kephra::Document::_get_current_nr;
-		$style = $Kephra::document{'current'}{'syntaxstyle'};
-	}
-	Kephra::App::Window::_get()->SetStatusText( " " . $style,
-		$Kephra::temp{'app'}{'status'}{'style'}{'index'} );
+	$style = Kephra::Document::SyntaxMode::get() unless defined $style;
+	$style = $Kephra::localisation{dialog}{general}{none} unless defined $style;
+	Kephra::App::Window::_ref()->SetStatusText
+		( ' ' . $style, $Kephra::temp{app}{status}{style}{index} );
 }
 
 sub tab_info {
-	my $win   = Kephra::App::Window::_get();
-	my $mode  = Kephra::App::EditPanel::_get()->GetUseTabs;
-	my $index = $Kephra::temp{'app'}{'status'}{'tab'}{'index'};
+	my $win   = Kephra::App::Window::_ref();
+	my $mode  = Kephra::App::EditPanel::_ref()->GetUseTabs;
+	my $index = $Kephra::temp{app}{status}{tab}{index};
 	$mode = 0 unless $mode;
 	$mode ? $win->SetStatusText( " HT", $index ) 
 		  : $win->SetStatusText( " ST", $index );
@@ -173,28 +179,28 @@ sub tab_info {
 sub EOL_info {
 	my ( $mode, $msg ) = shift;
 	$mode = Kephra::Document::get_attribute('EOL') if !$mode;
-	if    ( $mode eq 'cr'    or $mode eq 'mac' ) { $msg = " Mac" }
+	if ( !$mode or $mode eq 'none' or $mode eq 'no' )  {
+		$msg = $Kephra::localisation{dialog}{general}{none};
+	}
+	elsif ( $mode eq 'cr'    or $mode eq 'mac' ) { $msg = " Mac" }
 	elsif ( $mode eq 'lf'    or $mode eq 'lin' ) { $msg = "Linux" }
 	elsif ( $mode eq 'cr+lf' or $mode eq 'win' ) { $msg = " Win" }
-	elsif ( $mode eq 'none'  or $mode eq 'no' )  {
-		$msg = $Kephra::localisation{'dialog'}{'general'}{'none'};
-	}
-	Kephra::App::Window::_get()->SetStatusText
-		( $msg, $Kephra::temp{'app'}{'status'}{'EOL'}{'index'} );
+	Kephra::App::Window::_ref()->SetStatusText
+		( $msg, $Kephra::temp{app}{status}{EOL}{index} );
 }
 
 sub info_msg {
 	return unless $_[0];
-	Kephra::App::Window::_get()->SetStatusText( shift,
-		$Kephra::temp{'app'}{'status'}{'message'}{'index'}
+	Kephra::App::Window::_ref()->SetStatusText( shift,
+		$Kephra::temp{app}{status}{message}{index}
 	);
 }
 
 sub refresh_info_msg {file_info() }
-sub refresh_file_info { file_info( _get_config()->{'msg_nr'} )  }
+sub refresh_file_info { file_info( _config()->{msg_nr} )  }
 
 sub next_file_info {
-	my $info_nr = \_get_config()->{'msg_nr'};
+	my $info_nr = \_config()->{msg_nr};
 
 	#$$info_nr = 0 unless $status_bar->GetStatusText($index);
 	$$info_nr++;
@@ -203,10 +209,10 @@ sub next_file_info {
 }
 
 sub file_info {
-	my $msg = _get_config()->{'msg_nr'}
-		? _get_file_info( _get_config()->{'msg_nr'} ) : '';
-	Kephra::App::Window::_get()->GetStatusBar->SetStatusText
-		($msg, $Kephra::temp{'app'}{'status'}{'message'}{'index'} );
+	my $msg = _config()->{msg_nr}
+		? _get_file_info( _config()->{msg_nr} ) : '';
+	Kephra::App::Window::_ref()->GetStatusBar->SetStatusText
+		($msg, $Kephra::temp{app}{status}{message}{index} );
 }
 
 sub _get_file_info {
@@ -216,7 +222,7 @@ sub _get_file_info {
 
 	# show how big file is
 	if ( $selector == 1 ) {
-		my $ep = Kephra::App::EditPanel::_get();
+		my $ep = Kephra::App::EditPanel::_ref();
 
 		return sprintf ' %s: %s   %s: %s',
 			$l10->{chars}, _dotted_number( $ep->GetLength ),

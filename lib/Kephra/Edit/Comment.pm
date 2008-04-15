@@ -6,7 +6,7 @@ use strict;
 # Comment
 sub add_block {
 	my $csymbol = shift;
-	my $ep = &Kephra::App::EditPanel::_get;
+	my $ep = &Kephra::App::EditPanel::_ref;
 	my ( $lb, $lie );
 
 	#lb = LineBegin; lie = LineIndentEnd
@@ -25,7 +25,7 @@ sub add_block {
 
 sub remove_block {
 	my $csymbol = shift;
-	my $ep = &Kephra::App::EditPanel::_get;
+	my $ep = &Kephra::App::EditPanel::_ref;
 	my $lp;
 	my $a = $ep->LineFromPosition( $ep->GetSelectionStart() );
 	my $b = $ep->LineFromPosition( $ep->GetSelectionEnd() );
@@ -42,7 +42,7 @@ sub remove_block {
 
 sub toggle_block {
 	my $csymbol  = shift;
-	my $ep = &Kephra::App::EditPanel::_get;
+	my $ep = &Kephra::App::EditPanel::_ref;
 	my ($lb, $lie);
 	my $a = $ep->LineFromPosition( $ep->GetSelectionStart() );
 	my $b = $ep->LineFromPosition( $ep->GetSelectionEnd() );
@@ -60,7 +60,7 @@ sub toggle_block {
 
 sub format_block {
 	my $csymbol  = shift;
-	my $ep = Kephra::App::EditPanel::_get();
+	my $ep = Kephra::App::EditPanel::_ref();
 	my $lp;
 	my $a = $ep->LineFromPosition( $ep->GetSelectionStart );
 	my $b = $ep->LineFromPosition( $ep->GetSelectionEnd );
@@ -72,7 +72,7 @@ sub format_block {
 }
 
 sub add_stream {
-	my $ep = Kephra::App::EditPanel::_get();
+	my $ep = Kephra::App::EditPanel::_ref();
 	my ( $openbrace, $closebrace ) = @_;
 	my ( $startpos, $endpos ) = $ep->GetSelection;
 	my ( $commentpos, $firstopos, $lastopos, $firstcpos, $lastcpos )
@@ -113,7 +113,7 @@ sub add_stream {
 
 sub remove_stream {    #o=openposition c=closeposition
 	my ( $openbrace, $closebrace ) = @_;
-	my $ep = Kephra::App::EditPanel::_get();
+	my $ep = Kephra::App::EditPanel::_ref();
 	my ( $startpos, $endpos ) = $ep->GetSelection();
 	my $firstopos = my $firstcpos =               $endpos;
 	my $commentpos = my $lastopos = my $lastcpos = -1;

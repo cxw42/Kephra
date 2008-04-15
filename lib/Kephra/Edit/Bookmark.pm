@@ -1,5 +1,5 @@
 package Kephra::Edit::Bookmark;
-$VERSION = '0.15';
+$VERSION = '0.16';
 
 use strict;
 use Wx qw(wxSTC_MARK_SHORTARROW);
@@ -21,7 +21,7 @@ sub _refresh_data_nr {
 
 	my $config = $Kephra::config{search}{bookmark}{$nr};
 	my $cur_doc_nr = Kephra::Document::_get_current_nr();
-	my $ep = Kephra::App::EditPanel::_get();
+	my $ep = Kephra::App::EditPanel::_ref();
 	my $marker_byte = 1 << $nr;
 	my $line;
 
@@ -78,7 +78,7 @@ sub define_marker {
 	my $color      = \&Kephra::Config::color;
 	my $foreground = &$color( $conf->{fore_color} );
 	my $background = &$color( $conf->{back_color} );
-	my $edit_panel = Kephra::App::EditPanel::_get();
+	my $edit_panel = Kephra::App::EditPanel::_ref();
 	for my $i ( 0 .. 9 ) {
 		$edit_panel->MarkerDefine
 			( $i, wxSTC_MARK_SHORTARROW, $foreground, $background )
@@ -86,7 +86,7 @@ sub define_marker {
 }
 
 sub restore_all {
-	my $edit_panel = Kephra::App::EditPanel::_get();
+	my $edit_panel = Kephra::App::EditPanel::_ref();
 	my $cur_doc_nr = Kephra::Document::_get_current_nr();
 	my $bookmark   = $Kephra::config{search}{bookmark};
 
@@ -108,7 +108,7 @@ sub save_all { _refresh_data_nr($_) for 0..9 }
 
 sub toggle_nr {
 	my $nr = shift;
-	my $edit_panel = Kephra::App::EditPanel::_get();
+	my $edit_panel = Kephra::App::EditPanel::_ref();
 	my $pos = $edit_panel->GetCurrentPos;
 	my $line = $edit_panel->GetCurrentLine;
 	# is selected bookmark in current line ?
@@ -164,13 +164,13 @@ sub delete_all {
 	Kephra::Edit::_save_positions();
 	delete_nr($_) for 0..9;
 	Kephra::Edit::_restore_positions();
-	Wx::Window::SetFocus(Kephra::App::EditPanel::_get());
+	Wx::Window::SetFocus(Kephra::App::EditPanel::_ref());
 }
 
 sub delete_nr {
 	my $nr = shift;
 	if ( _refresh_data_nr( $nr ) ){
-		my $edit_panel = Kephra::App::EditPanel::_get();
+		my $edit_panel = Kephra::App::EditPanel::_ref();
 		my $cur_doc_nr = Kephra::Document::_get_current_nr();
 
 		Kephra::Document::Internal::change_pointer(

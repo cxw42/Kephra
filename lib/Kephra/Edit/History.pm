@@ -3,37 +3,37 @@ $VERSION = '0.02';
 
 # undo, redo etc.
 
-sub _get_panel { Kephra::App::EditPanel::_get() }
+sub _ep_ref { Kephra::App::EditPanel::_ref() }
 
-sub undo { _get_panel()->Undo }
-sub redo { _get_panel()->Redo }
+sub undo { _ep_ref()->Undo }
+sub redo { _ep_ref()->Redo }
 
 sub undo_several {
-	my $ep = _get_panel();
+	my $ep = _ep_ref();
 	$ep->Undo for 1 .. $Kephra::config{editpanel}{history}{fast_undo_steps};
 }
 
 sub redo_several {
-	my $ep = _get_panel();
+	my $ep = _ep_ref();
 	$ep->Redo for 1 .. $Kephra::config{editpanel}{history}{fast_undo_steps};
 }
 
 sub undo_begin {
-	my $ep = _get_panel();
+	my $ep = _ep_ref();
 	$ep->Undo while $ep->CanUndo;
 }
 
 sub redo_end {
-	my $ep = _get_panel();
+	my $ep = _ep_ref();
 	$ep->Redo while $ep->CanRedo;
 }
 
 sub clear_history { 
-	_get_panel()->EmptyUndoBuffer;
+	_ep_ref()->EmptyUndoBuffer;
 	Kephra::EventTable::trigger('document.savepoint');
 }
 
-sub can_undo  { _get_panel()->CanUndo }
-sub can_redo  { _get_panel()->CanRedo }
+sub can_undo  { _ep_ref()->CanUndo }
+sub can_redo  { _ep_ref()->CanRedo }
 
 1;

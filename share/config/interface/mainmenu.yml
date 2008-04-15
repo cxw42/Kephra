@@ -26,13 +26,12 @@ full_menubar:
           - item file-session-export
       -
       - item file-save
-      - menu file_save:
-          - item file-save-all
-          - item file-save-as
-          - item file-save-copy-as
-          - item file-rename
-      -
-      - item file-print
+      - menu file_save:#
+      - item file-save-all
+      - item file-save-as
+      - item file-save-copy-as
+      - item file-rename
+      - item file-print#
       -
       - item file-close
       - item file-close-other
@@ -288,15 +287,18 @@ full_menubar:
   - menu view:
       - checkitem view-window-stay-on-top
       -
-      - checkitem view-toolbar-main
-      - checkitem view-toolbar-search
-      - checkitem view-tabbar
-      - menu view_contexmenu:
-          - radioitem view-editpanel-contextmenu-custom
-          - radioitem view-editpanel-contextmenu-default
-          - radioitem view-editpanel-contextmenu-no
-      - checkitem view-statusbar
-      - checkitem view-statusbar-contexmenu
+      - menu view_bars:
+          - checkitem view-toolbar-main
+          - checkitem view-tabbar
+          - checkitem view-toolbar-search
+          - checkitem view-statusbar
+      - menu view_contextmenu:
+          - checkitem view-tabbar-contexmenu
+          - menu view_editpanel_contexmenu:
+              - radioitem view-editpanel-contextmenu-custom
+              - radioitem view-editpanel-contextmenu-default
+              - radioitem view-editpanel-contextmenu-no
+          - checkitem view-statusbar-contexmenu
       -
       - checkitem view-editpanel-margin-marker
       - checkitem view-editpanel-margin-line-number
@@ -325,7 +327,7 @@ full_menubar:
           - checkitem config-app-lang-deutsch-iso
           - checkitem config-app-lang-deutsch-utf#
           - checkitem config-app-lang-deutsch
-          - checkitem config-app-lang-cesky-iso
+          - checkitem config-app-lang-cesky-iso#
           - checkitem config-app-lang-cesky-utf#
       -
       - menu config_global:

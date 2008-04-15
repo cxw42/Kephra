@@ -20,7 +20,7 @@ sub file_changed {
 	my $g10n = $l10n->{general};
 
 	$dialog = $Kephra::app{dialog}{exit} = Wx::Dialog->new(
-		Kephra::App::Window::_get(), -1,
+		Kephra::App::Window::_ref(), -1,
 		"$file_name $g10n->{changed}",
 		[-1,-1], [340, 145], wxNO_FULL_REPAINT_ON_RESIZE | 
 		wxCAPTION | wxSYSTEM_MENU | wxCAPTION | wxCLOSE_BOX | wxSTAY_ON_TOP,

@@ -1,5 +1,5 @@
 package Kephra::Document::SyntaxMode;
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 use strict;
 use Wx qw(
@@ -8,9 +8,12 @@ use Wx qw(
 );
 
 # syntaxstyles
-sub set {$Kephra::document{current}{syntaxmode} = shift }
-sub get {$Kephra::document{current}{syntaxmode} 
-	if exists $Kephra::document{current}{syntaxmode}
+sub set { $Kephra::document{current}{syntaxmode} = shift }
+sub get { 
+	if (exists $Kephra::document{current}{syntaxmode} and 
+	           $Kephra::document{current}{syntaxmode}     ) {
+		$Kephra::document{current}{syntaxmode}
+	} else { $Kephra::localisation{dialog}{general}{none} }
 }
 
 sub _get_auto{ &_get_by_fileending }
@@ -36,12 +39,11 @@ sub switch_auto {
 sub reload { change_to( get() ) }
 
 sub change_to {
-	my $ep      = Kephra::App::EditPanel::_get();
+	my $ep      = Kephra::App::EditPanel::_ref();
 	my $color   = \&Kephra::Config::color;
 	my $style   = shift;
 	$style = _get_by_fileending() if $style eq 'auto';
 	$style = 'none' unless $style;
-
 	# do nothing when syntaxmode of new dox is the same
 	return if $Kephra::temp{document}{syntaxmode} eq $style;
 
@@ -62,7 +64,6 @@ sub change_to {
 		eval("require syntaxhighlighter::$style");
 		eval("syntaxhighlighter::$style" . '::load($ep)');
 	}
-
 
 	# restore bracelight, bracebadlight indentguide colors
 	my $indicator = $Kephra::config{editpanel}{indicator};

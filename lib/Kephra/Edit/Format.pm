@@ -7,7 +7,7 @@ use Wx qw(
 	wxSTC_CMD_WORDLEFT wxSTC_CMD_WORDRIGHT
 );
 
-sub _get_panel { Kephra::App::EditPanel::_get() }
+sub _get_panel { Kephra::App::EditPanel::_ref() }
 
 # change indention width of selected text
 sub _indent_selection {

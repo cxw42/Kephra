@@ -1,11 +1,10 @@
 package syntaxhighlighter::php;
 $VERSION = '0.01';
 
-
 sub load{
-use Wx qw(wxSTC_LEX_PHP wxSTC_H_TAG);
+use Wx qw(wxSTC_LEX_PHPSCRIPT wxSTC_H_TAG);
 
- $_[0]->SetLexer( wxSTC_LEX_PHP );         # Set Lexers to use
+ $_[0]->SetLexer( wxSTC_LEX_PHPSCRIPT );         # Set Lexers to use
  $_[0]->SetKeyWords(0,'
 and argv as argc break case cfunction class continue declare default do \
 die echo else elseif empty enddeclare endfor endforeach endif endswitch \

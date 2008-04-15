@@ -11,6 +11,7 @@ doc/interna/sketch.txt
 doc/interna/v.txt
 doc/interna/verzeichnisbaum.txt
 doc/Releases
+doc/test.txt
 inc/Module/Install.pm
 inc/Module/Install/Base.pm
 inc/Module/Install/Can.pm
@@ -18,6 +19,7 @@ inc/Module/Install/Fetch.pm
 inc/Module/Install/Makefile.pm
 inc/Module/Install/Metadata.pm
 inc/Module/Install/Scripts.pm
+inc/Module/Install/Share.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 lib/Kephra.pm
@@ -118,6 +120,7 @@ share/config/interface/icon/set/jenne/edit_paste.xpm
 share/config/interface/icon/set/jenne/edit_redo.xpm
 share/config/interface/icon/set/jenne/edit_replace.xpm
 share/config/interface/icon/set/jenne/edit_undo.xpm
+share/config/interface/icon/set/jenne/empty.xpm
 share/config/interface/icon/set/jenne/favourite.xpm
 share/config/interface/icon/set/jenne/file_close.xpm
 share/config/interface/icon/set/jenne/file_edit.xpm
@@ -212,8 +215,7 @@ share/config/interface/icon/set/wx/up.xpm
 share/config/interface/icon/set/wx/update.gif
 share/config/interface/icon/set/wx/wxwin16x16.xpm
 share/config/interface/icon/set/wx/wxwin32x32.xpm
-share/config/interface/icon/splash/wx_perl_splash.jpg
-share/config/interface/icon/splash/wxperl_banner.png
+share/config/interface/icon/splash/start_kephra.jpg
 share/config/interface/iconset_jenne.conf
 share/config/interface/mainmenu.yml
 share/config/localisation/cesky_iso.conf

@@ -12,20 +12,22 @@ use Wx qw(
 	);
 use Wx::Event qw( EVT_TOOL );
 
-sub _get{ $Kephra::app{toolbar}{$_[0]}{ref} }
-sub _set{ $Kephra::app{toolbar}{$_[0]}{ref} = $_[1] if ref $_[1] eq 'Wx::ToolBar'}
+sub _ref {
+	if (ref $_[1] eq 'Wx::ToolBar') {$Kephra::app{toolbar}{$_[0]}{ref} = $_[1]}
+	else                            {$Kephra::app{toolbar}{$_[0]}{ref}}
+}
 sub _create_empty {
-	return Wx::ToolBar->new( Kephra::App::Window::_get(),
+	return Wx::ToolBar->new( Kephra::App::Window::_ref(),
 			-1, [-1,-1], [-1,-1], wxTB_HORIZONTAL|wxTB_DOCKABLE );
 }
 
 sub create_new{
 	my $bar_id  = shift;
 	my $bar_def = shift;
-	#my $bar = _get($bar_id);
+	my $bar = _ref($bar_id);
 	# destroy old safely when overwrite
-	#$bar->Destroy if defined $bar;
-	_set ($bar_id, _create_empty());
+	$bar->Destroy if defined $bar;
+	_ref ($bar_id, _create_empty());
 	create($bar_id, $bar_def);
 }
 
@@ -78,10 +80,10 @@ sub assemble_data_from_def {
 sub eval_data {
 	my $bar_id   = shift;
 	my $bar_data = shift;
-	my $bar      = _get($bar_id);
+	my $bar      = _ref($bar_id);
 	return $bar unless ref $bar_data eq 'ARRAY';
 
-	my $win = Kephra::App::Window::_get();
+	my $win = Kephra::App::Window::_ref();
 	my $item_kind;
 	my @rest_items = ();
 	my $bar_item_id = exists $Kephra::app{toolbar}{$bar_id}{item_id}
@@ -131,13 +133,13 @@ sub eval_data {
 	}
 	$bar->Realize;
 	$bar->SetRows(1);
-	_set($bar_id, $bar);
+	_ref($bar_id, $bar);
 
 	return \@rest_items;
 }
 
 sub destroy {
-	my $bar = _get( shift );
+	my $bar = _ref( shift );
 	return unless $bar;
 	#$bar->DestroyChildren;
 	$bar->Destroy;

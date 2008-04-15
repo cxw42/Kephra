@@ -1,11 +1,11 @@
 package Kephra::Config::Global;
-$VERSION = '0.17';
+$VERSION = '0.18';
 
 # handling main config files under /config/global/
 
 use strict;
 
-sub _get_conf_sub_path {'global'}
+sub _conf_sub_path {'global'}
 
 sub load_autosaved {
 	my @main_conf_files = (
@@ -59,7 +59,7 @@ sub load_default_file {
 
 sub load_from {
 	my $filename = Kephra::Dialog::get_file_open(
-		Kephra::App::Window::_get(),
+		Kephra::App::Window::_ref(),
 		$Kephra::localisation{dialog}{config_file}{load},
 		Kephra::Config::filepath('general'),
 		$Kephra::temp{file}{filterstring}{config}
@@ -104,6 +104,7 @@ print "  prep. data:", Benchmark::timestr( Benchmark::timediff( $t2, $t1 ) ), "\
 	Kephra::App::TabBar::create();
 	Kephra::App::StatusBar::create();
 	Kephra::App::assemble_layout();
+
 	my $t3 = new Benchmark;
 print "  create gui:", Benchmark::timestr( Benchmark::timediff( $t3, $t2 ) ), "\n"
 	if $Kephra::benchmark;
@@ -118,6 +119,7 @@ print "  apply sets:", Benchmark::timestr( Benchmark::timediff( $t4, $t3 ) ), "\
 	Kephra::Config::Interface::del_temp_data();
 	Kephra::API::CommandList::del_temp_data();
 	#Kephra::API::EventTable::thaw_all();
+	#Kephra::App::clean_acc_table();
 
 	return 1;
 }
@@ -176,7 +178,6 @@ sub eval_config_file {
 		Kephra::App::MainToolBar::create();
 	} 
 	if ($file_name eq $conf->{toolbar}{search}{file} ) {
-		Kephra::App::SearchBar::destroy();
 		Kephra::App::SearchBar::create();
 		Kephra::App::SearchBar::position();
 	}
@@ -199,9 +200,9 @@ sub save {
 
 sub save_as {
 	my $file_name = Kephra::Dialog::get_file_save(
-		Kephra::App::Window::_get(),
+		Kephra::App::Window::_ref(),
 		$Kephra::localisation{dialog}{config_file}{save},
-		$Kephra::temp{path}{config} . _get_conf_sub_path(),
+		$Kephra::temp{path}{config} . _conf_sub_path(),
 		$Kephra::temp{file}{filterstring}{config}
 	);
 	save($file_name) if ( length($file_name) > 0 );
@@ -213,10 +214,10 @@ sub save_current {
 
 #
 sub merge_with {
-	my $app_win  = Kephra::App::Window::_get();
+	my $app_win  = Kephra::App::Window::_ref();
 	my $filename = Kephra::Dialog::get_file_open( $app_win,
 		$Kephra::localisation{dialog}{config_file}{load},
-		Kephra::Config::filepath( _get_conf_sub_path(), 'sub'),
+		Kephra::Config::filepath( _conf_sub_path(), 'sub'),
 		$Kephra::temp{file}{filterstring}{config}
 	);
 	load_subconfig($filename);

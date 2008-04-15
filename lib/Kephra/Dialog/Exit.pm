@@ -1,5 +1,5 @@
 package Kephra::Dialog::Exit;
-$VERSION = '0.04';
+$VERSION = '0.05';
 
 use strict;
 use Wx qw(
@@ -25,7 +25,7 @@ sub save_on_exit {
 	# if so...
 	if ($unsaved_docs) {
 		my $dialog = $Kephra::app{dialog}{exit} = Wx::Dialog->new(
-			Kephra::App::Window::_get(), -1,
+			Kephra::App::Window::_ref(), -1,
 			$Kephra::localisation{dialog}{file}{quit_unsaved},
 			[-1,-1], [-1,-1],
 			wxNO_FULL_REPAINT_ON_RESIZE | wxCAPTION | wxSTAY_ON_TOP,

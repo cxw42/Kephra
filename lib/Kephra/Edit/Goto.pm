@@ -7,12 +7,12 @@ use strict;
 use Wx qw( wxCANCEL wxSTC_CMD_PARAUP wxSTC_CMD_PARADOWN wxSTC_FIND_REGEXP);
 
 sub line_nr {
-	my $line = Kephra::Dialog::get_number( Kephra::App::Window::_get(),
+	my $line = Kephra::Dialog::get_number( Kephra::App::Window::_ref(),
 		$Kephra::localisation{'dialog'}{'edit'}{'goto_line_input'},
 		$Kephra::localisation{'dialog'}{'edit'}{'goto_line_headline'},
-		Kephra::App::EditPanel::_get()->GetCurrentLine
+		Kephra::App::EditPanel::_ref()->GetCurrentLine
 	);
-	Kephra::Edit::_goto_pos( Kephra::App::EditPanel::_get->PositionFromLine($line - 1) )
+	Kephra::Edit::_goto_pos( Kephra::App::EditPanel::_ref->PositionFromLine($line - 1) )
 		unless $line == wxCANCEL;
 }
 
@@ -24,14 +24,14 @@ sub last_edit {
 #########################
 # block navigation
 #########################
-sub prev_block{ Kephra::App::EditPanel::_get()->CmdKeyExecute(wxSTC_CMD_PARAUP) }
-sub next_block{ Kephra::App::EditPanel::_get()->CmdKeyExecute(wxSTC_CMD_PARADOWN)}
+sub prev_block{ Kephra::App::EditPanel::_ref()->CmdKeyExecute(wxSTC_CMD_PARAUP) }
+sub next_block{ Kephra::App::EditPanel::_ref()->CmdKeyExecute(wxSTC_CMD_PARADOWN)}
 
 #########################
 # brace navigation
 #########################
 sub prev_brace{
-	my $ep  = Kephra::App::EditPanel::_get();
+	my $ep  = Kephra::App::EditPanel::_ref();
 	my $pos = $ep->GetCurrentPos;
 	$ep->GotoPos($pos - 1) if $ep->BraceMatch($pos) > -1;
 	$ep->GotoPos($pos - 2) if $ep->BraceMatch($pos - 1) > -1;
@@ -42,7 +42,7 @@ sub prev_brace{
 }
 
 sub next_brace{
-	my $ep  = Kephra::App::EditPanel::_get();
+	my $ep  = Kephra::App::EditPanel::_ref();
 	my $pos = $ep->GetCurrentPos;
 	$ep->GotoPos($pos + 1);
 	$ep->SearchAnchor();
@@ -52,7 +52,7 @@ sub next_brace{
 }
 
 sub prev_related_brace{
-	my $ep  = Kephra::App::EditPanel::_get();
+	my $ep  = Kephra::App::EditPanel::_ref();
 	my $pos = $ep->GetCurrentPos;
 	my $matchpos = $ep->BraceMatch(--$pos);
 	$matchpos = $ep->BraceMatch(++$pos) if $matchpos == -1;
@@ -75,7 +75,7 @@ sub prev_related_brace{
 }
 
 sub next_related_brace{
-	my $ep  = Kephra::App::EditPanel::_get();
+	my $ep  = Kephra::App::EditPanel::_ref();
 	my $pos = $ep->GetCurrentPos;
 	my $matchpos = $ep->BraceMatch($pos);
 	$matchpos = $ep->BraceMatch(--$pos) if $matchpos == -1;

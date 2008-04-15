@@ -1,6 +1,12 @@
 package Kephra::API::Extension;
 $VERSION = '0.00';
 
+=head1
+
+Kephra::API::Extension - Kephra's API for extentions (plugins)
+
+=cut
+
 use strict;
 
 sub install {}

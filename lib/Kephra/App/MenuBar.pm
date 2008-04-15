@@ -3,8 +3,10 @@ $VERSION = '0.06';
 
 use strict;
 
-sub _get{ $Kephra::app{menubar} }
-sub _set{ $Kephra::app{menubar} = $_[0] if ref $_[0] eq 'Wx::MenuBar'}
+sub _ref {
+	if (ref $_[0] eq 'Wx::MenuBar'){ $Kephra::app{menubar} = $_[0] }
+	else                           { $Kephra::app{menubar} }
+}
 
 sub create {
 	my $config     = $Kephra::config{app}{menubar};
@@ -32,8 +34,8 @@ sub create {
 			);
 		}
 	}
-	Kephra::App::Window::_get()->SetMenuBar($menubar);
-	_set($menubar);
+	Kephra::App::Window::_ref()->SetMenuBar($menubar);
+	_ref($menubar);
 }
 
 1;

@@ -12,11 +12,11 @@ use Wx qw(
 );
 
 # internal functions
-sub _get_attributes{ $Kephra::config{search}{attribute} }
-sub _get_history   { $Kephra::config{search}{history} }
+sub _attributes{ $Kephra::config{search}{attribute} }
+sub _history   { $Kephra::config{search}{history} }
 
 sub _refresh_search_flags {
-	my $attr = _get_attributes();
+	my $attr = _attributes();
 	my $flags = 0;
 
 	$flags |= wxSTC_FIND_MATCHCASE
@@ -33,7 +33,7 @@ sub _refresh_search_flags {
 }
 
 sub _init_history {
-	my $history = _get_history();
+	my $history = _history();
 
 	# remove dups and cut to the configured length
 	if ( $history->{use} ) {
@@ -57,7 +57,7 @@ sub _init_history {
 sub refresh_find_history {
 	my $found_match       = shift;
 	my $current_find_item = get_find_item();
-	my $history           = _get_history();
+	my $history           = _history();
 	my $refresh_needed;
 
 	# check if refresh needed
@@ -88,7 +88,7 @@ sub refresh_find_history {
 
 sub refresh_replace_history {
 	my $current_item = get_replace_item();
-	my $history      = _get_history();
+	my $history      = _history();
 
 	if ($current_item) {
 		my $item   = \@{ $history->{replace_item} };
@@ -105,7 +105,7 @@ sub refresh_replace_history {
 }
 
 sub _caret_2_sel_end {
-	my $ep = Kephra::App::EditPanel::_get();
+	my $ep = Kephra::App::EditPanel::_ref();
 	my $pos       = $ep->GetCurrentPos;
 	my $sel_start = $ep->GetSelectionStart;
 	my $sel_end   = $ep->GetSelectionEnd;
@@ -124,8 +124,8 @@ sub _exist_replace_item { length( get_replace_item() ) }
 #
 #
 #
-sub set_range{ _get_attributes()->{in} = shift }
-sub get_range{ _get_attributes()->{in}         }
+sub set_range{ _attributes()->{in} = shift }
+sub get_range{ _attributes()->{in}         }
 
 sub get_attribute{
 	my $attr = shift;
@@ -135,7 +135,7 @@ sub get_attribute{
 		$attr eq 'match_regex'     or
 		$attr eq 'auto_wrap'       or
 		$attr eq 'incremental'       ) {
-		_get_attributes()->{$attr}
+		_attributes()->{$attr}
 	}
 }
 
@@ -147,14 +147,14 @@ sub switch_attribute{
 		$attr eq 'match_regex'     or
 		$attr eq 'auto_wrap'       or
 		$attr eq 'incremental'       ) {
-		_get_attributes->{$attr} ^= 1;
+		_attributes->{$attr} ^= 1;
 		_refresh_search_flags() if substr($attr, 0, 1) eq 'm';
 	}
 }
 
 # find helper function
 sub get_find_item {
-	my $h = _get_history();
+	my $h = _history();
 	$h->{current_find_item} if defined $h->{current_find_item};
 }
 
@@ -170,7 +170,7 @@ sub set_find_item {
 }
 
 sub set_selection_as_find_item {
-	set_find_item( Kephra::App::EditPanel::_get()->GetSelectedText )
+	set_find_item( Kephra::App::EditPanel::_ref()->GetSelectedText )
 }
 
 sub get_replace_item {
@@ -188,15 +188,15 @@ sub set_replace_item {
 }
 
 sub set_selection_as_replace_item{
-	set_replace_item( Kephra::App::EditPanel::_get()->GetSelectedText )
+	set_replace_item( Kephra::App::EditPanel::_ref()->GetSelectedText )
 }
 
 sub replace_selection  {
-	Kephra::App::EditPanel::_get()->ReplaceSelection( get_replace_item() )
+	Kephra::App::EditPanel::_ref()->ReplaceSelection( get_replace_item() )
 }
 
 sub _find_next  {
-	my $ep = Kephra::App::EditPanel::_get();
+	my $ep = Kephra::App::EditPanel::_ref();
 	$ep->SearchAnchor;
 	return $Kephra::temp{search}{item}{found} = $ep->SearchNext(
 		$Kephra::temp{search}{flags},
@@ -205,7 +205,7 @@ sub _find_next  {
 }
 
 sub _find_prev  {
-	my $ep = Kephra::App::EditPanel::_get();
+	my $ep = Kephra::App::EditPanel::_ref();
 	$ep->SearchAnchor;
 	return $Kephra::temp{search}{item}{found} = $ep->SearchPrev(
 		$Kephra::temp{search}{flags},
@@ -225,7 +225,7 @@ sub _find_last  {
 
 # find related menu calls
 sub first_increment {
-	my $ep = Kephra::App::EditPanel::_get();
+	my $ep = Kephra::App::EditPanel::_ref();
 	if ( _exist_find_item() ) {
 		Kephra::Edit::_save_positions;
 		if ( _find_first() > -1 ) {
@@ -244,7 +244,7 @@ sub next_increment {
 
 sub find_all{
 #Kephra::Dialog::msg_box(undef, Wx::wxUNICODE(), '');
-	my $ep = Kephra::App::EditPanel::_get();
+	my $ep = Kephra::App::EditPanel::_ref();
 	if ( _exist_find_item() ) {
 		my $search_result = _find_first();
 		my ($sel_start, $sel_end);
@@ -276,7 +276,7 @@ sub find_all{
 }
 
 sub find_prev {
-	my $ep    = Kephra::App::EditPanel::_get();
+	my $ep    = Kephra::App::EditPanel::_ref();
 	my $attr = \%{ $Kephra::config{search}{attribute} };
 	my $return = -1;
 	if ( _exist_find_item() ) {
@@ -301,7 +301,7 @@ sub find_prev {
 						if ( Kephra::Document::_get_current_nr() == $begin_doc );
 				}
 				$Kephra::temp{dialog}{control} = 0;
-				Kephra::Dialog::Search::_get()->Raise
+				Kephra::Dialog::Search::_ref()->Raise
 					if $Kephra::temp{dialog}{search}{active};
 			}
 		}
@@ -313,7 +313,7 @@ sub find_prev {
 }
 
 sub find_next {
-	my $ep    = Kephra::App::EditPanel::_get();
+	my $ep    = Kephra::App::EditPanel::_ref();
 	my $attr = \%{ $Kephra::config{search}{attribute} };
 	my $return = -1;
 
@@ -338,7 +338,7 @@ sub find_next {
 					last if ( &Kephra::Document::_get_current_nr == $begin_doc );
 				}
 				$Kephra::temp{dialog}{control} = 0;
-				Kephra::Dialog::Search::_get()->Raise
+				Kephra::Dialog::Search::_ref()->Raise
 					if $Kephra::temp{dialog}{search}{active};
 			}
 		}
@@ -350,7 +350,7 @@ sub find_next {
 }
 
 sub fast_back {
-	my $ep = &Kephra::App::EditPanel::_get;
+	my $ep = &Kephra::App::EditPanel::_ref;
 	my $attr = \%{ $Kephra::config{search}{attribute} };
 	my $return    = -1;
 	if (&_exist_find_item) {
@@ -374,7 +374,7 @@ sub fast_back {
 						last if &Kephra::Document::_get_current_nr == $begin_doc;
 					}
 					$Kephra::temp{dialog}{control} = 0;
-					Kephra::Dialog::Search::_get()->Raise
+					Kephra::Dialog::Search::_ref()->Raise
 						if $Kephra::temp{dialog}{search}{active};
 				}
 			}
@@ -386,7 +386,7 @@ sub fast_back {
 }
 
 sub fast_fore {
-	my $ep = &Kephra::App::EditPanel::_get;
+	my $ep = &Kephra::App::EditPanel::_ref;
 	my $attr = $Kephra::config{search}{attribute};
 	my $return    = -1;
 	if (&_exist_find_item) {
@@ -411,7 +411,7 @@ sub fast_fore {
 						last if &Kephra::Document::_get_current_nr == $begin_doc;
 					}
 					$Kephra::temp{dialog}{control} = 0;
-					Kephra::Dialog::Search::_get()->Raise
+					Kephra::Dialog::Search::_ref()->Raise
 						if $Kephra::temp{dialog}{search}{active};
 				}
 			}
@@ -424,7 +424,7 @@ sub fast_fore {
 
 sub find_first {
 	my $menu_call = shift;
-	my $ep = &Kephra::App::EditPanel::_get;
+	my $ep = &Kephra::App::EditPanel::_ref;
 	my $attr = $Kephra::config{search}{attribute};
 	my ( $sel_begin, $sel_end ) = $ep->GetSelection;
 	my $pos = $ep->GetCurrentPos;
@@ -463,7 +463,7 @@ sub find_first {
 					last if ( &Kephra::Document::_get_current_nr == $begin_doc );
 				}
 				$Kephra::temp{dialog}{control} = 0;
-				Kephra::Dialog::Search::_get()->Raise
+				Kephra::Dialog::Search::_ref()->Raise
 					if $Kephra::temp{dialog}{search}{active};
 			}
 			if ( $return > -1 ) {
@@ -480,7 +480,7 @@ sub find_first {
 
 sub find_last {
 	my $menu_call = shift;
-	my $ep = &Kephra::App::EditPanel::_get;
+	my $ep = &Kephra::App::EditPanel::_ref;
 	my $attr = $Kephra::config{search}{attribute};
 	my ( $sel_begin, $sel_end ) = $ep->GetSelection;
 	my $pos = $ep->GetCurrentPos;
@@ -520,7 +520,7 @@ sub find_last {
 					last if ( &Kephra::Document::_get_current_nr == $begin_doc );
 				}
 				$Kephra::temp{dialog}{control} = 0;
-				Kephra::Dialog::Search::_get()->Raise
+				Kephra::Dialog::Search::_ref()->Raise
 					if $Kephra::temp{dialog}{search}{active};
 			}
 			if ( $return > -1 ) {
@@ -537,7 +537,7 @@ sub find_last {
 
   # replace
 sub replace_back {
-	my $ep = Kephra::App::EditPanel::_get();
+	my $ep = Kephra::App::EditPanel::_ref();
 	if ( $ep->GetSelectionStart != $ep->GetSelectionEnd ) {
 		replace_selection();
 		refresh_replace_history();
@@ -546,7 +546,7 @@ sub replace_back {
 }
 
 sub replace_fore {
-	my $ep = Kephra::App::EditPanel::_get();
+	my $ep = Kephra::App::EditPanel::_ref();
 	if ( $ep->GetSelectionStart != $ep->GetSelectionEnd ) {
 		replace_selection();
 		refresh_replace_history();
@@ -556,7 +556,7 @@ sub replace_fore {
 
 sub replace_all {
 	my $menu_call = shift;
-	my $ep = &Kephra::App::EditPanel::_get;
+	my $ep = &Kephra::App::EditPanel::_ref;
 	my ($sel_begin, $sel_end ) = $ep->GetSelection;
 	my $line           = $ep->GetCurrentLine;
 	my $len            = _exist_find_item();
@@ -605,8 +605,8 @@ sub replace_all {
 
 sub replace_confirm {
 	if (&_exist_find_item) {
-		my $ep = Kephra::App::EditPanel::_get();
-		my $attr = _get_attributes();
+		my $ep = Kephra::App::EditPanel::_ref();
+		my $attr = _attributes();
 		my $line = $ep->LineFromPosition( $ep->GetCurrentPos );
 		my $len  = _exist_find_item();
 		my $sel_begin = $ep->GetSelectionStart;

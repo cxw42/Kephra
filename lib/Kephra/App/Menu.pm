@@ -9,8 +9,10 @@ use strict;
 use Wx qw (wxITEM_NORMAL wxITEM_CHECK wxITEM_RADIO wxBITMAP_TYPE_XPM);
 use Wx::Event qw (EVT_MENU EVT_MENU_OPEN EVT_MENU_HIGHLIGHT EVT_SET_FOCUS);
 
-sub _set{$Kephra::app{menu}{$_[0]}{ref} = $_[1] if ref $_[1] eq 'Wx::Menu'}
-sub _get{$Kephra::app{menu}{$_[0]}{ref} }
+sub _ref {
+	if (ref $_[1] eq 'Wx::Menu') {$Kephra::app{menu}{$_[0]}{ref} = $_[1]}
+	else                         {$Kephra::app{menu}{$_[0]}{ref}}
+}
 
 # ready menu for display
 sub ready {
@@ -27,7 +29,7 @@ sub ready {
 			{ $_->() for values %{$menu->{onopen}}; 
 		}
 
-		_get($id);
+		_ref($id);
 	}
 }
 sub set_absolete{ $Kephra::app{menu}{$_[0]}{absolete} = 1 }
@@ -138,7 +140,7 @@ sub create_dynamic {
 		});
 
 		add_onopen_check( $menu_id, 'select', sub {
-			my $menu = _get($menu_id);
+			my $menu = _ref($menu_id);
 			my $check_nr = Kephra::Document::_get_current_nr();
 			$menu->FindItemByPosition($check_nr)->Check(1);
 		});
@@ -226,7 +228,7 @@ sub eval_data {
 	return unless defined $menu_id;
 
 	#emty the old or create new menu under the given ID
-	my $menu = _get($menu_id);
+	my $menu = _ref($menu_id);
 	if (defined $menu) {
 		$menu->Delete( $_ ) for $menu->GetMenuItems;
 	} else { 
@@ -236,10 +238,10 @@ sub eval_data {
 	my $menu_data = shift;
 
 	unless (ref $menu_data eq 'ARRAY') {
-		_set($menu_id, $menu); 
+		_ref($menu_id, $menu); 
 		return $menu;
 	}
-	my $win = Kephra::App::Window::_get();
+	my $win = Kephra::App::Window::_ref();
 
 	my $kind;
 	my $item_id = exists $Kephra::app{menu}{$menu_id}{item_id}
@@ -251,13 +253,17 @@ sub eval_data {
 		if (not $item_data->{type} or $item_data->{type} eq 'separator'){
 			$menu->AppendSeparator;
 		} elsif ($item_data->{type} eq 'menu'){
+			my $menu_item;
 			if (ref $item_data->{data} eq 'ARRAY'){
-				$menu->Append( $item_id++, $item_data->{label}, 
+				$menu_item = $menu->Append( $item_id++, $item_data->{label}, 
 						eval_data( $item_data->{id}, $item_data->{data} ));
 			} elsif ( $item_data->{id} and $item_data->{label}){
-				$menu->Append
+				$menu_item = $menu->Append
 					($item_id++, $item_data->{label}, ready( $item_data->{id} ));
 			}
+			#EVT_MENU_HIGHLIGHT($win, $item_id-1, sub {
+				#print " $item_data->{label}- \n";
+			#});
 		} else {
 			if      ($item_data->{type} eq 'checkitem'){
 				$kind = wxITEM_CHECK
@@ -266,13 +272,19 @@ sub eval_data {
 			} elsif ($item_data->{type} eq 'item'){
 				$kind = wxITEM_NORMAL 
 			} else { next; }
-	
+
 			my $menu_item = Wx::MenuItem->new
 				($menu, $item_id, $item_data->{label}, '', $kind);
-			$menu_item->SetBitmap( $item_data->{icon} ) 
-				if ref $item_data->{icon} eq 'Wx::Bitmap'
-				and $item_data->{type} eq 'item';
-			
+			if ($item_data->{type} eq 'item') {
+				if (ref $item_data->{icon} eq 'Wx::Bitmap') {
+					$menu_item->SetBitmap( $item_data->{icon} )
+				}
+				else {
+					# insert fake empty icons
+					# $menu_item->SetBitmap($Kephra::temp{icon}{empty}) 
+				}
+			}
+
 			add_onopen_check( $menu_id, 'enable_'.$item_id, sub {
 				$menu_item->Enable( $item_data->{enable}() );
 			} ) if ref $item_data->{enable} eq 'CODE';
@@ -292,7 +304,7 @@ sub eval_data {
 
 	Kephra::API::EventTable::add_call
 		('menu.open', 'menu_'.$menu, sub {ready($menu_id)} );
-	_set($menu_id, $menu);
+	_ref($menu_id, $menu);
 	return $menu;
 }
 

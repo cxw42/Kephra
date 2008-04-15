@@ -7,7 +7,6 @@ $VERSION = '0.37';
 
 use strict;
 use Wx qw(wxYES wxNO wxCANCEL);
-use Wx::Print;
 
 ###############
 # file events #
@@ -101,10 +100,10 @@ sub add { &Kephra::Document::Internal::add }
 
 sub open {
 	# buttons dont freeze while computing
-	Kephra::App::_get()->Yield();
+	Kephra::App::_ref()->Yield();
 
 	# file selector dialog
-	my $files = Kephra::Dialog::get_files_open( Kephra::App::Window::_get(),
+	my $files = Kephra::Dialog::get_files_open( Kephra::App::Window::_ref(),
 		$Kephra::localisation{dialog}{file}{open},
 		$Kephra::config{file}{current}{directory},
 		$Kephra::temp{file}{filterstring}{all}
@@ -127,7 +126,7 @@ sub reload_current {
 	my $file_path = Kephra::Document::_get_current_file_path();
 	my $nr = Kephra::Document::_get_current_nr();
 	if ($file_path and -e $file_path){
-		my $ep = Kephra::App::EditPanel::_get();
+		my $ep = Kephra::App::EditPanel::_ref();
 		Kephra::Document::Internal::save_properties();
 		$ep->BeginUndoAction;
 		$ep->SetText("");
@@ -149,13 +148,13 @@ sub reload_all {
 
 
 sub insert {
-	my $insertfilename = Kephra::Dialog::get_file_open( Kephra::App::Window::_get(),
+	my $insertfilename = Kephra::Dialog::get_file_open( Kephra::App::Window::_ref(),
 		$Kephra::localisation{dialog}{file}{insert},
 		$Kephra::config{file}{current}{directory},
 		$Kephra::temp{file}{filterstring}{all}
 	);
 	if ( -e $insertfilename ) {
-		my $ep = Kephra::App::EditPanel::_get();
+		my $ep = Kephra::App::EditPanel::_ref();
 		my $text = Kephra::File::IO::open_buffer($insertfilename);
 		$ep->InsertText( $ep->GetCurrentPos, $text );
 	}
@@ -163,14 +162,14 @@ sub insert {
 
 sub save_current {
 	my ($ctrl, $event) = @_;
-	my $ep = Kephra::App::EditPanel::_get();
+	my $ep = Kephra::App::EditPanel::_ref();
 	my $file_name   = Kephra::Document::_get_current_file_path();
 	my $save_config = $Kephra::config{file}{save};
 	if ( $ep->GetModify == 1 or $save_config->{unchanged} ) {
 		if ( $file_name and -e $file_name ) {
 			if (not -w $file_name ) {
 				my $err_msg = $Kephra::localisation{dialog}{error};
-				Kephra::Dialog::warning_box( Kephra::App::Window::_get(),
+				Kephra::Dialog::warning_box( Kephra::App::Window::_ref(),
 					$err_msg->{write_protected}."\n".$err_msg->{write_protected2},
 					$err_msg->{file} );
 				save_as();
@@ -191,17 +190,20 @@ sub save_current {
 
 
 sub save_as {
-	my $file_name = Kephra::Dialog::get_file_save( Kephra::App::Window::_get(),
+	print "sa-", $Kephra::config{file}{current}{directory},"\n";
+
+	my $file_name = Kephra::Dialog::get_file_save(
+		Kephra::App::Window::_ref(),
 		$Kephra::localisation{dialog}{file}{save_as},
 		$Kephra::config{file}{current}{directory},
 		$Kephra::temp{file}{filterstring}{all}
 	);
-	if (    length($file_name) > 0
-		and Kephra::Document::Internal::check_b4_overwite($file_name) ) {
+	if (    $file_name
+	    and Kephra::Document::Internal::check_b4_overwite($file_name) ) {
 
-		my $ep = Kephra::App::EditPanel::_get();
-		$Kephra::temp{document}{loaded}++
-			if length(Kephra::Document::_get_current_file_path) == 0;
+		my $ep = Kephra::App::EditPanel::_ref();
+		my $oldname = Kephra::Document::_get_current_file_path();
+		$Kephra::temp{document}{loaded}++ if defined $oldname and $oldname;
 
 		Kephra::Document::set_file_path($file_name);
 		Kephra::File::IO::write_buffer($file_name, $ep->GetText );
@@ -217,18 +219,18 @@ sub save_as {
 
 
 sub save_copy_as {
-	my $file_name = Kephra::Dialog::get_file_save( Kephra::App::Window::_get(),
+	my $file_name = Kephra::Dialog::get_file_save( Kephra::App::Window::_ref(),
 		$Kephra::localisation{dialog}{file}{save_copy_as},
 		$Kephra::config{file}{current}{directory},
 		$Kephra::temp{file}{filterstring}{all} );
 	Kephra::File::IO::write_buffer
-		( $file_name, Kephra::App::EditPanel::_get()->GetText )
+		( $file_name, Kephra::App::EditPanel::_ref()->GetText )
 		if $file_name and Kephra::Document::Internal::check_b4_overwite($file_name);
 }
 
 
 sub rename {
-	my $new_path_name = Kephra::Dialog::get_file_save( Kephra::App::Window::_get(),
+	my $new_path_name = Kephra::Dialog::get_file_save( Kephra::App::Window::_ref(),
 		$Kephra::localisation{dialog}{file}{rename},
 		$Kephra::config{file}{current}{directory},
 		$Kephra::temp{file}{filterstring}{all} );
@@ -274,7 +276,7 @@ sub save_all_named {
 
 sub print {
 	my ( $frame, $event ) = @_;
-	my $ep       = Kephra::App::EditPanel::_get();
+	my $ep       = Kephra::App::EditPanel::_ref();
 	my $printer  = Wx::Printer->new;
 	my $printout = Wx::Printout->new(
 		"$Kephra::NAME $Kephra::VERSION : " .
@@ -288,7 +290,7 @@ sub print {
 
 sub close_current {
 	my ( $frame, $event ) = @_;
-	my $ep           = Kephra::App::EditPanel::_get();
+	my $ep           = Kephra::App::EditPanel::_ref();
 	my $close_tab_nr = Kephra::Document::_get_current_nr();
 	my $path         = Kephra::Document::_get_current_file_path();
 	my $config       = $Kephra::config{file}{save};
@@ -299,7 +301,7 @@ sub close_current {
 		if ($ep->GetTextLength > 0 or $config->{empty} eq 1) {
 			if ($config->{b4_close} eq 'ask' or $config->{b4_close} eq '2'){
 				my $l10n = $Kephra::localisation{dialog}{file};
-				$save_answer = Kephra::Dialog::get_confirm_3( Kephra::App::Window::_get(),
+				$save_answer = Kephra::Dialog::get_confirm_3( Kephra::App::Window::_ref(),
 					$l10n->{save_current}, $l10n->{close_unsaved} );
 			}
 			return if $save_answer == wxCANCEL;

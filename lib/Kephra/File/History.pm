@@ -1,12 +1,12 @@
 package Kephra::File::History;
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 use strict;
 
 # internal Module API
-sub _get_config{ $Kephra::config{file}{history} }
+sub _config{ $Kephra::config{file}{history} }
 sub _get {
- my $history = _get_config->{path};
+ my $history = _config->{path};
 	if (ref $history eq 'ARRAY'){
 		return $history;
 	} elsif (defined $history){
@@ -17,7 +17,7 @@ sub _get {
 		return \@history;
 	}
 }
-sub _set { _get_config->{path} = shift; }
+sub _set { _config->{path} = shift }
 
 # external Appwide API
 sub init {
@@ -25,6 +25,7 @@ sub init {
 		'document.list', 'file_history', sub {
 			my @history = @{ _get() };
 			my $path = Kephra::Document::_get_current_file_path();
+			return unless $path;
 			my @uniq = grep { $_ ne $path } @history;
 			_set(\@uniq);
 	} );
@@ -38,7 +39,7 @@ sub get {
 sub add {
  my $name    = shift;
  my @history = @{ _get() };
- my $length  = _get_config->{length};
+ my $length  = _config->{length};
 	return unless defined $name;
  my %seen;
 	unshift @history, $name;

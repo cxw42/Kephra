@@ -7,25 +7,11 @@ TODO 0.4:
  + own statusbar
  + config dialog
 
-0.3.8.2
- ! crash on search
-
-0.3.8.1
- + menu item switch view of tabbar contextmenu
- ~ folding view menu
- ! fix php lexer, new constant
- ! fix xml lexer
- ! crash while open jelp files in winball distro
-
 0.3.8 bugfix release
 
 0.3.7.12
- + position searchbar in the middle between tabbar and edit panel
- ] hack to disabling acceleratorTable 
- ~ new wx constants
  ! runs with latest Wx (0.83) again
- ! doc attr getter was flawed
-
+ 
 0.3.7.11
  ! empty statusbar syntaxmode field if kephra sarted with last doc with mode: "none"
 
@@ -884,7 +870,8 @@ normally ist is included in every full release, but for instance to settle with
 pce 0.2.23 from windows to linux you may need prb 0.2 for linux
 
 
-Legend:
+Lbgend:
+
  ? purpose
  * big new feature
  + new feature

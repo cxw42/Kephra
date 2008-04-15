@@ -2,7 +2,6 @@ package Kephra::Show;
 $VERSION = '0.13';
 
 use strict;
-use Cwd;
 
 ###################
 # open config files
@@ -41,17 +40,18 @@ sub templates_file     {
 ###################
 
 sub _hf { 
-	Kephra::Document::Internal::add 
-		( getcwd().'/'.$Kephra::temp{path}{help}. shift )
+	Kephra::Document::Internal::add ( 
+		File::Spec->catfile( $Kephra::temp{path}{help}, shift )
+	)
 }
 
-sub welcome              { _hf $Kephra::config{'texts'}{'welcome'}}
-sub version_text         { _hf $Kephra::config{'texts'}{'version'}}
-sub licence_gpl          { _hf $Kephra::config{'texts'}{'license'}}
-sub feature_tour         { _hf $Kephra::config{'texts'}{'feature'}}
-sub advanced_tour        { _hf $Kephra::config{'texts'}{'special'}}
-sub navigation_guide     { _hf $Kephra::config{'texts'}{'navigation'}}
-sub credits              { _hf $Kephra::config{'texts'}{'credits'}}
-sub keyboard_map         { _hf $Kephra::config{'texts'}{'keymap'}}
+sub welcome              { _hf $Kephra::config{texts}{welcome}}
+sub version_text         { _hf $Kephra::config{texts}{version}}
+sub licence_gpl          { _hf $Kephra::config{texts}{license}}
+sub feature_tour         { _hf $Kephra::config{texts}{feature}}
+sub advanced_tour        { _hf $Kephra::config{texts}{special}}
+sub navigation_guide     { _hf $Kephra::config{texts}{navigation}}
+sub credits              { _hf $Kephra::config{texts}{credits}}
+sub keyboard_map         { _hf $Kephra::config{texts}{keymap}}
 
 1;

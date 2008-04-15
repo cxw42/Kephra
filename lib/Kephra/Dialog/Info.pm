@@ -1,5 +1,5 @@
 package Kephra::Dialog::Info;
-$VERSION = '0.05';
+$VERSION = '0.06';
 
 use strict;
 use Wx qw(wxSYSTEM_MENU wxCAPTION wxMINIMIZE_BOX wxCLOSE_BOX
@@ -10,7 +10,7 @@ sub combined {
 	return simple();
 
 	my $info_win = Wx::Frame->new(
-		Kephra::App::Window::_get(), -1,
+		Kephra::App::Window::_ref(), -1,
 		" Info About Kephra",
 		[ 100, 100 ],
 		[ 460, 260 ],
@@ -32,6 +32,7 @@ sub simple {
 	elsif ($v eq '2.6.2'){$sciv .= '1.62'}
 	elsif ($v eq '2.6.3'){$sciv .= '1.62'}
 	elsif ($v eq '2.8.4'){$sciv .= '1.70'}
+	elsif ($v eq '2.8.7'){$sciv .= '1.70'}
 	my $content = "Perfect Coding Enviroment "
 		. "$info->{mady_by}  Herbert Breunung\n\n"
 		. "$info->{licensed} GPL (GNU Public License) \n"
@@ -47,7 +48,7 @@ sub simple {
 		. "";
 	my $title = "$info->{title} $Kephra::NAME $Kephra::VERSION";
 	$title .=  ' pl ' . $Kephra::PATCHLEVEL if $Kephra::PATCHLEVEL;
-	Kephra::Dialog::msg_box( Kephra::App::Window::_get(), $content, $title );
+	Kephra::Dialog::msg_box( Kephra::App::Window::_ref(), $content, $title );
 }
 
 1;

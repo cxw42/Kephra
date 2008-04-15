@@ -1,9 +1,9 @@
 name: kephra
-version: 0.3.7.4
+version: 0.3.7.10
 abstract: crossplatform GUI Text-Editor
 author: lichtkind@cpan.org
 license: gpl
-distribution_type: script
+distribution_type: module
 generated_by: Module::Install version 0.68
 no_index: 
   directory: 
@@ -16,6 +16,9 @@ requires:
   Clone: 0.18
   YAML: 0
   Config-General: 0
+  File-UserConfig: 0
+  File-HomeDir: 0
+  File-Spec: 0
 resources:
     homepage: http://kephra.sf.net
     repository: http://kephra.svn.sourceforge.net/viewvc/kephra/dev/base/

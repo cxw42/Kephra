@@ -1,11 +1,12 @@
 0.4
  * Searchbar
+ * config dialog
  * new contextmenus: (on selected text, on searchbar, on tabbar, on statusbar)
  * customizable mainmenu, toolbars, contextmenus
  * File history menu
  * 10 doc spanning bookmarks
  * german with umlauts
- + files directories and can now be dragged into editpanel
+ * files directories and can now be dragged into editpanel
  + new file with a template menu
  + open all files from a dir
  + rename files through file menu
@@ -39,9 +40,18 @@
  ~ menu und toolbar items can now disable, be checked by internal events
  [ checkable and disable menu items
  [ shown pathes now OS compatibel
- 
- 
+
+
+
 0.3.8
+ + move tabs with <ctrl>+<shift>+<pgup|pgdn>
+ + Ctrl+Shift+G works from the searchbar input
+ + position searchbar in the middle between tabbar and edit panel
+ ~ change Switch doc back to <ctrl>+<shift>+<back>
+ ~ move xml comment from <ctrl>+<b> to <ctrl>+<h>
+ [ new splashscreen (finally one with the right name in it)
+ ] wxperl 0.8.3
+ ! very much bug fixing
 
 0.3.7
  + autonotify (conf key file > open > auto_notify )

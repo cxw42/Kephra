@@ -1,47 +1,12 @@
 package syntaxhighlighter::xml;
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 sub load{
 use Wx qw(wxSTC_LEX_XML wxSTC_H_TAG);
 
- $_[0]->StyleClearAll();
  $_[0]->SetLexer( wxSTC_LEX_XML );            # Set Lexers to use
 
- my $html_elements = "a abbr acronym address applet area b base basefont \
-bdo big blockquote body br button caption center \
-cite code col colgroup dd del dfn dir div dl dt em \
-fieldset font form frame frameset h1 h2 h3 h4 h5 h6 \
-head hr html i iframe img input ins isindex kbd label \
-legend li link map menu meta noframes noscript \
-object ol optgroup option p param pre q s samp \
-script select small span strike strong style sub sup \
-table tbody td textarea tfoot th thead title tr tt u ul \
-var xml xmlns";
-
-my $html_attributes = 'abbr accept-charset accept accesskey action align alink \
-alt archive axis background bgcolor border \
-cellpadding cellspacing char charoff charset checked cite \
-class classid clear codebase codetype color cols colspan \
-compact content coords \
-data datafld dataformatas datapagesize datasrc datetime \
-declare defer dir disabled enctype event \
-face for frame frameborder \
-headers height href hreflang hspace http-equiv \
-id ismap label lang language leftmargin link longdesc \
-marginwidth marginheight maxlength media method multiple \
-name nohref noresize noshade nowrap \
-object onblur onchange onclick ondblclick onfocus \
-onkeydown onkeypress onkeyup onload onmousedown \
-onmousemove onmouseover onmouseout onmouseup \
-onreset onselect onsubmit onunload \
-profile prompt readonly rel rev rows rowspan rules \
-scheme scope selected shape size span src standby start style \
-summary tabindex target text title topmargin type usemap \
-valign value valuetype version vlink vspace width \
-text password checkbox radio submit reset \
-file hidden image';
-
- $_[0]->SetKeyWords(1,$html_elements.$html_attributes."public !doctype");  # Add new keyword.
+ $_[0]->SetKeyWords(1,"");  # Add new keyword.
  $_[0]->StyleSetSpec( wxSTC_H_TAG, "fore:#000055" ); # Apply tag style for selected lexer (blue)
 
 

@@ -5,27 +5,43 @@
 
 
  1. Preliminary notes
- 2. New in this version
- 3. Known bugs and issues
- 4. Hints
- 5. Plans
+ 2. News summary
+ 2. News in detail
+ 4. Known bugs and issues
+ 5. Hints
+ 6. Plans
 
 
  1. Preliminary note
 
  - Welcome to Kephra. This text editor is made to match your individual needs.
    If you have any comments, suggestions ans thanks, please visit our site at
-   kephra.sf.net . More welcome you find in the main menu under Help > Welcome.
+   kephra.sf.net. More welcome you find in the main menu under Help > Welcome.
 
  - This is a so called stable version for the daily use. It contains mostly well
    tested features and bugs will be fixed as soon as possible with the next patch
    level, which will add no new features. If you like to help us or / and use 
-   always the freshest features, please consider to use testing versions, which
-   have a three digit version number. Four digits mark nightly versions, in case
-   you really believe in: "no risk no fun".
+   always the freshest features, please consider to use test versions, which have
+   a three digit version number. Four digits mark nightly versions, in case you
+   really believe in: "no risk no fun".
 
 
- 2. New in this version
+ 2. News summary
+    + searchbar on the bottom.
+    + config dialog
+    + much better drag 'n drop support
+    + 10 doc spanning bookmarks and goto last edit
+    + context menu on selected text and tabbar, which has 2 new optional icons
+      and moveable tabs.
+    + "recent files" and "insert template" menus
+    + menu and toolbar items can be checked and respond to events and states.
+    + all menus and bar can modified via simple config files
+    + menu labels have german umlauts
+    + autosave, autonotify and blockformat
+    + rename file and open all files of a dir
+
+
+ 3. News in detail
 
  - Searchbar
     + Diese sichtbarste und nützlichste Neuerung findet ihr am unteren Rand, über
@@ -119,6 +135,12 @@
     Durch sinnvolles Aufteilen der Funktionen in 2 Menüs konnte ich nicht nur
     mehr Funktionen einbringen, sondern es bieten sich zumeist nur die Funktionen
     an, die in der Situation auch sinnvoll sind.
+    + In die Reiterleiste können nun die Reiter auch bewegt werden. Voerst nur mit
+    den Tasten <Strg>+<BildHoch>|<BildRunter>.
+    + Neu sind auch die 2 optionalen Icons in der Reiterleiste je ganz links
+    (neues Dokument) und ganz rechts (Dokument schließen). Auch läßt sich mit dem
+    globalen Einstellungsschlüssel app > tabbar > middle_click definieren, welche
+    funktion die mittlere Maustaste über der Reiterleiste bekommt.
     + Das Menü über der Reiterleiste listet alle offenen Dokumente mit dem vollen
     Pfad der zugehörigen Dateien auf und man kann hier auch das aktuelle Dokument
     wechseln.
@@ -127,11 +149,6 @@
     Funktioen an oder aus oder wechselt zwischen den wichtigsten Einstellungen.
     + Die zweite Zelle der Statuszeile zeigt übrigens jetzt auch die Anzahl der
     markierten Zeilen an.
-    + In die Reiterleiste kann man nun optional am linken Ende das Icon für ein
-    neues Dokument und am rechten Ende, das Icon zum schließen von Dokumenten
-    einblenden. Auch läßt sich mit dem globalen Einstellungsschlüssel
-    app > tabbar > middle_click definieren, welche funktion die mittlere Maustaste
-    über der Reiterleiste bekommt.
 
  - Configs
     Die neuen Menüs und Leisten sind nützlich, aber die wirklich große Änderung 
@@ -158,14 +175,14 @@
     + Die im Titel angezeigten Pfade sind jetzt auch immer OS-konform.
 
 
- 3. Known bugs and issues
+ 4. Known bugs and issues
 
     + Installation under Linux und Mac ist in't (yet) that simple as it could be.
 
     + works only with WxPerl up to 0.57.
 
 
- 4. Hints
+ 5. Hints
 
     + Read the "Advanced - Tour" in the "Help" menu. This is full of goodies, 
     which makes your editing with Kephra much more effektiv.
@@ -175,13 +192,10 @@
     about possible settings.
 
 
- 5. Plans
+ 6. Plans
  
-    + Of course Aber zu 0.5 hätten wir gerne Funktionen die eher
-    für Programmier sind wie Templatebibliohteken, Dateimanager, Befehlszeile,
-    Debugger, Text falten oder Outline (Liste aller Variablen und Routinen).
+    + We have man wishes. For instance we would like to have Modules (extentions)
+    like snippet libraries, file manager, command line, debugger, text folding or
+    outlining (a link list of all variables and subroutines).
 
-    + Ein Dialog zum einfachen Ändern der einstellungen ist auch schon im 
-    entstehen.
-    
-    + Und drucken wäre natürlich auch nicht schlecht.
+    + Print support would also be good.

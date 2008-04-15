@@ -8,14 +8,14 @@ use strict;
 # a session is the total sum of all opened files
 ############################################################################
 
-sub _get_config { $Kephra::config{file}{session} }
+sub _config { $Kephra::config{file}{session} }
 
 # extern
 sub open_file {
 	my $file_name = Kephra::Dialog::get_file_open(
-		Kephra::App::Window::_get(),
+		Kephra::App::Window::_ref(),
 		$Kephra::localisation{dialog}{file}{open_session},
-		Kephra::Config::filepath( _get_config->{directory} ),
+		Kephra::Config::filepath( _config->{directory} ),
 		$Kephra::temp{file}{filterstring}{config}
 	);
 	load($file_name);
@@ -59,9 +59,9 @@ sub load {
 
 sub add {
 	my $file_name = Kephra::Dialog::get_file_open(
-		Kephra::App::Window::_get(),
+		Kephra::App::Window::_ref(),
 		$Kephra::localisation{dialog}{file}{add_session},
-		Kephra::Config::filepath( _get_config->{directory} ),
+		Kephra::Config::filepath( _config->{directory} ),
 		$Kephra::temp{file}{filterstring}{config}
 	);
 	if ( -r $file_name ) {
@@ -92,9 +92,9 @@ sub add {
 }
 
 sub save {
-	my $config      = _get_config();
+	my $config      = _config();
 	my $config_file = shift ||
-		Kephra::Config::filepath( $config->{directory}, _get_config->{file} );
+		Kephra::Config::filepath( $config->{directory}, _config->{file} );
 	my %temp_config;
 	%temp_config = %{ Kephra::Config::File::load($config_file) }
 		if ( -r $config_file );
@@ -109,9 +109,9 @@ sub save {
 }
 
 sub save_as {
-	my $file_name = Kephra::Dialog::get_file_save( Kephra::App::Window::_get(),
+	my $file_name = Kephra::Dialog::get_file_save( Kephra::App::Window::_ref(),
 		$Kephra::localisation{dialog}{file}{save_session},
-		Kephra::Config::filepath( _get_config->{directory} ),
+		Kephra::Config::filepath( _config->{directory} ),
 		$Kephra::temp{file}{filterstring}{config}
 	);
 	if ( length($file_name) > 0 ) {
@@ -125,12 +125,12 @@ sub save_as {
 #######################################
 
 sub load_backup {
-	my $config = _get_config();
+	my $config = _config();
 	load( Kephra::Config::filepath( $config->{directory}, $config->{backup} ) );
 }
 
 sub save_backup {
-	my $config = _get_config();
+	my $config = _config();
 	save( Kephra::Config::filepath( $config->{directory}, $config->{backup} ) );
 }
 
@@ -139,14 +139,15 @@ sub save_backup {
 #######################################
 
 sub autosave {
-	my $config = _get_config();
+	my $config = _config();
 	if ( $config->{autosave} eq 'extern' ) {
 		save( Kephra::Config::filepath($config->{directory}, $config->{current} ) );
 	}
 }
 
+# restore autosaved
 sub autoload {
-	my $config = _get_config;
+	my $config = _config;
 	my $intern = $Kephra::temp{document};
 	my @load_files;
 	my $start_file_nr = $Kephra::document{current_nr} || 0;
@@ -171,7 +172,7 @@ sub autoload {
 		$start_file_nr = $temp_config{current_nr};
 	}
 
-	# delete all exisating doc
+	# delete all existing doc
 	undef $Kephra::document{open};
 	# throw gone files
 	@load_files = @{ &_forget_gone_files( \@load_files ) };
@@ -182,25 +183,22 @@ sub autoload {
 	} else { 
 		Kephra::Document::Internal::reset()
 	}
-
-
-
-
-	# detect with which file to start
-	$start_file_nr = 0 if ( !$start_file_nr or $start_file_nr < 0 );
-	$start_file_nr = $intern->{loaded}-1 if 
-		$start_file_nr >= $intern->{loaded} and $intern->{loaded};
-
 	Kephra::Edit::Bookmark::restore_all();
 	Kephra::App::Window::refresh_title();
 	Kephra::App::EditPanel::Margin::reset_line_number_width();
-	Kephra::Document::Internal::eval_properties($#load_files);
-	Kephra::Document::Change::to_number($start_file_nr);
+
+	# detect with which file to start, switch to it & eval its properties
+	$start_file_nr = 0 if ( !$start_file_nr or $start_file_nr < 0 );
+	$start_file_nr = $intern->{loaded}-1 if 
+		$start_file_nr >= $intern->{loaded} and $intern->{loaded};
+	Kephra::Document::Change::to_number($start_file_nr) or
+		Kephra::Document::Internal::eval_properties($#load_files);
 	Kephra::Document::_set_previous_nr($start_file_nr);
+	Kephra::App::StatusBar::update_all();
 }
 
 sub delete {
-	my $save = _get_config()->{autosave};
+	my $save = _config()->{autosave};
 	delete $Kephra::document{open}
 		if $save eq 'not' 
 		or $save eq 'extern';
@@ -211,7 +209,7 @@ sub delete {
 ###############################################
 
 sub import_scite {
-	my $win = Kephra::App::Window::_get();
+	my $win = Kephra::App::Window::_ref();
 	my $file_name = Kephra::Dialog::get_file_open( $win,
 		$Kephra::localisation{dialog}{file}{open_session},
 		$Kephra::temp{path}{config},
@@ -250,7 +248,7 @@ sub import_scite {
 }
 
 sub export_scite {
-	my $win = Kephra::App::Window::_get();
+	my $win = Kephra::App::Window::_ref();
 	my $file_name = Kephra::Dialog::get_file_save( $win,
 		$Kephra::localisation{dialog}{file}{save_session},
 		$Kephra::temp{path}{config},
@@ -302,7 +300,7 @@ sub _remember_directory {
 		@dirs = split( /\\/, $filename ) if $filename =~ /\\/ ;
 		@dirs = split( /\//, $filename ) if $filename =~ /\// ;
 		$dir .= "$dirs[$_]/" for 0 .. $#dirs - 1;
-		_get_config()->{directory} = $dir if $dir;
+		_config()->{directory} = $dir if $dir;
 	}
 
 }

@@ -1,7 +1,10 @@
 package Kephra::API::EventTable;
 $VERSION = '0.09';
 
-=pod
+=head1
+
+Kephra::API::EventTable - Kephra's API to internal events
+
  internal app events handling
  events call functions that subscribed to that event
  other function can trigger events
@@ -29,9 +32,9 @@ sub _get_frozen { $Kephra::temp{eventtable} }
 
 
 sub connect_all {
-	my $win = Kephra::App::Window::_get();
-	my $ep  = Kephra::App::EditPanel::_get();
-	my $tb  = Kephra::App::TabBar::_get();
+	my $win = Kephra::App::Window::_ref();
+	my $ep  = Kephra::App::EditPanel::_ref();
+	my $tb  = Kephra::App::TabBar::_ref();
 	my $timer;
 	#$Kephra::app{eventtable}{test} = 1;
 	#$Kephra::temp{eventtable}{test} = 1;
@@ -85,7 +88,7 @@ sub connect_all {
 }
 
 sub connect_editpanel{
-	my $ep  = Kephra::App::EditPanel::_get();
+	my $ep  = Kephra::App::EditPanel::_ref();
 
 	EVT_STC_CHANGE ($ep, -1, sub {
 		my ( $ep, $event ) = @_;
@@ -105,25 +108,27 @@ sub connect_editpanel{
 }
 
 sub disconnect_editpanel{
-	my $ep  = Kephra::App::EditPanel::_get();
+	my $ep  = Kephra::App::EditPanel::_ref();
 
 	EVT_STC_CHANGE  ($ep, -1, sub {});
 	EVT_STC_UPDATEUI($ep, -1, sub {});
 }
 
-sub init_key_events{
- my $stc    = Kephra::App::EditPanel::_get();
+sub init_key_events {
 
-	EVT_KEY_DOWN  ($stc,     sub {
+	EVT_KEY_DOWN  (Kephra::App::EditPanel::_ref(), sub {
 		my ($ep, $event) = @_;
 
 		my $map = $Kephra::app{editpanel}{keymap};
 		my $key = $event->GetKeyCode +
 			1000 * ($event->ShiftDown + $event->ControlDown*2 + $event->AltDown*4);
 
+		# reacting on shortkeys that are defined in the Commanlist
 		if (ref $map->[$key] eq 'CODE'){
 			$map->[$key]();
-		} elsif ($key ==  WXK_RETURN) { # Enter
+		}
+		# reacting on Enter
+		elsif ($key ==  WXK_RETURN) { # Enter
 			if ($Kephra::config{editpanel}{auto}{brace}{indention}) {
 				my $pos  = $ep->GetCurrentPos - 1;
 				my $char = $ep->GetCharAt($pos);
@@ -136,10 +141,12 @@ sub init_key_events{
 			$Kephra::config{editpanel}{auto}{indention}
 				? Kephra::Edit::Format::autoindent()
 				: $ep->CmdKeyExecute(wxSTC_CMD_NEWLINE) ;
-		} else { $event->Skip }
+		}
+		# scintilla handles the rest of the shortkeys
+		else { $event->Skip }
 		#Kephra::App::Visual::status_msg();
 		#SCI_SETSELECTIONMODE
-		#($key == 350){use Kephra::Ext::Perl::Syntax;  Kephra::Ext::Perl::Syntax::check()};
+		#($key == 350){use Kephra::Ext::Perl::Syntax; Kephra::Ext::Perl::Syntax::check()};
 	});
 }
 

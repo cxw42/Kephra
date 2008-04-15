@@ -13,7 +13,7 @@ use Wx qw( wxSTC_EOL_CR wxSTC_EOL_LF wxSTC_EOL_CRLF );
 
 # internal functions
 # doc number
-sub _attributes { $Kephra::document{open} }
+sub _attributes { $Kephra::document{open} } 
 sub _temp_data  { $Kephra::temp{document}{open} }
 
 sub _get_count      { @{ _attributes() } }
@@ -50,7 +50,10 @@ sub _get_path_from_nr {
 	_attributes()->[$nr]{file_path} if $nr <= _get_last_nr()
 }
 
-sub _get_current_file_path { $Kephra::document{current}{file_path} }
+sub _get_current_file_path {
+	$Kephra::document{current}{file_path}
+		if exists $Kephra::document{current}{file_path};
+}
 
 sub _get_all_pathes {
 	my @pathes;
@@ -108,7 +111,9 @@ sub get_attribute {
 	return unless $attr;
 	my $nr = shift;
 	$nr = _get_current_nr() unless defined $nr;
-	_attributes()->[ $nr ]{$attr};
+	my $docs = _attributes();
+	return unless ref $docs eq 'ARRAY';
+	$docs->[ $nr ]{$attr};
 }
 
 sub set_attribute {
@@ -233,7 +238,7 @@ sub get_tab_mode { $Kephra::document{current}{tab_use} }
 sub set_tab_mode {
 	my $mode = shift || 0;
 	$Kephra::document{current}{tab_use} = $mode;
-	Kephra::App::EditPanel::_get()->SetUseTabs($mode);
+	Kephra::App::EditPanel::_ref()->SetUseTabs($mode);
 	Kephra::App::StatusBar::tab_info();
 }
 sub set_tabs_hard  { set_tab_mode(1) }
@@ -263,7 +268,7 @@ sub _edit{
 #
 sub get_EOL_mode { $Kephra::document{current}{EOL} }
 sub set_EOL_mode {
-	my $ep = Kephra::App::EditPanel::_get();
+	my $ep = Kephra::App::EditPanel::_ref();
 	my $mode      = shift;
 	$mode = $Kephra::config{file}{defaultsettings}{EOL_new} if ( !$mode );
 	my $eoll = \$Kephra::temp{current_doc}{EOL_length};
@@ -284,7 +289,7 @@ sub set_EOL_mode_crlf { set_EOL_mode('cr+lf') }
 sub set_EOL_mode_auto { set_EOL_mode('auto' ) }
 
 sub convert_EOL {
-	my $ep = Kephra::App::EditPanel::_get();
+	my $ep = Kephra::App::EditPanel::_ref();
 	my $doc_nr    = &_get_current_nr;
 	my $mode      = shift;
 	$mode = $Kephra::config{file}{defaultsettings}{EOL_new} if ( !$mode );
@@ -301,7 +306,7 @@ sub convert_EOL_2_cr   { convert_EOL('cr') }
 sub convert_EOL_2_crlf { convert_EOL('cr+lf') }
 
 sub detect_EOL_mode {
-	my $ep = Kephra::App::EditPanel::_get();
+	my $ep = Kephra::App::EditPanel::_ref();
 	my $end_pos   = $ep->PositionFromLine(1);
 	my $begin_pos = $end_pos - 3;
 	$begin_pos = 0 if $begin_pos < 0;
@@ -373,7 +378,7 @@ sub set_bracelight_off {
 sub get_readonly { $Kephra::document{current}{readonly} }
 sub set_readonly {
 	my $status     = shift;
-	my $ep = Kephra::App::EditPanel::_get();
+	my $ep = Kephra::App::EditPanel::_ref();
 	my $file_name  = _get_current_file_path();
 	my $old_state  = $ep->GetReadOnly;
 

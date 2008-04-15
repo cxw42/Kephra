@@ -17,7 +17,7 @@ use Wx qw(
 #
 # internal helper function
 #
-sub _get_panel { Kephra::App::EditPanel::_get() }
+sub _get_panel { Kephra::App::EditPanel::_ref() }
 sub _keep_focus{ Wx::Window::SetFocus( _get_panel() ) }
 
 sub _let_caret_visible {

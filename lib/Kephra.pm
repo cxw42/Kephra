@@ -6,7 +6,7 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__; # name of entire application
-our $VERSION    = '0.3.7.7';   # version of entire app
+our $VERSION    = '0.3.8.2';   # version of entire app
 our @ISA        = 'Wx::App';   # $NAME is a wx application
 
 # Configuration Phase
@@ -58,7 +58,8 @@ sub configdir {
 
 use Wx;                         # Core wxWidgets Framework
 use Wx::STC;                    # Scintilla editor component
-use Wx::DND;                    # Drag'n Drop & Clipboard support
+use Wx::DND;                    # Drag'n Drop & Clipboard support (only K::File)
+use Wx::Print;                  # Print Support (used only in Kephra::File )
 
 # required external modules (loaded if needed in packages)
 # require Hash::Merge;          # for config hash merging
@@ -141,9 +142,10 @@ sub quit   { &Kephra::App::exit  }   # save files & settings as configured
 
 __END__
 
-=head1 Kephra.pm - Base Module
+=head1 NAME
+
+Kephra.pm - Kephra Base Module
 
 for main Docs please go to L<kephra> 
 
-=head2 Purpose
-
+=head1 Purpose

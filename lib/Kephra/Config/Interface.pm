@@ -6,7 +6,7 @@ $VERSION = '0.03';
 use strict;
 
 sub load_data {
-	my $conf      = $Kephra::config{'app'};
+	my $conf      = $Kephra::config{app};
 	my $gui_store = $Kephra::temp{configfile};
 	my $gui_ref   = $Kephra::temp{config};
 	my $conf_path = $Kephra::temp{path}{config};
@@ -69,7 +69,7 @@ sub set_documentation_lang {
 	if ( $lang eq 'english' 
 	  or $lang eq 'deutsch'
 	  or $lang eq 'cesky') {
-		my $sb = Kephra::Config::Global::_get_conf_sub_path();
+		my $sb = Kephra::Config::Global::_conf_sub_path();
 		my $file = Kephra::Config::filepath
 			( $sb, 'sub/documentation', $lang.'.conf' );
 		Kephra::Config::Global::merge_tree( Kephra::Config::File::load($file) );

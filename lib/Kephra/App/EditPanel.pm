@@ -13,26 +13,28 @@ use Wx qw(
 #
 # internal API to config und app pointer
 #
-sub _get              { $Kephra::app{editpanel} }
-sub _set              { $Kephra::app{editpanel} = shift }
-sub _get_config       { $Kephra::config{editpanel} }
-sub _indicator_config { $Kephra::config{editpanel}{indicator} }
+sub _ref {
+	if ($_[0]){ $Kephra::app{editpanel} = $_[0] }
+	else      { $Kephra::app{editpanel} }
+}
+sub _config           { $Kephra::config{editpanel} }
+sub _indicator_config { _config()->{indicator} }
 #
 # settings
 #
 sub create {
 	my $ep = Wx::StyledTextCtrl->new
-			( Kephra::App::Window::_get(), -1, [-1,-1], [-1,-1] );
+			( Kephra::App::Window::_ref(), -1, [-1,-1], [-1,-1] );
 	$ep->DragAcceptFiles(1);
-	_set($ep);
+	_ref($ep);
 	return $ep;
 }
 
-sub gets_focus { Wx::Window::SetFocus( _get() ) }
+sub gets_focus { Wx::Window::SetFocus( _ref() ) }
 
 sub apply_settings {
-	my $ep        = _get() or _create();
-	my $conf      = _get_config();
+	my $ep        = _ref() or _create();
+	my $conf      = _config();
 	my $indicator = _indicator_config();
 	my $color     = \&Kephra::Config::color;
 	$Kephra::temp{edit}{caret}{positions} = ();
@@ -79,8 +81,8 @@ sub apply_settings {
 }
 
 sub set_word_chars { 
-	my $ep   = _get();
-	my $conf = _get_config();
+	my $ep   = _ref();
+	my $conf = _config();
 	if ( $conf->{word_chars} ) {
 		$ep->SetWordChars( $conf->{word_chars} );
 	} else {
@@ -89,7 +91,7 @@ sub set_word_chars {
 }
 
 sub set_tab_size {
-	my $ep   = _get();
+	my $ep   = _ref();
 	my $size = shift;
 	$ep->SetTabWidth($size);
 	$ep->SetIndent($size);
@@ -99,14 +101,14 @@ sub set_tab_size {
 # line wrap
 #
 sub apply_autowrap_settings {
-	_get()->SetWrapMode( _get_config()->{line_wrap} );
+	_ref()->SetWrapMode( _config()->{line_wrap} );
 	Kephra::API::EventTable::trigger('editpanel.autowrap');
 }
 
-sub get_autowrap_mode { _get_config()->{line_wrap} == wxSTC_WRAP_WORD}
+sub get_autowrap_mode { _config()->{line_wrap} == wxSTC_WRAP_WORD}
 
 sub switch_autowrap_mode {
-	_get_config()->{line_wrap} = get_autowrap_mode()
+	_config()->{line_wrap} = get_autowrap_mode()
 		? wxSTC_WRAP_NONE
 		: wxSTC_WRAP_WORD;
 	apply_autowrap_settings();
@@ -126,12 +128,12 @@ sub apply_bracelight_settings{
 		paint_bracelight();
 	} else {
 		Kephra::API::EventTable::del_call('caret.move', 'bracelight');
-		_get()->BraceHighlight( -1, -1 );
+		_ref()->BraceHighlight( -1, -1 );
 	}
 }
 
 sub paint_bracelight {
-	my $ep       = _get();
+	my $ep       = _ref();
 	my $pos      = $ep->GetCurrentPos;
 	my $matchpos = $ep->BraceMatch(--$pos);
 	$matchpos = $ep->BraceMatch(++$pos) if $matchpos == -1;
@@ -167,7 +169,7 @@ sub indention_guide_visible {
 	_indicator_config()->{indent_guide}{visible} 
 }
 sub apply_indention_guide_settings {
-	_get->SetIndentationGuides( indention_guide_visible() )
+	_ref->SetIndentationGuides( indention_guide_visible() )
 }
 sub switch_indention_guide_visibility {
 	_indicator_config()->{indent_guide}{visible} ^= 1;
@@ -180,7 +182,7 @@ sub caret_line_visible {
 	_indicator_config()->{caret_line}{visible} 
 }
 sub apply_caret_line_settings { 
-	_get()->SetCaretLineVisible( caret_line_visible() ) 
+	_ref()->SetCaretLineVisible( caret_line_visible() ) 
 }
 sub switch_caret_line_visibility {
 	_indicator_config()->{caret_line}{visible} ^= 1;
@@ -193,7 +195,7 @@ sub LLI_visible {
 	_indicator_config()->{right_margin}{style} == wxSTC_EDGE_LINE
 }
 sub apply_LLI_settings {
-	my $ep = _get();
+	my $ep = _ref();
 	my $config = _indicator_config()->{right_margin};
 	my $color   = \&Kephra::Config::color;
 
@@ -201,7 +203,7 @@ sub apply_LLI_settings {
 	$ep->SetEdgeColumn( $config->{position} );
 	show_LLI( $config->{style} );
 }
-sub show_LLI { _get->SetEdgeMode( shift ) }
+sub show_LLI { _ref->SetEdgeMode( shift ) }
 sub switch_LLI_visibility {
 	my $style = _indicator_config()->{right_margin}{style} = LLI_visible()
 		? wxSTC_EDGE_NONE
@@ -215,11 +217,11 @@ sub EOL_visible {
 	_indicator_config()->{end_of_line_marker}
 }
 sub switch_EOL_visibility {
-	_get_config()->{indicator}{end_of_line_marker} ^= 1;
+	_config()->{indicator}{end_of_line_marker} ^= 1;
 	apply_EOL_settings();
 }
 sub apply_EOL_settings {
-	_get()->SetViewEOL( EOL_visible() ) 
+	_ref()->SetViewEOL( EOL_visible() ) 
 
 }
 #
@@ -229,7 +231,7 @@ sub whitespace_visible {
 	_indicator_config()->{whitespace}{visible} 
 }
 sub apply_whitespace_settings {
-	_get()->SetViewWhiteSpace( whitespace_visible() )
+	_ref()->SetViewWhiteSpace( whitespace_visible() )
 }
 sub switch_whitespace_visibility {
 	my $v = _indicator_config()->{whitespace}{visible} ^= 1;
@@ -240,9 +242,9 @@ sub switch_whitespace_visibility {
 # font settings
 #
 sub load_font {
-	my $ep = _get();
+	my $ep = _ref();
 	my ( $fontweight, $fontstyle ) = ( wxNORMAL, wxNORMAL );
-	my $font = _get_config()->{font};
+	my $font = _config()->{font};
 	$fontweight = wxLIGHT  if $font->{weight} eq 'light';
 	$fontweight = wxBOLD   if $font->{weight} eq 'bold';
 	$fontstyle  = wxSLANT  if $font->{style}  eq 'slant';
@@ -253,14 +255,14 @@ sub load_font {
 }
 sub change_font {
 	my ( $fontweight, $fontstyle ) = ( wxNORMAL, wxNORMAL );
-	my $font_config = _get_config()->{font};
+	my $font_config = _config()->{font};
 	$fontweight = wxLIGHT  if ( $$font_config{weight} eq 'light' );
 	$fontweight = wxBOLD   if ( $$font_config{weight} eq 'bold' );
 	$fontstyle  = wxSLANT  if ( $$font_config{style}  eq 'slant' );
 	$fontstyle  = wxITALIC if ( $$font_config{style}  eq 'italic' );
 	my $oldfont = Wx::Font->new( $$font_config{size}, wxDEFAULT, $fontstyle,
 		$fontweight, 0, $$font_config{family} );
-	my $newfont = Kephra::Dialog::get_font( Kephra::App::Window::_get(), $oldfont );
+	my $newfont = Kephra::Dialog::get_font( Kephra::App::Window::_ref(), $oldfont );
 
 	if ( $newfont->Ok > 0 ) {
 		($fontweight, $fontstyle) = ($newfont->GetWeight, $newfont->GetStyle);
