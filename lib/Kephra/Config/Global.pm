@@ -1,5 +1,5 @@
 package Kephra::Config::Global;
-$VERSION = '0.19';
+$VERSION = '0.20';
 
 # handling main config files under /config/global/
 
@@ -75,7 +75,9 @@ sub evaluate {
 	my $t0 = new Benchmark;
 
 	Kephra::API::EventTable::delete_all();
-	Kephra::Config::Interface::load_data();
+	Kephra::API::EventTable::stop_timer();
+
+	Kephra::Config::Interface::load();
 	my $t1 = new Benchmark;
 print "  iface cnfg:", Benchmark::timestr( Benchmark::timediff( $t1, $t0 ) ), "\n"
 	if $Kephra::benchmark;
@@ -93,7 +95,6 @@ print "  prep. data:", Benchmark::timestr( Benchmark::timediff( $t2, $t1 ) ), "\
 	if $Kephra::benchmark;
 
 	# main window components
-	Kephra::API::CommandList::eval_data();
 	Kephra::App::Window::apply_settings();
 	Kephra::App::ContextMenu::create_all();
 	Kephra::App::MenuBar::create();
@@ -200,7 +201,7 @@ sub save_as {
 	my $file_name = Kephra::Dialog::get_file_save(
 		Kephra::App::Window::_ref(),
 		$Kephra::localisation{dialog}{config_file}{save},
-		$Kephra::temp{path}{config} . _conf_sub_path(),
+		Kephra::Config::dirpath(  _conf_sub_path() ),
 		$Kephra::temp{file}{filterstring}{config}
 	);
 	save($file_name) if ( length($file_name) > 0 );
@@ -219,12 +220,6 @@ sub merge_with {
 		$Kephra::temp{file}{filterstring}{config}
 	);
 	load_subconfig($filename);
-}
-
-sub merge_tree {
-	my $tree = shift;
-	return unless ref $tree eq 'HASH';
-	%Kephra::config = %{ Kephra::Config::Tree::merge($tree, \%Kephra::config) };
 }
 
 #

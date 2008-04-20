@@ -5,7 +5,7 @@ $VERSION = '0.03';
 
 use strict;
 
-sub load_data {
+sub load {
 	my $conf      = $Kephra::config{app};
 	my $gui_store = $Kephra::temp{configfile};
 	my $gui_ref   = $Kephra::temp{config};
@@ -22,12 +22,19 @@ sub load_data {
 	%Kephra::localisation = %$l;
 
 	# commandlist
-	#Kephra::CommandList::load_cache() if $conf->{commandlist}{cache}{use};
-	#Kephra::CommandList::load_data();
-	Kephra::API::CommandList::assemble_data();
-	#delete $Kephra::localisation {'commandlist'};
-
-	#try du load from cache first
+		# try du load from cache first
+		# Kephra::CommandList::load_cache() if $conf->{commandlist}{cache}{use};
+	my $cmd_list_def = Kephra::Config::File::load_from_config_node_data
+		( Kephra::API::CommandList::_config() );
+	unless ($cmd_list_def) {
+		require Kephra::Config::Embedded;
+		$cmd_list_def = Kephra::Config::Embedded::get_command_list();
+	}
+	Kephra::API::CommandList::assemble_data($cmd_list_def);
+	Kephra::API::CommandList::eval_data();
+	undef $cmd_list_def;
+	delete $Kephra::localisation {commandlist};
+	delete $Kephra::localisation {key};
 }
 
 sub del_temp_data {}

@@ -21,44 +21,40 @@ use Wx qw(
 	WXK_F11 WXK_F12
 );
 
-sub _config{ $Kephra::config{app}{commandlist} }
-sub _data  { $Kephra::app{commandlist} }
+sub _config { $Kephra::config{app}{commandlist} }
+sub _data   { $Kephra::app{commandlist} }
 
-sub load_cache{}
+sub load_cache {}
 sub store_cache {
 	return unless _config()->{cache}{use};
 	#my $config = _get_config();
 	#my $file_name = $Kephra::temp{path}{config} . $config->{cache}{file};
-	#Kephra::Config::File::store_yaml($file_name, _get_data());
+	#Kephra::Config::File::store_yaml($file_name, _data());
 }
 
-sub load_data {
-}
 
+# refactor commandlist definition & localisation data into a format that can be
+# evaled and used by gui parts
 sub assemble_data {
-	# get info from global configs and load commandlist conf file
-	my $config       = _config();
-	my $file_name    = Kephra::Config::filepath( $config->{file} );
-	my $cmd_list_def = Kephra::Config::File::load($file_name);
-	if ($config->{node} and exists $cmd_list_def->{ $config->{node} }) {
-		$cmd_list_def = $cmd_list_def->{$config->{node}};
-	} else {
-		return;
-	}#
+	my $cmd_list_def = shift;
+	no strict;
+	local ($leaf_type, $cmd_id, $target_leafe);
 	# copy data of a hash structures into specified commandlist leafes
-	foreach my $key ( qw{call enable enable_event state state_event key icon} ) {
+	for my $key ( qw{call enable enable_event state state_event key icon} ) {
 		_copy_conf_values($cmd_list_def->{$key}, $key);
 	}
 	_copy_conf_values($Kephra::localisation{commandlist}{label},'label');
 	_copy_conf_values($Kephra::localisation{commandlist}{help}, 'help');
-	_create_keymap()
+	_create_keymap();
+	undef $leaf_type;
+	undef $cmd_id;
+	undef $target_leafe;
 }
 
 sub _copy_conf_values {
-	no strict;
 	my $root_node = shift;                # source
-	local $target_leafe = shift;
-	local ($leaf_type, $cmd_id);
+	no strict;
+	$target_leafe = shift;
 	local $list = \%{ $Kephra::app{commandlist} }; # commandlist data
 	_parse_node($root_node, '') if ref $root_node eq 'HASH';
 }
@@ -122,7 +118,7 @@ sub _create_keymap{
 	}
 }
 
-sub eval_data{
+sub eval_data {
 	my $list = _data();
 	my $keymap = \@{$Kephra::app{editpanel}{keymap}};
 
@@ -144,16 +140,20 @@ sub eval_data{
 		next unless $item_data->{icon};
 		$item_data->{icon} = Kephra::Config::icon_bitmap($item_data->{icon});
 	}
-	$Kephra::temp{icon}{empty} = Kephra::Config::icon_bitmap('empty.xpm');
+	#$Kephra::temp{icon}{empty} = Kephra::Config::icon_bitmap('empty.xpm');
 }
 
-sub get_cmd_properties{
+#
+# external API
+#
+
+sub get_cmd_properties {
 	my $cmd_id = shift;
 	my $list = _data();
 	$list->{$cmd_id} if ref $list->{$cmd_id} eq 'HASH';
 }
 
-sub get_cmd_property{
+sub get_cmd_property {
 	my $cmd_id = shift;
 	my $leafe = shift;
 	my $list = _data();

@@ -7,6 +7,13 @@ TODO 0.4:
  + own statusbar
  + config dialog
 
+0.3.8.8
+ + <ctrl>+<A> works in searchbar
+ + embedded toolbar settings
+ + embedded context menu settings
+ ] rewritten parts of Kephra::Config::File
+ ! debugged embedded localisation
+
 0.3.8.7
  + embedded commandlist
  ! prevent thread hangup due late fired timer event on shutdown

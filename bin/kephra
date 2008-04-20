@@ -14,7 +14,7 @@ use File::Spec ();
 use vars qw{$VERSION $STANDALONE};
 my %pathes;
 BEGIN {
-	$VERSION = '0.3.8.7'; 
+	$VERSION = '0.3.8.8'; 
 
 	# Is this the standalone Win32 implementation
 	$STANDALONE = 1;

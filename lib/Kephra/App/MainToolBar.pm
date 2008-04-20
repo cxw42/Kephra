@@ -1,5 +1,5 @@
 package Kephra::App::MainToolBar;
-$VERSION = '0.06';
+$VERSION = '0.07';
 
 use strict;
 
@@ -12,14 +12,14 @@ sub create {
 	my $bar = $frame->GetToolBar;
 	$bar->Destroy if $bar;          # destroy old toolbar if there any
 	_ref( $frame->CreateToolBar );
-
-	my $config = _config();
-	my $file_name = Kephra::Config::filepath( $config->{file} );
-	my $bar_def = Kephra::Config::File::load($file_name);
-	$bar_def = Kephra::Config::Tree::get_subtree( $bar_def, $config->{node});
-	Kephra::App::ToolBar::create('main', $bar_def);
+	my $bar_def = Kephra::Config::File::load_from_config_node_data( _config() );
+	unless ($bar_def) {
+		require Kephra::Config::Embedded;
+		$bar_def = \%{Kephra::Config::Embedded::get_command_list()};
+		$bar_def = $bar_def->{main_toolbar};
+	}
+	Kephra::App::ToolBar::create( 'main', $bar_def );
 }
-
 sub destroy { Kephra::App::ToolBar::destroy ('main') }
 
 sub get_visibility    { _config()->{visible} }

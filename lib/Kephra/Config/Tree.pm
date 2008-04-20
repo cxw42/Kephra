@@ -6,7 +6,7 @@ $VERSION = '0.02';
 use strict;
 
 
-sub get_subtree{
+sub get_subtree {
 	my $config = shift;
 	my $path = shift;
 	for (split '/', $path) {
@@ -14,6 +14,7 @@ sub get_subtree{
 	}
 	return $config;
 }
+
 # -NI
 sub diff {
 	my $new = shift;

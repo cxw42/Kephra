@@ -1,5 +1,5 @@
 package Kephra::Config::File;
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 use strict;
 
@@ -14,11 +14,19 @@ sub _get_type {
 		? 'yaml'
 		: 'conf';
 }
+
 #
 # API 2 App
 #
+sub load_from_config_node_data {
+	my $node = shift;
+	return unless defined $node->{file} and $node->{node};
+	load_node( Kephra::Config::filepath( $node->{file} ), $node->{node} );
+}
+
 sub load {
 	my $file_name = shift;
+	return unless -e $file_name;
 	my $type = _get_type($file_name);
 	if    ($type eq 'conf') { load_conf($file_name) }
 	elsif ($type eq 'yaml') { load_yaml($file_name) }
@@ -27,11 +35,16 @@ sub load {
 sub load_node{
 	my $file_name = shift;
 	my $start_node = shift;
-	my $config = load($file_name);
-	return $config unless $start_node;
-	for (split '/', $start_node) {
-		$config = $config->{$_} if defined $config->{$_}
-	}
+	my $config_tree = load($file_name);
+	return defined $start_node 
+		? Kephra::Config::Tree::get_subtree( $config_tree, $start_node )
+		: $config_tree;
+}
+
+# !!! -NI
+sub store_node{
+	my $file_name = shift;
+	my $start_node = shift;
 }
 
 sub store {
@@ -43,18 +56,18 @@ sub store {
 	Kephra::File::_remember_save_moment($file_name);
 }
 
-sub store_node{
-	my $file_name = shift;
-	my $start_node = shift;
-}
+
 #
 # API 2 YAML
 #
+
 sub load_yaml  { &YAML::LoadFile }
 sub store_yaml { &YAML::DumpFile }
+
 #
 # API 2 General::Config 
 #
+
 sub load_conf {
 	my ( $configfilename, %config ) = shift;
 	my $error_msg = $Kephra::localisation{dialog}{error};

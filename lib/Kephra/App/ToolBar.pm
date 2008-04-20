@@ -141,7 +141,6 @@ sub eval_data {
 sub destroy {
 	my $bar = _ref( shift );
 	return unless $bar;
-	#$bar->DestroyChildren;
 	$bar->Destroy;
 }
 

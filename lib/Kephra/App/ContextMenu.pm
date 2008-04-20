@@ -10,6 +10,10 @@ sub create_all {
 	my $config = $Kephra::config{app}{contextmenu};
 	my $default_file = Kephra::Config::filepath($config->{defaultfile});
 	my $default_menu_def = Kephra::Config::File::load($default_file);
+	unless ($default_menu_def) {
+		require Kephra::Config::Embedded;
+		$default_menu_def = Kephra::Config::Embedded::get_contextmenus();
+	}
 
 	for my $menu_id (keys %{$config->{id}}){
 		if (not ref $menu_id){
