@@ -1,5 +1,5 @@
 package Kephra::Edit::Select;
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 # text selection
 
@@ -9,7 +9,7 @@ use Wx qw( wxSTC_CMD_PARAUPEXTEND wxSTC_CMD_PARADOWNEXTEND );
 sub _ep_ref { Kephra::App::EditPanel::_ref() }
 
 sub all      { &document }
-sub document { _get_edit_panel()->SelectAll }
+sub document { _ep_ref()->SelectAll }
 sub all_if_non {
 	my $ep = _ep_ref();
 	$ep->SelectAll if $ep->GetSelectionStart == $ep->GetSelectionEnd;

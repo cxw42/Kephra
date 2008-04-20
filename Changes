@@ -7,6 +7,34 @@ TODO 0.4:
  + own statusbar
  + config dialog
 
+0.3.8.7
+ + embedded commandlist
+ ! prevent thread hangup due late fired timer event on shutdown
+ ! added unicore utfdb to winball
+ ! blockformat on width
+
+0.3.8.6
+ + context menu over statusbar info field
+ - select app language menu
+ ! search dialog carret keeps position
+ ! crash when ask for not existing menus
+
+0.3.8.5
+ ] fixed and updated embedded configs
+ ? more compile tests for modules that arent loaded on start
+ ! crash on replace
+
+0.3.8.4
+ ] thrown wx icons out of the distro
+ ! crash on select all
+
+0.3.8.3
+ [ put file sessions menu out of file menu on top level
+ [ put goto-line into searchbar
+ ] added Kephra::API::CommandList::run_cmd_by_keycode
+ ~ document switch  backs works out of search bar
+ ! pos1 and end works in searchbar again
+
 0.3.8.2
  ! crash on search
 
@@ -885,11 +913,12 @@ pce 0.2.23 from windows to linux you may need prb 0.2 for linux
 
 
 Legend:
- ? purpose
+ " purpose
  * big new feature
  + new feature
  ~ change
  - remove
+ ? tests
  ! bugfix
  [ interface
  ] internals

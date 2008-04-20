@@ -6,7 +6,7 @@ use Wx qw(wxSTC_CMD_UPPERCASE wxSTC_CMD_LOWERCASE wxSTC_CMD_WORDRIGHT);
 
 # Convert
 sub upper_case {
-	my $ep = &Kephra::App::EditPanel::_ref;
+	my $ep = Kephra::App::EditPanel::_ref();
 	&Kephra::Edit::_save_positions;
 	&Kephra::Edit::_select_all_if_none;
 	$ep->CmdKeyExecute(wxSTC_CMD_UPPERCASE);
@@ -14,7 +14,7 @@ sub upper_case {
 }
 
 sub lower_case {
-	my $ep = &Kephra::App::EditPanel::_ref;
+	my $ep = Kephra::App::EditPanel::_ref();
 	&Kephra::Edit::_save_positions;
 	&Kephra::Edit::_select_all_if_none;
 	$ep->CmdKeyExecute(wxSTC_CMD_LOWERCASE);
@@ -22,7 +22,7 @@ sub lower_case {
 }
 
 sub title_case {
-	my $ep = &Kephra::App::EditPanel::_ref;
+	my $ep = Kephra::App::EditPanel::_ref();
 	&Kephra::Edit::_save_positions;
 	&Kephra::Edit::_select_all_if_none;
 	my ($sel_end, $pos) = ($ep->GetSelectionEnd, 0);
@@ -40,7 +40,7 @@ sub title_case {
 }
 
 sub sentence_case {
-	my $ep = &Kephra::App::EditPanel::_ref;
+	my $ep = Kephra::App::EditPanel::_ref();
 	my $line;
 	&Kephra::Edit::_save_positions;
 	&Kephra::Edit::_select_all_if_none;
@@ -68,7 +68,7 @@ sub sentence_case {
 
 sub spaces2tabs {
 	Kephra::Edit::_save_positions();
-	my $ep = &Kephra::App::EditPanel::_ref;
+	my $ep = Kephra::App::EditPanel::_ref();
 	my $space = " " x $Kephra::document{current}{tab_size};
 	my $text = Kephra::Edit::_select_all_if_none();
 	$text =~ s/$space/\t/g;

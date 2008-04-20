@@ -9,21 +9,10 @@ full_menubar:
           - item file-reload
           - item file-reload-all
           -
-          - item file-insert
+          - item file-insert 
           -
           - item file-open-dir
       - menu file_history
-      -
-      - menu file_session:
-          - item file-session-open
-          - item file-session-add
-          - item file-session-save
-          -
-          - item file-session-backup-open
-          - item file-session-backup-save
-          -
-          - item file-session-import
-          - item file-session-export
       -
       - item file-save
       - menu file_save:#
@@ -142,7 +131,7 @@ full_menubar:
           - radioitem search-range-document
           - radioitem search-range-open-docs
       -
-      - item goto-line-nr
+      - item goto-line
       - item goto-last-edit
       -
       - menu bookmark_goto:
@@ -284,6 +273,16 @@ full_menubar:
           - radioitem document-readonly-as-attr
           - radioitem document-readonly-on
           - radioitem document-readonly-off
+  - menu file_session:
+      - item file-session-open
+      - item file-session-add
+      - item file-session-save
+      -
+      - item file-session-backup-open
+      - item file-session-backup-save
+      -
+      - item file-session-import
+      - item file-session-export
   - menu view:
       - checkitem view-window-stay-on-top
       -
@@ -322,13 +321,6 @@ full_menubar:
       - item view-editpanel-font
   - menu config:
       - item view-dialog-config
-      - menu config_app_lang:
-          - checkitem config-app-lang-english
-          - checkitem config-app-lang-deutsch-iso
-          - checkitem config-app-lang-deutsch-utf#
-          - checkitem config-app-lang-deutsch
-          - checkitem config-app-lang-cesky-iso#
-          - checkitem config-app-lang-cesky-utf#
       -
       - menu config_global:
           - item config-file-global-open

@@ -39,7 +39,7 @@ sub simple {
 		. " ( $info->{detail} \n   $info->{more} ) \n"
 		. "$info->{homepage}  http:\\\\proton-ce.sf.net\n\n"
 		. "$info->{contains}: \n"
-		. " - Perl ". substr($],0,1).'.'.substr($],4,1).'.'.substr($],7,1)."\n"
+		. " - Perl ". substr($],0,1).'.'.int(substr($],3,2)).'.'.substr($],7,1)."\n"
 		. " - WxPerl $Wx::VERSION $info->{wrappes} \n"
 		. "   - " . wxVERSION_STRING . " $info->{and} $sciv\n"
 		. " - Config::General $Config::General::VERSION \n"

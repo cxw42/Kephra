@@ -13,7 +13,7 @@ requires       'File::HomeDir';
 requires       'File::UserConfig';
 requires       'Hash::Merge'           => 0;
 requires       'Text::Wrap';
-requires       'Wx';                   => '0.70'
+requires       'Wx'                    => '0.70';
 requires       'Wx::STC';
 requires       'Wx::DND';
 requires       'Wx::Print';

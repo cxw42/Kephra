@@ -1,5 +1,5 @@
 package Kephra::Config::Global;
-$VERSION = '0.18';
+$VERSION = '0.19';
 
 # handling main config files under /config/global/
 
@@ -39,9 +39,7 @@ sub save_autosaved {
 
 sub open_current_file {
 	save_current();
-	require Cwd;
 	Kephra::Document::Internal::add( 
-		Cwd::getcwd() . '/' .
 		Kephra::Config::filepath( $Kephra::temp{file}{config}{auto} )
 	);
 	Kephra::File::reload_current();

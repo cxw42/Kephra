@@ -29,13 +29,13 @@ use Wx::Event qw(
 # get pointer to the event list
 sub _get_active { $Kephra::app{eventtable} }
 sub _get_frozen { $Kephra::temp{eventtable} }
+my  $timer;
 
 
 sub connect_all {
 	my $win = Kephra::App::Window::_ref();
 	my $ep  = Kephra::App::EditPanel::_ref();
 	my $tb  = Kephra::App::TabBar::_ref();
-	my $timer;
 	#$Kephra::app{eventtable}{test} = 1;
 	#$Kephra::temp{eventtable}{test} = 1;
 
@@ -45,24 +45,8 @@ sub connect_all {
 	EVT_MENU_OPEN  ($win,  sub { trigger('menu.open') });
 	#EVT_IDLE       ($win,  sub { } );
 
-	# set or update timer events
-	if ($Kephra::config{file}{save}{auto_save}) {
-		$timer->{file_save} = Wx::Timer->new( $win, 1 );
-		$timer->{file_save}->Start
-			( $Kephra::config{file}{save}{auto_save} * 1000 );
-		EVT_TIMER( $win, 1, sub { Kephra::File::save_all_named() } );
-	}
-	else {$timer->{file_save}->Stop if $timer->{file_save} }
 
-	if ($Kephra::config{file}{open}{notify_change}) {
-		$timer->{file_notify} = Wx::Timer->new( $win, 2 );
-		$timer->{file_notify}->Start
-			( $Kephra::config{file}{open}{notify_change} * 1000 );
-		EVT_TIMER( $win, 2, sub { Kephra::File::changed_notify_check() } );
-	}
-	else {$timer->{file_notify}->Stop if $timer->{file_notify} }
 
- 
 	# scintilla and editpanel events
 	return unless $ep;
 	connect_editpanel();
@@ -85,7 +69,39 @@ sub connect_all {
 	EVT_STC_MARGINCLICK     ($ep, -1, sub {
 		#Kephra::Dialog::msg_box(undef, "a", 'b')
 	});
+
+	start_timer();
 }
+
+
+sub start_timer {
+	# set or update timer events
+	my $win = Kephra::App::Window::_ref();
+
+	stop_timer();
+	if ($Kephra::config{file}{save}{auto_save}) {
+		$timer->{file_save} = Wx::Timer->new( $win, 1 );
+		$timer->{file_save}->Start
+			( $Kephra::config{file}{save}{auto_save} * 1000 );
+		EVT_TIMER( $win, 1, sub { Kephra::File::save_all_named() } );
+	}
+
+	if ($Kephra::config{file}{open}{notify_change}) {
+		$timer->{file_notify} = Wx::Timer->new( $win, 2 );
+		$timer->{file_notify}->Start
+			( $Kephra::config{file}{open}{notify_change} * 1000 );
+		EVT_TIMER( $win, 2, sub { Kephra::File::changed_notify_check() } );
+	}
+}
+
+sub stop_timer {
+	my $win = Kephra::App::Window::_ref();
+	$timer->{file_save}->Stop if ref $timer->{file_save} eq 'Wx::Timer';
+	delete $timer->{file_save};
+	$timer->{file_notify}->Stop if ref $timer->{file_notify} eq 'Wx::Timer';
+	delete $timer->{file_notify};
+}
+
 
 sub connect_editpanel{
 	my $ep  = Kephra::App::EditPanel::_ref();
@@ -118,17 +134,13 @@ sub init_key_events {
 
 	EVT_KEY_DOWN  (Kephra::App::EditPanel::_ref(), sub {
 		my ($ep, $event) = @_;
-
-		my $map = $Kephra::app{editpanel}{keymap};
 		my $key = $event->GetKeyCode +
 			1000 * ($event->ShiftDown + $event->ControlDown*2 + $event->AltDown*4);
 
 		# reacting on shortkeys that are defined in the Commanlist
-		if (ref $map->[$key] eq 'CODE'){
-			$map->[$key]();
-		}
+		return if Kephra::API::CommandList::run_cmd_by_keycode($key);
 		# reacting on Enter
-		elsif ($key ==  WXK_RETURN) { # Enter
+		if ($key ==  WXK_RETURN) { # Enter
 			if ($Kephra::config{editpanel}{auto}{brace}{indention}) {
 				my $pos  = $ep->GetCurrentPos - 1;
 				my $char = $ep->GetCharAt($pos);

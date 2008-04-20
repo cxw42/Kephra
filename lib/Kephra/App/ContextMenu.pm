@@ -4,7 +4,7 @@ $VERSION = '0.08';
 use strict;
 use Wx::Event qw(EVT_RIGHT_DOWN);
  
-sub get{ &Kephra::App::Menu::ready }
+sub get{ &Kephra::App::Menu::ready or Wx::Menu->new() }
 #
 sub create_all {
 	my $config = $Kephra::config{app}{contextmenu};

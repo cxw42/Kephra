@@ -30,9 +30,7 @@ sub load_data {
 	#try du load from cache first
 }
 
-sub del_temp_data {
-	
-}
+sub del_temp_data {}
 
 sub load_cache {}
 sub store_cache {}
@@ -40,6 +38,9 @@ sub store_cache {}
 ####################################
 # lcalisation stuff
 ####################################
+
+my %lang_map = ();
+
 
 sub set_lang_2_cesky_utf   { change_localisation('cesky',  'utf') }
 sub set_lang_2_cesky_iso   { change_localisation('cesky',  'iso') }
@@ -57,16 +58,19 @@ sub change_localisation {
 	Kephra::Config::Global::reload_tree();
 }
 
-sub set_localisation_file {
+sub localisation_file {
 	my $file = shift;
-	return until $file;
-	$Kephra::config{app}{localisation_file} = $file
+	if (defined $file) {
+		$Kephra::config{app}{localisation_file} = $file
+	} else {
+		$Kephra::config{app}{localisation_file};
+	}
 }
 
 sub set_documentation_lang {
 	my $lang = shift;
 	return until $lang;
-	if ( $lang eq 'english' 
+	if ( $lang eq 'english'
 	  or $lang eq 'deutsch'
 	  or $lang eq 'cesky') {
 		my $sb = Kephra::Config::Global::_conf_sub_path();

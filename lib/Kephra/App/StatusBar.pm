@@ -57,13 +57,15 @@ sub right_click {
 	if ( $^O eq 'linux' ) {
 		if    ($x < 156) {}
 		elsif ($x < 215) {$bar->PopupMenu( &$menu('status_syntaxmode'), $x, $y)}
-		elsif ($x < 256) {$bar->PopupMenu( &$menu('status_tab'),        $x, $y)}
+		elsif ($x < 257) {$bar->PopupMenu( &$menu('status_tab'),        $x, $y)}
 		elsif ($x < 326) {$bar->PopupMenu( &$menu('status_eol'),        $x, $y)}
+		else             {$bar->PopupMenu( &$menu('status_info'),       $x, $y)}
 	} else {
 		if    ($x < 128) {}
 		elsif ($x < 180) {$bar->PopupMenu( &$menu('status_syntaxmode'), $x, $y)}
 		elsif ($x < 206) {$bar->PopupMenu( &$menu('status_tab')       , $x, $y)}
 		elsif ($x < 241) {$bar->PopupMenu( &$menu('status_eol')       , $x, $y)}
+		else             {$bar->PopupMenu( &$menu('status_info')      , $x, $y)}
 	}
 }
 
@@ -95,7 +97,7 @@ sub switch_contextmenu_visibility { _config()->{interactive} ^= 1 }
 
 sub refresh_cursor {
 	caret_pos_info();
-	refresh_file_info();
+	refresh_info_msg();
 }
 
 sub update_all {
@@ -189,28 +191,35 @@ sub EOL_info {
 		( $msg, $Kephra::temp{app}{status}{EOL}{index} );
 }
 
+# info messages
+
 sub info_msg {
 	return unless $_[0];
-	Kephra::App::Window::_ref()->SetStatusText( shift,
-		$Kephra::temp{app}{status}{message}{index}
-	);
+	Kephra::App::Window::_ref()->SetStatusText
+		( shift, $Kephra::temp{app}{status}{message}{index} );
 }
+sub refresh_info_msg  { refresh_file_info() }
 
-sub refresh_info_msg {file_info() }
-sub refresh_file_info { file_info( _config()->{msg_nr} )  }
+sub info_msg_nr {
+	my $nr = shift;
+	if (defined $nr) { _config()->{msg_nr} = $nr}
+	else             { _config()->{msg_nr} }
+}
 
 sub next_file_info {
-	my $info_nr = \_config()->{msg_nr};
-
-	#$$info_nr = 0 unless $status_bar->GetStatusText($index);
-	$$info_nr++;
-	$$info_nr = 0 if $$info_nr > 2;
-	file_info();
+	my $info_nr = _config()->{msg_nr};
+	$info_nr = $info_nr >= 2 ? 0 : $info_nr + 1;
+	set_info_msg_nr($info_nr);
 }
 
-sub file_info {
-	my $msg = _config()->{msg_nr}
-		? _get_file_info( _config()->{msg_nr} ) : '';
+sub set_info_msg_nr {
+	my $info_nr = shift || 0;
+	info_msg_nr($info_nr);
+	refresh_file_info();
+}
+
+sub refresh_file_info {
+	my $msg = info_msg_nr() ? _get_file_info( _config()->{msg_nr} ) : '';
 	Kephra::App::Window::_ref()->GetStatusBar->SetStatusText
 		($msg, $Kephra::temp{app}{status}{message}{index} );
 }

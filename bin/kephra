@@ -14,7 +14,7 @@ use File::Spec ();
 use vars qw{$VERSION $STANDALONE};
 my %pathes;
 BEGIN {
-	$VERSION = '0.3.8.2'; 
+	$VERSION = '0.3.8.7'; 
 
 	# Is this the standalone Win32 implementation
 	$STANDALONE = 1;
@@ -30,8 +30,8 @@ BEGIN {
 		my $destination_dir;
 		$destination_dir .= "$filenameparts[$_]/" for ( 0 .. $#filenameparts - 2 );
 		if ($destination_dir) {
-			$pathes{config} = $destination_dir.$pathes{config};
-			$pathes{help}   = $destination_dir.$pathes{help};
+			$pathes{config} = File::Spec->catdir($destination_dir,$pathes{config});
+			$pathes{help}   = File::Spec->catdir($destination_dir,$pathes{help});
 			chop $destination_dir;
 			chdir $destination_dir;
 		} else {

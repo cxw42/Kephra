@@ -162,7 +162,7 @@ sub set_find_item {
 	my $old = get_find_item();
 	my $new = shift;
 	if (defined $new and $new ne $old){
-		$Kephra::config{search}{history}{current_find_item} = $new;
+		_history()->{current_find_item} = $new;
 		$Kephra::temp{search}{item}{found} = 1;
 #print "item changes\n";
 		Kephra::API::EventTable::trigger('find.item.changed');
@@ -277,7 +277,7 @@ sub find_all{
 
 sub find_prev {
 	my $ep    = Kephra::App::EditPanel::_ref();
-	my $attr = \%{ $Kephra::config{search}{attribute} };
+	my $attr  = _attributes();
 	my $return = -1;
 	if ( _exist_find_item() ) {
 		Kephra::Edit::_save_positions;
@@ -313,8 +313,8 @@ sub find_prev {
 }
 
 sub find_next {
-	my $ep    = Kephra::App::EditPanel::_ref();
-	my $attr = \%{ $Kephra::config{search}{attribute} };
+	my $ep   = Kephra::App::EditPanel::_ref();
+	my $attr =  _attributes();
 	my $return = -1;
 
 	if ( _exist_find_item() ) {
@@ -350,8 +350,8 @@ sub find_next {
 }
 
 sub fast_back {
-	my $ep = &Kephra::App::EditPanel::_ref;
-	my $attr = \%{ $Kephra::config{search}{attribute} };
+	my $ep   = Kephra::App::EditPanel::_ref();
+	my $attr = _attributes();
 	my $return    = -1;
 	if (&_exist_find_item) {
 		for ( 1 .. $attr->{fast_steps} ) {
@@ -386,8 +386,8 @@ sub fast_back {
 }
 
 sub fast_fore {
-	my $ep = &Kephra::App::EditPanel::_ref;
-	my $attr = $Kephra::config{search}{attribute};
+	my $ep   = Kephra::App::EditPanel::_ref();
+	my $attr = _attributes();
 	my $return    = -1;
 	if (&_exist_find_item) {
 		for ( 1 .. $attr->{fast_steps} ) {
@@ -425,7 +425,7 @@ sub fast_fore {
 sub find_first {
 	my $menu_call = shift;
 	my $ep = &Kephra::App::EditPanel::_ref;
-	my $attr = $Kephra::config{search}{attribute};
+	my $attr = _attributes();
 	my ( $sel_begin, $sel_end ) = $ep->GetSelection;
 	my $pos = $ep->GetCurrentPos;
 	my $len = _exist_find_item();
@@ -481,7 +481,7 @@ sub find_first {
 sub find_last {
 	my $menu_call = shift;
 	my $ep = &Kephra::App::EditPanel::_ref;
-	my $attr = $Kephra::config{search}{attribute};
+	my $attr = _attributes();
 	my ( $sel_begin, $sel_end ) = $ep->GetSelection;
 	my $pos = $ep->GetCurrentPos;
 	my $len = _exist_find_item();
@@ -556,7 +556,7 @@ sub replace_fore {
 
 sub replace_all {
 	my $menu_call = shift;
-	my $ep = &Kephra::App::EditPanel::_ref;
+	my $ep = Kephra::App::EditPanel::_ref();
 	my ($sel_begin, $sel_end ) = $ep->GetSelection;
 	my $line           = $ep->GetCurrentLine;
 	my $len            = _exist_find_item();
@@ -565,7 +565,7 @@ sub replace_all {
 		if (    $menu_call
 		    and $sel_begin != $sel_end 
 			and $sel_end - $sel_begin > $len ) {
-			$Kephra::config{search}{attribute}{in} = 'selection';
+			_attributes()->{in} = 'selection';
 		}
 		if ( get_range() eq 'selection' ) {
 			$ep->BeginUndoAction;

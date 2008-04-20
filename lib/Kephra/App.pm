@@ -110,6 +110,7 @@ sub start {
 
 sub exit { 
 	my $t0 = new Benchmark;
+	Kephra::API::EventTable::stop_timer();
 	Kephra::File::Session::autosave();
 	return if Kephra::Dialog::save_on_exit() eq 'cancel';
 	Kephra::Config::Global::update();

@@ -75,6 +75,6 @@ document_lineendchar_contextmenu:
  - checkitem document-EOL-cr+lf
 
 document_info_contexmenu:
- - checkitem document-statusinfo-length
- - checkitem document-statusinfo-date
- - checkitem document-statusinfo-none
+ - radioitem view-statusbar-info-none
+ - radioitem view-statusbar-info-length
+ - radioitem view-statusbar-info-date

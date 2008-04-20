@@ -124,7 +124,6 @@ sub _create_keymap{
 
 sub eval_data{
 	my $list = _data();
-	my $ico_dir = $Kephra::temp{path}{config}.$Kephra::config{app}{iconset_path};
 	my $keymap = \@{$Kephra::app{editpanel}{keymap}};
 
 	my ($item_data, $ico_path);
@@ -163,10 +162,20 @@ sub get_cmd_property{
 		and exists $list->{$cmd_id}{$leafe};
 }
 
-sub run_cmd {
+sub run_cmd_by_id {
 	my $cmd_id = shift;
 	my $list = _data();
 	&$list->{$cmd_id}{call} if ref $list->{$cmd_id}{call} eq 'CODE';
+}
+
+sub run_cmd_by_keycode {
+	my $keycode = shift;
+	my $keymap = $Kephra::app{editpanel}{keymap};
+	if (ref $keymap->[$keycode] eq 'CODE'){
+		$keymap->[$keycode]();
+		return 1;
+	}
+	return 0;
 }
 
 sub del_temp_data{

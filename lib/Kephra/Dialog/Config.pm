@@ -8,6 +8,7 @@ use Wx qw(
 	wxSIMPLE_BORDER wxRAISED_BORDER  
 	wxCLOSE_BOX wxMINIMIZE_BOX  wxFRAME_NO_TASKBAR  wxBITMAP_TYPE_XPM  wxWHITE
 	wxTR_NO_BUTTONS wxTR_HIDE_ROOT wxTR_SINGLE
+	wxNOT_FOUND
 );
 
 use Wx::Event
@@ -46,15 +47,20 @@ sub main {
 		_ref($dialog);
 
 		# main panel
-		my $mpanel = Wx::Panel->new( $dialog, -1, [0, 0], [540, 560] );
+		my $mpanel = Wx::Panel->new( $dialog, -1, [20, 20], [440, 460] );
 		#my $config_menu = Wx::Panel->new( $mpanel, -1, [10, 10], [106, 362]);
 		# construction left main menu
 		#$config_menu->SetBackgroundColour(wxWHITE);
 		#my $menu_border = Wx::StaticBox->new( $mpanel, -1, '', 
 		#	[10, 4], [110, 370], wxSIMPLE_BORDER | wxRAISED_BORDER );
 		# tree of categories
-		my $cat_tree = Wx::Treebook->new( $mpanel, -1, [12, 12], [405, 360], -1);
-		my $npanel = Wx::Panel->new( $cat_tree, -1, [ -1, -1 ], [ -1, -1 ] );
+		my $cat_tree = Wx::Treebook->new( $mpanel, -1, [12, 12], [-1, -1], -1);
+		#my $npanel = Wx::Panel->new( $dialog, -1, [ 20, 20 ], [ -1, -1 ] );
+		my $npanel = $cat_tree->AddPage( 
+			undef,
+			'label', 0);
+		#print "-".wxNOT_FOUND."$npanel \n";
+
 		#my $page = $cat_tree->AddPage( $npanel, "Allgemein", 0, -1);
 			#wxTR_NO_BUTTONS | wxTR_HIDE_ROOT | wxTR_SINGLE );
 		#my $root_id = $cat_tree->AddRoot('invisible', -1, -1 );

@@ -162,7 +162,11 @@ sub ready {
 		EVT_KEY_DOWN($d->{replace_input},    \&replace_input_keyfilter );
 		EVT_TEXT($d, $d->{find_input},       \&incremental_search );
 		EVT_TEXT($d, $d->{replace_input}, sub {
-			Kephra::Edit::Search::set_replace_item( $d->{replace_input}->GetValue)});
+			my $input = $d->{replace_input};
+			my $pos   = $input->GetInsertionPoint;
+			Kephra::Edit::Search::set_replace_item( $input->GetValue );
+			$input->SetInsertionPoint($pos);
+		});
 		EVT_CHECKBOX($d, $d->{case_box}, sub {
 				$$attr{match_case} = $d->{case_box}->GetValue;
 				Kephra::Edit::Search::_refresh_search_flags();
@@ -388,21 +392,30 @@ sub refresh_find_history {
 	$Kephra::temp{dialog}{search}{control} = 0;
 }
 
+my %color = (
+	norm_fore => Wx::Colour->new( 0x00, 0x00, 0x55 ),
+	norm_back => Wx::Colour->new( 0xff, 0xff, 0xff ),
+	alert_fore => Wx::Colour->new( 0xff, 0x33, 0x33 ),
+	alert_back => Wx::Colour->new( 0xff, 0xff, 0xff ),
+);
+
 sub incremental_search {
 	my $dialog = $Kephra::app{dialog}{search};
 	if ( $Kephra::config{search}{attribute}{incremental}
 		and not $Kephra::temp{dialog}{search}{control} ) {
-		my $inputbox = $dialog->{find_input};
-		Kephra::Edit::Search::set_find_item($inputbox->GetValue);
+		my $input = $dialog->{find_input};
+		my $pos   = $input->GetInsertionPoint;
+		Kephra::Edit::Search::set_find_item($input->GetValue);
 
 		if (Kephra::Edit::Search::first_increment) {
-			$inputbox->SetForegroundColour(	Wx::Colour->new( 0x00, 0x00, 0x55 ) );
-			$inputbox->SetBackgroundColour(	Wx::Colour->new( 0xff, 0xff, 0xff ) );
+			$input->SetForegroundColour( $color{norm_fore} );
+			$input->SetBackgroundColour( $color{norm_back} );
 		} else {
-			$inputbox->SetForegroundColour( Wx::Colour->new( 0xff, 0x33, 0x33 ) );
-			$inputbox->SetBackgroundColour( Wx::Colour->new( 0xff, 0xff, 0xff ) );
+			$input->SetForegroundColour( $color{alert_fore} );
+			$input->SetBackgroundColour( $color{alert_back} );
 		}
-		$inputbox->Refresh;
+		$input->SetInsertionPoint($pos);
+		$input->Refresh;
 	}
 }
 

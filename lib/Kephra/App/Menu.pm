@@ -13,34 +13,15 @@ sub _ref {
 	if (ref $_[1] eq 'Wx::Menu') {$Kephra::app{menu}{$_[0]}{ref} = $_[1]}
 	else                         {$Kephra::app{menu}{$_[0]}{ref}}
 }
+sub set_absolete { $Kephra::app{menu}{$_[0]}{absolete} = 1 }
+sub not_absolete { $Kephra::app{menu}{$_[0]}{absolete} = 0 }
+sub is_absolete  { $Kephra::app{menu}{$_[0]}{absolete}     }
 
-# ready menu for display
-sub ready {
-	my $id = shift;
-
-	if (ref $Kephra::app{menu}{$id} eq 'HASH'){
-		my $menu = $Kephra::app{menu}{$id};
-
-		if ($menu->{absolete} and $menu->{update})
-			{ $menu->{absolete} = 0 if $menu->{update}() ;
-			}
- 
-		if (ref $menu->{onopen} eq 'HASH')
-			{ $_->() for values %{$menu->{onopen}}; 
-		}
-
-		_ref($id);
-	}
-}
-sub set_absolete{ $Kephra::app{menu}{$_[0]}{absolete} = 1 }
-sub not_absolete{ $Kephra::app{menu}{$_[0]}{absolete} = 0 }
-sub is_absolete { $Kephra::app{menu}{$_[0]}{absolete}     }
-sub set_update  { 
+sub set_update   { 
 	$Kephra::app{menu}{$_[0]}{update} =  $_[1] if ref $_[1] eq 'CODE'
 }
 sub no_update  {
-	delete $Kephra::app{menu}{$_[0]}{update} 
-		if exists $Kephra::app{menu}{$_[0]}
+	delete $Kephra::app{menu}{$_[0]}{update} if exists $Kephra::app{menu}{$_[0]}
 }
 
 sub add_onopen_check{
@@ -49,14 +30,26 @@ sub add_onopen_check{
 }
 sub del_onopen_check{
 	return until $_[1];
-	delete $Kephra::app{ menu }{ $_[0] }{onopen}{ $_[1] }
-		if exists $Kephra::app{ menu }{ $_[0] }{onopen}{ $_[1] };
+	delete $Kephra::app{menu}{$_[0]}{onopen}{$_[1]}
+		if exists $Kephra::app{menu}{$_[0]}{onopen}{$_[1]};
+}
+
+# make menu ready for display
+sub ready {
+	my $id = shift;
+	if (ref $Kephra::app{menu}{$id} eq 'HASH'){
+		my $menu = $Kephra::app{menu}{$id};
+		if ($menu->{absolete} and $menu->{update})
+			{ $menu->{absolete} = 0 if $menu->{update}() }
+		if (ref $menu->{onopen} eq 'HASH')
+			{ $_->() for values %{$menu->{onopen}} }
+		_ref($id);
+	}
 }
 
 # create on runtime changeable menus
 sub create_dynamic {
 	my ( $menu_id, $menu_name ) = @_ ;
-
 	#
 	if ($menu_name eq '&insert_templates') {
 		set_update($menu_id, sub {
@@ -153,7 +146,6 @@ sub create_dynamic {
 # create colid, not on runtime changeable menus
 sub create_static{
 	my ($menu_id, $menu_def) = @_;
-
 	return unless ref $menu_def eq 'ARRAY';
 	not_absolete($menu_id);
 	eval_data($menu_id, assemble_data_from_def($menu_def));
@@ -226,7 +218,6 @@ sub assemble_data_from_def {
 sub eval_data {
 	my $menu_id = shift;
 	return unless defined $menu_id;
-
 	#emty the old or create new menu under the given ID
 	my $menu = _ref($menu_id);
 	if (defined $menu) {
@@ -236,13 +227,12 @@ sub eval_data {
 	}
 
 	my $menu_data = shift;
-
 	unless (ref $menu_data eq 'ARRAY') {
 		_ref($menu_id, $menu); 
 		return $menu;
 	}
-	my $win = Kephra::App::Window::_ref();
 
+	my $win = Kephra::App::Window::_ref();
 	my $kind;
 	my $item_id = exists $Kephra::app{menu}{$menu_id}{item_id}
 		? $Kephra::app{menu}{$menu_id}{item_id}
@@ -292,14 +282,15 @@ sub eval_data {
 				$menu_item->Check( $item_data->{state}() )
 			} ) if ref $item_data->{state} eq 'CODE';
 
-			EVT_MENU          ($win, $item_id, $item_data->{call} );
-			EVT_MENU_HIGHLIGHT($win, $item_id, sub {
+			EVT_MENU          ($win, $menu_item, $item_data->{call} );
+			EVT_MENU_HIGHLIGHT($win, $menu_item, sub {
+
 				Kephra::App::StatusBar::info_msg( $item_data->{help} )
 			});
 			$menu->Append( $menu_item );
 			$item_id++; 
 		}
-	1; #sucess
+	1; #sucess print "hl $item_id $menu_item\n";
 	}
 
 	Kephra::API::EventTable::add_call

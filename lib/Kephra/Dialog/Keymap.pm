@@ -1,6 +1,14 @@
 package Kephra::Dialog::Keymap;
 
 use strict;
+use Wx qw( wxNO_FULL_REPAINT_ON_RESIZE wxSYSTEM_MENU wxCAPTION 
+		wxMINIMIZE_BOX wxCLOSE_BOX wxRESIZE_BORDER
+		wxVERTICAL wxTOP wxGROW wxBOTTOM wxGROW wxBOTH
+		wxWHITE wxWANTS_CHARS 
+);
+
+			
+
 
 sub keymap {
 	my $frame = shift;
@@ -8,8 +16,8 @@ sub keymap {
 	elements::proton::show::keyboard_map();
 	return 0;
 
-	if ( !$Kephra::temp{'keymap'}{'dialog_active'}
-		|| $Kephra::temp{'keymap'}{'dialog_active'} == 0 ) {
+	if ( !$Kephra::temp{keymap}{dialog_active}
+		|| $Kephra::temp{keymap}{dialog_active} == 0 ) {
 
 		# init win mit grunddesign
 		$Kephra::temp{'keymap'}{'dialog_active'} = 1;
@@ -22,9 +30,9 @@ sub keymap {
 			wxNO_FULL_REPAINT_ON_RESIZE | wxSYSTEM_MENU | wxCAPTION
 				| wxMINIMIZE_BOX | wxCLOSE_BOX | wxRESIZE_BORDER,
 		);
-		$frame->{'keymap_win'} = $keymap_win;
+		$frame->{keymap_win} = $keymap_win;
 		Kephra::App::Window::load_icon( $keymap_win,
-			$Kephra::config{'main'}{'icon'} );
+			$Kephra::config{main}{icon} );
 		$keymap_win->SetBackgroundColour(wxWHITE);
 
 	  #my $keymap_ground = Wx::Panel->new($keymap_win, -1, [0,0], [-1,-1], ,);
