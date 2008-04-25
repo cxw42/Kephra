@@ -1,5 +1,5 @@
 package Kephra::Config::Embedded;
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 
 #   complete set of config to be able to start app under all circumstances
 
@@ -7,7 +7,7 @@ our $VERSION = '0.17';
 use strict;
 
 
-sub get_global_settings {
+sub global_settings {
 	return {
 		about => {
 			purpose => 'build in global settings',
@@ -26,8 +26,10 @@ sub get_global_settings {
 				defaultfile => 'interface/contextmenus.yml',
 				id => {
 					document_context => 'editpanel_contextmenu',
-					document_list => '&document_list',
+					document_list => '&document_change',
 					document_selection => 'textselection_contextmenu',
+					file_history => '&file_history',
+					file_insert_templates => '&insert_templates',
 					status_eol => 'document_lineendchar_contextmenu',
 					status_info => 'document_info_contexmenu',
 					status_syntaxmode => 'document_syntaxstyle_contextmenu',
@@ -35,12 +37,13 @@ sub get_global_settings {
 					toolbar_search => 'searchbar_contextmenu',
 				},
 			},
-			error_output => 'dialog',
-			iconset_path => 'icon/set/jenne/',
-			localisation_file => 'localisation/deutsch_iso.conf',
+			error_output => 'dialog',                         # (dialog|console|none)
+			iconset_path => 'interface/icon/set/jenne/',                # rootpath for all icons
+			localisation_file => 'english.conf', # file relative to the localisation directory, defines language of the texts in the program
 			menubar => {
 				file => 'interface/mainmenu.yml',
 				node => 'full_menubar',
+				responsive => 1,                              # (0|1) 0 prevent menubar item shading
 			},
 			statusbar => {
 				interactive => 1,
@@ -49,21 +52,21 @@ sub get_global_settings {
 			},
 			tabbar => {
 				button => {
-					'close' => 1,
+					close => 1,
 					new => 0,
 				},
-				contextmenu => 'document_list',
-				contextmenu_use => 1,
-				file_info => 'name',
-				info_symbol => 1,
-				insert => 'rightmost',
-				mark_configs => 1,
-				max_tab_width => 25,
-				middle_click => 'file-close',
-				number_tabs => 0,
-				seperator_line => 1,
-				switch_back => 1,
-				visible => 1,
+				contextmenu => 'document_list',# id of connected context menu
+				contextmenu_use => 1,          # (0|1) enable conextmenu ovr tabbar
+				file_info => 'name',           # -NI (name|firstname) which part of filename to show
+				info_symbol => 1,              # (0|1) show *(unsaved) and #(write protected) symbols on end of tabs
+				insert => 'rightmost',         # -NI tab position of opened file
+				mark_configs => 1,             # (0|1) set configfile names in square brackets
+				max_tab_width => 25,           # max tab width in chars, longer filenames will be cut and ... added
+				middle_click => 'file-close',  # command that is performed when middle click over tabbar
+				number_tabs => 0,              # (0|1) display a number before the file name in the tabs
+				seperator_line => 1,           # (0|1) visibility of seperator line above
+				switch_back => 1,              # (0|1) switch back if you klick on current tab
+				visible => 1,                  # (0|1) in tabbar you can see which files are open
 			},
 			toolbar => {
 				all => {
@@ -83,19 +86,12 @@ sub get_global_settings {
 					contextmenu => 'toolbar_search',
 					file => 'interface/appbars.conf',
 					node => 'searchbar',
-					position => 'bottom',
+					position => 'bottom',     # (top|middle|bottom)
 					visible => 1,
 				},
 			},
 			window => {
-				default => {
-					position_x => 0,
-					position_y => 0,
-					size_x => 'full_screen',
-					size_y => 'full_screen',
-					title => '$path $vnr',
-				},
-				icon => 'icon/app/proton.ico',
+				icon => 'interface/icon/app/proton.ico',
 				max_number => 1,
 				position_x => 10,
 				position_y => 10,
@@ -103,11 +99,17 @@ sub get_global_settings {
 				size_x => 660,
 				size_y => 531,
 				'stay_on_top' => 0,
-				title => '$path $vnr',
+				title => '$filepath - $appname $version', 
+										# $filepath - path of current file
+										# $filename - just the name.exe
+										# $docnr - nr of current file
+										# $doccount - nr of all opened files
+										# $appname - name of this programm
+										# $version - version of this programm
 			},
 			xp_style => 1,
 		},
-		dialogs => {
+		dialog => {
 			button_handing => 'right',
 			search => {
 				save_position => 1,
@@ -127,15 +129,15 @@ sub get_global_settings {
 			auto => {
 				brace => {
 					glue_tangent => 0,
-					indention => 1,
-					'join' => 1,
-					make => 1,
+					indention => 1,# indet after opening braces 1 tab more
+					join => 1,    # deletes closing bracket if there are 2 and 1 has no matching partner
+					make => 1,     # generates closing bracket for ne blocks
 				},
-				indention => 1,
+				indention => 1,    # indents new lines like previous
 			},
 			contextmenu => {
-				file    => 'xrc/pce_contextmenu_deutsch.xrc',
-				node    => 'pce_contextmenu_deutsch',
+				ID_selection => 'document_selection',
+				ID_normal => 'document_context',
 				visible => 'custom',
 			},
 			font => {
@@ -208,14 +210,14 @@ sub get_global_settings {
 				'open'    => [],
 			},
 			defaultsettings => {
-				codepage    => 0,
-				cursorpos   => 0,
-				EOL_open    => 'auto',
-				EOL_new     => 'cr+lf',
-				readonly    => 'protect',
-				syntaxstyle => 'auto',
-				tab_size    => '4',
-				tab_use     => 0,
+				EOL_open    => 'auto',    # (auto|cr+lf|cr|lf) EOL settings for new files, -NI auto means take setting of the last touched file
+				EOL_new     => 'cr+lf',   # (auto|cr|lf|cr+lf) EOL of opened files, if not set to auto, the file automaticly will converted
+				codepage    => 0,         # -NI codepage of the used charset, not implemented yet
+				cursor_pos  => 0,
+				readonly    => 'protect', # (0|1|2|on|off|protect) if =1 it set a write protection on readonly files
+				syntaxstyle => 'auto',    # (auto|none|lang_id) which syntaxstyle on new files
+				tab_size    => '4',       # (0..n) how much (white)spaces equals one tab?
+				tab_use     => 0,         # use tab chars
 			},
 			endings => {
 				ada     => 'ada ads adb',
@@ -266,33 +268,32 @@ sub get_global_settings {
 				path => [],
 			},
 			'open' => {
-				dir_recursive       => 1,
-				each_once           => 1,
-				in_current_dir      => 1,
-				into_empty_doc      => 1,
-				into_only_empty_doc => 1,
-				notify_change       => 30,
-				only_text           => 1,
-				single_doc          => 0,
-			 },
+				dir_recursive       => 1, # opens dirs recursive
+				each_once           => 1, # opens each file only once
+				in_current_dir      => 1, # opens dialog with the directory of current file
+				into_empty_doc      => 0, # replacing new empty documents while opening a file
+				into_only_empty_doc => 1, # replacing new empty doc if the empty is the only one
+				notify_change       => 30,# (0..n) timer executed check if file has changed in sec
+				only_text           => 1, # to open only text files
+				single_doc          => 0, # opens only 1 document at once, enables an single document editor
+			},
 			save => {
-				auto_save     => 30,
-				b4_quit       => 'ask',
-				b4_close      => 'ask',
-				change_doc    => 0,
-				empty         => 0,
-				on_leave      => 0,
-				overwrite     => 'ask',
-				reload_config => 1,
-				tilde_backup  => 0,
-				unchanged     => 0,
-				unchanged_all => 0,
+				auto_save     => 30,    # -NI(0|n) timer executed save after n sec
+				b4_quit       => 'ask', # (yes|no|ask) filesaving before closing a file
+				b4_close      => 'ask', # (yes|no|ask) filesaving before closing the progr
+				change_doc    => 0,     # saves everytime you change document
+				empty         => 0,     # -NI saves (restore) automaticly also empty files
+				on_leave      => 0,     # -NI save on leaving focus of current document
+				overwrite     => 'ask', # (yes|no|ask) before overwriting files
+				reload_config => 1,     # reload config automatic after saving it
+				tilde_backup  => 0,     # creates UNIX  backup files with filename+~
+				unchanged     => 0,     # saves (touches) automaticly also unchanged files
 			},
 			session => {
 				autosave  => 'extern',
 				backup    => 'backup.conf',
 				current   => 'current.conf',
-				directory => 'session/',
+				directory => 'session/', # subdir of config where to look for session files
 				node      => 'files',
 			},
 			templates => {
@@ -302,13 +303,14 @@ sub get_global_settings {
 		},
 		search => {
 			attribute => {
-				match_regex      => 0,
 				auto_wrap        => 1,
-				match_case       => 0,
-				match_word_begin => 0,
 				fast_steps       => 7,
-				match_whole_word => 0,
+				in               => 'document',
 				incremental      => 1,
+				match_case       => 0,
+				match_regex      => 0,
+				match_whole_word => 0,
+				match_word_begin => 0,
 			},
 			history => {
 				'length' => 12,
@@ -334,7 +336,7 @@ sub get_global_settings {
 
 
 
-sub get_command_list {
+sub commandlist {
 	return {
 		call => {
 			app => {
@@ -679,7 +681,7 @@ sub get_command_list {
 						'reload' => 'Kephra::Config::Global::reload_current()',
 						'load-from' => 'Kephra::Config::Global::load_from()',
 						'load-backup' => 'Kephra::Config::Global::load_backup_file()',
-						'load-defaults' => 'Kephra::Config::Global::load_default_file()',
+						'load-defaults' => 'Kephra::Config::Global::load_defaults()',
 						'merge' => 'Kephra::Config::Global::merge_with()',
 						'save' => 'Kephra::Config::Global::save()',
 						'save-as' => 'Kephra::Config::Global::save_as()',
@@ -1182,7 +1184,7 @@ sub get_command_list {
 
 
 
-sub get_english_localisation {
+sub english_localisation {
 	return {
 		about => {
 			language => 'english',
@@ -2192,17 +2194,454 @@ sub get_english_localisation {
 
 
 
-sub get_mainmenu {
-	return {
-	
-	}
+sub mainmenu {
+	return [
+		{'menu file' => [
+			'item file-new',
+			'',
+			'menu file_insert_templates',
+			'',
+			'item file-open',
+			{'menu file_open' => [
+				'item file-reload',
+				'item file-reload-all',
+				'',
+				'item file-insert',
+				'',
+				'item file-open-dir',
+			],},
+			'menu file_history',
+			'',
+			'item file-save',
+			#'menu file_save' => []
+			'item file-save-all',
+			'item file-save-as',
+			'item file-save-copy-as',
+			'item file-rename',
+			#'item file-print',
+			'',
+			'item file-close',
+			'item file-close-other',
+			'item file-close-all',
+			'',
+			'item app-exit',
+		],},
+		{'menu edit' => [
+			'item edit-changes-undo',
+			'item edit-changes-redo',
+			{'menu edit_changes' => [
+				'item edit-changes-undo-several',
+				'item edit-changes-redo-several',
+				'',
+				'item edit-changes-goto-begin',
+				'item edit-changes-goto-end',
+				'',
+				'item edit-changes-delete',
+			],},
+			'',
+			'item edit-cut',
+			'item edit-copy',
+			'item edit-paste',
+			'item edit-replace',
+			'item edit-delete',
+			'',
+			'item select-document',
+			{'menu selection' => [
+				'item edit-selection-move-char-left',
+				'item edit-selection-move-char-right',
+				'item edit-selection-move-line-up',
+				'item edit-selection-move-line-down',
+				'item edit-selection-move-page-up',
+				'item edit-selection-move-page-down',
+			],},
+			{'menu current_line' => [
+				'item edit-line-cut',
+				'item edit-line-copy',
+				'item edit-line-duplicate',
+				'item edit-line-replace',
+				'item edit-line-swap',
+				'item edit-line-delete',
+				'item edit-line-delete-left',
+				'item edit-line-delete-right',
+				'',
+				'item edit-line-move-line-up',
+				'item edit-line-move-line-down',
+				'item edit-line-move-page-up',
+				'item edit-line-move-page-down',
+			],},
+			#'menu navigation' => [,
+			'',
+			{'menu selection_format' => [
+				'item edit-selection-format-indent-char',
+				'item edit-selection-format-dedent-char',
+				'item edit-selection-format-indent-tab',
+				'item edit-selection-format-dedent-tab',
+				'item edit-selection-format-align-on-begin',
+				'',
+				'item edit-selection-format-join-lines',
+				'',
+				'item edit-selection-format-block-on-right-margin',
+				'item edit-selection-format-block-on-width',
+				'item edit-selection-format-linewrap-on-right-margin',
+				'item edit-selection-format-linewrap-on-width',
+				'',
+				'item edit-selection-format-del-trailing-whitespace',
+			],},
+			{'menu selection_comment' => [
+				'item edit-selection-comment-add-perl',
+				'item edit-selection-comment-del-perl',
+				'item edit-selection-comment-toggle-perl',
+				'',
+				'item edit-selection-comment-add-c',
+				'item edit-selection-comment-del-c',
+				'',
+				'item edit-selection-comment-add-xml',
+				'item edit-selection-comment-del-xml',
+			],},
+			{'menu selection_convert' => [
+				'item edit-selection-convert-uppercase',
+				'item edit-selection-convert-lowercase',
+				'item edit-selection-convert-titlecase',
+				'item edit-selection-convert-sentencecase',
+				'',
+				'item edit-selection-convert-spaces2tabs',
+				'item edit-selection-convert-tabs2spaces',
+			],},
+		],},
+		{'menu search' => [
+			'item view-toolbar-search-goto',
+			'item view-dialog-find',
+			'item view-dialog-replace',
+			{'menu find_functions' => [
+				'item find-prev',
+				'item find-next',
+				'item find-first',
+				'item find-last',
+				'item find-selection',
+			],},
+			{'menu replace_functions' => [
+				'item replace-prev',
+				'item replace-next',
+				'item replace-all',
+				'item replace-with-confirm',
+				'item replace-selection',
+			],},
+			{'menu search_attributes' => [
+				'checkitem search-attribute-incremental-switch',
+				'checkitem search-attribute-autowrap-switch',
+				'',
+				'checkitem search-attribute-regex-switch',
+				'checkitem search-attribute-match-whole-word-switch',
+				'checkitem search-attribute-match-word-begin-switch',
+				'checkitem search-attribute-match-case-switch',
+				'',
+				'radioitem search-range-selection',
+				'radioitem search-range-document',
+				'radioitem search-range-open-docs',
+			],},
+			'',
+			'item goto-line',
+			'item goto-last-edit',
+			'',
+			{'menu bookmark_goto' => [
+				'item bookmark-goto-1',
+				'item bookmark-goto-2',
+				'item bookmark-goto-3',
+				'item bookmark-goto-4',
+				'item bookmark-goto-5',
+				'item bookmark-goto-6',
+				'item bookmark-goto-7',
+				'item bookmark-goto-8',
+				'item bookmark-goto-9',
+				'item bookmark-goto-0',
+			],},
+			{'menu bookmark_toggle' => [
+				'item bookmark-toggle-1',
+				'item bookmark-toggle-2',
+				'item bookmark-toggle-3',
+				'item bookmark-toggle-4',
+				'item bookmark-toggle-5',
+				'item bookmark-toggle-6',
+				'item bookmark-toggle-7',
+				'item bookmark-toggle-8',
+				'item bookmark-toggle-9',
+				'item bookmark-toggle-0',
+			],},
+			'item bookmark-delete-all',
+		],},
+		{'menu document' => [
+			{'menu document_change' => [
+				'item document-change-prev',
+				'item document-change-next',
+				'item document-change-back',
+				'',
+				'item document-move-left',
+				'item document-move-right',
+			],},
+			'',
+			{'menu document_syntaxmode' => [
+				'item document-syntaxmode-auto',
+				'checkitem document-syntaxmode-none',
+				'',
+				{'menu document_syntaxmode_A-M' => [
+					'checkitem document-syntaxmode-ada',
+					'checkitem document-syntaxmode-as',
+					'checkitem document-syntaxmode-asm',
+					'checkitem document-syntaxmode-c',
+					'checkitem document-syntaxmode-cs',
+					'checkitem document-syntaxmode-conf',
+					'checkitem document-syntaxmode-context',
+					'checkitem document-syntaxmode-css',
+					'checkitem document-syntaxmode-eiffel',
+					'checkitem document-syntaxmode-forth',
+					'checkitem document-syntaxmode-fortran',
+					'checkitem document-syntaxmode-html',
+					'checkitem document-syntaxmode-idl',
+					'checkitem document-syntaxmode-java',
+					'checkitem document-syntaxmode-js',
+					'checkitem document-syntaxmode-latex',
+					'checkitem document-syntaxmode-lisp',
+					'checkitem document-syntaxmode-lua',
+				],},
+				{'menu document_syntaxmode_N-Z' => [
+					'checkitem document-syntaxmode-nsis',
+					'checkitem document-syntaxmode-pascal',
+					'checkitem document-syntaxmode-perl',
+					'checkitem document-syntaxmode-php',
+					'checkitem document-syntaxmode-ps',
+					'checkitem document-syntaxmode-python',
+					'checkitem document-syntaxmode-ruby',
+					'checkitem document-syntaxmode-scheme',
+					'checkitem document-syntaxmode-sh',
+					'checkitem document-syntaxmode-sql',
+					'checkitem document-syntaxmode-tcl',
+					'checkitem document-syntaxmode-tex',
+					'checkitem document-syntaxmode-vb',
+					'checkitem document-syntaxmode-vbs',
+					'checkitem document-syntaxmode-xml',
+					'checkitem document-syntaxmode-yaml',
+				],},
+				'',
+				{'menu document_syntaxmode_compiled' => [
+					'checkitem document-syntaxmode-asm',
+					'checkitem document-syntaxmode-c',
+					'checkitem document-syntaxmode-cs',
+					'checkitem document-syntaxmode-eiffel',
+					'checkitem document-syntaxmode-forth',
+					'checkitem document-syntaxmode-fortran',
+					'checkitem document-syntaxmode-java',
+					'checkitem document-syntaxmode-pascal',
+				],},
+				{'menu document_syntaxmode_interpreted' => [
+					'checkitem document-syntaxmode-js',
+					'checkitem document-syntaxmode-lisp',
+					'checkitem document-syntaxmode-lua',
+					'checkitem document-syntaxmode-nsis',
+					'checkitem document-syntaxmode-perl',
+					'checkitem document-syntaxmode-php',
+					'checkitem document-syntaxmode-ps',
+					'checkitem document-syntaxmode-python',
+					'checkitem document-syntaxmode-ruby',
+					'checkitem document-syntaxmode-scheme',
+					'checkitem document-syntaxmode-sh',
+					'checkitem document-syntaxmode-tcl',
+					'checkitem document-syntaxmode-vb',
+					'checkitem document-syntaxmode-vbs',
+				],},
+				{'menu document_syntaxmode_document' => [
+					'checkitem document-syntaxmode-context',
+					'checkitem document-syntaxmode-css',
+					'checkitem document-syntaxmode-html',
+					'checkitem document-syntaxmode-latex',
+					'checkitem document-syntaxmode-ps',
+					'checkitem document-syntaxmode-tex',
+				],},
+				{'menu document_syntaxmode_data_structure' => [
+					'checkitem document-syntaxmode-conf',
+					'checkitem document-syntaxmode-sql',
+					'checkitem document-syntaxmode-xml',
+					'checkitem document-syntaxmode-yaml',
+				],},
+				{'menu document_syntaxmode_web' => [
+					'checkitem document-syntaxmode-as',
+					'checkitem document-syntaxmode-css',
+					'checkitem document-syntaxmode-html',
+					'checkitem document-syntaxmode-js',
+					'checkitem document-syntaxmode-perl',
+					'checkitem document-syntaxmode-php',
+					'checkitem document-syntaxmode-vbs',
+				],},
+				{'menu document_syntaxmode_special' => [
+					'checkitem document-syntaxmode-idl',
+				],},
+			],},
+			'checkitem document-brace-light',
+			'checkitem document-brace-indention',
+			'checkitem document-auto-indention',
+			'checkitem document-tabs-use',
+			{'menu document_tab_width' => [
+				'radioitem document-tabs-width-1',
+				'radioitem document-tabs-width-2',
+				'radioitem document-tabs-width-3',
+				'radioitem document-tabs-width-4',
+				'radioitem document-tabs-width-5',
+				'radioitem document-tabs-width-6',
+				'radioitem document-tabs-width-8',
+			],},
+			{'menu document_lineendchar' => [
+				'radioitem document-EOL-lf',
+				'radioitem document-EOL-cr',
+				'radioitem document-EOL-cr+lf',
+			],},
+			{'menu document_readonly' => [
+				'radioitem document-readonly-as-attr',
+				'radioitem document-readonly-on',
+				'radioitem document-readonly-off',
+			],},
+		],},
+		{'menu file_session' => [
+			'item file-session-open',
+			'item file-session-add',
+			'item file-session-save',
+			'',
+			'item file-session-backup-open',
+			'item file-session-backup-save',
+			'',
+			'item file-session-import',
+			'item file-session-export',
+		],},
+		{'menu view' => [
+			'checkitem view-window-stay-on-top',
+			'',
+			{'menu view_bars' => [
+				'checkitem view-toolbar-main',
+				'checkitem view-tabbar',
+				'checkitem view-toolbar-search',
+				'checkitem view-statusbar',
+			],},
+			{'menu view_contextmenu' => [
+				'checkitem view-tabbar-contexmenu',
+				{'menu view_editpanel_contexmenu' => [
+					'radioitem view-editpanel-contextmenu-custom',
+					'radioitem view-editpanel-contextmenu-default',
+					'radioitem view-editpanel-contextmenu-no',
+				],},
+				'checkitem view-statusbar-contexmenu',
+			],},
+			'',
+			'checkitem view-editpanel-margin-marker',
+			'checkitem view-editpanel-margin-line-number',
+			#'checkitem view-editpanel-margin-text-fold',
+			{'menu view_textmargin' => [
+				'radioitem view-editpanel-margin-text-0',
+				'radioitem view-editpanel-margin-text-1',
+				'radioitem view-editpanel-margin-text-2',
+				'radioitem view-editpanel-margin-text-4',
+				'radioitem view-editpanel-margin-text-6',
+				'radioitem view-editpanel-margin-text-8',
+				'radioitem view-editpanel-margin-text-10',
+				'radioitem view-editpanel-margin-text-12',
+			],},
+			'',
+			'checkitem view-editpanel-right-margin',
+			'checkitem view-editpanel-indention-guide',
+			'checkitem view-editpanel-caret-line',
+			'checkitem view-editpanel-line-wrap',
+			'checkitem view-editpanel-EOL',
+			'checkitem view-editpanel-whitespace',
+			'item view-editpanel-font',
+		],},
+		{'menu config' => [
+			'item view-dialog-config',
+			'',
+			{'menu config_global' => [
+				'item config-file-global-open',
+				'item config-file-global-reload',
+				'item config-file-global-save',
+				'',
+				'item config-file-global-load-from',
+				'item config-file-global-merge',
+				'item config-file-global-save-as',
+				'',
+				'item config-file-global-load-backup',
+				'item config-file-global-load-defaults',
+			],},
+			{'menu config_interface' => [
+				'item config-file-interface-commandlist',
+				'item config-file-interface-menubar',
+				'item config-file-interface-contextmenu',
+				'item config-file-interface-toolbar',
+				#'item config-file-interface-maintoolbar',
+				#'item config-file-interface-searchbar',
+				#'item config-file-interface-statusbar',
+			],},
+			{'menu config_localisation' => [
+				'item config-file-localisation-english',
+				'item config-file-localisation-deutsch-iso',
+				'item config-file-localisation-deutsch',
+				#'item config-file-localisation-deutsch-utf',
+				'item config-file-localisation-cesky-iso',
+				#'item config-file-localisation-cesky-utf',
+			],},
+			{'menu config_syntaxmode_A-M' => [
+				'item config-file-syntaxmode-ada',
+				'item config-file-syntaxmode-as',
+				'item config-file-syntaxmode-asm',
+				'item config-file-syntaxmode-c',
+				'item config-file-syntaxmode-cs',
+				'item config-file-syntaxmode-conf',
+				'item config-file-syntaxmode-context',
+				'item config-file-syntaxmode-css',
+				'item config-file-syntaxmode-eiffel',
+				'item config-file-syntaxmode-forth',
+				'item config-file-syntaxmode-fortran',
+				'item config-file-syntaxmode-html',
+				'item config-file-syntaxmode-idl',
+				'item config-file-syntaxmode-java',
+				'item config-file-syntaxmode-js',
+				'item config-file-syntaxmode-latex',
+				'item config-file-syntaxmode-lisp',
+				'item config-file-syntaxmode-lua',
+			],},
+			{'menu config_syntaxmode_N-Z' => [
+				'item config-file-syntaxmode-nsis',
+				'item config-file-syntaxmode-pascal',
+				'item config-file-syntaxmode-perl',
+				'item config-file-syntaxmode-php',
+				'item config-file-syntaxmode-ps',
+				'item config-file-syntaxmode-python',
+				'item config-file-syntaxmode-ruby',
+				'item config-file-syntaxmode-scheme',
+				'item config-file-syntaxmode-sh',
+				'item config-file-syntaxmode-sql',
+				'item config-file-syntaxmode-tcl',
+				'item config-file-syntaxmode-tex',
+				'item config-file-syntaxmode-vb',
+				'item config-file-syntaxmode-vbs',
+				'item config-file-syntaxmode-xml',
+				'item config-file-syntaxmode-yaml',
+			],},
+			'item config-file-templates',
+		],},
+		{'menu help' => [
+			'item view-documentation-welcome',
+			'item view-documentation-this-version',
+			'item view-documentation-navigation-guide',
+			'item view-documentation-feature-list',
+			'item view-documentation-advanced-tour',
+			'item view-documentation-credits',
+			'',
+			'item view-dialog-keymap',
+			'item view-dialog-info',
+		],},
+	]
 }
 
 
 
 
 
-sub get_contextmenus {
+sub contextmenus {
 	return {
 		'editpanel_contextmenu' => [
 			'item edit-changes-undo',
@@ -2292,7 +2731,7 @@ sub get_contextmenus {
 
 
 
-sub get_toolbars {
+sub toolbars {
 	return {
 		main_toolbar => [
 			'item file-new',

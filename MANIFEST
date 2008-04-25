@@ -81,8 +81,6 @@ MANIFEST			This list of files
 META.yml
 README
 share/config/global/autosaved.conf
-share/config/global/default/default.conf
-share/config/global/default/README.txt
 share/config/global/sub/documentation/cesky.conf
 share/config/global/sub/documentation/deutsch.conf
 share/config/global/sub/documentation/english.conf

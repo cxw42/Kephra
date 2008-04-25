@@ -1,65 +1,57 @@
 package Kephra::Config::Global;
-$VERSION = '0.20';
+$VERSION = '0.22';
 
 # handling main config files under /config/global/
-
 use strict;
 
 sub _conf_sub_path {'global'}
-
+sub _current_file  {Kephra::Config::filepath( $Kephra::temp{file}{config}{auto});
+}
 sub load_autosaved {
-	my @main_conf_files = (
-		$Kephra::temp{file}{config}{auto},
-		$Kephra::temp{file}{config}{auto}.'~',
-		$Kephra::temp{file}{config}{default}
-	);
+	my $autosave = _current_file();
+	my $backup = $autosave . '~';
 
-	# try first auto config file, than backup, then defaults
-	for my $configfile (@main_conf_files) {
-		$configfile = Kephra::Config::filepath( $configfile );
-		if ( -e $configfile ) {
-			%Kephra::config = %{ Kephra::Config::File::load($configfile) };
+	for my $file ($autosave, $backup) {
+		if ( -e $file ) {
+			%Kephra::config = %{ Kephra::Config::File::load($file) };
 			last if %Kephra::config;
-			rename $configfile, 'failed.' . $configfile;
+			rename $file, $file . '.failed';
 		}
 	}
-
 	# emergency program if configs missing
 	unless ( %Kephra::config ) {
 		require Kephra::Config::Embedded;
-		%Kephra::config = %{Kephra::Config::Embedded::get_global_settings()};
+		%Kephra::config = %{ Kephra::Config::Embedded::global_settings() };
 	}
 }
 
 sub save_autosaved {
-	my $file_name = Kephra::Config::filepath($Kephra::temp{file}{config}{auto});
+	my $file_name = _current_file();
 	rename $file_name, $file_name . '~';
 	Kephra::Config::File::store( $file_name, \%Kephra::config );
 }
 
 sub open_current_file {
 	save_current();
-	Kephra::Document::Internal::add( 
-		Kephra::Config::filepath( $Kephra::temp{file}{config}{auto} )
-	);
-	Kephra::File::reload_current();
+	Kephra::Document::Internal::add( _current_file() );
+	#Kephra::File::reload_current();
 	Kephra::Document::set_attribute('config_file',1);
 	Kephra::App::TabBar::refresh_current_label();
 }
 
-sub load_backup_file {
-	reload( Kephra::Config::filepath( $Kephra::temp{file}{config}{auto}.'~') )
-}
+sub load_backup_file { reload( _current_file().'~' ) }
 
-sub load_default_file {
-	reload( Kephra::Config::filepath( $Kephra::temp{file}{config}{default} ) )
+sub load_defaults {
+	require Kephra::Config::Embedded;
+	%Kephra::config = %{ Kephra::Config::Embedded::global_settings() };
+	evaluate();
 }
 
 sub load_from {
 	my $filename = Kephra::Dialog::get_file_open(
 		Kephra::App::Window::_ref(),
 		$Kephra::localisation{dialog}{config_file}{load},
-		Kephra::Config::filepath('general'),
+		Kephra::Config::dirpath( _conf_sub_path() ),
 		$Kephra::temp{file}{filterstring}{config}
 	);
 	reload($filename) if -e $filename;
@@ -125,8 +117,7 @@ print "  apply sets:", Benchmark::timestr( Benchmark::timediff( $t4, $t3 ) ), "\
 
 
 sub reload {
-	my $configfile = shift ||
-		Kephra::Config::filepath( $Kephra::temp{file}{config}{auto} );
+	my $configfile = shift || _current_file();
 	if ( -e $configfile ) {
 		Kephra::Document::Internal::save_properties();
 		my %test_hash = %{ Kephra::Config::File::load($configfile) };
@@ -151,9 +142,7 @@ sub reload_tree {
 		Kephra::Document::Internal::eval_properties();
 }
 
-sub reload_current {
-	reload( Kephra::Config::filepath( $Kephra::temp{file}{config}{auto} ) );
-}
+sub reload_current { reload( _current_file() ) }
 
 sub eval_config_file {
 	my $file_name   = shift;
@@ -191,8 +180,7 @@ sub eval_config_file {
 
 #
 sub save {
-	my $file_name = shift ||
-			Kephra::Config::filepath( $Kephra::temp{file}{config}{auto} );
+	my $file_name = shift || _current_file();
 	update();
 	Kephra::Config::File::store( $file_name, \%Kephra::config );
 }
@@ -207,16 +195,14 @@ sub save_as {
 	save($file_name) if ( length($file_name) > 0 );
 }
 
-sub save_current {
-	save( Kephra::Config::filepath( $Kephra::temp{file}{config}{auto} ) );
-}
+sub save_current { save( _current_file() ) }
 
 #
 sub merge_with {
 	my $app_win  = Kephra::App::Window::_ref();
 	my $filename = Kephra::Dialog::get_file_open( $app_win,
 		$Kephra::localisation{dialog}{config_file}{load},
-		Kephra::Config::filepath( _conf_sub_path(), 'sub'),
+		Kephra::Config::dirpath( _conf_sub_path(), 'sub'),
 		$Kephra::temp{file}{filterstring}{config}
 	);
 	load_subconfig($filename);

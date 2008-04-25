@@ -121,6 +121,7 @@ sub _create_keymap{
 sub eval_data {
 	my $list = _data();
 	my $keymap = \@{$Kephra::app{editpanel}{keymap}};
+	Kephra::Config::existing_dirpath( $Kephra::config{app}{iconset_path} );
 
 	my ($item_data, $ico_path);
 	for ( keys %$list ){

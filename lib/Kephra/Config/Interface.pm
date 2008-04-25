@@ -7,9 +7,9 @@ use strict;
 
 sub load {
 	my $conf      = $Kephra::config{app};
-	my $gui_store = $Kephra::temp{configfile};
-	my $gui_ref   = $Kephra::temp{config};
-	my $conf_path = $Kephra::temp{path}{config};
+	#my $gui_store = $Kephra::temp{configfile};
+	#my $gui_ref   = $Kephra::temp{config};
+	#my $conf_path = $Kephra::temp{path}{config};
 
 	# localisation
 	my $l = Kephra::Config::File::load(
@@ -17,7 +17,7 @@ sub load {
 	);
 	unless ( $l and %$l ) {
 		require Kephra::Config::Embedded;
-		$l = Kephra::Config::Embedded::get_english_localisation();
+		$l = Kephra::Config::Embedded::english_localisation();
 	}
 	%Kephra::localisation = %$l;
 
@@ -28,13 +28,13 @@ sub load {
 		( Kephra::API::CommandList::_config() );
 	unless ($cmd_list_def) {
 		require Kephra::Config::Embedded;
-		$cmd_list_def = Kephra::Config::Embedded::get_command_list();
+		$cmd_list_def = Kephra::Config::Embedded::commandlist();
 	}
 	Kephra::API::CommandList::assemble_data($cmd_list_def);
 	Kephra::API::CommandList::eval_data();
 	undef $cmd_list_def;
-	delete $Kephra::localisation {commandlist};
-	delete $Kephra::localisation {key};
+	delete $Kephra::localisation{commandlist};
+	delete $Kephra::localisation{key};
 }
 
 sub del_temp_data {}
@@ -46,8 +46,7 @@ sub store_cache {}
 # lcalisation stuff
 ####################################
 
-my %lang_map = ();
-
+#my %lang_map = ();
 
 sub set_lang_2_cesky_utf   { change_localisation('cesky',  'utf') }
 sub set_lang_2_cesky_iso   { change_localisation('cesky',  'iso') }

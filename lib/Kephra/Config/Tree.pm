@@ -8,6 +8,7 @@ use strict;
 
 sub get_subtree {
 	my $config = shift;
+	return unless ref $config;
 	my $path = shift;
 	for (split '/', $path) {
 		$config = $config->{$_} if defined $config->{$_};
@@ -15,28 +16,17 @@ sub get_subtree {
 	return $config;
 }
 
-# -NI
-sub diff {
-	my $new = shift;
-	my $old = shift;
-	return my $diff;
-}
-
 sub merge {
-	my $new = shift;
+	my $new = shift; # left and dominant
 	my $old = shift;
 	require Hash::Merge;
 	Hash::Merge::set_behavior('LEFT_PRECEDENT');
 	Hash::Merge::merge($new, $old);
 }
 
-# -NI
-sub update {
-	my $new = shift;
-	my $old = shift;
-
-}
-
+# -NI sub join {}
+# -NI sub update {}
+# -NI sub diff {}
 
 # single node manipulation
 sub _convert_node_2_AoH {

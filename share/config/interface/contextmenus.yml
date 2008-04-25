@@ -21,6 +21,7 @@ textselection_contextmenu:
  - item edit-delete
  -
  - item find-selection
+ - item replace-selection
  -
  - item edit-selection-convert-uppercase
  - item edit-selection-convert-lowercase

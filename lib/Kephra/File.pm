@@ -37,10 +37,13 @@ sub changed_notify_check {
 		my $path = Kephra::Document::get_attribute('file_path', $file_nr);
 		next unless $path;
 		my $remembered = Kephra::Document::get_tmp_value('file_changed', $file_nr);
-		unless ( _file_age($path) == $remembered ) {
+		my $current_age= _file_age($path);
+		unless ( $remembered == $current_age) {
+			my $last_time = Kephra::Document::get_tmp_value('did_notify', $file_nr);
+			next if defined  $last_time and $last_time == $current_age;
 			Kephra::Document::Change::to_number( $file_nr );
 			_remember_save_moment($path);
-			Kephra::Dialog::notify_file_change( $file_nr );
+			Kephra::Dialog::notify_file_change( $file_nr, $current_age );
 		}
 	}
 	Kephra::Document::Change::to_number($current_doc) 
@@ -190,8 +193,6 @@ sub save_current {
 
 
 sub save_as {
-	print "sa-", $Kephra::config{file}{current}{directory},"\n";
-
 	my $file_name = Kephra::Dialog::get_file_save(
 		Kephra::App::Window::_ref(),
 		$Kephra::localisation{dialog}{file}{save_as},
@@ -275,6 +276,7 @@ sub save_all_named {
 }
 
 sub print {
+	require Wx::Print;
 	my ( $frame, $event ) = @_;
 	my $ep       = Kephra::App::EditPanel::_ref();
 	my $printer  = Wx::Printer->new;

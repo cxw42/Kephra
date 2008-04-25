@@ -2,8 +2,8 @@ use warnings;
 use strict;
 use inc::Module::Install;
 
-name           'kephra';
-all_from       'bin/kephra';   
+name           'Kephra';
+all_from       'lib/Kephra.pm';
 requires       'Clone';
 requires       'Config::General';
 requires       'Cwd';

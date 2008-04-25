@@ -93,7 +93,9 @@ sub create_dynamic {
 
 		set_update($menu_id, sub {
 			my @menu_data;
-			for my $file ( @{ Kephra::File::History::get() } ){
+			my $files = Kephra::File::History::get();
+			return unless ref $files eq 'ARRAY';
+			for my $file ( @$files ){
 				my %item;
 				$item{type} = 'item';
 				$item{label}= ( File::Spec->splitpath( $file ) )[2];
@@ -284,7 +286,6 @@ sub eval_data {
 
 			EVT_MENU          ($win, $menu_item, $item_data->{call} );
 			EVT_MENU_HIGHLIGHT($win, $menu_item, sub {
-
 				Kephra::App::StatusBar::info_msg( $item_data->{help} )
 			});
 			$menu->Append( $menu_item );

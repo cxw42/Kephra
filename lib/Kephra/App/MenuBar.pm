@@ -1,5 +1,5 @@
 package Kephra::App::MenuBar;
-$VERSION = '0.06';
+$VERSION = 0.07;
 
 use strict;
 
@@ -9,11 +9,12 @@ sub _ref {
 }
 
 sub create {
-	my $config     = $Kephra::config{app}{menubar};
-	my $file_name  = Kephra::Config::filepath( $config->{file} );
-	my $menubar_def= Kephra::Config::File::load($file_name);
-	$menubar_def   = Kephra::Config::Tree::get_subtree
-						($menubar_def, $config->{node});
+	my $menubar_def = Kephra::Config::File::load_from_config_node_data
+		( $Kephra::config{app}{menubar} );
+	unless ($menubar_def) {
+		require Kephra::Config::Embedded;
+		$menubar_def = Kephra::Config::Embedded::mainmenu();
+	}
 	my $menubar    = Wx::MenuBar->new();
 	my ($pos, $menu_name);
 	for my $menu_def ( @$menubar_def ){

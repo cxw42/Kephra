@@ -1,5 +1,5 @@
 package Kephra::Config;
-our $VERSION = '0.28';
+our $VERSION = '0.29';
 
 # low level config manipulation
 
@@ -76,19 +76,19 @@ sub icon_bitmap {
 		warn "Did not provide an icon name to icon_bitmap";
 		return;
 	}
-	unless ( $name =~ /\.xpm$/ ) {
-		$name .= '.xpm';
-	}
-	my $path = existing_filepath( $Kephra::config{app}{iconset_path}, $name );
+	$name .= '.xpm' unless $name =~ /\.xpm$/ ;
+
+	my $path = filepath( $Kephra::config{app}{iconset_path}, $name );
+	return Wx::Bitmap->new(16,16) unless -e $path;
 
 	my $bitmap = Wx::Bitmap->new( $path, wxBITMAP_TYPE_XPM );
 	unless ( $bitmap ) {
 		warn "Failed to create bit map from $path";
 		return;
 	}
-
 	return $bitmap;
 }
+
 
 sub set_xp_style {
 	my $xp_def_file = "$^X.manifest";

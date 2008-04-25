@@ -15,8 +15,8 @@ sub create {
 	my $bar_def = Kephra::Config::File::load_from_config_node_data( _config() );
 	unless ($bar_def) {
 		require Kephra::Config::Embedded;
-		$bar_def = \%{Kephra::Config::Embedded::get_command_list()};
-		$bar_def = $bar_def->{main_toolbar};
+		$bar_def = Kephra::Config::Tree::get_subtree
+			( Kephra::Config::Embedded::toolbars(), 'main_toolbar');
 	}
 	Kephra::App::ToolBar::create( 'main', $bar_def );
 }

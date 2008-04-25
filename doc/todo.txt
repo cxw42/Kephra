@@ -1,8 +1,13 @@
-0.5
 
-* scripte starten + output panel
-* code falten
-* utf unterstützung + coding in statuszeile wählen
-* perl tidy
-* autovervollständigung
-* snippet lib
+0.5
+ 
+ * scripte starten + output panel
+ * code falten
+ * utf unterstützung + coding in statuszeile wählen
+ * perl tidy
+ * autovervollständigung
+ * snippet lib
+
+
+internals:
+ + nested menu prepare event

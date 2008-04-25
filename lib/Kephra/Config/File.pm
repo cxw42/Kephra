@@ -24,13 +24,6 @@ sub load_from_config_node_data {
 	load_node( Kephra::Config::filepath( $node->{file} ), $node->{node} );
 }
 
-sub load {
-	my $file_name = shift;
-	return unless -e $file_name;
-	my $type = _get_type($file_name);
-	if    ($type eq 'conf') { load_conf($file_name) }
-	elsif ($type eq 'yaml') { load_yaml($file_name) }
-}
 
 sub load_node{
 	my $file_name = shift;
@@ -41,11 +34,22 @@ sub load_node{
 		: $config_tree;
 }
 
+
 # !!! -NI
 sub store_node{
 	my $file_name = shift;
 	my $start_node = shift;
 }
+
+
+sub load {
+	my $file_name = shift;
+	return unless -e $file_name;
+	my $type = _get_type($file_name);
+	if    ($type eq 'conf') { load_conf($file_name) }
+	elsif ($type eq 'yaml') { load_yaml($file_name) }
+}
+
 
 sub store {
 	my $file_name = shift;

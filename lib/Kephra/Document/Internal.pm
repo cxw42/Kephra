@@ -161,28 +161,26 @@ sub check_b4_overwite {
 sub reset_properties {
 	my ($doc_nr, $file_name) = @_;
 	$doc_nr = Kephra::Document::_get_current_nr() unless defined $doc_nr;
-	my $defaults  = $Kephra::config{file}{defaultsettings};
+	my $def = $Kephra::config{file}{defaultsettings};
 	my $doc_attr = $Kephra::document{open}[$doc_nr] = {
-		'file_path'=> $file_name,
+		'codepage' => $def->{codepage},
 		'edit_pos' => -1,
+		'file_path'=> $file_name,
+		'readonly' => $def->{readonly},
+		'syntaxmode'=>$def->{syntaxmode},
+		'tab_size' => $def->{tab_size},
+		'tab_use'  => $def->{tab_use},
 	};
 
-	$doc_attr->{syntaxmode} = $defaults->{syntaxmode} eq 'auto'
-		? Kephra::Document::SyntaxMode::_get_auto($doc_nr)
-		: $defaults->{syntaxmode};
+	$doc_attr->{syntaxmode} = Kephra::Document::SyntaxMode::_get_auto($doc_nr)
+		if defined $doc_attr->{syntaxmode} and $doc_attr->{syntaxmode} eq 'auto';
 
 	if ($file_name and ( -e $file_name )) 
-		 {$doc_attr->{EOL} = $defaults->{EOL_open}}
-	else {$doc_attr->{EOL} = $defaults->{EOL_new};
+		 {$doc_attr->{EOL} = $def->{EOL_open}}
+	else {$doc_attr->{EOL} = $def->{EOL_new};
 		Kephra::Document::set_EOL_mode( $doc_attr->{EOL} );
 	}
-	$doc_attr->{tab_use}  = $defaults->{tab_use};
-	$doc_attr->{tab_size} = $defaults->{tab_size};
-	$doc_attr->{codepage} = $defaults->{codepage};
-	$doc_attr->{readonly} = $defaults->{readonly};
-	$doc_attr->{cursor_pos} = 
-		$defaults->{cursor_pos} ? $defaults->{cursor_pos} : 0;
-	$doc_attr->{edit_pos} = -1;
+	$doc_attr->{cursor_pos} = $def->{cursor_pos} ? $def->{cursor_pos} : 0;
 }
 
 sub reset_tmp_data {

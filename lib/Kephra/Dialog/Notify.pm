@@ -14,6 +14,7 @@ our $dialog;
 
 sub file_changed {
 	my $file_nr = shift;
+	my $file_age = shift;
 	my $file_path = Kephra::Document::get_attribute('file_path', $file_nr);
 	my $file_name = Kephra::Document::get_tmp_value('name', $file_nr);
 	my $l10n = $Kephra::localisation{dialog};
@@ -21,12 +22,12 @@ sub file_changed {
 
 	$dialog = $Kephra::app{dialog}{exit} = Wx::Dialog->new(
 		Kephra::App::Window::_ref(), -1,
-		"$file_name $g10n->{changed}",
+		$file_name.' '.$g10n->{changed},
 		[-1,-1], [340, 145], wxNO_FULL_REPAINT_ON_RESIZE | 
 		wxCAPTION | wxSYSTEM_MENU | wxCAPTION | wxCLOSE_BOX | wxSTAY_ON_TOP,
 	);
 	Kephra::App::Window::load_icon
-		($dialog, Kephra::Config::dirpath($Kephra::config{app}{window}{icon}));
+		($dialog, Kephra::Config::filepath($Kephra::config{app}{window}{icon}));
 	#$dialog->SetBackgroundColour(wxWHITE);
 	EVT_CLOSE( $dialog, \&quit_dialog );
 
@@ -43,7 +44,10 @@ sub file_changed {
 		Kephra::File::save_copy_as();
 		Kephra::File::reload_current(); 
 	} );
-	EVT_BUTTON($dialog, $b_ignore,  \&quit_dialog );
+	EVT_BUTTON($dialog, $b_ignore,  sub {
+		quit_dialog();
+		Kephra::Document::set_tmp_value('did_notify', $file_age, $file_nr);
+	} );
 	my $h_sizer = Wx::BoxSizer->new(wxHORIZONTAL);
 	$h_sizer->Add( $b_reload  ,0, wxRIGHT, 10);
 	$h_sizer->Add( $b_sreload ,0, wxRIGHT, 10);

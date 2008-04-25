@@ -3,12 +3,14 @@ $VERSION = '0.23';
 
 use strict;
 use Wx qw(  
-	wxVERTICAL wxHORIZONTAL wxLEFT wxRIGHT wxTOP wxBOTTOM wxCENTER wxGROW wxEXPAND wxBOTH
-	wxALIGN_LEFT wxALIGN_CENTRE wxALIGN_CENTER_VERTICAL wxALIGN_CENTER_HORIZONTAL
-	wxSYSTEM_MENU wxCAPTION wxDIALOG_NO_PARENT wxSTAY_ON_TOP wxNO_FULL_REPAINT_ON_RESIZE
-	wxSIMPLE_BORDER wxRAISED_BORDER wxNO_BORDER wxRESIZE_BORDER
-	wxCLOSE_BOX wxMINIMIZE_BOX wxFRAME_NO_TASKBAR 
-	wxLI_HORIZONTAL   wxBITMAP_TYPE_XPM
+	wxVERTICAL wxHORIZONTAL wxLEFT wxRIGHT wxTOP wxGROW 
+	wxALIGN_CENTER_VERTICAL wxALIGN_CENTER_HORIZONTAL
+	wxSYSTEM_MENU wxCAPTION wxNO_FULL_REPAINT_ON_RESIZE wxCLOSE_BOX
+	wxMINIMIZE_BOX wxSTAY_ON_TOP
+	wxSIMPLE_BORDER wxRAISED_BORDER
+	wxLI_HORIZONTAL
+	wxBITMAP_TYPE_XPM
+	WXK_BACK WXK_TAB WXK_ESCAPE WXK_RETURN WXK_SPACE
 );
 
 use Wx::Event qw(
@@ -17,8 +19,8 @@ use Wx::Event qw(
 );
 
 sub _ref {
-	if (ref $_[0] eq 'Wx::Frame'){ $Kephra::app{dialog}{search} = $_[0] }
-	else                         { $Kephra::app{dialog}{search} }
+	if (ref $_[0] eq 'Wx::Dialog'){ $Kephra::app{dialog}{search} = $_[0] }
+	else                          { $Kephra::app{dialog}{search} }
 }
 
 ##########################
@@ -76,35 +78,34 @@ sub ready {
 		$Kephra::temp{dialog}{active}++;
 
 		# make dialog window and main panel
-		my $d = Wx::Frame->new( 
+		my $d = Wx::Dialog->new( 
 			Kephra::App::Window::_ref(), -1, 
 			$Kephra::localisation{dialog}{search}{title},
 			[ $dsettings->{position_x}, $dsettings->{position_y} ],
 			[ 436                       , 268                   ], $d_style );
+		my $icon = Wx::Icon->new;
 		my $icon_bmp = Kephra::API::CommandList::get_cmd_property
 			('view-dialog-find', 'icon');
-		my $icon = Wx::Icon->new;
-		$icon->CopyFromBitmap($icon_bmp);
-		$d->SetIcon($icon) if ref $icon_bmp eq 'Wx::Bitmap';
-		my $panel = Wx::Panel->new( $d, -1 );
+		$icon->CopyFromBitmap($icon_bmp) if ref $icon_bmp eq 'Wx::Bitmap';
+		$d->SetIcon($icon);
 		_ref($d);
 
 		# input boxes with labels
-		$d->{find_label}   = Wx::StaticText->new($panel, -1, $label->{search_for} );
-		$d->{replace_label}= Wx::StaticText->new($panel, -1, $label->{replace_with} );
-		$d->{find_input} = Wx::ComboBox->new($panel, -1,'', [-1,-1], [324,22], [@find_history]);
+		$d->{find_label}   = Wx::StaticText->new($d, -1, $label->{search_for} );
+		$d->{replace_label}= Wx::StaticText->new($d, -1, $label->{replace_with} );
+		$d->{find_input} = Wx::ComboBox->new($d, -1,'', [-1,-1], [324,22], [@find_history]);
 		$d->{find_input}->SetDropTarget( SearchInputTarget->new($d->{find_input}, 'find'));
-		$d->{replace_input} = Wx::ComboBox->new($panel, -1, '', [-1,-1], [324,22], [@replace_history],);
+		$d->{replace_input} = Wx::ComboBox->new($d, -1, '', [-1,-1], [324,22], [@replace_history],);
 		$d->{replace_input}->SetDropTarget( SearchInputTarget->new($d->{replace_input}, 'replace'));
-		$d->{sep_line} = Wx::StaticLine->new($panel, -1, [0,0], [420,1], wxLI_HORIZONTAL,);
+		$d->{sep_line} = Wx::StaticLine->new($d, -1, [0,0], [420,1], wxLI_HORIZONTAL,);
 
 		# search attributes checkboxes
-		$d->{inc_box}  = Wx::CheckBox->new($panel, -1, $label->{incremental});
-		$d->{case_box} = Wx::CheckBox->new($panel, -1, $label->{case});
-		$d->{begin_box}= Wx::CheckBox->new($panel, -1, $label->{word_begin});
-		$d->{word_box} = Wx::CheckBox->new($panel, -1, $label->{whole_word});
-		$d->{regex_box}= Wx::CheckBox->new($panel, -1, $label->{regex});
-		$d->{wrap_box} = Wx::CheckBox->new($panel, -1, $label->{auto_wrap});
+		$d->{inc_box}  = Wx::CheckBox->new($d, -1, $label->{incremental});
+		$d->{case_box} = Wx::CheckBox->new($d, -1, $label->{case});
+		$d->{begin_box}= Wx::CheckBox->new($d, -1, $label->{word_begin});
+		$d->{word_box} = Wx::CheckBox->new($d, -1, $label->{whole_word});
+		$d->{regex_box}= Wx::CheckBox->new($d, -1, $label->{regex});
+		$d->{wrap_box} = Wx::CheckBox->new($d, -1, $label->{auto_wrap});
 		$d->{inc_box}  ->SetValue( $attr->{incremental} );
 		$d->{case_box} ->SetValue( $attr->{match_case} );
 		$d->{begin_box}->SetValue( $attr->{match_word_begin} );
@@ -113,28 +114,28 @@ sub ready {
 		$d->{wrap_box} ->SetValue( $attr->{auto_wrap} );
 
 		# range radio group
-		my $range_box = Wx::StaticBox->new($panel, -1, $label->{search_in},
+		my $range_box = Wx::StaticBox->new($d, -1, $label->{search_in},
 			[-1,-1], [-1,-1], wxSIMPLE_BORDER | wxRAISED_BORDER,
 		);
-		$d->{selection_radio}= Wx::RadioButton->new($panel, -1, $label->{selection});
-		$d->{document_radio} = Wx::RadioButton->new($panel, -1, $label->{document} );
-		$d->{all_open_radio} = Wx::RadioButton->new($panel, -1, $label->{open_documents} );
+		$d->{selection_radio}= Wx::RadioButton->new($d, -1, $label->{selection});
+		$d->{document_radio} = Wx::RadioButton->new($d, -1, $label->{document} );
+		$d->{all_open_radio} = Wx::RadioButton->new($d, -1, $label->{open_documents} );
 ################### disable
 
 		# buttons
 		my $bmp = \&Kephra::Config::icon_bitmap;
-		$d->{replace_back}=Wx::BitmapButton->new($panel,-1,&$bmp('replace_previous.xpm'));
-		$d->{replace_fore}=Wx::BitmapButton->new($panel,-1,&$bmp('replace_next.xpm'));
-		$d->{backward_button}=Wx::BitmapButton->new($panel,-1,&$bmp('go_previous.xpm'));
-		$d->{foreward_button}=Wx::BitmapButton->new($panel,-1,&$bmp('go_next.xpm'));
-		$d->{fast_back_button}=Wx::BitmapButton->new($panel,-1,&$bmp('go_fast_backward.xpm'));
-		$d->{fast_fore_button}=Wx::BitmapButton->new($panel,-1,&$bmp('go_fast_forward.xpm'));
-		$d->{first_button}=Wx::BitmapButton->new($panel,-1,&$bmp('go_first.xpm'));
-		$d->{last_button}=Wx::BitmapButton->new($panel,-1,&$bmp('go_last.xpm'));
-		$d->{search_button} = Wx::Button->new($panel, -1, $label->{search} );
-		$d->{replace_button}= Wx::Button->new($panel, -1, $label->{replace_all} );
-		$d->{confirm_button}= Wx::Button->new($panel, -1, $label->{with_confirmation} );
-		$d->{close_button}  = Wx::Button->new($panel, -1,
+		$d->{replace_back}=Wx::BitmapButton->new($d,-1,&$bmp('replace_previous.xpm'));
+		$d->{replace_fore}=Wx::BitmapButton->new($d,-1,&$bmp('replace_next.xpm'));
+		$d->{backward_button}=Wx::BitmapButton->new($d,-1,&$bmp('go_previous.xpm'));
+		$d->{foreward_button}=Wx::BitmapButton->new($d,-1,&$bmp('go_next.xpm'));
+		$d->{fast_back_button}=Wx::BitmapButton->new($d,-1,&$bmp('go_fast_backward.xpm'));
+		$d->{fast_fore_button}=Wx::BitmapButton->new($d,-1,&$bmp('go_fast_forward.xpm'));
+		$d->{first_button}=Wx::BitmapButton->new($d,-1,&$bmp('go_first.xpm'));
+		$d->{last_button}=Wx::BitmapButton->new($d,-1,&$bmp('go_last.xpm'));
+		$d->{search_button} = Wx::Button->new($d, -1, $label->{search} );
+		$d->{replace_button}= Wx::Button->new($d, -1, $label->{replace_all} );
+		$d->{confirm_button}= Wx::Button->new($d, -1, $label->{with_confirmation} );
+		$d->{close_button}  = Wx::Button->new($d, -1,
 			$Kephra::localisation{dialog}{general}{close} );
 
 		#tooltips / hints
@@ -287,28 +288,21 @@ sub ready {
 		$button_sizer->Add( $d->{close_button},   0, wxLEFT, 52 );
 
 		my $b_grid = Wx::GridBagSizer->new( 12, 10 );
-		$b_grid->Add( $d->{find_label},    Wx::GBPosition->new(0,0),
-				Wx::GBSpan->new(1,1), wxLEFT | wxALIGN_CENTER_VERTICAL , 10);
-		$b_grid->Add( $d->{replace_label}, Wx::GBPosition->new(1,0),
-				Wx::GBSpan->new(1,1), wxLEFT | wxALIGN_CENTER_VERTICAL , 10);
-		$b_grid->Add($d->{find_input},     Wx::GBPosition->new(0,1), 
-				Wx::GBSpan->new(1,3), wxTOP,   0);
-		$b_grid->Add($d->{replace_input},  Wx::GBPosition->new(1,1), 
-				Wx::GBSpan->new(1,3), wxTOP,   0);
-		$b_grid->Add( $option_sizer,       Wx::GBPosition->new(2,1), 
-				Wx::GBSpan->new(1,1), wxTOP,   1);
-		$b_grid->Add( $range_sizer,        Wx::GBPosition->new(2,2),
-				Wx::GBSpan->new(1,1), wxLEFT, 12);
-		$b_grid->Add( $pad_grid,           Wx::GBPosition->new(2,3),
-				Wx::GBSpan->new(1,1), wxTOP|wxRIGHT, 0);
+		$b_grid->Add($d->{find_label}, Wx::GBPosition->new(0,0), Wx::GBSpan->new(1,1), wxLEFT | wxALIGN_CENTER_VERTICAL, 10);
+		$b_grid->Add($d->{replace_label},Wx::GBPosition->new(1,0), Wx::GBSpan->new(1,1), wxLEFT | wxALIGN_CENTER_VERTICAL, 10);
+		$b_grid->Add($d->{find_input}, Wx::GBPosition->new(0,1), Wx::GBSpan->new(1,3), wxTOP, 0);
+		$b_grid->Add($d->{replace_input}, Wx::GBPosition->new(1,1), Wx::GBSpan->new(1,3), wxTOP, 0);
+		$b_grid->Add($option_sizer, Wx::GBPosition->new(2,1), Wx::GBSpan->new(1,1), wxTOP, 1);
+		$b_grid->Add($range_sizer,Wx::GBPosition->new(2,2),Wx::GBSpan->new(1,1), wxLEFT, 12);
+		$b_grid->Add($pad_grid, Wx::GBPosition->new(2,3), Wx::GBSpan->new(1,1), wxTOP|wxRIGHT, 0);
 
 		my $d_sizer = Wx::BoxSizer->new(wxVERTICAL);
 		$d_sizer->Add($b_grid,          0, wxTOP                            , 15);
 		$d_sizer->Add($d->{sep_line},   0, wxTOP | wxALIGN_CENTER_HORIZONTAL,  8);
 		$d_sizer->Add($button_sizer,    0, wxTOP                            ,  9);
 
-		$panel->SetSizer($d_sizer);
-		$panel->SetAutoLayout(1);
+		$d->SetSizer($d_sizer);
+		$d->SetAutoLayout(1);
 
 		# go
 		$d->Show(1);
@@ -356,10 +350,10 @@ sub no_sel_range {
 #
 sub find_input_keyfilter {
 	my ( $input, $event ) = @_;
-	my $dialog   = $input->GetParent->GetParent;
+	my $dialog   = $input->GetParent;
 	my $wx_frame = $dialog->GetParent;
 	my $key_code = $event->GetKeyCode;
-	if ($key_code == 13) {
+	if ($key_code == WXK_RETURN) {
 		no_sel_range();
 		if ($event->ControlDown) {
 			&Kephra::Edit::Search::find_first;
@@ -371,7 +365,7 @@ sub find_input_keyfilter {
 		}
 		refresh_find_history();
 	}
-	elsif ($key_code == 27) { $dialog->Close }
+	elsif ($key_code == WXK_ESCAPE) { $dialog->Close; }
 	$event->Skip;
 }
 
@@ -383,8 +377,8 @@ sub refresh_find_history {
 	$Kephra::temp{dialog}{search}{control} = 1;
 	if (Kephra::Edit::Search::get_find_item() ne $value){
 		Kephra::Edit::Search::set_find_item($value);
-		$cb->Delete(0)  for 0 .. $cb->GetCount;
-		Kephra::App::get_ref->Yield();
+		$cb->Delete(0) for 0 .. $cb->GetCount;
+		Kephra::App::_ref()->Yield();
 		$cb->Append($_) for @{ $Kephra::config{search}{history}{find_item} };
 		$cb->SetValue($value);
 		$cb->SetInsertionPointEnd;
@@ -421,8 +415,8 @@ sub incremental_search {
 
 sub replace_input_keyfilter {
 	my ($input, $event) = @_;
-	my ($dialog, $key_code) =($input->GetParent->GetParent, $event->GetKeyCode);
-	if ($key_code == 13 ) {
+	my ($dialog, $key_code) =($input->GetParent, $event->GetKeyCode);
+	if ($key_code == WXK_RETURN ) {
 		if ( $event->ControlDown ) {
 			Kephra::Edit::Search::replace_all;
 			$dialog->Close;
@@ -430,154 +424,8 @@ sub replace_input_keyfilter {
 		else                        { Kephra::Edit::Search::replace_all() }
 		refresh_find_history();
 	}
-	if ( $key_code == 27 ) { $dialog->Close }
+	if ( $key_code == WXK_ESCAPE) { $dialog->Close }
 	$event->Skip;
-}
-
-sub foreward_keyfilter {
-	my ( $win, $event ) = ( shift->GetParent, shift );
-	my $key_code = $event->GetKeyCode;
-
-	if ( $key_code == 9 ) {
-		$event->ShiftDown
-		? Wx::Window::SetFocus($win->{close_button})
-		: Wx::Window::SetFocus($win->{range_group});
-	}
-	if ($key_code == 13 or $key_code == 32) {
-		Kephra::Edit::Search::find_next()
-	}
-	if ( $key_code == 27 ) { $win->Close }
-	if ( $key_code == 316 ) { Wx::Window::SetFocus( $win->{close_button} ) }
-	if ( $key_code == 317 ) { Wx::Window::SetFocus( $win->{close_button} ) }
-	if ( $key_code == 318 ) { Wx::Window::SetFocus( $win->{close_button} ) }
-	if ( $key_code == 319 ) { Wx::Window::SetFocus( $win->{close_button} ) }
-	$event->Skip;
-}
-
-sub backward_keyfilter {
-	my ( $win, $event ) = ( shift->GetParent, shift );
-	my $key_code = $event->GetKeyCode;
-
-	if ( $key_code == 9 ) {
-		$event->ShiftDown
-		? Wx::Window::SetFocus($win->{close_button})
-		: Wx::Window::SetFocus($win->{range_group});
-	}
-	if ($key_code == 13 or $key_code == 32) {
-		Kephra::Edit::Search::find_prev()
-	}
-	if ( $key_code ==  27 ) { $win->Close }
-	if ( $key_code == 316 ) { Wx::Window::SetFocus( $win->{foreward_button} ) }
-	if ( $key_code == 317 ) { Wx::Window::SetFocus( $win->{replace_back} ) }
-	if ( $key_code == 318 ) { Wx::Window::SetFocus( $win->{replace_button} ) }
-	if ( $key_code == 319 ) { Wx::Window::SetFocus( $win->{fast_back_button} ) }
-}
-
-sub fast_fore_keyfilter {
-	my ( $win, $event ) = ( shift->GetParent, shift );
-	my $key_code = $event->GetKeyCode;
-
-	if ( $key_code == 9 ) {
-		$event->ShiftDown
-		? Wx::Window::SetFocus($win->{close_button})
-		: Wx::Window::SetFocus($win->{range_group});
-	}
-	if ($key_code == 13 or $key_code == 32) {
-		Kephra::Edit::Search::fast_fore()
-	}
-	if ( $key_code == 27 )  { $win->Close }
-	if ( $key_code == 316 ) { Wx::Window::SetFocus( $win->{range_group} ) }
-	if ( $key_code == 317 ) { Wx::Window::SetFocus( $win->{foreward_button} ) }
-	if ( $key_code == 318 ) { Wx::Window::SetFocus( $win->{fast_back_button} ) }
-	if ( $key_code == 319 ) { Wx::Window::SetFocus( $win->{first_button} ) }
-}
-
-sub fast_back_keyfilter {
-	my ( $win, $event ) = ( shift->GetParent, shift );
-	my $key_code = $event->GetKeyCode();
-	if ( $key_code == 9 ) {
-		$event->ShiftDown
-		? Wx::Window::SetFocus($win->{close_button})
-		: Wx::Window::SetFocus($win->{range_group});
-	}
-	if ($key_code == 13 or $key_code == 32) {
-		Kephra::Edit::Search::fast_back( $win->GetParent() );
-	}
-	if ( $key_code == 27 ) { $win->Close }
-	if ( $key_code == 316 ) { Wx::Window::SetFocus( $win->{fast_fore_button} ) }
-	if ( $key_code == 317 ) { Wx::Window::SetFocus( $win->{backward_button} ) }
-	if ( $key_code == 318 ) { Wx::Window::SetFocus( $win->{close_button} ) }
-	if ( $key_code == 319 ) { Wx::Window::SetFocus( $win->{last_button} ) }
-}
-
-sub first_keyfilter {
-	my ( $win, $event ) = ( shift->GetParent, shift );
-	my $key_code = $event->GetKeyCode;
-
-	if ( $key_code == 9 ) {
-		$event->ShiftDown
-		? Wx::Window::SetFocus($win->{close_button})
-		: Wx::Window::SetFocus($win->{range_group});
-	}
-	Kephra::Edit::Search::find_first() if $key_code == 13 or $key_code == 32;
-	if ( $key_code ==  27 ) { $win->Close }
-	if ( $key_code == 316 ) { Wx::Window::SetFocus( $win->{range_group} ) }
-	if ( $key_code == 317 ) { Wx::Window::SetFocus( $win->{fast_fore_button} ) }
-	if ( $key_code == 318 ) { Wx::Window::SetFocus( $win->{last_button} ) }
-	if ( $key_code == 319 ) { Wx::Window::SetFocus( $win->{close_button} ) }
-}
-
-sub last_keyfilter {
-	my ($win, $event) = (shift->GetParent, shift);
-	my $key_code = $event->GetKeyCode;
-
-	Kephra::Edit::Search::find_last() if $key_code == 13 or $key_code == 32;
-	if ( $key_code == 9 ) {
-		$event->ShiftDown
-		? Wx::Window::SetFocus($win->{close_button})
-		: Wx::Window::SetFocus($win->{range_group});
-	}
-	elsif ($key_code ==  27) {$win->Close }
-	elsif ($key_code == 316) {Wx::Window::SetFocus( $win->{first_button} )}
-	elsif ($key_code == 317) {Wx::Window::SetFocus( $win->{fast_back_button} )}
-	elsif ($key_code == 318) {Wx::Window::SetFocus( $win->{close_button} )}
-	elsif ($key_code == 319) {Wx::Window::SetFocus( $win->{close_button} )}
-}
-
-sub replace_fore_keyfilter {
-	my ($win, $event) = (shift->GetParent, shift);
-	my $key_code = $event->GetKeyCode;
-
-	if ( $key_code == 9 ) {
-		$event->ShiftDown
-			? Wx::Window::SetFocus($win->{close_button})
-			: Wx::Window::SetFocus($win->{range_group});
-	}
-	elsif ( $key_code ==  13 ) {Kephra::Edit::Search::replace_fore()}
-	elsif ( $key_code ==  27 ) {$win->Close}
-	elsif ( $key_code ==  32 ) {Kephra::Edit::Search::replace_fore()}
-	elsif ( $key_code == 316 ) {Wx::Window::SetFocus( $win->{range_group} )}
-	elsif ( $key_code == 317 ) {Wx::Window::SetFocus( $win->{replace_button} )}
-	elsif ( $key_code == 318 ) {Wx::Window::SetFocus( $win->{replace_back} )}
-	elsif ( $key_code == 319 ) {Wx::Window::SetFocus( $win->{foreward_button} )}
-}
-
-sub replace_back_keyfilter {
-	my ($win, $event) = (shift->GetParent, shift);
-	my $key_code = $event->GetKeyCode;
-
-	if ( $key_code == 9 ) {
-		$event->ShiftDown
-		? Wx::Window::SetFocus($win->{close_button})
-		: Wx::Window::SetFocus($win->{range_group});
-	}
-	Kephra::Edit::Search::replace_back() if $key_code == 13 or $key_code == 32;
-
-	if ( $key_code ==  27 ) {$win->Close}
-	if ( $key_code == 316 ) {Wx::Window::SetFocus( $win->{replace_fore} )}
-	if ( $key_code == 317 ) {Wx::Window::SetFocus( $win->{replace_button} )}
-	if ( $key_code == 318 ) {Wx::Window::SetFocus( $win->{replace_button} )}
-	if ( $key_code == 319 ) {Wx::Window::SetFocus( $win->{backward_button} )}
 }
 
 
@@ -593,9 +441,159 @@ sub quit_search_dialog {
 	$Kephra::temp{dialog}{search}{active} = 0;
 	$Kephra::temp{dialog}{active}--;
 
-	Kephra::API::EventTable::del_call('find.item', 'search_dialog');
+	Kephra::API::EventTable::del_call('find.item.changed', 'search_dialog');
+	Kephra::API::EventTable::del_call('replace.item.changed', 'search_dialog');
 
 	$win->Destroy();
 }
 #######################
 1;
+
+__END__
+
+
+sub foreward_keyfilter {
+	my ( $win, $event ) = ( shift->GetParent, shift );
+	my $key_code = $event->GetKeyCode;
+
+	if ( $key_code == WXK_TAB ) {
+		$event->ShiftDown
+		? Wx::Window::SetFocus($win->{close_button})
+		: Wx::Window::SetFocus($win->{range_group});
+	}
+	if ($key_code == WXK_RETURN or $key_code == WXK_SPACE) {
+		Kephra::Edit::Search::find_next()
+	}
+	if ( $key_code == WXK_ESCAPE ) { $win->Close }
+	if ( $key_code == 316 ) { Wx::Window::SetFocus( $win->{close_button} ) }
+	if ( $key_code == 317 ) { Wx::Window::SetFocus( $win->{close_button} ) }
+	if ( $key_code == 318 ) { Wx::Window::SetFocus( $win->{close_button} ) }
+	if ( $key_code == 319 ) { Wx::Window::SetFocus( $win->{close_button} ) }
+	$event->Skip;
+}
+
+sub backward_keyfilter {
+	my ( $win, $event ) = ( shift->GetParent, shift );
+	my $key_code = $event->GetKeyCode;
+
+	if ( $key_code == WXK_TAB ) {
+		$event->ShiftDown
+		? Wx::Window::SetFocus($win->{close_button})
+		: Wx::Window::SetFocus($win->{range_group});
+	}
+	if ($key_code == WXK_RETURN or $key_code == WXK_SPACE) {
+		Kephra::Edit::Search::find_prev()
+	}
+	if ( $key_code ==  WXK_ESCAPE ) { $win->Close }
+	if ( $key_code == 316 ) { Wx::Window::SetFocus( $win->{foreward_button} ) }
+	if ( $key_code == 317 ) { Wx::Window::SetFocus( $win->{replace_back} ) }
+	if ( $key_code == 318 ) { Wx::Window::SetFocus( $win->{replace_button} ) }
+	if ( $key_code == 319 ) { Wx::Window::SetFocus( $win->{fast_back_button} ) }
+}
+
+sub fast_fore_keyfilter {
+	my ( $win, $event ) = ( shift->GetParent, shift );
+	my $key_code = $event->GetKeyCode;
+
+	if ( $key_code == WXK_TAB ) {
+		$event->ShiftDown
+		? Wx::Window::SetFocus($win->{close_button})
+		: Wx::Window::SetFocus($win->{range_group});
+	}
+	if ($key_code == WXK_RETURN or $key_code == WXK_SPACE) {
+		Kephra::Edit::Search::fast_fore()
+	}
+	if ( $key_code == WXK_ESCAPE )  { $win->Close }
+	if ( $key_code == 316 ) { Wx::Window::SetFocus( $win->{range_group} ) }
+	if ( $key_code == 317 ) { Wx::Window::SetFocus( $win->{foreward_button} ) }
+	if ( $key_code == 318 ) { Wx::Window::SetFocus( $win->{fast_back_button} ) }
+	if ( $key_code == 319 ) { Wx::Window::SetFocus( $win->{first_button} ) }
+}
+
+sub fast_back_keyfilter {
+	my ( $win, $event ) = ( shift->GetParent, shift );
+	my $key_code = $event->GetKeyCode();
+	if ( $key_code == WXK_TAB ) {
+		$event->ShiftDown
+		? Wx::Window::SetFocus($win->{close_button})
+		: Wx::Window::SetFocus($win->{range_group});
+	}
+	if ($key_code == WXK_RETURN or $key_code == WXK_SPACE) {
+		Kephra::Edit::Search::fast_back( $win->GetParent() );
+	}
+	if ( $key_code == WXK_ESCAPE ) { $win->Close }
+	if ( $key_code == 316 ) { Wx::Window::SetFocus( $win->{fast_fore_button} ) }
+	if ( $key_code == 317 ) { Wx::Window::SetFocus( $win->{backward_button} ) }
+	if ( $key_code == 318 ) { Wx::Window::SetFocus( $win->{close_button} ) }
+	if ( $key_code == 319 ) { Wx::Window::SetFocus( $win->{last_button} ) }
+}
+
+sub first_keyfilter {
+	my ( $win, $event ) = ( shift->GetParent, shift );
+	my $key_code = $event->GetKeyCode;
+
+	if ( $key_code == WXK_TAB ) {
+		$event->ShiftDown
+		? Wx::Window::SetFocus($win->{close_button})
+		: Wx::Window::SetFocus($win->{range_group});
+	}
+	Kephra::Edit::Search::find_first() if $key_code == WXK_RETURN or $key_code == WXK_SPACE;
+	if ( $key_code ==  WXK_ESCAPE ) { $win->Close }
+	if ( $key_code == 316 ) { Wx::Window::SetFocus( $win->{range_group} ) }
+	if ( $key_code == 317 ) { Wx::Window::SetFocus( $win->{fast_fore_button} ) }
+	if ( $key_code == 318 ) { Wx::Window::SetFocus( $win->{last_button} ) }
+	if ( $key_code == 319 ) { Wx::Window::SetFocus( $win->{close_button} ) }
+}
+
+sub last_keyfilter {
+	my ($win, $event) = (shift->GetParent, shift);
+	my $key_code = $event->GetKeyCode;
+
+	Kephra::Edit::Search::find_last() if $key_code == WXK_RETURN or $key_code == WXK_SPACE;
+	if ( $key_code == WXK_TAB ) {
+		$event->ShiftDown
+		? Wx::Window::SetFocus($win->{close_button})
+		: Wx::Window::SetFocus($win->{range_group});
+	}
+	elsif ($key_code ==  WXK_ESCAPE) {$win->Close }
+	elsif ($key_code == 316) {Wx::Window::SetFocus( $win->{first_button} )}
+	elsif ($key_code == 317) {Wx::Window::SetFocus( $win->{fast_back_button} )}
+	elsif ($key_code == 318) {Wx::Window::SetFocus( $win->{close_button} )}
+	elsif ($key_code == 319) {Wx::Window::SetFocus( $win->{close_button} )}
+}
+
+sub replace_fore_keyfilter {
+	my ($win, $event) = (shift->GetParent, shift);
+	my $key_code = $event->GetKeyCode;
+
+	if ( $key_code == WXK_TAB ) {
+		$event->ShiftDown
+			? Wx::Window::SetFocus($win->{close_button})
+			: Wx::Window::SetFocus($win->{range_group});
+	}
+	elsif ( $key_code ==  WXK_RETURN ) {Kephra::Edit::Search::replace_fore()}
+	elsif ( $key_code ==  WXK_ESCAPE ) {$win->Close}
+	elsif ( $key_code ==  WXK_SPACE )  {Kephra::Edit::Search::replace_fore()}
+	elsif ( $key_code == 316 ) {Wx::Window::SetFocus( $win->{range_group} )}
+	elsif ( $key_code == 317 ) {Wx::Window::SetFocus( $win->{replace_button} )}
+	elsif ( $key_code == 318 ) {Wx::Window::SetFocus( $win->{replace_back} )}
+	elsif ( $key_code == 319 ) {Wx::Window::SetFocus( $win->{foreward_button} )}
+}
+
+sub replace_back_keyfilter {
+	my ($win, $event) = (shift->GetParent, shift);
+	my $key_code = $event->GetKeyCode;
+
+	if ( $key_code == WXK_TAB ) {
+		$event->ShiftDown
+		? Wx::Window::SetFocus($win->{close_button})
+		: Wx::Window::SetFocus($win->{range_group});
+	}
+	Kephra::Edit::Search::replace_back() if $key_code == WXK_RETURN or $key_code == WXK_SPACE;
+
+	if ( $key_code ==  WXK_ESCAPE ) {$win->Close}
+	if ( $key_code == 316 ) {Wx::Window::SetFocus( $win->{replace_fore} )}
+	if ( $key_code == 317 ) {Wx::Window::SetFocus( $win->{replace_button} )}
+	if ( $key_code == 318 ) {Wx::Window::SetFocus( $win->{replace_button} )}
+	if ( $key_code == 319 ) {Wx::Window::SetFocus( $win->{backward_button} )}
+}

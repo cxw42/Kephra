@@ -14,7 +14,7 @@ use Wx qw(
 sub _ref { 
 	if ($_[0]){ $Kephra::app{ref} = $_[0] }
 	else      { $Kephra::app{ref} }
- }
+}
 
 # main layout, main frame
 sub splashscreen {

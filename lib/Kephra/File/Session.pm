@@ -96,13 +96,11 @@ sub save {
 	my $config_file = shift ||
 		Kephra::Config::filepath( $config->{directory}, _config->{file} );
 	my %temp_config;
-	%temp_config = %{ Kephra::Config::File::load($config_file) }
-		if ( -r $config_file );
+	%temp_config = %{ Kephra::Config::File::load($config_file) } if -r $config_file;
 	undef $temp_config{document};
 	Kephra::Config::Tree::_convert_node_2_AoH( \$Kephra::document{open} );
 	# sorting out docs without file
-	@{ $Kephra::document{open} }
-		= @{ _forget_gone_files( \$Kephra::document{open} ) };
+	@{ $Kephra::document{open} } = @{_forget_gone_files(\$Kephra::document{open})};
 	$temp_config{document} = $Kephra::document{open};
 	$temp_config{current_nr} = $Kephra::document{current_nr};
 	Kephra::Config::File::store( $config_file, \%temp_config );
@@ -140,9 +138,8 @@ sub save_backup {
 
 sub autosave {
 	my $config = _config();
-	if ( $config->{autosave} eq 'extern' ) {
-		save( Kephra::Config::filepath($config->{directory}, $config->{current} ) );
-	}
+	my $file = Kephra::Config::filepath($config->{directory}, $config->{current});
+	save( $file ) if $config->{autosave} eq 'extern' and -w $file;
 }
 
 # restore autosaved
@@ -154,16 +151,16 @@ sub autoload {
 	$Kephra::document{current_nr}   = 0;
 	$Kephra::temp{document}{changed}= 0;
 	$Kephra::temp{document}{loaded} = 0;
+	my $file_name = Kephra::Config::filepath
+		( $config->{directory}, $config->{current} );
 
 	# detect wich files to load
-	if ( $config->{autosave} eq 'not' ) { 
+	if ( $config->{autosave} eq 'not' or not -e $file_name) { 
 	# Do nothing
 	} elsif ( $config->{autosave} eq 'intern' ) {
 		@load_files = 
 			@{Kephra::Config::Tree::_convert_node_2_AoH(\$Kephra::document{open})};
 	} elsif ( $config->{autosave} eq 'extern' ) {
-		my $file_name = Kephra::Config::filepath
-			( $config->{directory}, $config->{current} );
 		#my $start_node  = $config;
 		my %temp_config = %{ Kephra::Config::File::load($file_name) };
 		@load_files = @{

@@ -42,7 +42,9 @@ sub connect_all {
 	# events for whole window
 	EVT_CLOSE      ($win,  sub { trigger('app.close'); Kephra::quit() });
 	EVT_DROP_FILES ($win,  \&Kephra::File::add_dropped);
-	EVT_MENU_OPEN  ($win,  sub { trigger('menu.open') });
+	EVT_MENU_OPEN  ($win,  sub {
+#print"menu ",$_[1]->GetMenuId, ' ', $_[1]->GetMenu, "\n";
+		trigger('menu.open') });
 	#EVT_IDLE       ($win,  sub { } );
 
 

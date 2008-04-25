@@ -22,10 +22,13 @@ sub _config { $Kephra::config{app}{toolbar}{search} }
 
 sub create {
 	# load searchbar definition
-	my $config = _config();
-	my $file_name = Kephra::Config::filepath( $config->{file} );
-	my $bar_def = Kephra::Config::File::load($file_name);
-	$bar_def = Kephra::Config::Tree::get_subtree( $bar_def, $config->{node});
+	my $bar_def = Kephra::Config::File::load_from_config_node_data( _config() );
+	unless ($bar_def) {
+		require Kephra::Config::Embedded;
+		$bar_def = Kephra::Config::Tree::get_subtree
+			( Kephra::Config::Embedded::toolbars(), 'searchbar');
+	}
+
 	# create searchbar with buttons
 	my $rest_widgets = Kephra::App::ToolBar::create_new( 'search', $bar_def);
 	my $bar = _ref();
@@ -209,6 +212,7 @@ sub give_editpanel_focus_back{
 	Wx::Window::SetFocus( Kephra::App::EditPanel::_ref() );
 }
 
+sub position {}
 
 # set visibility
 sub show {

@@ -3,9 +3,34 @@ BUGS:
  ! textchanged event triggers twice
 
 TODO 0.4:
- + nested menu prepare event
+ * config dialog
+ + keymap dialog
  + own statusbar
- + config dialog
+
+0.3.8.13
+ ] cleaned Kephra::Edit::Search.pm
+ ! crash when open global autoconfigs
+
+0.3.8.12
+ ] cleaned bit the sub load_from() in Config::Global
+ ] cleaned Config::Global a bit
+ ] WxKeycodes for search dialog
+ ! crash when searching with dialog
+
+0.3.8.11
+ + added replace selection into context menu over selected text in editpanel 
+ ~ cleared replace selection labels
+ ~ ignore in filechange notify dialog now works until next file change happens
+
+0.3.8.10
+ - removed global default conf, replaced by embedded conf
+ ] search dialog is now real dialog
+ ! debugged embedded global conf
+
+0.3.8.9
+ + embedded main menu settings
+ ! can handle missing file session file 
+ ! hang while searching after closing search dialog
 
 0.3.8.8
  + <ctrl>+<A> works in searchbar
