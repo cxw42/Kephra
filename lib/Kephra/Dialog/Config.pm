@@ -49,17 +49,18 @@ sub main {
 		_ref($d);
 
 		# main panel
-		my $mpanel = Wx::Panel->new( $d, -1, [-1,-1], [-1,-1] );
-		#my $config_menu = Wx::Panel->new( $mpanel, -1, [10, 10], [106, 362]);
-		# construction left main menu
-		#$config_menu->SetBackgroundColour(wxWHITE);
-		#my $menu_border = Wx::StaticBox->new( $mpanel, -1, '', 
-		#	[10, 4], [110, 370], wxSIMPLE_BORDER | wxRAISED_BORDER );
+		my $mainpanel = Wx::Panel->new( $d, -1, [-1,-1], [-1,-1] );
 		# tree of categories
-		my $cfg_tree = Wx::Treebook->new( $mpanel, -1, [-1,-1], [-1,-1], wxBK_LEFT);
-		my $panel;
-		$panel->{general} = Wx::Panel->new( $cfg_tree, -1, [-1,-1], [-1,-1] );
-		$panel->{general}->SetSizer(Wx::BoxSizer->new(wxVERTICAL));
+		my $cfg_tree = Wx::Treebook->new( $mainpanel, -1, [-1,-1], [-1,-1], wxBK_LEFT);
+		my ($panel);
+
+		# general settings
+		my $pg = $panel->{general} = Wx::Panel->new( $cfg_tree );
+		$pg->{save} = Wx::StaticText->new( $pg, -1, 'Speichern');
+		$pg->{sizer} = Wx::BoxSizer->new(wxVERTICAL);
+		$pg->{sizer}->Add( $pg->{save} , 0, wxLEFT, 5 );
+		$pg->SetSizer( $pg->{sizer} );
+
 		$cfg_tree->AddPage( $panel->{general}, 'General', 1);
 		$panel->{Interface} = $cfg_tree->AddPage( undef, 'Interface', 1);
 		$panel->{file} = $cfg_tree->AddPage( undef, 'File', 1);
@@ -67,31 +68,13 @@ sub main {
 		$cfg_tree->AddSubPage( undef, 'Save', 1);
 		$cfg_tree->AddSubPage( undef, 'Endings', 1);
 		$cfg_tree->AddSubPage( undef, 'Session', 1);
-		$panel->{editpanel} = $cfg_tree->AddPage( undef, 'Editpanel', 1);
-		#print "-".wxNOT_FOUND."$npanel \n";
-
-		#my $page = $cat_tree->AddPage( $npanel, "Allgemein", 0, -1);
-			#wxTR_NO_BUTTONS | wxTR_HIDE_ROOT | wxTR_SINGLE );
-		#my $root_id = $cat_tree->AddRoot('invisible', -1, -1 );
-		#my $fid = $cat_tree->AppendItem( $root_id, $m_l10n->{file},-1,-1);
-		#my $vid = $cat_tree->AppendItem( $root_id, $m_l10n->{view},-1,-1);
-#print "rid: $rid, fid: $fid\n";
-#$cat_tree->Expand( $cat_tree->AppendItem( $fid, 'neu', -1,-1, td(undef)) );
-		#$cat_tree->AppendItem( $fid, 'Neu',  -1,-1, );
-		#$cat_tree->AppendItem( $fid, 'Öffnen', -1,-1, );
-		#$cat_tree->AppendItem( $fid, 'Speichern',  -1,-1, );
-		#$cat_tree->AppendItem( $fid, 'Endungen',  -1,-1, );
-		#$cat_tree->Expand( $root_id );
-		#$cat_tree->Expand( $fid );
-
-		# panels with config controls
-		#my $file_open_panel = Wx::Panel->new( $mpanel, -1, [400, 10], [276, 362]);
-		#my $file_save_panel = Wx::Panel->new( $mpanel, -1, [400, 10], [276, 362]);
-
+		$cfg_tree->AddPage( undef, 'Editpanel', 1);
 
 		# button line
-		$d->{apply_button} = Wx::Button->new( $mpanel,-1,$g_l10n->{apply}, [-1,-1], [-1,-1] );
-		$d->{cancel_button} = Wx::Button->new( $mpanel,-1,$g_l10n->{cancel},[-1,-1], [-1,-1] );
+		$d->{apply_button} = Wx::Button->new ( $mainpanel, -1, $g_l10n->{apply} );
+		$d->{cancel_button} = Wx::Button->new( $mainpanel, -1, $g_l10n->{cancel});
+		EVT_BUTTON( $d, $d->{apply_button}, sub {shift->Close} );
+		EVT_BUTTON( $d, $d->{cancel_button},sub {shift->Close} );
 		my $button_sizer = Wx::BoxSizer->new(wxHORIZONTAL);
 		$button_sizer->Add( $d->{apply_button},  0, wxRIGHT, 14 );
 		$button_sizer->Add( $d->{cancel_button}, 0, wxRIGHT, 22 );
@@ -103,17 +86,12 @@ sub main {
 		$d_sizer->Add( $button_sizer, 0, wxBOTTOM|wxALIGN_RIGHT, 12);
 
 		# release
-		$mpanel->SetSizer($d_sizer);
-		$mpanel->SetAutoLayout(1);
-		#$cfg_tree->Fit();
+		$mainpanel->SetSizer($d_sizer);
+		$mainpanel->SetAutoLayout(1);
 		$d->Show(1);
 		Wx::Window::SetFocus( $d->{cancel_button} );
 
-		# events
-		EVT_BUTTON( $d, $d->{apply_button}, sub {shift->Close} );
-		EVT_BUTTON( $d, $d->{cancel_button},sub {shift->Close} );
 		EVT_CLOSE( $d, \&quit_config_dialog );
-
 	} else {
 		my $d = _ref();
 		$d->Iconize(0);
@@ -121,15 +99,13 @@ sub main {
 	}
 }
 
-# helper
-sub td { Wx::TreeItemData->new( $_[0] ) }
+# helper sub td { Wx::TreeItemData->new( $_[0] ) }
 
 sub quit_config_dialog {
 	my ( $win, $event ) = @_;
-	my $config = $Kephra::config{dialog}{config};
-	if ( $config->{save_position} == 1 ) {
-		($config->{position_x}, $config->{position_y})
-			= $win->GetPositionXY;
+	my $cfg = $Kephra::config{dialog}{config};
+	if ( $cfg->{save_position} == 1 ) {
+		( $cfg->{position_x}, $cfg->{position_y} ) = $win->GetPositionXY;
 	}
 	$Kephra::temp{dialog}{config}{active} = 0;
 	$win->Destroy;

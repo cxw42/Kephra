@@ -1,5 +1,5 @@
 package Kephra::Config::Global;
-$VERSION = '0.22';
+$VERSION = '0.23';
 
 # handling main config files under /config/global/
 use strict;
@@ -30,6 +30,7 @@ sub save_autosaved {
 	rename $file_name, $file_name . '~';
 	Kephra::Config::File::store( $file_name, \%Kephra::config );
 }
+
 
 sub open_current_file {
 	save_current();
@@ -136,10 +137,10 @@ sub reload {
 }
 
 sub reload_tree {
-		update();
-		evaluate();
-		Kephra::App::TabBar::refresh_all_label();
-		Kephra::Document::Internal::eval_properties();
+	update();
+	evaluate();
+	Kephra::App::TabBar::refresh_all_label();
+	Kephra::Document::Internal::eval_properties();
 }
 
 sub reload_current { reload( _current_file() ) }
@@ -199,8 +200,8 @@ sub save_current { save( _current_file() ) }
 
 #
 sub merge_with {
-	my $app_win  = Kephra::App::Window::_ref();
-	my $filename = Kephra::Dialog::get_file_open( $app_win,
+	my $filename = Kephra::Dialog::get_file_open( 
+		Kephra::App::Window::_ref(),
 		$Kephra::localisation{dialog}{config_file}{load},
 		Kephra::Config::dirpath( _conf_sub_path(), 'sub'),
 		$Kephra::temp{file}{filterstring}{config}

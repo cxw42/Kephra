@@ -84,6 +84,7 @@ share/config/global/autosaved.conf
 share/config/global/sub/documentation/cesky.conf
 share/config/global/sub/documentation/deutsch.conf
 share/config/global/sub/documentation/english.conf
+share/config/global/sub/pbs.conf
 share/config/interface/appbars.yml
 share/config/interface/commands.conf
 share/config/interface/contextmenus.yml
@@ -211,7 +212,6 @@ share/help/english/license/artistic.txt
 share/help/english/license/credits.txt
 share/help/english/license/gpl.txt
 share/help/english/license/lgpl.txt
-share/help/english/license/pce-licence.txt
 share/help/english/license/scintilla.txt
 share/help/english/license/wx.txt
 share/help/english/navigation.txt

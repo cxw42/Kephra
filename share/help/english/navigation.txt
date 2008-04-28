@@ -1,7 +1,7 @@
 
-   ----------------------
-  | PCE Navigation Guide |
-   ----------------------
+       -------------------------
+      | Kephra Navigation Guide |
+       -------------------------
 
  Despite the editor is designed to be nonintrusive, every element of the user
  interface has its planned purpose and task. The usage will be easier if you

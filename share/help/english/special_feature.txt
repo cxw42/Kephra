@@ -1,13 +1,14 @@
 
-           ----------------------------
-          | Special Feature of Kephra  |
-           ----------------------------
+       -----------------------------
+      | Special Features of Kephra  |
+       -----------------------------
 
-Many standart functions, like opening a file or moving the blinking cursor, don't
+Many standart functions, like opening a file or moving the blinking cursor (that's
+called caret), don't
 need any explanation, or Kephra wouldn't be a good editor. Nevertheless there
 some functionalities that are very helpful, but can be overlooked. Maybe because
 you don't expect them, or they are not in the main menu. Thatswhy they are listed
-here, sorted by topic. 
+here, sorted by topic.
 
  - Text Navigation
     + <Ctrl>+<Shift>+<G> springt im aktuellen Dokument zu der Stelle, die als 

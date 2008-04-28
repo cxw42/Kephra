@@ -43,6 +43,24 @@
 
 
 
+0.3.9
+ + now complete embedded configs making Kephra selfhosting without config files
+ + added pbp.conf according perl best practices
+ + added replace selection into context menu over selected text in editpanel 
+ + context menu over statusbar info field
+ + <ctrl>+<A> works in searchbar
+ + document switch  backs works out of search bar
+ - removed default global and interface conf, replaced by embedded conf
+ - removed select app language menu
+ [ put file sessions menu out of file menu on top level
+ [ put goto-line into searchbar
+ [ folding the upper half of the view menu
+ ] lot of internal cleanups
+ ' formated and updated documentation 
+ ? more compile tests for modules that arent loaded on start
+ ! ignore in filechange notify dialog now works until next file change happens
+ ! heavy bugfixing
+
 0.3.8
  + move tabs with <ctrl>+<shift>+<pgup|pgdn>
  + Ctrl+Shift+G works from the searchbar input
@@ -50,7 +68,7 @@
  ~ change Switch doc back to <ctrl>+<shift>+<back>
  ~ move xml comment from <ctrl>+<b> to <ctrl>+<h>
  [ new splashscreen (finally one with the right name in it)
- ] wxperl 0.8.3
+ ] wxperl 0.83
  ! very much bug fixing
 
 0.3.7
@@ -354,7 +372,7 @@
         colored gutter, first syntaxstyle(perl), filename in tab and the title
 
 Legend:
- ? purpose
+ ? testing
  + new feature
  ~ change
  - remove

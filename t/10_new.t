@@ -5,6 +5,7 @@
 use strict;
 BEGIN {
 	$| = 1;
+	push @INC, 'lib';
 }
 
 use Test::More tests => 1;

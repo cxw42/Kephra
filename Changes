@@ -7,7 +7,14 @@ TODO 0.4:
  + keymap dialog
  + own statusbar
 
+0.3.8.14
+ ' formated and updated documentation
+ ~ updated credits.txt (PCE -> Kephra)
+ ~ rewritten Config::Tree functions so i could
+ - remove Hash::Merge and Clone as dependencies
+
 0.3.8.13
+ + added pbp.conf according perl best practices
  ] cleaned Kephra::Edit::Search.pm
  ! crash when open global autoconfigs
 
@@ -75,9 +82,9 @@ TODO 0.4:
  ~ folding view menu
  ! fix php lexer, new constant
  ! fix xml lexer
- ! crash while open jelp files in winball distro
+ ! crash while open help files in winball distro
 
-0.3.8 bugfix release
+0.3.8 bugfix release, 0.4 RC 1
 
 0.3.7.12
  + position searchbar in the middle between tabbar and edit panel

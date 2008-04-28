@@ -5,6 +5,7 @@
 use strict;
 BEGIN {
 	$| = 1;
+	push @INC, 'lib';
 }
 
 use Test::More tests => 28;
@@ -60,7 +61,7 @@ sub is_icon {
 
 SCOPE: {
 	# Set the default icon path for testing purposes
-	local $Kephra::config{app}->{iconset_path} = 'icon/set/jenne';
+	local $Kephra::config{app}->{iconset_path} = 'share/config/interface/icon/set/jenne';
 
 	my @known_good = qw{
 		edit_delete

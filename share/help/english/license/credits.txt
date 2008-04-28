@@ -1,6 +1,10 @@
 
+       ---------
+      | Credits |
+       ---------
 
-PCE by (C) Herbert Breunung and other, uses all the things listed below and is
+
+Kephra by (C) Herbert Breunung and other, uses all the things listed below and is
     licensed under GPL. (help/license/gpl.txt or www.fsf.org/licenses/gpl.txt)
     Icons (in /config/ico/jenne) are made by Jens Neuwerk (www.stockicons.org)
     starter-exe under Windows by Robin Haberkorn (Shai-Hulud)
@@ -22,7 +26,8 @@ Scintilla by (c) Neil Hodgson, see Neils license under (help/license/sci.txt)
 
 ActivePerl (this Distribution of Perl) by Active State is licensed under the 
             ActiveState Community License (help/license/asl.txt or
-            www.activestate.com/Products/ActivePerl/license_agreement.plex)
+            www.activestate.com/Products/ActivePerl/license_agreement.plex)
+
 Config::General (in /pre/cpan/config) by (c) 2000-2003 Thomas Linden 
                  This library is free software; you can redistribute it and/or 
                  modify it under the same terms as Perl itself.

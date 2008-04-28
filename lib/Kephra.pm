@@ -6,7 +6,8 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__; # name of entire application
-our $VERSION    = '0.3.8.13';   # version of entire app
+our $VERSION    = '0.3.8.14';   # version of entire app
+our $PATCHLEVEL;
 our @ISA        = 'Wx::App';   # $NAME is a wx application
 
 # Configuration Phase
@@ -62,8 +63,6 @@ use Wx::DND;                    # Drag'n Drop & Clipboard support (only K::File)
 #use Wx::Print;                 # Print cd..Support (used only in Kephra::File )
 
 # required external modules (loaded if needed in packages)
-# require Hash::Merge;          # for config hash merging
-# require Clone;                # Hash::Merge Dependency
 # require Cwd;                  # for some Config::Settings
 # require Text::Wrap            # for text formating
 # require Perl::Tidy;           # -NI perl formating

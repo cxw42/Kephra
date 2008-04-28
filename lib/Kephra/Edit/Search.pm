@@ -147,8 +147,9 @@ sub switch_attribute{
 		$attr eq 'match_regex'     or
 		$attr eq 'auto_wrap'       or
 		$attr eq 'incremental'       ) {
-		unless (defined _attributes->{$attr}) {_attributes->{$attr}  = 1}
-		else                                  {_attributes->{$attr} ^= 1}
+		unless (defined _attributes->{$attr}) 
+			 { _attributes->{$attr}  = 1 }
+		else { _attributes->{$attr} ^= 1 }
 		_refresh_search_flags() if substr($attr, 0, 1) eq 'm';
 	}
 }

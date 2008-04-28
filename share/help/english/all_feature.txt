@@ -1,7 +1,7 @@
 
-            ---------------------
-           | Kephra Feature Tour |
-            ---------------------
+       ---------------------
+      | Kephra Feature Tour |
+       ---------------------
 
 Auch wenn der Editor noch nicht alles vermag, was wir gerne hätten, so möchten
 wir ihn mächtig nennen weil diese Liste lang ist. Wenn euch Texteditoren bereits

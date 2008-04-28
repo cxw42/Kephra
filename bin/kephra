@@ -8,6 +8,14 @@
 ## Licence:     GPL
 #############################################################################
 
+=head1 NAME
+
+kephra - Kephra starter script
+
+for main Docs please go to L<Kephra.pm> 
+
+=cut
+
 use strict;
 use File::Spec ();
 

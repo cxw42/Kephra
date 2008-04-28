@@ -7,13 +7,13 @@ distribution_type: module
 generated_by: Module::Install version 0.68
 no_index: 
   directory: 
+    - doc
     - inc
+    - share
     - t
 requires: 
   perl: 5.006
   Wx:   0.70
-  Hash-Merge: 0
-  Clone: 0.18
   YAML: 0
   Config-General: 0
   File-UserConfig: 0

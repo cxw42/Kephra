@@ -7,78 +7,28 @@
     </search>
     <config>
         save_position = 1
+        current_panel_nr = 1
         position_y = 82
         position_x = 405
         tooltips = 1
     </config>
     button_handing = right
 </dialog>
-<search>
-    <history>
-        save = 1
-        find_item = css
-        find_item = e
-        find_item = E
-        find_item = üb
-        find_item = a
-        find_item = base
-        find_item = g
-        find_item = WXK_BACK
-        find_item = line
-        find_item = line-nr
-        find_item = _get
-        find_item = _get_config
-        length = 12
-        use = 1
-        remember_only_matched = 1
-        current_find_item = css
-        replace_item = b
-        replace_item = require_ok('
-        replace_item = require_ok
-        replace_item = a
-        replace_item = ditP
-        replace_item = changes
-        replace_item = Changes
-        replace_item = d
-        replace_item = syn
-        replace_item = for
-        replace_item = language
-        replace_item = with
-        current_replace_item = b_s
-    </history>
-    <attribute>
-        match_regex = 0
-        match_case = 0
-        match_whole_word = 0
-        auto_wrap = 
-        in = document
-        match_word_begin = 0
-        fast_steps = 7
-        incremental = 1
-    </attribute>
-    <hyper>
-        directory = F:\src\perl
-        in_subdirs = 1
-        in = document
-    </hyper>
-    <bookmark>
-    </bookmark>
-</search>
 <app>
     <menubar>
+        responsive = 1
         file = interface/mainmenu.yml
         node = full_menubar
-        responsive = 1
     </menubar>
     <window>
         icon = interface/icon/app/proton.ico
         save_position = 1
         size_y = 809
         max_number = 1
-        position_y = -2
+        position_y = -5
         stay_on_top = 0
-        position_x = 30
         title = $filepath - $appname $version
+        position_x = 12
         size_x = 741
     </window>
     <toolbar>
@@ -104,6 +54,7 @@
         </main>
     </toolbar>
     localisation_file = deutsch_iso.conf
+    iconset_path = interface/icon/set/jenne/
     <contextmenu>
         defaultfile = interface/contextmenus.yml
         <id>
@@ -119,7 +70,6 @@
             document_list = &document_change
         </id>
     </contextmenu>
-    iconset_path = interface/icon/set/jenne/
     <tabbar>
         visible = 1
         insert = rightmost
@@ -138,14 +88,14 @@
         switch_back = 1
         mark_configs = 1
     </tabbar>
+    error_output = dialog
     <statusbar>
         visible = 1
         interactive = 1
         file = interface/appbars.yml
-        msg_nr = 1
+        msg_nr = 2
         node = statusbar
     </statusbar>
-    error_output = dialog
     xp_style = 1
     <commandlist>
         file = interface/commands.conf
@@ -156,13 +106,64 @@
         </cache>
     </commandlist>
 </app>
+<search>
+    <history>
+        remember_only_matched = 1
+        current_find_item = e
+        replace_item = b
+        replace_item = require_ok('
+        replace_item = require_ok
+        replace_item = a
+        replace_item = ditP
+        replace_item = changes
+        replace_item = Changes
+        replace_item = d
+        replace_item = syn
+        replace_item = for
+        replace_item = language
+        replace_item = with
+        save = 1
+        find_item = e
+        find_item = css
+        find_item = E
+        find_item = üb
+        find_item = a
+        find_item = base
+        find_item = g
+        find_item = WXK_BACK
+        find_item = line
+        find_item = line-nr
+        find_item = _get
+        find_item = _get_config
+        length = 12
+        use = 1
+        current_replace_item = b_s
+    </history>
+    <attribute>
+        match_regex = 0
+        match_case = 0
+        match_whole_word = 0
+        auto_wrap = 1
+        in = document
+        fast_steps = 7
+        match_word_begin = 0
+        incremental = 1
+    </attribute>
+    <hyper>
+        directory = F:\src\perl
+        in_subdirs = 1
+        in = document
+    </hyper>
+    <bookmark>
+    </bookmark>
+</search>
 <texts>
     credits = deutsch/lizenz/anerkennung.txt
     version = deutsch/diese_version.txt
     keymap = deutsch/tastaturbelegung.txt
     license = deutsch/lizenz/gpl.txt
-    feature = deutsch/alle_funktionen.txt
     navigation = deutsch/navigation.txt
+    feature = deutsch/alle_funktionen.txt
     special = deutsch/besondere_funktionen.txt
     welcome = deutsch/willkommen.txt
 </texts>
@@ -287,6 +288,20 @@
         cpp = c cc cpp cxx h
         lua = lua
     </endings>
+    <history>
+        path = share\help\deutsch\willkommen.txt
+        path = share\help\english\welcome.txt
+        path = share\config\global\autosaved.conf
+        path = share\help\deutsch\diese_version.txt
+        path = share\help\english\license\credits.txt
+        path = share\help\english\navigation.txt
+        path = share\help\english\this_version.txt
+        path = share\config\interface\mainmenu.yml
+        path = share\config\interface\contextmenus.yml
+        path = D:\src\perl\editor\dev\base\share\config\localisation\english.conf
+        path = D:\src\perl\editor\dev\base\share\config\localisation\deutsch_iso.conf
+        length = 11
+    </history>
     <defaultsettings>
         EOL_open = auto
         readonly = protect
@@ -297,29 +312,6 @@
         tab_use = 1
         tab_size = 4
     </defaultsettings>
-    <history>
-        path = D:\src\perl\editor\dev\base\share\config\localisation\english.conf
-        path = D:\src\perl\editor\dev\base\share\config\localisation\deutsch_iso.conf
-        path = D:\src\perl\editor\dev\base\share\config\localisation\deutsch.conf
-        path = D:\src\perl\editor\dev\base\share\config\localisation\cesky_iso.conf
-        path = D:\src\perl\editor\dev\base\bin\kephra
-        path = D:\src\perl\editor\dev\base\lib\Kephra\Config\Interface.pm
-        path = share\config\localisation\english.conf
-        path = D:\src\perl\editor\dev\base\t\01_compile.t
-        path = D:\src\perl\editor\dev\base\share\config\global\autosaved.conf
-        path = D:\src\perl\editor\dev\base\lib\Kephra\Config\Embedded.pm
-        length = 11
-    </history>
-    <open>
-        notify_change = 30
-        only_text = 0
-        in_current_dir = 1
-        into_only_empty_doc = 1
-        into_empty_doc = 0
-        each_once = 1
-        dir_recursive = 1
-        single_doc = 0
-    </open>
     <save>
         tilde_backup = 0
         reload_config = 1
@@ -333,6 +325,16 @@
         unchanged_all = 0
         b4_close = ask
     </save>
+    <open>
+        notify_change = 30
+        only_text = 0
+        in_current_dir = 1
+        into_only_empty_doc = 1
+        into_empty_doc = 0
+        each_once = 1
+        dir_recursive = 1
+        single_doc = 0
+    </open>
     <group>
         web = css html php perl js
         text = text
@@ -348,7 +350,7 @@
     </session>
     <current>
         directory = <<EOF
-        share\config\global\
+        share\help\english\
         EOF
     </current>
     <templates>

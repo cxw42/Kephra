@@ -1,6 +1,6 @@
 
 
-PCE von (C) Herbert Breunung und andere, es gebraucht all die hier aufgelisteten
+Kephra von (C) Herbert Breunung und andere, es gebraucht all die hier aufgelisteten
     Dinge und ist unter der GPL lizensiert die hier lokal unter
     help/deutsch/lizens/gpl.txt liegt oder im netz unter
     www.fsf.org/licenses/gpl.html.
@@ -25,8 +25,7 @@ Scintilla (c) Neil Hodgson, Neils eigene Lizens unter (help/license/sci.txt)
 
 ActivePerl (diese Distribution von Perl) von Active State ist lizensiert unter
             der ActiveState Community License (help/license/asl.txt oder
-            www.activestate.com/Products/ActivePerl/license_agreement.plex)
-Config::General (in /pre/cpan/config) von (c) 2000-2003 Thomas Linden 
+            www.activestate.com/Products/ActivePerl/license_agreement.plex)Config::General (in /pre/cpan/config) von (c) 2000-2003 Thomas Linden 
                  Diese Bibliothek ist freie Software; verbreite oder ändere sie
                  unter den gleichen Bedingungen wie Perl selbst.
 
