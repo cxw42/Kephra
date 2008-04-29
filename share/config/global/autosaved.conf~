@@ -53,7 +53,7 @@
             size = 16
         </main>
     </toolbar>
-    localisation_file = deutsch_iso.conf
+    localisation_file = english.conf
     iconset_path = interface/icon/set/jenne/
     <contextmenu>
         defaultfile = interface/contextmenus.yml
@@ -145,8 +145,8 @@
         match_whole_word = 0
         auto_wrap = 1
         in = document
-        fast_steps = 7
         match_word_begin = 0
+        fast_steps = 7
         incremental = 1
     </attribute>
     <hyper>
@@ -162,8 +162,8 @@
     version = deutsch/diese_version.txt
     keymap = deutsch/tastaturbelegung.txt
     license = deutsch/lizenz/gpl.txt
-    navigation = deutsch/navigation.txt
     feature = deutsch/alle_funktionen.txt
+    navigation = deutsch/navigation.txt
     special = deutsch/besondere_funktionen.txt
     welcome = deutsch/willkommen.txt
 </texts>
@@ -194,7 +194,6 @@
         </brace>
         indention = 1
     </auto>
-    word_chars = $%-:@_abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ0123456789
     <indicator>
         <whitespace>
             visible = 1
@@ -230,6 +229,7 @@
             color = ccccff
         </right_margin>
     </indicator>
+    word_chars = $%-:@_abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ0123456789
     <margin>
         fold = 0
         <linenumber>
@@ -255,10 +255,10 @@
         vbs = vbs dsm
         php = php php3 php4 phtml
         xml = xml xsl svg xul xsd dtd xslt axl xrc rdf
-        sh = bsh sh
         haskell = hs
-        tex = tex sty
+        sh = bsh sh
         idl = idl odl
+        tex = tex sty
         vb = vb bas frm cls ctl pag dsr dob
         sql = sql
         scheme = scm smd ss

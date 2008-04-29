@@ -6,7 +6,7 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__; # name of entire application
-our $VERSION    = '0.3.8.14';   # version of entire app
+our $VERSION    = '0.3.9';   # version of entire app
 our $PATCHLEVEL;
 our @ISA        = 'Wx::App';   # $NAME is a wx application
 
@@ -144,6 +144,11 @@ __END__
 =head1 NAME
 
 kephra - crossplatform, CPAN-installable GUI-Texteditor along perllike Paradigms 
+
+=head1 DISCLAIMER
+
+This App do currently not install from cpan shell but I do my best to 
+change that ASAP. Now its just on CPAN for people who want to help ME. *g*
 
 =head1 SYNOPSIS
 

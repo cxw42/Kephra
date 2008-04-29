@@ -29,7 +29,7 @@ sub main {
 		$Kephra::temp{dialog}{config}{active} = 1;
 		my $frame  = Kephra::App::Window::_ref();
 		my $config = $Kephra::config{dialog}{config};
-		my $d_l10n = $Kephra::localisation{dialog}{settings};
+		my $d_l10n = $Kephra::localisation{dialog}{config};
 		my $g_l10n = $Kephra::localisation{dialog}{general};
 		my $m_l10n = $Kephra::localisation{app}{menu};
 		my $cl_l10n= $Kephra::localisation{commandlist}{label};
