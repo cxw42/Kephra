@@ -17,8 +17,8 @@ use Wx::Event
 	qw(EVT_KEY_DOWN EVT_TEXT EVT_BUTTON EVT_CHECKBOX EVT_RADIOBUTTON EVT_CLOSE);
 
 sub _ref {
-	if (ref $_[0] eq 'Wx::MiniFrame'){ $Kephra::app{dialog}{config} = $_[0] }
-	else                             { $Kephra::app{dialog}{config} }
+	if (ref $_[0] eq 'Wx::Dialog'){ $Kephra::app{dialog}{config} = $_[0] }
+	else                          { $Kephra::app{dialog}{config} }
 }
 
 sub main {
@@ -38,7 +38,7 @@ sub main {
 		#$d_style |= wxSTAY_ON_TOP if $Kephra::config{app}{window}{stay_on_top};
 
 		# making window & main design
-		my $d = Wx::MiniFrame->new( $frame, -1, ' '.$d_l10n->{title},
+		my $d = Wx::Dialog->new( $frame, -1, ' '.$d_l10n->{title},
 			[ $config->{position_x}, $config->{position_y} ], [ 470, 560 ],
 			$d_style);
 		my $icon_bmp = Kephra::API::CommandList::get_cmd_property
@@ -49,9 +49,9 @@ sub main {
 		_ref($d);
 
 		# main panel
-		my $mainpanel = Wx::Panel->new( $d, -1, [-1,-1], [-1,-1] );
+		#my $mainpanel = Wx::Panel->new( $d, -1, [-1,-1], [-1,-1] );
 		# tree of categories
-		my $cfg_tree = Wx::Treebook->new( $mainpanel, -1, [-1,-1], [-1,-1], wxBK_LEFT);
+		my $cfg_tree = Wx::Treebook->new( $d, -1, [-1,-1], [-1,-1], wxBK_LEFT);
 		my ($panel);
 
 		# general settings
@@ -71,8 +71,8 @@ sub main {
 		$cfg_tree->AddPage( undef, 'Editpanel', 1);
 
 		# button line
-		$d->{apply_button} = Wx::Button->new ( $mainpanel, -1, $g_l10n->{apply} );
-		$d->{cancel_button} = Wx::Button->new( $mainpanel, -1, $g_l10n->{cancel});
+		$d->{apply_button} = Wx::Button->new ( $d, -1, $g_l10n->{apply} );
+		$d->{cancel_button} = Wx::Button->new( $d, -1, $g_l10n->{cancel});
 		EVT_BUTTON( $d, $d->{apply_button}, sub {shift->Close} );
 		EVT_BUTTON( $d, $d->{cancel_button},sub {shift->Close} );
 		my $button_sizer = Wx::BoxSizer->new(wxHORIZONTAL);
@@ -86,8 +86,8 @@ sub main {
 		$d_sizer->Add( $button_sizer, 0, wxBOTTOM|wxALIGN_RIGHT, 12);
 
 		# release
-		$mainpanel->SetSizer($d_sizer);
-		$mainpanel->SetAutoLayout(1);
+		$d->SetSizer($d_sizer);
+		$d->SetAutoLayout(1);
 		$d->Show(1);
 		Wx::Window::SetFocus( $d->{cancel_button} );
 

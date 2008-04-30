@@ -1,4 +1,7 @@
 
+       ------------------
+      | Autoren und Dank |
+       ------------------
 
 Kephra von (C) Herbert Breunung und andere, es gebraucht all die hier aufgelisteten
     Dinge und ist unter der GPL lizensiert die hier lokal unter

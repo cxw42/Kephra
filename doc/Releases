@@ -40,7 +40,8 @@
  ~ menu und toolbar items can now disable, be checked by internal events
  [ checkable and disable menu items
  [ shown pathes now OS compatibel
-
+ ] runs with newest Wx and newest Perl
+ ] added and removed dependencies
 
 
 0.3.9
@@ -50,8 +51,10 @@
  + context menu over statusbar info field
  + <ctrl>+<A> works in searchbar
  + document switch  backs works out of search bar
+ + added pbp.conf according to damians perl best practices
  - removed default global and interface conf, replaced by embedded conf
  - removed select app language menu
+ - remove Hash::Merge and Clone as dependencies
  [ put file sessions menu out of file menu on top level
  [ put goto-line into searchbar
  [ folding the upper half of the view menu

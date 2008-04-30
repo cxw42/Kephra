@@ -1,7 +1,7 @@
 
-          -----------
-         | Wilkommen |
-          -----------
+       ------------
+      | Willkommen |
+       ------------
       
 Alle beteiligten Entwickler sind begeistert daß Du diesen Editor probierst oder 
 benutzt. Hab Freude damit und besuch auch unsere Internetseite für Neuigkeiten,

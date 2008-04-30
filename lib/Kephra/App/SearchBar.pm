@@ -3,8 +3,8 @@ $VERSION = '0.12';
 
 use strict;
 use Wx qw( 
-	wxTOP wxBOTTOM wxGROW 
-	wxSTC_CMD_LINESCROLLUP wxSTC_CMD_LINESCROLLDOWN 
+	wxTOP wxBOTTOM wxGROW
+	wxSTC_CMD_LINESCROLLUP wxSTC_CMD_LINESCROLLDOWN
 	wxSTC_CMD_CHARLEFT wxSTC_CMD_CHARRIGHT
 	wxSTC_CMD_PAGEUP wxSTC_CMD_PAGEDOWN
 	wxSTC_CMD_DOCUMENTSTART wxSTC_CMD_DOCUMENTEND
@@ -36,7 +36,7 @@ sub create {
 	for my $item_data (@$rest_widgets){
 		if ($item_data->{type} eq 'combobox' and $item_data->{id} eq 'find'){
 			my $find_input = $bar->{find_input} = Wx::ComboBox->new
-				($bar , -1, '', [-1,-1],[$item_data->{size},-1],[],,1);
+				($bar , -1, '', [-1,-1],[$item_data->{size},-1]);
 			$find_input->SetDropTarget( SearchInputTarget->new($find_input, 'find'));
 			$find_input->SetValue( Kephra::Edit::Search::get_find_item() );
 			$find_input->SetSize($item_data->{size},-1) if $item_data->{size};

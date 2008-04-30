@@ -6,7 +6,7 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__; # name of entire application
-our $VERSION    = '0.3.9';   # version of entire app
+our $VERSION    = '0.3.9.1';   # version of entire app
 our $PATCHLEVEL;
 our @ISA        = 'Wx::App';   # $NAME is a wx application
 
@@ -72,7 +72,7 @@ use Wx::DND;                    # Drag'n Drop & Clipboard support (only K::File)
 #use Params::Util ();           # Parameter checking
 #use Class::Inspector ();       # Class checking
 
-# used internal modules, parts of pce
+# used internal modules, parts of kephra
 use Kephra::API::CommandList;      # UI API
 use Kephra::API::EventTable;       # internal app API
 use Kephra::API::Extension;        # Plugin API
@@ -143,7 +143,7 @@ __END__
 
 =head1 NAME
 
-kephra - crossplatform, CPAN-installable GUI-Texteditor along perllike Paradigms 
+Kephra - crossplatform, CPAN-installable GUI-Texteditor along perllike Paradigms 
 
 =head1 DISCLAIMER
 

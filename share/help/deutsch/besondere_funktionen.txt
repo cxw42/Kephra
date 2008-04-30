@@ -1,7 +1,7 @@
 
-         --------------------------------
-        | Besondere Funktion von Kephra  |
-         --------------------------------
+       --------------------------------
+      | Besondere Funktion von Kephra  |
+       --------------------------------
 
 Viele Standartfunktionen wie das Öffnen einer Datei oder das Bewegen des kleinen
 blinkenden Striches braucht normalerweise nicht erklärt werden, oder Kephra wäre 

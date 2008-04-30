@@ -25,7 +25,7 @@ sub create {
 	$bar->SetFieldsCount(6);
 	if ( $^O eq 'linux' ) { $bar->SetStatusWidths( 90, 66, 60, 40, 70, -1 ) }
 	else                  { $bar->SetStatusWidths( 66, 60, 50, 25, 32, -1 ) }
-	#$win->SetStatusBarPane($Kephra::temp{app}{status}{message}{index});
+	$win->SetStatusBarPane($Kephra::temp{app}{status}{message}{index});
 
 	EVT_LEFT_DOWN ( $bar,  \&left_click);
 	EVT_RIGHT_DOWN( $bar,  \&right_click);

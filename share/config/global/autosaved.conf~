@@ -8,27 +8,78 @@
     <config>
         save_position = 1
         current_panel_nr = 1
-        position_y = 82
-        position_x = 405
+        position_y = 52
+        position_x = 536
         tooltips = 1
     </config>
     button_handing = right
 </dialog>
+<search>
+    <history>
+        save = 1
+        find_item = e
+        find_item = css
+        find_item = E
+        find_item = üb
+        find_item = a
+        find_item = base
+        find_item = g
+        find_item = WXK_BACK
+        find_item = line
+        find_item = line-nr
+        find_item = _get
+        find_item = _get_config
+        length = 12
+        use = 1
+        remember_only_matched = 1
+        current_find_item = e
+        replace_item = b
+        replace_item = require_ok('
+        replace_item = require_ok
+        replace_item = a
+        replace_item = ditP
+        replace_item = changes
+        replace_item = Changes
+        replace_item = d
+        replace_item = syn
+        replace_item = for
+        replace_item = language
+        replace_item = with
+        current_replace_item = b_s
+    </history>
+    <attribute>
+        match_regex = 0
+        match_case = 0
+        match_whole_word = 0
+        auto_wrap = 1
+        in = document
+        match_word_begin = 0
+        fast_steps = 7
+        incremental = 1
+    </attribute>
+    <hyper>
+        directory = F:\src\perl
+        in_subdirs = 1
+        in = document
+    </hyper>
+    <bookmark>
+    </bookmark>
+</search>
 <app>
     <menubar>
-        responsive = 1
         file = interface/mainmenu.yml
         node = full_menubar
+        responsive = 1
     </menubar>
     <window>
         icon = interface/icon/app/proton.ico
         save_position = 1
         size_y = 809
         max_number = 1
-        position_y = -5
+        position_y = -6
         stay_on_top = 0
+        position_x = 52
         title = $filepath - $appname $version
-        position_x = 12
         size_x = 741
     </window>
     <toolbar>
@@ -53,7 +104,7 @@
             size = 16
         </main>
     </toolbar>
-    localisation_file = english.conf
+    localisation_file = deutsch_iso.conf
     iconset_path = interface/icon/set/jenne/
     <contextmenu>
         defaultfile = interface/contextmenus.yml
@@ -93,7 +144,7 @@
         visible = 1
         interactive = 1
         file = interface/appbars.yml
-        msg_nr = 2
+        msg_nr = 1
         node = statusbar
     </statusbar>
     xp_style = 1
@@ -106,64 +157,13 @@
         </cache>
     </commandlist>
 </app>
-<search>
-    <history>
-        remember_only_matched = 1
-        current_find_item = e
-        replace_item = b
-        replace_item = require_ok('
-        replace_item = require_ok
-        replace_item = a
-        replace_item = ditP
-        replace_item = changes
-        replace_item = Changes
-        replace_item = d
-        replace_item = syn
-        replace_item = for
-        replace_item = language
-        replace_item = with
-        save = 1
-        find_item = e
-        find_item = css
-        find_item = E
-        find_item = üb
-        find_item = a
-        find_item = base
-        find_item = g
-        find_item = WXK_BACK
-        find_item = line
-        find_item = line-nr
-        find_item = _get
-        find_item = _get_config
-        length = 12
-        use = 1
-        current_replace_item = b_s
-    </history>
-    <attribute>
-        match_regex = 0
-        match_case = 0
-        match_whole_word = 0
-        auto_wrap = 1
-        in = document
-        match_word_begin = 0
-        fast_steps = 7
-        incremental = 1
-    </attribute>
-    <hyper>
-        directory = F:\src\perl
-        in_subdirs = 1
-        in = document
-    </hyper>
-    <bookmark>
-    </bookmark>
-</search>
 <texts>
     credits = deutsch/lizenz/anerkennung.txt
     version = deutsch/diese_version.txt
     keymap = deutsch/tastaturbelegung.txt
     license = deutsch/lizenz/gpl.txt
-    feature = deutsch/alle_funktionen.txt
     navigation = deutsch/navigation.txt
+    feature = deutsch/alle_funktionen.txt
     special = deutsch/besondere_funktionen.txt
     welcome = deutsch/willkommen.txt
 </texts>
@@ -212,17 +212,17 @@
             back_color = 001177
             fore_color = f3f3f3
         </selection>
-        <caret>
-            width = 2
-            period = 500
-            color = 0000ff
-        </caret>
         <bracelight>
             visible = 1
             mode = adjacent
             bad_color = ff0000
             good_color = 0000ff
         </bracelight>
+        <caret>
+            width = 2
+            period = 500
+            color = 0000ff
+        </caret>
         <right_margin>
             position = 80
             style = 1
@@ -263,43 +263,43 @@
         sql = sql
         scheme = scm smd ss
         js = js
-        cs = cs
         tcl = tcl tk itk
+        cs = cs
         ps = ps
         fortran = f for f77 f90 f95 f2k
         css = css
-        lisp = el jl lsp lisp
         latex = aux toc idx
+        lisp = el jl lsp lisp
         pascal = pas dpr dpk dfm inc pp
         html = htm html ssi shtml xhtml tag stag
-        text = txt ini nfo cfg
         ada = ada ads adb
+        text = txt ini nfo cfg
         context = tuo sty
         python = py pyw
         java = jav java
         ruby = rb
-        nsis = nsi nsh
         conf = conf
+        nsis = nsi nsh
         asm = s asm
         perl = pl ple plx plex pm pod cgi
-        as = as
         yaml = yaml yml
+        as = as
         eiffel = e
         cpp = c cc cpp cxx h
         lua = lua
     </endings>
     <history>
-        path = share\help\deutsch\willkommen.txt
-        path = share\help\english\welcome.txt
-        path = share\config\global\autosaved.conf
+        path = share\help\deutsch\besondere_funktionen.txt
         path = share\help\deutsch\diese_version.txt
-        path = share\help\english\license\credits.txt
-        path = share\help\english\navigation.txt
+        path = D:\src\perl\editor\dev\base\share\help\english\welcome.txt
+        path = D:\src\perl\editor\dev\base\share\help\english\navigation.txt
+        path = share\help\deutsch\navigation.txt
+        path = share\help\deutsch\willkommen.txt
+        path = share\help\deutsch\alle_funktionen.txt
+        path = share\help\deutsch\lizenz\anerkennung.txt
+        path = D:\src\perl\editor\dev\base\Changes
         path = share\help\english\this_version.txt
-        path = share\config\interface\mainmenu.yml
-        path = share\config\interface\contextmenus.yml
-        path = D:\src\perl\editor\dev\base\share\config\localisation\english.conf
-        path = D:\src\perl\editor\dev\base\share\config\localisation\deutsch_iso.conf
+        path = share\help\english\all_feature.txt
         length = 11
     </history>
     <defaultsettings>

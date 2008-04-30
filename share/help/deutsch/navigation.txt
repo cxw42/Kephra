@@ -1,7 +1,7 @@
 
-   ----------------------
-  | PCE Navigation Guide |
-   ----------------------
+       -------------------------
+      | Kephra Navigationshilfe |
+       -------------------------
 
   Dies ist eine Übersicht wo ihr welches Bedienelement findet, was es kann und
   wozu es dient. Auch steht hier welche Haltung wir dazu haben, was euch auch

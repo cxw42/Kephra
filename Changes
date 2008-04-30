@@ -7,6 +7,10 @@ TODO 0.4:
  + keymap dialog
  + own statusbar
 
+0.3.9.1
+ ' POD fix
+ ! toolbar appeared in wrong status bar cell
+
 0.3.9 0.4 RC 2
 
 0.3.8.14
@@ -16,7 +20,7 @@ TODO 0.4:
  - remove Hash::Merge and Clone as dependencies
 
 0.3.8.13
- + added pbp.conf according perl best practices
+ + added pbp.conf according to damians perl best practices
  ] cleaned Kephra::Edit::Search.pm
  ! crash when open global autoconfigs
 

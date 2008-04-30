@@ -66,13 +66,13 @@ BEGIN {
 	}
 }
 
+use Kephra;
+use File::HomeDir ();
 use Benchmark ();
 my $t0;
 
 BEGIN { $t0 = Benchmark->new; }
 
-use Kephra;
-use File::HomeDir ();
 
 	# set directory locations
 	$Kephra::temp{path}{config}            = $pathes{config};
