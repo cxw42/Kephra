@@ -91,7 +91,7 @@ sub global_settings {
 				},
 			},
 			window => {
-				icon => 'interface/icon/app/proton.ico',
+				icon => 'interface/icon/app/proton.xpm',
 				max_number => 1,
 				position_x => 10,
 				position_y => 10,

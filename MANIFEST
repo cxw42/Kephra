@@ -91,6 +91,7 @@ share/config/interface/contextmenus.yml
 share/config/interface/icon/app/mdi.ico
 share/config/interface/icon/app/note.ico
 share/config/interface/icon/app/proton.ico
+share/config/interface/icon/app/proton.xpm
 share/config/interface/icon/app/proton2.ico
 share/config/interface/icon/app/snippet.ico
 share/config/interface/icon/app/wxpl.ico
@@ -148,6 +149,7 @@ share/config/interface/icon/set/jenne/replace_next.xpm
 share/config/interface/icon/set/jenne/replace_previous.xpm
 share/config/interface/icon/set/jenne/stay_on_top.xpm
 share/config/interface/icon/splash/start_kephra.jpg
+share/config/interface/icon/splash/start_kephra.xpm
 share/config/interface/iconset_jenne.conf
 share/config/interface/mainmenu.yml
 share/config/localisation/cesky_iso.conf

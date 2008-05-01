@@ -10,8 +10,8 @@ use Wx qw(
 );
 
 sub _ref {
-	if ($_[0]){ $Kephra::app{window} = $_[0] }
-	else      { $Kephra::app{window} }
+	if (ref $_[0] eq 'Wx::Frame'){ $Kephra::app{window} = $_[0] }
+	else                         { $Kephra::app{window} }
 }
 sub _config { $Kephra::config{app}{window} }
 

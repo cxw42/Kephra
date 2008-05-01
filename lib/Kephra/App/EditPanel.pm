@@ -14,8 +14,8 @@ use Wx qw(
 # internal API to config und app pointer
 #
 sub _ref {
-	if ($_[0]){ $Kephra::app{editpanel} = $_[0] }
-	else      { $Kephra::app{editpanel} }
+	if (ref $_[0] eq 'Wx::StyledTextCtrl'){ $Kephra::app{editpanel} = $_[0] }
+	else                                  { $Kephra::app{editpanel} }
 }
 sub _config           { $Kephra::config{editpanel} }
 sub _indicator_config { _config()->{indicator} }

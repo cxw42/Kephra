@@ -1,19 +1,19 @@
 package Kephra::App;
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use strict;
 use Wx qw(
 	wxDefaultPosition wxDefaultSize   wxGROW wxTOP wxBOTTOM wxVERTICAL 
 	wxSTAY_ON_TOP wxSIMPLE_BORDER wxFRAME_NO_TASKBAR
 	wxSPLASH_CENTRE_ON_SCREEN wxSPLASH_TIMEOUT 
-	wxBITMAP_TYPE_JPEG wxBITMAP_TYPE_PNG wxBITMAP_TYPE_ICO wxBITMAP_TYPE_XPM
+	wxBITMAP_TYPE_ANY wxBITMAP_TYPE_XPM
 	wxLI_HORIZONTAL
 	wxTheClipboard
 );
 
 sub _ref { 
-	if ($_[0]){ $Kephra::app{ref} = $_[0] }
-	else      { $Kephra::app{ref} }
+	if (ref $_[0] eq 'Wx::App'){ $Kephra::app{ref} = $_[0] }
+	else                       { $Kephra::app{ref} }
 }
 
 # main layout, main frame
@@ -22,7 +22,7 @@ sub splashscreen {
 	Wx::SplashScreen->new(
 		Wx::Bitmap->new(
 			Kephra::Config::filepath( $Kephra::temp{file}{img}{splashscreen} ),
-			wxBITMAP_TYPE_JPEG
+			wxBITMAP_TYPE_ANY
 		),
 		wxSPLASH_CENTRE_ON_SCREEN | wxSPLASH_TIMEOUT, 150, undef, -1,
 		wxDefaultPosition, wxDefaultSize,
@@ -126,6 +126,6 @@ sub exit {
 
 sub raw_exit { Wx::Window::Destroy(shift) }
 
-#sub new_instance { system("pce.exe") }
+#sub new_instance { system("kephra.exe") }
 
 1;

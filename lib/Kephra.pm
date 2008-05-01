@@ -6,7 +6,7 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__; # name of entire application
-our $VERSION    = '0.3.9.1';   # version of entire app
+our $VERSION    = '0.3.9.2';   # version of entire app
 our $PATCHLEVEL;
 our @ISA        = 'Wx::App';   # $NAME is a wx application
 
@@ -60,7 +60,7 @@ sub configdir {
 use Wx;                         # Core wxWidgets Framework
 use Wx::STC;                    # Scintilla editor component
 use Wx::DND;                    # Drag'n Drop & Clipboard support (only K::File)
-#use Wx::Print;                 # Print cd..Support (used only in Kephra::File )
+#require Wx::Print;                 # Print cd..Support (used only in Kephra::File )
 
 # required external modules (loaded if needed in packages)
 # require Cwd;                  # for some Config::Settings

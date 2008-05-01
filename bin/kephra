@@ -12,7 +12,11 @@
 
 kephra - Kephra starter script
 
-for main Docs please go to L<Kephra.pm> 
+=head1 SYNOPSIS
+
+    > kephra [<files>]   # start with certain files open
+
+for main Docs please go to the main Module named L<Kephra>.
 
 =cut
 
@@ -69,11 +73,10 @@ BEGIN {
 use Kephra;
 use File::HomeDir ();
 use Benchmark ();
-my $t0;
-
+	my $t0;
 BEGIN { $t0 = Benchmark->new; }
 
-
+	$Kephra::benchmark = 1; # switch for benchmark output
 	# set directory locations
 	$Kephra::temp{path}{config}            = $pathes{config};
 	$Kephra::temp{path}{help}              = $pathes{help};
@@ -81,9 +84,9 @@ BEGIN { $t0 = Benchmark->new; }
 	# set locations of boot files
 	$Kephra::temp{file}{config}{auto}      = 'global/autosaved.conf';
 	# has to be jpeg
-	$Kephra::temp{file}{img}{splashscreen} = 'interface/icon/splash/start_kephra.jpg';
+	$Kephra::temp{file}{img}{splashscreen} = 'interface/icon/splash/start_kephra.xpm';
+use Wx::Perl::SplashFast ($pathes{config}.'interface/icon/splash/start_kephra.xpm', 250) ;
 
-	$Kephra::benchmark = 1; # switch for benchmark output
 
 print "src loaded in:",
 	Benchmark::timestr( Benchmark::timediff( Benchmark->new, $t0 ) ), "\n"
@@ -93,7 +96,6 @@ print "src loaded in:",
 push @INC, $Kephra::temp{path}{config};
 
 # first splashscreen without caution to app but fast
-#use Wx::Perl::SplashFast ($pathes{config}.$Kephra::temp{file}{img}{splashscreen}, 150) ;
 
 # starter for the main app
 Kephra->new->MainLoop;

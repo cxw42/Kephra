@@ -106,7 +106,7 @@ sub set_xp_style {
 }
 
 ##################################
-# misc stuff
+# misc helper stuff
 ##################################
 
 sub build_fileendings2syntaxstyle_map {

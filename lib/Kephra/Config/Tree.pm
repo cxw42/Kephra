@@ -17,14 +17,11 @@ sub subtree {
 }
 
 my %copy = (
-	''     => sub {    $_[0]  },
-	SCALAR => sub { \${$_[0]} },
+	''     => sub {          $_[0]    },
+	SCALAR => sub {       \${$_[0]}   },
 	REF    => sub { \copy( ${$_[0]} ) },
-	ARRAY  => sub { [ map {copy($_)} @{$_[0]} ] },
-	HASH   => sub {
-		my %copy = map { $_ } %{$_[0]};
-		\%copy;
-	},
+	ARRAY  => sub { [map {copy($_)} @{$_[0]} ] },
+	HASH   => sub { my %copy = map { copy($_) } %{$_[0]}; \%copy; },
 );
 
 my %merge = (
@@ -43,12 +40,23 @@ my %merge = (
 my %update = (
 	''     => sub { $_[0] ? $_[0] : $_[1] },
 	SCALAR => sub { \( ${$_[0]} ? ${$_[0]} : ${$_[1]} ) },
-	REF    => sub { \merge( ${$_[0]}, ${$_[1]} ) },
+	REF    => sub { \update( ${$_[0]}, ${$_[1]} ) },
 	ARRAY  => sub { [map { copy($_) } ( @{$_[0]}, @{$_[1]} ) ] },
 	HASH   => sub {
 		my %copy = map 
 			{ $_, merge( $_[0]{$_}, $_[1]{$_} ) } 
 			(keys %{$_[0]}, keys %{$_[1]} );
+		\%copy;
+	},
+);
+
+my %diff = (
+	''     => sub {    $_[0] if $_[0] ne $_[1] },
+	SCALAR => sub { \${$_[0]} if  ${$_[0]} ne ${$_[1]} },
+	REF    => sub { \diff( ${$_[0]}, ${$_[1]} ) },
+	ARRAY  => sub { [map {copy($_)} ( @{$_[0]}, @{$_[1]} ) ] },
+	HASH   => sub {
+		my %copy = map { copy($_) } %{$_[0]};
 		\%copy;
 	},
 );
@@ -63,11 +71,20 @@ sub merge {
 			: $copy{ $rref }( $_[1] )
 	;
 }
-
-# -NI sub join {}
-# -NI sub update {}
-# -NI sub diff {}
-
+sub update {
+	my ($lref, $rref) = (ref $_[0], ref $_[1]);
+	$lref eq $rref
+		? $update{ $lref }( $_[0], $_[1] )
+		: $copy{ $rref }( $_[1] )
+	;
+}
+sub diff {
+	my ($lref, $rref) = (ref $_[0], ref $_[1]);
+	$lref eq $rref
+		? $diff{ $lref }( $_[0], $_[1] )
+		: $copy{ $rref }( $_[0] )
+	;
+}
 
 #############################
 # single node manipulation
