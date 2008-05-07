@@ -6,7 +6,7 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__; # name of entire application
-our $VERSION    = '0.3.9.2';   # version of entire app
+our $VERSION    = '0.3.9.5';   # version of entire app
 our $PATCHLEVEL;
 our @ISA        = 'Wx::App';   # $NAME is a wx application
 
@@ -147,17 +147,16 @@ Kephra - crossplatform, CPAN-installable GUI-Texteditor along perllike Paradigms
 
 =head1 DISCLAIMER
 
-This App do currently not install from cpan shell but I do my best to 
+This App do currently not install fully from cpan shell but I do my best to 
 change that ASAP. Now its just on CPAN for people who want to help ME. *g*
 
 =head1 SYNOPSIS
 
     > kephra [<files>]   # start with certain files open
-        
 
 =head1 DESCRIPTION
 
-This module installs a complete editor application with all its configs
+This module install's a complete editor application with all its configs
 and documentation for your programming, web and text authoring. 
 
 =head2 Philosophy
@@ -170,9 +169,13 @@ and to have a choice between different styles, like the vi command line
 input style, the emacs keyboard combinations style and the GUI style. We're
 currently not that far but already achieved a good portion.
 
-The other thing is that CPAN, perl's great toolbox has already many modules,
+The other thing is that CPAN, perl's great toolbox, has already many modules,
 that cover most of the feature, a good IDE needs today. Why don't we use it
 for our own programming?
+
+The third pillar idea will become more important after 0.4.5 or so. In the
+end you know best what you want. It should be easy to extend your most 
+important tool as a programmer to get your ideas working in a fast manner.
 
 =head2 Features
 
@@ -180,10 +183,12 @@ Beside all the basic stuff that would you expect from a notepad, we have
 file sessions, simple templates, recent closed files, and file functions
 applied to all files, where it makes sense.
 
-We have also a pile of advanced text navigation, undo, editing, line editing,
-and formating funtions like, brace and block navigation, goto last edit,
-find in files, fast undo, blockformat and so on, and of cource doc spanning
-bookmarks.
+We have also a pile of advanced text navigation (on braces or blockwise),
+goto last edit or 10 doc spanning Bookmarks as well as find in files. 
+
+Advanced undo, line editing (edit functions that take the current line as
+input), move selected text my mouse or keyboard. Formating funtions like 
+blockformat, align blocks, indenting, commenting ...
 
 Documents have several properties like syntax styling, auto indention, tab
 width, tab use, write protection.
@@ -192,12 +197,25 @@ View options contain switches for any GUI element and marker for: current
 line, end of line bytes, right margin, indetion guides, bracehiglighting,
 line wrap and font.
 
+Every menu and toolbar is evaluated from a simple yaml file, so you can 
+change it easily by opening this files from the config menu.
 
 =head1 TO DO
 
 - Complete CPANification
 
-- Lots and lots of other things
+=head1 Stable Release 0.4
+
+This release is about getting the editor liquid or highly configurable.
+Its also about improvements in the user interface and of course the little
+things we missed. And its about time that it will released so that can we 
+can concentrate more on features for coding support.
+
+=head1 Stable Release 0.5
+
+Things like output panel, code folding, snippet lib, help integration,
+autocompletition and so on. Hope that by the end of 0.4.n series will be
+the extention API stable.
 
 =head1 SUPPORT
 
@@ -220,7 +238,7 @@ For other issues, contact the author.
 This Copyright applies only to the "Kephra" Perl software distribution, not 
 the icons bundled within.
 
-Copyright 2004 - 2008 Herbert Breunung. All rights reserved.
+Copyright 2004 - 2008 Herbert Breunung.
 
 This program is free software; you can redistribute
 it and/or modify it under the terms of the GNU GPL.

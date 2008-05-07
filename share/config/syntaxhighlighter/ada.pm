@@ -5,7 +5,7 @@ sub load{
 
 use Wx qw(wxSTC_LEX_ADA wxSTC_H_TAG);
 
- $_[0]->SetLexer( wxSTC_LEX_ADA );         # Set Lexers to use
+ $_[0]->SetLexer( wxSTC_LEX_ADA );
  $_[0]->SetKeyWords(0,'abort abstract accept access aliased all array at begin body \
 case constant declare delay delta digits do else elsif end entry exception exit for \
 function generic goto if in is limited loop new null of others out package pragma \

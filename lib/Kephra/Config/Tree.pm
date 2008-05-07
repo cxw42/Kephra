@@ -30,34 +30,46 @@ my %merge = (
 	REF    => sub { \merge( ${$_[0]}, ${$_[1]} ) },
 	ARRAY  => sub { [map { copy($_) } ( @{$_[0]}, @{$_[1]} ) ] },
 	HASH   => sub {
-		my %copy = map 
-			{ $_, merge( $_[0]{$_}, $_[1]{$_} ) } 
-			(keys %{$_[0]}, keys %{$_[1]} );
-		\%copy;
+			my %copy = map 
+				{ $_, merge( $_[0]{$_}, $_[1]{$_} ) } 
+				(keys %{$_[0]}, keys %{$_[1]} );
+			\%copy;
 	},
 );
 
 my %update = (
-	''     => sub { $_[0] ? $_[0] : $_[1] },
-	SCALAR => sub { \( ${$_[0]} ? ${$_[0]} : ${$_[1]} ) },
+	''     => sub { $_[0] },
+	SCALAR => sub { \${$_[0]} },
 	REF    => sub { \update( ${$_[0]}, ${$_[1]} ) },
-	ARRAY  => sub { [map { copy($_) } ( @{$_[0]}, @{$_[1]} ) ] },
+	ARRAY  => sub { [map { copy($_) } ( @{$_[0]} ) ] },
 	HASH   => sub {
-		my %copy = map 
-			{ $_, merge( $_[0]{$_}, $_[1]{$_} ) } 
-			(keys %{$_[0]}, keys %{$_[1]} );
-		\%copy;
+			my %copy = map {
+				$_, exists $_[0]{$_}
+					? update( $_[0]{$_}, $_[1]{$_} )
+					: copy( $_[1]{$_} ) 
+				} keys %{$_[1]} ;
+			\%copy;
 	},
 );
 
 my %diff = (
-	''     => sub {    $_[0] if $_[0] ne $_[1] },
-	SCALAR => sub { \${$_[0]} if  ${$_[0]} ne ${$_[1]} },
-	REF    => sub { \diff( ${$_[0]}, ${$_[1]} ) },
-	ARRAY  => sub { [map {copy($_)} ( @{$_[0]}, @{$_[1]} ) ] },
-	HASH   => sub {
-		my %copy = map { copy($_) } %{$_[0]};
-		\%copy;
+	''     => sub { $_[0] ne $_[1] ? $_[0] : undef },
+	SCALAR => sub { ${$_[0]} ne ${$_[1]} ? \${$_[0]} : undef },
+ 	REF    => sub { 
+			my $diff = diff( ${$_[0]}, ${$_[1]} ); 
+			defined $diff ? \$diff : undef 
+	},
+	ARRAY  => sub { [map { copy($_) }  @{$_[0]}  ] },
+	HASH   => sub { 
+			my %diff;
+			for ( keys %{$_[0]} ) {
+				my $diff = exists $_[1]{$_}
+							? diff( $_[0]{$_}, $_[1]{$_} )
+							: copy( $_[0]{$_} )
+				;
+				$diff{$_} = $diff if defined $diff;
+			}
+			return scalar keys %diff > 0 ? \%diff : undef;
 	},
 );
 
@@ -82,7 +94,7 @@ sub diff {
 	my ($lref, $rref) = (ref $_[0], ref $_[1]);
 	$lref eq $rref
 		? $diff{ $lref }( $_[0], $_[1] )
-		: $copy{ $rref }( $_[0] )
+		: $copy{ $lref }( $_[0] ) # undef
 	;
 }
 
@@ -110,8 +122,7 @@ sub _convert_node_2_AoS {
 		return $$node;
 	} elsif ( 'SCALAR' eq ref $node )  {
 		if ($$node) {
-			my $temp = $$node;
-			push( my @temp_array, $temp );
+			push( my @temp_array, $$node );
 			return $$node = \@temp_array;
 		} else {
 			my @temp_array = ();

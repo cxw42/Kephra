@@ -61,7 +61,7 @@ values vec wait waitpid wantarray warn when while write x xor y');
  $_[0]->StyleSetSpec(23,"fore:#7F007F,back:#DDD0DD,eolfilled,notbold");     # Here-doc (single quoted, q)
  $_[0]->StyleSetSpec(24,"fore:#7F007F,back:#DDD0DD,eolfilled,bold");        # Here-doc (double quoted, qq)
  $_[0]->StyleSetSpec(25,"fore:#7F007F,back:#DDD0DD,eolfilled,italics");     # Here-doc (back ticks, qx)
- $_[0]->StyleSetSpec(26,"fore:#7F007F,$(font.monospace),notbold");          # Single quoted string, generic
+ $_[0]->StyleSetSpec(26,"fore:#7F007F,$(font.monospace),notbold");          # Single quoted string, generic 
  $_[0]->StyleSetSpec(27,"fore:#ee7b00,back:#fff8f8");                       # qq = Double quoted string
  $_[0]->StyleSetSpec(28,"$(style.perl.20)");                                # qx = Back ticks
  $_[0]->StyleSetSpec(29,"$(style.perl.17)");                                # qr = Regex

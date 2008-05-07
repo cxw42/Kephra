@@ -181,8 +181,6 @@
 
     + Installation unter Linux und Mac ist noch (bald) nicht ganz einfach.
 
-    + funktioniert nur mit WxPerl bis 0.57.
-
 
  5. Hinweise
 

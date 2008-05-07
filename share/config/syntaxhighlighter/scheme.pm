@@ -5,7 +5,7 @@ sub load{
 
 use Wx qw(wxSTC_LEX_LISP wxSTC_H_TAG);
 
- $_[0]->SetLexer( wxSTC_LEX_LISP );					# Set Lexers to use
+ $_[0]->SetLexer( wxSTC_LEX_LISP );
  $_[0]->SetKeyWords(0,'+ - * / = < > <= >= => \
 abs acos and angle append apply asin assoc assoc assq assv atan \
 begin boolean? \

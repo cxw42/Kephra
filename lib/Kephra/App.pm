@@ -9,11 +9,12 @@ use Wx qw(
 	wxBITMAP_TYPE_ANY wxBITMAP_TYPE_XPM
 	wxLI_HORIZONTAL
 	wxTheClipboard
+	wxNullAcceleratorTable 
 );
 
 sub _ref { 
-	if (ref $_[0] eq 'Wx::App'){ $Kephra::app{ref} = $_[0] }
-	else                       { $Kephra::app{ref} }
+	if (ref $_[0] eq 'Kephra'){ $Kephra::app{ref} = $_[0] }
+	else                      { $Kephra::app{ref} }
 }
 
 # main layout, main frame
@@ -55,10 +56,6 @@ sub assemble_layout {
 	Kephra::App::TabBar::show();
 }
 
-sub clean_acc_table {
-	my $win = Kephra::App::Window::_ref();
-	$win->SetAcceleratorTable(Wx::AcceleratorTable->new());
-}
 
 sub start {
 	use Benchmark qw(:all);
@@ -82,6 +79,8 @@ sub start {
 	my $t2 = new Benchmark;
 	if (Kephra::Config::Global::evaluate()) {
 		#Kephra::API::EventTable::freeze_all();
+
+		#clean_acc_table();
 		$frame->Show(1);
 		print " configs eval:",
 			Benchmark::timestr( Benchmark::timediff( new Benchmark, $t2 ) ), "\n"

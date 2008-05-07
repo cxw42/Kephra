@@ -174,12 +174,17 @@ full_menubar:
               - checkitem document-syntaxmode-ada
               - checkitem document-syntaxmode-as
               - checkitem document-syntaxmode-asm
+              - checkitem document-syntaxmode-ave
+              - checkitem document-syntaxmode-baan
+              - checkitem document-syntaxmode-batch
               - checkitem document-syntaxmode-c
               - checkitem document-syntaxmode-cs
               - checkitem document-syntaxmode-conf
               - checkitem document-syntaxmode-context
               - checkitem document-syntaxmode-css
+              - checkitem document-syntaxmode-diff
               - checkitem document-syntaxmode-eiffel
+              - checkitem document-syntaxmode-err
               - checkitem document-syntaxmode-forth
               - checkitem document-syntaxmode-fortran
               - checkitem document-syntaxmode-html
@@ -189,11 +194,14 @@ full_menubar:
               - checkitem document-syntaxmode-latex
               - checkitem document-syntaxmode-lisp
               - checkitem document-syntaxmode-lua
+              - checkitem document-syntaxmode-make
+              - checkitem document-syntaxmode-matlab
           - menu document_syntaxmode_N-Z:
               - checkitem document-syntaxmode-nsis
               - checkitem document-syntaxmode-pascal
               - checkitem document-syntaxmode-perl
               - checkitem document-syntaxmode-php
+              - checkitem document-syntaxmode-property
               - checkitem document-syntaxmode-ps
               - checkitem document-syntaxmode-python
               - checkitem document-syntaxmode-ruby
@@ -217,6 +225,7 @@ full_menubar:
               - checkitem document-syntaxmode-java
               - checkitem document-syntaxmode-pascal
           - menu document_syntaxmode_interpreted:
+              - checkitem document-syntaxmode-batch
               - checkitem document-syntaxmode-js
               - checkitem document-syntaxmode-lisp
               - checkitem document-syntaxmode-lua
@@ -240,6 +249,7 @@ full_menubar:
               - checkitem document-syntaxmode-tex
           - menu document_syntaxmode_data_structure:
               - checkitem document-syntaxmode-conf
+              - checkitem document-syntaxmode-property
               - checkitem document-syntaxmode-sql
               - checkitem document-syntaxmode-xml
               - checkitem document-syntaxmode-yaml
@@ -252,7 +262,12 @@ full_menubar:
               - checkitem document-syntaxmode-php
               - checkitem document-syntaxmode-vbs
           - menu document_syntaxmode_special:
+              - checkitem document-syntaxmode-baan
+              - checkitem document-syntaxmode-diff
+              - checkitem document-syntaxmode-err
               - checkitem document-syntaxmode-idl
+              - checkitem document-syntaxmode-make
+              - checkitem document-syntaxmode-matlab
       - checkitem document-brace-light
       - checkitem document-brace-indention
       - checkitem document-auto-indention
@@ -352,12 +367,17 @@ full_menubar:
           - item config-file-syntaxmode-ada
           - item config-file-syntaxmode-as
           - item config-file-syntaxmode-asm
+          - item config-file-syntaxmode-ave
+          - item config-file-syntaxmode-baan
+          - item config-file-syntaxmode-batch
           - item config-file-syntaxmode-c
           - item config-file-syntaxmode-cs
           - item config-file-syntaxmode-conf
           - item config-file-syntaxmode-context
           - item config-file-syntaxmode-css
+          - item config-file-syntaxmode-diff
           - item config-file-syntaxmode-eiffel
+          - item config-file-syntaxmode-err
           - item config-file-syntaxmode-forth
           - item config-file-syntaxmode-fortran
           - item config-file-syntaxmode-html
@@ -367,11 +387,14 @@ full_menubar:
           - item config-file-syntaxmode-latex
           - item config-file-syntaxmode-lisp
           - item config-file-syntaxmode-lua
+          - item config-file-syntaxmode-make
+          - item config-file-syntaxmode-matlab
       - menu config_syntaxmode_N-Z:
           - item config-file-syntaxmode-nsis
           - item config-file-syntaxmode-pascal
           - item config-file-syntaxmode-perl
           - item config-file-syntaxmode-php
+          - item config-file-syntaxmode-property
           - item config-file-syntaxmode-ps
           - item config-file-syntaxmode-python
           - item config-file-syntaxmode-ruby

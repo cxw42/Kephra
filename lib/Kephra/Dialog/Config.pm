@@ -37,6 +37,13 @@ sub main {
 			| wxMINIMIZE_BOX | wxCLOSE_BOX;
 		#$d_style |= wxSTAY_ON_TOP if $Kephra::config{app}{window}{stay_on_top};
 
+
+# my $staticbox = Wx::StaticBox->new( $panel, -1, 'Wx::StaticBox' );
+# my $button    = Wx::Button->new( $panel, -1, 'Button 3' );
+# my $nsz = Wx::StaticBoxSizer->new( $staticbox, wxVERTICAL);
+#	$panel->SetSizer($nsz);
+#	$nsz->Add( $button, 0, wxGROW|wxTOP, 5 );
+	
 		# making window & main design
 		my $d = Wx::Dialog->new( $frame, -1, ' '.$d_l10n->{title},
 			[ $config->{position_x}, $config->{position_y} ], [ 470, 560 ],

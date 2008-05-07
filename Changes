@@ -7,6 +7,27 @@ TODO 0.4:
  + keymap dialog
  + own statusbar
 
+0.3.9.5
+ ' added POD in Kephra.pm
+
+0.3.9.4
+ + avennue highlighter
+ + BAAN highlighter
+ + .bat highlighter
+ + diff highlighter
+ + errorlist highlighter
+ + makefile highlighter
+ + matlab highlighter
+ + property file highlighter
+ ] configs and localisation for 8 new styles
+ ' removed "all rightes reserved" 
+
+0.3.9.3
+ ! crash on file open
+ ' this_version.txt update
+ ] finished last Kephra::Config::Tree functions
+ ] deleted not used Dialog::Search subs
+
 0.3.9.2
  + reintroduce fast splashscreen
  ~ splashscreen img and app icon now as xpm too
