@@ -6,68 +6,27 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__; # name of entire application
-our $VERSION    = '0.3.9.5';   # version of entire app
+our $VERSION    = '0.3.9.6';   # version of entire app
 our $PATCHLEVEL;
+our $STANDALONE;
 our @ISA        = 'Wx::App';   # $NAME is a wx application
 
 # Configuration Phase
+use Cwd;
 use File::Spec::Functions ':ALL';
 use File::HomeDir    ();
 use File::UserConfig ();
 use Config::General  ();
 use YAML             ();
 
-# Find the configuration directory
-BEGIN {
-	#$main::CONFIG = File::UserConfig->new(
-		#dist   => 'Kephra',
-		#module => 'Kephra',
-	#)->configdir;
-
-	# Set and check main directories
-	#$Kephra::internal{path}{config} = catdir($main::CONFIG, 'config');
-	#unless ( -d $Kephra::internal{path}{config} ) {
-		#Carp::croak("Failed to locate main config path");
-	#}
-	#$Kephra::internal{path}{help} = catdir($main::CONFIG, 'help');
-	#unless ( -d $Kephra::internal{path}{help} ) {
-		#Carp::croak("Failed to locate help directory");
-	#}
-	#$Kephra::internal{path}{user} = File::HomeDir->my_home;
-	#unless ( -d $Kephra::internal{path}{user} ) {
-		#Carp::croak("Failed to locate user home directory");
-	#}
-
-	# set locations of boot files
-	#$Kephra::internal{file}{config}{auto}      = catfile('global', 'autosaved.conf');
-	#$Kephra::internal{file}{config}{default}   = catfile('global', 'default.conf');
-	#$Kephra::internal{file}{img}{splashscreen} = catfile('icon', 'splash', 'wx_perl_splash.jpg');
-
-	# Make module-style config files accessible
-	#push @INC, $main::CONFIG;
-}
- 
-sub user_config {
-	$_[0] and $_[0] eq $NAME and shift;
-	File::UserConfig->new(@_);
-}
-
-sub configdir {
-	$_[0] and $_[0] eq $NAME and shift;
-	File::UserConfig->configdir(@_);
-}
-
 use Wx;                         # Core wxWidgets Framework
 use Wx::STC;                    # Scintilla editor component
 use Wx::DND;                    # Drag'n Drop & Clipboard support (only K::File)
-#require Wx::Print;                 # Print cd..Support (used only in Kephra::File )
+#use Wx::Print;                 # Print cd..Support (used only in Kephra::File )
+#use Text::Wrap                 # for text formating
 
-# required external modules (loaded if needed in packages)
-# require Cwd;                  # for some Config::Settings
-# require Text::Wrap            # for text formating
-# require Perl::Tidy;           # -NI perl formating
-
-# for adam                      # (use Scalar::Util 'weaken';)
+# these will used in near future
+#use Perl::Tidy;                # -NI perl formating
 #use PPI ();                    # For refactoring support
 #use Params::Util ();           # Parameter checking
 #use Class::Inspector ();       # Class checking
@@ -76,7 +35,7 @@ use Wx::DND;                    # Drag'n Drop & Clipboard support (only K::File)
 use Kephra::API::CommandList;      # UI API
 use Kephra::API::EventTable;       # internal app API
 use Kephra::API::Extension;        # Plugin API
-use Kephra::App;                   # App start&exit, namespace 4 wx related things
+use Kephra::App;                   # App start & shut down sequence
 use Kephra::App::ContextMenu;      # contextmenu manager
 use Kephra::App::EditPanel;        #
 use Kephra::App::EditPanel::Margin;#
@@ -86,14 +45,21 @@ use Kephra::App::MenuBar;          # main menu
 use Kephra::App::ToolBar;          # base toolbar builder
 use Kephra::App::SearchBar;        # Toolbar for searching and navigation
 use Kephra::App::StatusBar;        #
-use Kephra::App::TabBar;           # API 2 Wx::Notebook, FileSelector
+use Kephra::App::TabBar;           # API 2 Wx::Notebook
 use Kephra::App::Window;           # API 2 Wx::Frame and more
 use Kephra::Config;                # low level config manipulation
+#use Kephra::Config::Embedded;     # build in emergency settings
 use Kephra::Config::File;          # API 2 ConfigParser: Config::General, YAML
 use Kephra::Config::Global;        # API 4 config, general content level
 use Kephra::Config::Interface;     #
 use Kephra::Config::Tree;          #
-use Kephra::Dialog;                # API 2 dialogs, submodules are loaded runtime
+use Kephra::Dialog;                # API 2 dialogs, fileselectors, msgboxes
+#require Kephra::Dialog::Config;   # config dialog
+#require Kephra::Dialog::Exit;     # select files to be saved while exit program
+#require Kephra::Dialog::Info;     # info box
+#require Kephra::Dialog::Keymap;   #
+#require Kephra::Dialog::Notify    # inform about filechanges from outside
+#require Kephra::Dialog::Search;   # find and replace dialog
 use Kephra::Document;              # document menu funktions
 use Kephra::Document::Change;      # calls for changing current doc
 use Kephra::Document::Internal;    # doc handling helper methods
@@ -112,16 +78,7 @@ use Kephra::File::History;         # list of recent used Files
 use Kephra::File::IO;              # API 2 FS, read write files
 use Kephra::File::Session;         # file session handling
 use Kephra::Module;                # Module Handling
-use Kephra::Show;                  # -DEP display content: files, boxes
-
-# internal modules / loaded when needed
-#require Kephra::Config::Embedded; # build in emergency settings
-#require Kephra::Dialog::Config;   # config dialog
-#require Kephra::Dialog::Exit;     # select files to be saved while exit program
-#require Kephra::Dialog::Info;     # info box
-#require Kephra::Dialog::Keymap;   #
-#require Kephra::Dialog::Notify    # inform about filechanges from outside
-#require Kephra::Dialog::Search;   # find and replace dialog
+use Kephra::Show;                  # -DEP display content: files
 
 # global data
 our %app;           # ref to app parts and app data for GUI, Events, Parser
@@ -132,6 +89,15 @@ our %temp;          # global internal temp data
 our %localisation;  # all localisation strings in your currently selected lang
 our %syntaxmode;    # -NI
 
+sub user_config {
+	$_[0] and $_[0] eq $NAME and shift;
+	File::UserConfig->new(@_);
+}
+
+sub configdir {
+	$_[0] and $_[0] eq $NAME and shift;
+	File::UserConfig->configdir(@_);
+}
 
 # Wx App Events
 sub OnInit { &Kephra::App::start }   # boot app: init core and load config files
@@ -187,7 +153,7 @@ We have also a pile of advanced text navigation (on braces or blockwise),
 goto last edit or 10 doc spanning Bookmarks as well as find in files. 
 
 Advanced undo, line editing (edit functions that take the current line as
-input), move selected text my mouse or keyboard. Formating funtions like 
+input), move selected text by mouse or keyboard. Formating funtions like 
 blockformat, align blocks, indenting, commenting ...
 
 Documents have several properties like syntax styling, auto indention, tab
@@ -204,14 +170,14 @@ change it easily by opening this files from the config menu.
 
 - Complete CPANification
 
-=head1 Stable Release 0.4
+=head2 Stable Release 0.4
 
 This release is about getting the editor liquid or highly configurable.
 Its also about improvements in the user interface and of course the little
 things we missed. And its about time that it will released so that can we 
 can concentrate more on features for coding support.
 
-=head1 Stable Release 0.5
+=head2 Stable Release 0.5
 
 Things like output panel, code folding, snippet lib, help integration,
 autocompletition and so on. Hope that by the end of 0.4.n series will be
@@ -224,6 +190,10 @@ Bugs should be reported via the CPAN bug tracker at
 L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Kephra>
 
 For other issues, contact the author.
+
+More info and resources you find on our sourceforge web page under:
+
+L<http://kephra.sourceforge.net>
 
 =head1 AUTHORS
 

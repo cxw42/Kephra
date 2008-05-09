@@ -1,10 +1,10 @@
 #! /usr/bin/perl -w
 
 #############################################################################
-## Author:      Herbert Breunung, Maik Glatki, Wanja Chresta
-## Purpose:     Kephra Starter, Checking Directories
-## Created:     06/1/2005
-## Copyright:   (c) Herbert Breunung, Maik Glatki, Wanja Chresta
+## Author:      Herbert Breunung
+## Purpose:     Kephra starter
+## Created:     09/5/2008
+## Copyright:   (c) Herbert Breunung
 ## Licence:     GPL
 #############################################################################
 
@@ -21,81 +21,34 @@ for main Docs please go to the main Module named L<Kephra>.
 =cut
 
 use strict;
-use File::Spec ();
+use vars qw{ $STANDALONE $ALLINC $VERSION};
+$VERSION = '0.12';
 
-use vars qw{$VERSION $STANDALONE};
-my %pathes;
+use Benchmark ();
+my $t0;
+
 BEGIN {
-	$VERSION = '0.42'; 
+	# set it true if you like to have a relocatable (by simple copy) editor
+	$STANDALONE = 0;
+	# set it true if this distro includes a full runtime env (KRE)
+	$ALLINC = 0;
+	$t0 = Benchmark->new; 
 
-	# Is this the standalone Win32 implementation
-	$STANDALONE = 1;
-
-	%pathes = (
-		config => 'share/config/',
-		help   => 'share/help/',
-	);
-
-	if  ($^O eq 'MSWin32') {
-		push @INC, ( 'pre/lib', 'pre/cpan', 'src', 'lib' );
-		my @filenameparts = split( /\\/, __FILE__ );
-		my $destination_dir;
-		$destination_dir .= "$filenameparts[$_]/" for ( 0 .. $#filenameparts - 2 );
-		if ($destination_dir) {
-			$pathes{config} = File::Spec->catdir($destination_dir,$pathes{config});
-			$pathes{help}   = File::Spec->catdir($destination_dir,$pathes{help});
-			chop $destination_dir;
-			chdir $destination_dir;
-		} else {
-		}
-	}
-	elsif ($^O eq 'linux') {
-
-		# Makefile.PL configuration:
-		my $name    = '<name>';
-		my $libdir  = '<libdir>';
-		my $sharedir= '<sharedir>';
-		my $confdir = '<confdir>';
-		# Makefile.Pl configuration end
-
-		my $localconf = $ENV{HOME} . '/.' . $name;
-		unless ( -e $localconf && -d $localconf ) {
-			require File::Copy;    # default package
-			require File::Copy::Recursive; #qw(dircopy)
-			File::Copy::Recursive::dircopy( $confdir, $localconf ) or die $!;
-		}
-		$pathes{config} = $localconf . '/';
-		$pathes{help}   = $sharedir  . '/help/';
-		push @INC, $libdir;
-	}
+	push @INC, 'kre/lib', 'kre/cpan' if $ALLINC;
+	push @INC, 'src' if $STANDALONE;
 }
 
 use Kephra;
-use File::HomeDir ();
-use Benchmark ();
-	my $t0;
-BEGIN { $t0 = Benchmark->new; }
 
-	$Kephra::benchmark = 1; # switch for benchmark output
-	# set directory locations
-	$Kephra::temp{path}{config}            = $pathes{config};
-	$Kephra::temp{path}{help}              = $pathes{help};
-	$Kephra::temp{path}{user}              = $ENV{HOME};
-	# set locations of boot files
-	$Kephra::temp{file}{config}{auto}      = 'global/autosaved.conf';
-	# has to be jpeg
-	$Kephra::temp{file}{img}{splashscreen} = 'interface/icon/splash/start_kephra.xpm';
-use Wx::Perl::SplashFast ($pathes{config}.'interface/icon/splash/start_kephra.xpm', 250) ;
-
+$Kephra::STANDALONE = $STANDALONE;
+$Kephra::benchmark = 0;           # switch for benchmark output
 
 print "src loaded in:",
 	Benchmark::timestr( Benchmark::timediff( Benchmark->new, $t0 ) ), "\n"
 	if $Kephra::benchmark;
 
-# make config files acessable
-push @INC, $Kephra::temp{path}{config};
 
 # first splashscreen without caution to app but fast
+#use Wx::Perl::SplashFast ($pathes{config}.$Kephra::temp{file}{img}{splashscreen}, 150) ;
 
-# starter for the main app
-Kephra->new->MainLoop;
+Kephra->new->MainLoop;            # starter for the main app

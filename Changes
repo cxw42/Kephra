@@ -7,6 +7,10 @@ TODO 0.4:
  + keymap dialog
  + own statusbar
 
+0.3.9.6
+ ] complete new starter
+ ] new Kephra::Config::init() method
+
 0.3.9.5
  ' added POD in Kephra.pm
 
@@ -973,15 +977,6 @@ PRE
 the VERSION number is like a date in the development timeline of the program,
 no matter which part, a bigger number comes always after a smaller, pce 0.2
 comes after pre 0.1.23
-
-the PHASE number is like a stage of expansion; for all of you, who need a normal
-editor just grab PHASE 1 in some future there will things like PHASE 2 with a
-lot of space consuming toys not everybody needs
-
-the PRE is the bundle off all needed 3rd party software to run the program.
-normally ist is included in every full release, but for instance to settle with
-pce 0.2.23 from windows to linux you may need prb 0.2 for linux
-
 
 Legend:
  " purpose

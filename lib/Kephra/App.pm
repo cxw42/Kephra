@@ -1,5 +1,5 @@
 package Kephra::App;
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 use strict;
 use Wx qw(
@@ -62,6 +62,7 @@ sub start {
 	my $t0 = new Benchmark;
 	my $app = shift;
 	_ref($app);
+	Kephra::Config::init();
 	splashscreen();             # 2'nd splashscreen can close when app is ready
 	Wx::InitAllImageHandlers();
 	my $frame = Kephra::App::Window::create();

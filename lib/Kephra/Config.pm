@@ -1,20 +1,36 @@
 package Kephra::Config;
-our $VERSION = '0.29';
+our $VERSION = '0.30';
 
 # low level config manipulation
 
 use strict;
-use Wx qw( wxBITMAP_TYPE_XPM );
+use Cwd();
 use File::Spec ();
+use Wx qw( wxBITMAP_TYPE_ANY );
 
 ##################################
 # Files and Dirs
 ##################################
 
+sub init {
+	my $basedir = $Kephra::STANDALONE
+		? Cwd::cwd()
+		: Kephra::configdir()
+	;
+print "=\n=\n=$basedir\n=\n";
+	$Kephra::temp{path}{config} = File::Spec->catdir($basedir, 'config');
+	$Kephra::temp{path}{help} = File::Spec->catdir($basedir, 'help');
+	#$Kephra::temp{path}{user}              = $ENV{HOME};
+	# set locations of boot files
+	$Kephra::temp{file}{config}{auto}      = 'global/autosaved.conf';
+	$Kephra::temp{file}{img}{splashscreen} = 'interface/icon/splash/start_kephra.jpg';
+
+	# make config files acessable
+	push @INC, $Kephra::temp{path}{config};
+}
+
 # Generate a path to a configuration file
 sub filepath {
-	require Cwd;
-	#File::Spec->catfile( $Kephra::internal{path}{config}, @_ );
 	File::Spec->catfile( $Kephra::temp{path}{config}, @_ );
 }
 
@@ -27,7 +43,6 @@ sub existing_filepath {
 }
 
 sub dirpath {
-	require Cwd;
 	File::Spec->catdir( $Kephra::temp{path}{config}, @_ );
 }
 
@@ -81,7 +96,7 @@ sub icon_bitmap {
 	my $path = filepath( $Kephra::config{app}{iconset_path}, $name );
 	return Wx::Bitmap->new(16,16) unless -e $path;
 
-	my $bitmap = Wx::Bitmap->new( $path, wxBITMAP_TYPE_XPM );
+	my $bitmap = Wx::Bitmap->new( $path, wxBITMAP_TYPE_ANY );
 	unless ( $bitmap ) {
 		warn "Failed to create bit map from $path";
 		return;

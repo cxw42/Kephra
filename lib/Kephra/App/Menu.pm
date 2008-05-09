@@ -1,8 +1,14 @@
 package Kephra::App::Menu;
 $VERSION = '0.12';
 
-=pod
+=item1 Name
+
+Kephra::App::Menu - 
+
+=item1 Content
+
 Module Kephra::App::Menu - Menu handling for the main app
+
 =cut
 
 use strict;
