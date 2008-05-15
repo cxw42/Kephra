@@ -24,9 +24,8 @@ sub create {
 	# load searchbar definition
 	my $bar_def = Kephra::Config::File::load_from_config_node_data( _config() );
 	unless ($bar_def) {
-		require Kephra::Config::Embedded;
 		$bar_def = Kephra::Config::Tree::get_subtree
-			( Kephra::Config::Embedded::toolbars(), 'searchbar');
+			( Kephra::Config::Default::toolbars(), 'searchbar');
 	}
 
 	# create searchbar with buttons

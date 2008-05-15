@@ -40,7 +40,13 @@ lib/Kephra/App/TabBar.pm
 lib/Kephra/App/ToolBar.pm
 lib/Kephra/App/Window.pm
 lib/Kephra/Config.pm
-lib/Kephra/Config/Embedded.pm
+lib/Kephra/Config/Default.pm
+lib/Kephra/Config/Default/CommandList.pm
+lib/Kephra/Config/Default/ContextMenus.pm
+lib/Kephra/Config/Default/Global_Settings.pm
+lib/Kephra/Config/Default/Localisation.pm
+lib/Kephra/Config/Default/MainMenu.pm
+lib/Kephra/Config/Default/ToolBars.pm
 lib/Kephra/Config/File.pm
 lib/Kephra/Config/Global.pm
 lib/Kephra/Config/Interface.pm
@@ -75,7 +81,7 @@ lib/Kephra/Module/Demo.pm
 lib/Kephra/Module/NotePad.pm
 lib/Kephra/Module/SnippetLib.pm
 lib/Kephra/Show.pm
-LICENCE
+LICENSE
 Makefile.PL
 MANIFEST			This list of files
 META.yml

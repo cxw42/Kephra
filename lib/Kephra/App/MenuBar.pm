@@ -12,8 +12,7 @@ sub create {
 	my $menubar_def = Kephra::Config::File::load_from_config_node_data
 		( $Kephra::config{app}{menubar} );
 	unless ($menubar_def) {
-		require Kephra::Config::Embedded;
-		$menubar_def = Kephra::Config::Embedded::mainmenu();
+		$menubar_def = Kephra::Config::Default::mainmenu();
 	}
 	my $menubar    = Wx::MenuBar->new();
 	my ($pos, $menu_name);

@@ -1,15 +1,15 @@
 # See end of file for docs, -NI = not implemented or used, -DEP = depreciated
-
 package Kephra;
 
 use 5.006;
 use strict;
 
-our $NAME       = __PACKAGE__; # name of entire application
-our $VERSION    = '0.3.9.6';   # version of entire app
-our $PATCHLEVEL;
-our $STANDALONE;
-our @ISA        = 'Wx::App';   # $NAME is a wx application
+our $NAME       = __PACKAGE__;     # name of entire application
+our $VERSION    = '0.3.9.8';       # version of entire app
+our $PATCHLEVEL;                   # has just stable versions
+our $STANDALONE;                   # starter flag for moveable installations
+our $BENCHNARK;                    #
+our @ISA        = 'Wx::App';       # $NAME is a wx application
 
 # Configuration Phase
 use Cwd;
@@ -19,17 +19,17 @@ use File::UserConfig ();
 use Config::General  ();
 use YAML             ();
 
-use Wx;                         # Core wxWidgets Framework
-use Wx::STC;                    # Scintilla editor component
-use Wx::DND;                    # Drag'n Drop & Clipboard support (only K::File)
-#use Wx::Print;                 # Print cd..Support (used only in Kephra::File )
-#use Text::Wrap                 # for text formating
+use Wx;                            # Core wxWidgets Framework
+use Wx::STC;                       # Scintilla editor component
+use Wx::DND;                       # Drag'n Drop & Clipboard support (only K::File)
+#use Wx::Print;                    # Print cd..Support (used only in Kephra::File )
+#use Text::Wrap                    # for text formating
 
 # these will used in near future
-#use Perl::Tidy;                # -NI perl formating
-#use PPI ();                    # For refactoring support
-#use Params::Util ();           # Parameter checking
-#use Class::Inspector ();       # Class checking
+#use Perl::Tidy;                   # -NI perl formating
+#use PPI ();                       # For refactoring support
+#use Params::Util ();              # Parameter checking
+#use Class::Inspector ();          # Class checking
 
 # used internal modules, parts of kephra
 use Kephra::API::CommandList;      # UI API
@@ -48,7 +48,12 @@ use Kephra::App::StatusBar;        #
 use Kephra::App::TabBar;           # API 2 Wx::Notebook
 use Kephra::App::Window;           # API 2 Wx::Frame and more
 use Kephra::Config;                # low level config manipulation
-#use Kephra::Config::Embedded;     # build in emergency settings
+use Kephra::Config::Default;       # build in emergency settings
+#
+#
+#
+#
+#
 use Kephra::Config::File;          # API 2 ConfigParser: Config::General, YAML
 use Kephra::Config::Global;        # API 4 config, general content level
 use Kephra::Config::Interface;     #
@@ -111,11 +116,6 @@ __END__
 
 Kephra - crossplatform, CPAN-installable GUI-Texteditor along perllike Paradigms 
 
-=head1 DISCLAIMER
-
-This App do currently not install fully from cpan shell but I do my best to 
-change that ASAP. Now its just on CPAN for people who want to help ME. *g*
-
 =head1 SYNOPSIS
 
     > kephra [<files>]   # start with certain files open
@@ -128,20 +128,31 @@ and documentation for your programming, web and text authoring.
 =head2 Philosophy
 
 I know, i know, there are plenty text editors out there, even some really
-mighty IDE, but this is my attempt to make it better. And by that i don't
-meant to make a better vi or emacs nor kommodo, but to carry over to text
-editing, what makes perl a great language: A low entry barrier, a high end
-and to have a choice between different styles, like the vi command line
-input style, the emacs keyboard combinations style and the GUI style. We're
-currently not that far but already achieved a good portion.
+mighty IDE, but still no perfect solution for many Programmer. So lets
+learn from Perl what it takes to build a tool thats powerful and fun to
+play with for hours and months.
 
-The other thing is that CPAN, perl's great toolbox, has already many modules,
-that cover most of the feature, a good IDE needs today. Why don't we use it
-for our own programming?
+*  make a low entry barrier
+*  copy what people like and are used to
+*  give choices (Timtowtdi) 
+ * (e.g. deliver vi and emacs input style)
+ * usable with mouse and keyboard commands and menus
+ * configure via dialog and yaml/conf files ...
 
-The third pillar idea will become more important after 0.4.5 or so. In the
-end you know best what you want. It should be easy to extend your most 
-important tool as a programmer to get your ideas working in a fast manner.
+Furthermore i made some design decisions that should define Kephra:
+
+* beautiful, well crafted GUI with own Icons
+* everything is optional / configurable
+* solve things with minimal effort (no bloat / minimal dependencies)
+* turn CPAN into a IDE and provide just the glue
+
+I believe strongly that there is much more possible with GUI editors
+and text editors in general than we are used today. So I try to design
+Kephra in a way, that every programmer can alter and extend it easily.
+That can speed up progress or at least makes Kephra more comfortable 
+for you.
+
+That is the plan, but we are currently not nearly that far.
 
 =head2 Features
 
@@ -167,8 +178,6 @@ Every menu and toolbar is evaluated from a simple yaml file, so you can
 change it easily by opening this files from the config menu.
 
 =head1 TO DO
-
-- Complete CPANification
 
 =head2 Stable Release 0.4
 
@@ -203,17 +212,17 @@ L<http://kephra.sourceforge.net>
 
 * Adam Kennedy E<lt>adamk@cpan.orgE<gt> (cpanification)
 
-=head1 COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-This Copyright applies only to the "Kephra" Perl software distribution, not 
-the icons bundled within.
+This Copyright applies only to the "Kephra" Perl software distribution,
+not the icons bundled within.
 
 Copyright 2004 - 2008 Herbert Breunung.
 
-This program is free software; you can redistribute
-it and/or modify it under the terms of the GNU GPL.
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU GPL.
 
-The full text of the license can be found in the
-LICENSE file included with this module.
-    
+The full text of the license can be found in the LICENSE file included
+with this module.
+
 =cut

@@ -23,9 +23,8 @@ sub _indicator_config { _config()->{indicator} }
 # settings
 #
 sub create {
-	my $ep = Wx::StyledTextCtrl->new
-			( Kephra::App::Window::_ref(), -1, [-1,-1], [-1,-1] );
-	$ep->DragAcceptFiles(1);
+	my $ep = Wx::StyledTextCtrl->new( Kephra::App::Window::_ref() );
+	$ep->DragAcceptFiles(1) unless Wx::wxGTK();
 	_ref($ep);
 	return $ep;
 }

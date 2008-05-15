@@ -374,6 +374,22 @@
         view menu: linenumbermargin, long line indikator,
         colored gutter, first syntaxstyle(perl), filename in tab and the title
 
+the VERSION number is like a date in the development timeline of the program,
+no matter which part, a bigger number comes always after a smaller, pce 0.2
+comes after pre 0.1.23
+
+PRE
+0.3. 2: Perl 5.8.8, wxPerl 0.26
+0.3   : Perl 5.8.7, General::Config 0.30
+0.2.00: Perl 5.8.6, libs added, General::Config patched, better starter
+0.1.80: wxPerl 0.21, cpan: Hash::Merge, Clone.pm added
+0.1.60: simplifications
+0.1.55: Perl 5.8.4, Config::General 2.27
+0.1.50: Perl 5.8.3, wxPerl 0.19, Config::General 2.26, more standart libs
+0.1.01: wxPerl 0.18, more libs, simplifications
+0.1.00: Perl 5.6.1, wxPerl 0.17, some standart libs
+
+
 Legend:
  ? testing
  + new feature

@@ -17,10 +17,9 @@ sub init {
 		? Cwd::cwd()
 		: Kephra::configdir()
 	;
-print "=\n=\n=$basedir\n=\n";
 	$Kephra::temp{path}{config} = File::Spec->catdir($basedir, 'config');
 	$Kephra::temp{path}{help} = File::Spec->catdir($basedir, 'help');
-	#$Kephra::temp{path}{user}              = $ENV{HOME};
+	#$Kephra::temp{path}{user} = $ENV{HOME};
 	# set locations of boot files
 	$Kephra::temp{file}{config}{auto}      = 'global/autosaved.conf';
 	$Kephra::temp{file}{img}{splashscreen} = 'interface/icon/splash/start_kephra.jpg';
@@ -108,12 +107,11 @@ sub icon_bitmap {
 sub set_xp_style {
 	my $xp_def_file = "$^X.manifest";
 	if ( $^O eq 'MSWin32' ) {
-		if (    ( $Kephra::config{'app'}{'xp_style'} eq '1' )
+		if (    ( $Kephra::config{app}{xp_style} eq '1' )
 			and ( !-r $xp_def_file ) ) {
-			require Kephra::Config::Embedded;
-			&Kephra::Config::Embedded::drop_xp_style_file($xp_def_file);
+			Kephra::Config::Default::drop_xp_style_file($xp_def_file);
 		}
-		if (    ( $Kephra::config{'app'}{'xp_style'} eq '0' )
+		if (    ( $Kephra::config{app}{xp_style} eq '0' )
 			and ( -r $xp_def_file ) ) {
 			unlink $xp_def_file;
 		}
@@ -125,37 +123,37 @@ sub set_xp_style {
 ##################################
 
 sub build_fileendings2syntaxstyle_map {
-	foreach ( keys %{ $Kephra::config{'file'}{'endings'} } ) {
+	foreach ( keys %{ $Kephra::config{file}{endings} } ) {
 		my $language_id = $_;
 		my @fileendings
-			= split( /\s+/, $Kephra::config{'file'}{'endings'}{$language_id} );
+			= split( /\s+/, $Kephra::config{file}{endings}{$language_id} );
 		foreach ( @fileendings ) {
-			$Kephra::temp{'file'}{'end2langmap'}{$_} = $language_id;
+			$Kephra::temp{file}{end2langmap}{$_} = $language_id;
 		}
 	}
 }
 
 sub build_fileendings_filterstring {
-	my $files = $Kephra::localisation{'dialog'}{'file'}{'files'};
+	my $files = $Kephra::localisation{dialog}{file}{files};
 	my $all   = "$Kephra::localisation{dialog}{general}{all} $files (*.*)|*.*";
-	$Kephra::temp{'file'}{'filterstring'}{'all'} = $all;
-	foreach ( keys %{ $Kephra::config{'file'}{'group'} } ) {
+	$Kephra::temp{file}{filterstring}{all} = $all;
+	foreach ( keys %{ $Kephra::config{file}{group} } ) {
 		my ( $filter_id, $file_filter ) = ( $_, '' );
 		my $filter_name = ucfirst($filter_id);
 		my @language_ids
-			= split( /\s+/, $Kephra::config{'file'}{'group'}{$filter_id} );
+			= split( /\s+/, $Kephra::config{file}{group}{$filter_id} );
 		foreach ( @language_ids ) {
 			my @fileendings
-				= split( /\s+/, $Kephra::config{'file'}{'endings'}{$_} );
+				= split( /\s+/, $Kephra::config{file}{endings}{$_} );
 			foreach (@fileendings) { $file_filter .= "*.$_;"; }
 		}
 		chop($file_filter);
-		$Kephra::temp{'file'}{'filterstring'}{'all'}
+		$Kephra::temp{file}{filterstring}{all}
 			.= "|$filter_name $files ($file_filter)|$file_filter";
 	}
-	$Kephra::temp{'file'}{'filterstring'}{'config'}
+	$Kephra::temp{file}{filterstring}{config}
 		= "Config $files (*.conf)|*.conf|$all";
-	$Kephra::temp{'file'}{'filterstring'}{'scite'}
+	$Kephra::temp{file}{filterstring}{scite}
 		= "Scite $files (*.ses)|*.ses|$all";
 }
 

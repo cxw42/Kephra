@@ -6,35 +6,48 @@ SYNOPSIS
         > kephra [<files>]   # start with certain files open
 
 DESCRIPTION
-    The Kephra.pm module itself serves as a class loader, configuration loader,
-    bootstrap and shutdown module, and provides some global variables.
+    This module install's a complete editor application with all its configs
+    and documentation for your programming, web and text authoring.
 
-
-    This module installs a complete editor application with all its configs,
-    and documentation for your programming, web and text authoring. 
-    
   Philosophy
     I know, i know, there are plenty text editors out there, even some really
-    mighty IDE, but this is my attempt to make it better. And by that i don't
-    meant to make a better vi or emacs nor kommodo, but to carry over to text
-    editing, what makes perl a great language: A low entry barrier, a high end
-    and to have a choice between different styles, like the vi command line
-    input style, the emacs keyboard combinations style and the GUI style. We're
-    currently not that far but already achieved a good portion.
+    mighty IDE, but still no perfect solution for many Programmer. So lets
+    learn from Perl what it takes to build a tool thats powerful and fun to
+    play with for hours and months.
     
-    The other thing is that CPAN, perl's great toolbox has already many modules,
-    that cover most of the feature, a good IDE needs today. Why don't we use it
-    for our own programming?
+    * make a low entry barrier
+    * copy what people like and are used to
+    * give choices (Timtowtdi) 
+     * (e.g. deliver vi and emacs input style)
+     * usable with mouse and keyboard commands and menus
+     * configure via dialog and yaml/conf files ...
+    
+    Furthermore i made some design decisions that should define Kephra:
+    
+    * beautiful, well crafted GUI with own Icons
+    * everything is optional / configurable
+    * solve things with minimal effort (no bloat / minimal dependencies)
+    * turn CPAN into a IDE and provide just the glue
+    
+    I believe strongly that there is much more possible with GUI editors
+    and text editors in general than we are used today. So I try to design
+    Kephra in a way, that every programmer can alter and extend it easily.
+    That can speed up progress or at least makes Kephra more comfortable 
+    for you.
+
+    That is the plan, but we are currently not nearly that far.
 
   Features
     Beside all the basic stuff that would you expect from a notepad, we have
     file sessions, simple templates, recent closed files, and file functions
     applied to all files, where it makes sense.
-
-    We have also a pile of advanced text navigation, undo, editing, line editing,
-    and formating funtions like, brace and block navigation, goto last edit,
-    find in files, fast undo, blockformat and so on, and of cource doc spanning
-    bookmarks.
+    
+    We have also a pile of advanced text navigation (on braces or blockwise),
+    goto last edit or 10 doc spanning Bookmarks as well as find in files. 
+    
+    Advanced undo, line editing (edit functions that take the current line as
+    input), move selected text by mouse or keyboard. Formating funtions like 
+    blockformat, align blocks, indenting, commenting ...
     
     Documents have several properties like syntax styling, auto indention, tab
     width, tab use, write protection.
@@ -43,12 +56,29 @@ DESCRIPTION
     line, end of line bytes, right margin, indetion guides, bracehiglighting,
     line wrap and font.
     
-INSTALLATION
+    Every menu and toolbar is evaluated from a simple yaml file, so you can 
+    change it easily by opening this files from the config menu.
+
+
+TO DO
+
+  Stable Release 0.4
+
+    This release is about getting the editor liquid or highly configurable.
+    Its also about improvements in the user interface and of course the little
+    things we missed. And its about time that it will released so that can we 
+    can concentrate more on features for coding support.
+
+  Stable Release 0.5
+
+    Things like output panel, code folding, snippet lib, help integration,
+    autocompletition and so on. Hope that by the end of 0.4.n series will be
+    the extention API stable.
 
 
 SUPPORT
     OS: Linux, Mac and Win32 (Basically same es the module named Wx.)
-
+    
     Perl: >= 5.6             (we use our :) )
 
 

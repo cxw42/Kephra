@@ -8,7 +8,7 @@ BEGIN {
 	push @INC, 'lib';
 }
 
-use Test::More tests => 28;
+use Test::More tests => 18;
 use Kephra;
 
 
@@ -63,12 +63,9 @@ SCOPE: {
 	# Set the default icon path for testing purposes
 	local $Kephra::config{app}->{iconset_path} = 'share/config/interface/icon/set/jenne';
 
+# edit_delete find_previous find_next goto_last_edit find_start
+
 	my @known_good = qw{
-		edit_delete
-		find_previous
-		find_next
-		goto_last_edit
-		find_start
 		};
 	foreach my $name ( @known_good ) {
 		# Create using the raw name

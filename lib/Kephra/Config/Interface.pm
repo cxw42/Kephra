@@ -16,8 +16,7 @@ sub load {
 		Kephra::Config::filepath( 'localisation', $conf->{localisation_file} ),
 	);
 	unless ( $l and %$l ) {
-		require Kephra::Config::Embedded;
-		$l = Kephra::Config::Embedded::english_localisation();
+		$l = Kephra::Config::Default::localisation();
 	}
 	%Kephra::localisation = %$l;
 
@@ -27,8 +26,7 @@ sub load {
 	my $cmd_list_def = Kephra::Config::File::load_from_config_node_data
 		( Kephra::API::CommandList::_config() );
 	unless ($cmd_list_def) {
-		require Kephra::Config::Embedded;
-		$cmd_list_def = Kephra::Config::Embedded::commandlist();
+		$cmd_list_def = Kephra::Config::Default::commandlist();
 	}
 	Kephra::API::CommandList::assemble_data($cmd_list_def);
 	Kephra::API::CommandList::eval_data();

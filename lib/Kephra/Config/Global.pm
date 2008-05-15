@@ -20,8 +20,7 @@ sub load_autosaved {
 	}
 	# emergency program if configs missing
 	unless ( %Kephra::config ) {
-		require Kephra::Config::Embedded;
-		%Kephra::config = %{ Kephra::Config::Embedded::global_settings() };
+		%Kephra::config = %{ Kephra::Config::Default::global_settings() };
 	}
 }
 

@@ -11,8 +11,7 @@ sub create_all {
 	my $default_file = Kephra::Config::filepath($config->{defaultfile});
 	my $default_menu_def = Kephra::Config::File::load($default_file);
 	unless ($default_menu_def) {
-		require Kephra::Config::Embedded;
-		$default_menu_def = Kephra::Config::Embedded::contextmenus();
+		$default_menu_def = Kephra::Config::Default::contextmenus();
 	}
 
 	for my $menu_id (keys %{$config->{id}}){

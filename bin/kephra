@@ -32,10 +32,11 @@ BEGIN {
 	$STANDALONE = 0;
 	# set it true if this distro includes a full runtime env (KRE)
 	$ALLINC = 0;
-	$t0 = Benchmark->new; 
 
-	push @INC, 'kre/lib', 'kre/cpan' if $ALLINC;
+	push @INC, 'kre/lib', 'kre/site' if $ALLINC;
 	push @INC, 'src' if $STANDALONE;
+
+	$t0 = Benchmark->new; 
 }
 
 use Kephra;
