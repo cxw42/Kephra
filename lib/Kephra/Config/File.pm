@@ -65,8 +65,8 @@ sub store {
 # API 2 YAML
 #
 
-sub load_yaml  { &YAML::LoadFile }
-sub store_yaml { &YAML::DumpFile }
+sub load_yaml  { &YAML::Tiny::LoadFile }
+sub store_yaml { &YAML::Tiny::DumpFile }
 
 #
 # API 2 General::Config 

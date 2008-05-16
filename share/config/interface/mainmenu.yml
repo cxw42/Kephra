@@ -352,7 +352,7 @@ full_menubar:
       - checkitem view-editpanel-margin-marker
       - checkitem view-editpanel-margin-line-number
       - checkitem view-editpanel-margin-text-fold#
-      - 
+      -
         menu view_textmargin:
           - radioitem view-editpanel-margin-text-0
           - radioitem view-editpanel-margin-text-1

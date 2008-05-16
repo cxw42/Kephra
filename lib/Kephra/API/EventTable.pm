@@ -1,16 +1,44 @@
 package Kephra::API::EventTable;
 $VERSION = '0.09';
 
-=head1
+=head1 NAME
 
-Kephra::API::EventTable - Kephra's API to internal events
+Kephra::API::EventTable - API to internal events
 
- internal app events handling
- events call functions that subscribed to that event
- other function can trigger events
- plugins can also add funcionality triggered by events
- they can be frozen to speed some things up (don't forget to thaw)
- names of Events contain dots as separator
+=head1 DESCRIPTION
+
+Every routine can subscribe a callback to any event that will than triggered
+when that event takes place. Also extentions could do that. Events can also
+be triggered to simulate events. Some function freeze events to speed up 
+certain repeating actions (don't forget to thaw after that). Callbacks can
+also sanely removed if no longer needed.
+
+Names of Events contain dots as separator of of namespaces.
+
+=head1 SPECIFICATION
+
+=head1 List of all Events
+
+=over 4
+
+=item * menu.open
+
+=item * editpanel.focus
+
+=item * document.text.select
+
+=item * document.text.change
+
+=item * document.savepoint
+
+=item * document.list
+
+=item * caret.move
+
+=item * app.close
+
+=back
+
 =cut
 
 use strict;

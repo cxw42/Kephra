@@ -7,6 +7,11 @@ TODO 0.4:
  + keymap dialog
  + own statusbar
 
+0.3.9.9
+ [ fixed tabbar icon tooltip texts
+ ] switched from YAML to YAML::Tiny (less code, less memory, all we need)
+ ] new starter.exe that starts kre\wperl.exe
+
 0.3.9.8
  ' extending Kephra.pm's POD
  ] making DragAcceptFiles optional because not supported by GTK

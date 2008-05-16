@@ -45,7 +45,7 @@ sub create {
 	if (ref $cmd_new_data->{icon} eq 'Wx::Bitmap'){
 		my $new_btn = $tabbar->{button}{new} = Wx::BitmapButton->new
 			($win, -1, $cmd_new_data->{icon}, [-1,-1], [-1,-1], wxNO_BORDER );
-		$new_btn->SetToolTip( $cmd_new_data->{label} );
+		$new_btn->SetToolTip( (split /\t/, $cmd_new_data->{label})[0] );
 		$new_btn->SetBackgroundColour( $colour );
 		$tabbar_h_sizer->Prepend($new_btn, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 2);
 		EVT_BUTTON($win, $new_btn, $cmd_new_data->{call} );
@@ -59,7 +59,7 @@ sub create {
 	if (ref $cmd_close_data->{icon} eq 'Wx::Bitmap'){
 		my $close_btn = $tabbar->{button}{close} = Wx::BitmapButton->new
 			($win, -1, $cmd_close_data->{icon}, [-1,-1], [-1,-1], wxNO_BORDER );
-		$close_btn->SetToolTip( $cmd_close_data->{label} );
+		$close_btn->SetToolTip( (split /\t/, $cmd_close_data->{label})[0] );
 		$close_btn->SetBackgroundColour( $colour );
 		$tabbar_h_sizer->Add($close_btn, 0, wxRIGHT|wxALIGN_CENTER_VERTICAL, 2);
 		EVT_BUTTON($win, $close_btn, $cmd_close_data->{call} );

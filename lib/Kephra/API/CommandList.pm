@@ -1,15 +1,50 @@
 package Kephra::API::CommandList;
 $VERSION = '0.11';
 
-=head1
+=head1 NAME
 
-Kephra::API::CommandList - Kephra's external API for sub calls
+Kephra::API::CommandList - external API for calling functions
 
- Commandlist = dynamic Structure, holding all internal calls with this info:
-             -ID -callback (str of subname) -icon* -label* -helptext*
-             starred data is optional
- These commands where used by different gui elements
- names of commands contain underscore as separator
+=head1 DESCRIPTION
+
+The CommandList is a dynamically changeable list, that contains all the
+function calls for every menu item, toolbar button and most other widgets.
+It holds also the icons, labels, help text and key binding for each
+command and such things has to changed globally here in a clean way.
+These commands where used by different gui elements, that allows menu and
+toolbar definitions to be very compact, readable and and easy changeable.
+
+Names of commands contain dashes as separator of namespaces.
+
+
+=head1 SPECIFICATION 
+
+CommandlistItem
+
+=over 4
+
+=item * ID - unique identifier
+
+=item * call - CODEREF to run
+
+=item * enable - CODEREF that returns value if the command is enabled
+
+=item * enable_event - API::EventTable ID when to check to en/disable
+
+=item * state - CODEREF that returns state (for switches)
+
+=item * state_event - API::EventTable ID when to check is state changed 
+
+=item * label - short description
+
+=item * help - hint string
+
+=item * key - numeric keycode
+
+=item * icon - Wx::Bitmap
+
+=back
+
 =cut
 
 use strict;

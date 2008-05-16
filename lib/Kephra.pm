@@ -5,7 +5,7 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.3.9.8';       # version of entire app
+our $VERSION    = '0.3.9.9';       # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $BENCHNARK;                    #
@@ -17,7 +17,7 @@ use File::Spec::Functions ':ALL';
 use File::HomeDir    ();
 use File::UserConfig ();
 use Config::General  ();
-use YAML             ();
+use YAML::Tiny       ();
 
 use Wx;                            # Core wxWidgets Framework
 use Wx::STC;                       # Scintilla editor component
@@ -132,19 +132,35 @@ mighty IDE, but still no perfect solution for many Programmer. So lets
 learn from Perl what it takes to build a tool thats powerful and fun to
 play with for hours and months.
 
-*  make a low entry barrier
-*  copy what people like and are used to
-*  give choices (Timtowtdi) 
- * (e.g. deliver vi and emacs input style)
- * usable with mouse and keyboard commands and menus
- * configure via dialog and yaml/conf files ...
+=over 4
+
+=item *  make a low entry barrier
+=item *  copy what people like and are used to
+=item *  give choices (Timtowtdi) 
+
+=over 2
+
+=item * usable with mouse and keyboard commands and menus 
+=item * deliver vi (commandline) and emacs (complex keybinding) input style
+=item * configure via dialog and yaml/conf files ...
+=item * much more ...
+
+=back
+
+=item * but keep an eye on the overall, that all fits together nicely
+
+=back
 
 Furthermore i made some design decisions that should define Kephra:
 
-* beautiful, well crafted GUI with own Icons
-* everything is optional / configurable
-* solve things with minimal effort (no bloat / minimal dependencies)
-* turn CPAN into a IDE and provide just the glue
+=over 4
+
+=item * beautiful, well crafted GUI with own Icons
+=item * most features are optional / configurable
+=item * solve things with minimal effort (no bloat / minimal dependencies)
+=item * turn CPAN into a IDE and provide just the glue
+
+=back
 
 I believe strongly that there is much more possible with GUI editors
 and text editors in general than we are used today. So I try to design
@@ -206,11 +222,11 @@ L<http://kephra.sourceforge.net>
 
 =head1 AUTHORS
 
-* Herbert Breunung E<lt>lichtkind@cpan.orgE<gt> (main author)
+=item * Herbert Breunung E<lt>lichtkind@cpan.orgE<gt> (main author)
 
-* Jens Neuwerk E<lt>jenne@gmxpro.netE<gt> (author of icons, GUI advisor)
+=item * Jens Neuwerk E<lt>jenne@gmxpro.netE<gt> (author of icons, GUI advisor)
 
-* Adam Kennedy E<lt>adamk@cpan.orgE<gt> (cpanification)
+=item * Adam Kennedy E<lt>adamk@cpan.orgE<gt> (cpanification)
 
 =head1 COPYRIGHT AND LICENSE
 
