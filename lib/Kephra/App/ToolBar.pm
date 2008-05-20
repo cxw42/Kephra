@@ -1,10 +1,12 @@
 package Kephra::App::ToolBar;
-$VERSION = '0.05';
+use strict;
+use warnings;
+
+our $VERSION = '0.05';
 
 # central lib for gui toolbars
 # storing, fetching, assemble data, creating regular button items
 
-use strict;
 use Wx qw(
 	wxITEM_NORMAL wxITEM_CHECK
 	wxTB_HORIZONTAL wxTB_DOCKABLE

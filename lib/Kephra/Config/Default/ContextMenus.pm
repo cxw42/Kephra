@@ -1,7 +1,9 @@
 package Kephra::Config::Default::ContextMenus;
+use strict;
+use warnings;
+
 our $VERSION = '0.01';
 
-use strict;
 sub get {
 	return {
 		'editpanel_contextmenu' => [

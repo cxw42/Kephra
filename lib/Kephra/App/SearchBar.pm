@@ -1,7 +1,9 @@
 package Kephra::App::SearchBar;
-$VERSION = '0.12';
-
 use strict;
+use warnings;
+
+our $VERSION = '0.12';
+
 use Wx qw( 
 	wxTOP wxBOTTOM wxGROW
 	wxSTC_CMD_LINESCROLLUP wxSTC_CMD_LINESCROLLDOWN

@@ -1,7 +1,9 @@
 package Kephra::App::MainToolBar;
-$VERSION = '0.07';
-
 use strict;
+use warnings;
+
+our $VERSION = '0.07';
+
 
 sub _ref { Kephra::App::ToolBar::_ref('main', $_[0]) }
 sub _config{ $Kephra::config{app}{toolbar}{main} }

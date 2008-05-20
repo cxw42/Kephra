@@ -1,9 +1,11 @@
 package Kephra::Edit;
-$VERSION = '0.31';
+use strict;
+use warnings;
+
+our $VERSION = '0.31';
 
 # edit menu basic calls and internals for editing
 
-use strict;
 use Wx qw(:stc);    #Kephra::Dialog::msg_box(undef,'',"");
 use Wx qw(
 	wxSTC_CMD_NEWLINE wxSTC_CMD_LINECUT wxSTC_CMD_LINEDELETE wxSTC_CMD_DELLINELEFT

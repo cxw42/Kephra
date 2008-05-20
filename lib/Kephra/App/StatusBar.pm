@@ -1,7 +1,9 @@
 package Kephra::App::StatusBar;
-$VERSION = '0.04';
-
 use strict;
+use warnings;
+
+our $VERSION = '0.04';
+
 use Wx::Event qw( EVT_LEFT_DOWN EVT_RIGHT_DOWN ); 
 
 

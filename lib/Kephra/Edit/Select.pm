@@ -1,9 +1,11 @@
 package Kephra::Edit::Select;
-$VERSION = '0.03';
+use strict;
+use warnings;
+
+our $VERSION = '0.03';
 
 # text selection
 
-use strict;
 use Wx qw( wxSTC_CMD_PARAUPEXTEND wxSTC_CMD_PARADOWNEXTEND );
 
 sub _ep_ref { Kephra::App::EditPanel::_ref() }

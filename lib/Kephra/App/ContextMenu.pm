@@ -1,7 +1,9 @@
 package Kephra::App::ContextMenu;
-$VERSION = '0.08';
-
 use strict;
+use warnings;
+
+our $VERSION = '0.08';
+
 use Wx::Event qw(EVT_RIGHT_DOWN);
  
 sub get{ &Kephra::App::Menu::ready or Wx::Menu->new() }

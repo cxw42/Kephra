@@ -1,7 +1,8 @@
 package Kephra::Show;
-$VERSION = '0.13';
-
 use strict;
+
+our $VERSION = '0.13';
+
 
 ###################
 # open config files

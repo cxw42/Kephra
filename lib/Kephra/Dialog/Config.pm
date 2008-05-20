@@ -1,7 +1,9 @@
 package Kephra::Dialog::Config;
-$VERSION = '0.17';
-
 use strict;
+use warnings;
+
+our $VERSION = '0.17';
+
 use Wx qw( 
 	wxVERTICAL wxHORIZONTAL wxLEFT wxRIGHT wxTOP wxALL wxBOTTOM
 	wxGROW wxEXPAND wxALIGN_CENTRE wxALIGN_RIGHT

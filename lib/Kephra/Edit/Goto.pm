@@ -1,9 +1,11 @@
 package Kephra::Edit::Goto;
-$VERSION = '0.04';
+use strict;
+use warnings;
+
+our $VERSION = '0.04';
 
 # editpanel navigation
 
-use strict;
 use Wx qw( wxCANCEL wxSTC_CMD_PARAUP wxSTC_CMD_PARADOWN wxSTC_FIND_REGEXP);
 
 sub line_nr {

@@ -1,7 +1,8 @@
-package Kephra::Config::Default::Global_Settings;
-our $VERSION = '0.01';
-
+package Kephra::Config::Default::GlobalSettings;
 use strict;
+use warnings;
+
+our $VERSION = '0.01';
 
 sub get {
 	return {

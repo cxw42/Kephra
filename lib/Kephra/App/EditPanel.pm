@@ -1,9 +1,11 @@
 package Kephra::App::EditPanel;
-$VERSION = '0.10';
+use strict;
+use warnings;
+
+our $VERSION = '0.10';
 
 # visual settings of the Edit Panel
 
-use strict;
 use Wx qw(
 		wxDEFAULT wxNORMAL wxLIGHT wxBOLD wxSLANT wxITALIC
 		wxSTC_CACHE_PAGE

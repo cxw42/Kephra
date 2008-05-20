@@ -8,27 +8,35 @@ BEGIN {
 	unshift @INC, './lib';
 }
 
-use Test::More tests => 14;
+use File::Find qw(find);
+
+use Test::More;
 use Test::Script;
+my @modules;
+
+find(\&get_module, 'lib');
+
+
+sub get_module {
+    return if not -f $_ or $_ !~ /\.pm$/;
+
+    my $module = $File::Find::name;
+    $module =~ s{lib/}{};
+    $module =~ s{\.pm}{};
+    $module =~ s{/}{::}g;
+    push @modules, $module;
+}
+
+#use Data::Dumper;
+# diag Dumper \@modules;
+
+plan tests => 2 + @modules;
 
 ok( $] >= 5.006, 'Your perl is new enough' );
-
-# check the app base module
-use_ok('Kephra', 'Kephra does compile.' );
-
-# check parts that are normally not loaded on start
-require_ok('Kephra::Config::Default::Global_Settings');
-require_ok('Kephra::Config::Default::CommandList');
-require_ok('Kephra::Config::Default::Localisation');
-require_ok('Kephra::Config::Default::MainMenu');
-require_ok('Kephra::Config::Default::ContextMenus');
-require_ok('Kephra::Config::Default::ToolBars');
-require_ok('Kephra::Dialog::Config');
-require_ok('Kephra::Dialog::Exit');
-require_ok('Kephra::Dialog::Info');
-require_ok('Kephra::Dialog::Keymap');
-require_ok('Kephra::Dialog::Notify');
-require_ok('Kephra::Dialog::Search');
+foreach my $module (@modules) {
+    require_ok($module);
+}
+cmp_ok( scalar(@modules), '>', 50, 'at least 50 modules found' );
 
 # check the starter
 #script_compiles_ok('bin/kephra');

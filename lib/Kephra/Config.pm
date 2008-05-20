@@ -1,9 +1,10 @@
 package Kephra::Config;
+use strict;
+
 our $VERSION = '0.30';
 
 # low level config manipulation
 
-use strict;
 use Cwd();
 use File::Spec ();
 use Wx qw( wxBITMAP_TYPE_ANY );
@@ -17,8 +18,12 @@ sub init {
 		? Cwd::cwd()
 		: Kephra::configdir()
 	;
+	$basedir = File::Spec->catdir($basedir, 'share') 
+		if $Kephra::STANDALONE eq 'dev';
+	#$basedir = './share' unless -d $basedir;
 	$Kephra::temp{path}{config} = File::Spec->catdir($basedir, 'config');
 	$Kephra::temp{path}{help} = File::Spec->catdir($basedir, 'help');
+	$Kephra::temp{path}{logger} = File::Spec->catdir($basedir, 'log');
 	#$Kephra::temp{path}{user} = $ENV{HOME};
 	# set locations of boot files
 	$Kephra::temp{file}{config}{auto}      = 'global/autosaved.conf';

@@ -1,7 +1,9 @@
 package Kephra::Dialog::Search;
-$VERSION = '0.23';
-
 use strict;
+use warnings;
+
+our $VERSION = '0.23';
+
 use Wx qw(  
 	wxVERTICAL wxHORIZONTAL wxLEFT wxRIGHT wxTOP wxGROW 
 	wxALIGN_CENTER_VERTICAL wxALIGN_CENTER_HORIZONTAL

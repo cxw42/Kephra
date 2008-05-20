@@ -1,7 +1,8 @@
 package Kephra::File::History;
-$VERSION = '0.03';
-
 use strict;
+use warnings;
+
+our $VERSION = '0.03';
 
 # internal Module API
 sub _config{ $Kephra::config{file}{history} }

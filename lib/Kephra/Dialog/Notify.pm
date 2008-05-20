@@ -1,7 +1,9 @@
 package Kephra::Dialog::Notify;
-$VERSION = '0.02';
-
 use strict;
+use warnings;
+
+our $VERSION = '0.02';
+
 use Wx qw(
 		wxVERTICAL wxHORIZONTAL             wxRIGHT wxLEFT wxGROW wxTOP wxALL
 		wxLEFT wxCENTER wxRIGHT wxBOTTOM    wxWHITE

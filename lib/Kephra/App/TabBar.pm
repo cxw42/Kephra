@@ -1,12 +1,14 @@
 package Kephra::App::TabBar;    # notebook file selector
-$VERSION = '0.11';
+use strict;
+use warnings;
+
+our $VERSION = '0.11';
 
 =pod
 Tabbar is the visual element in top area of the main window which displays
        end enables selection between all curently opened documents
 =cut
 
-use strict;
 use Wx qw(
 	wxTOP wxLEFT wxRIGHT wxHORIZONTAL wxVERTICAL wxALIGN_CENTER_VERTICAL
 	wxGROW wxLI_HORIZONTAL wxTAB_TRAVERSAL

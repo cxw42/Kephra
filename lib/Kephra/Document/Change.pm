@@ -1,9 +1,11 @@
 package Kephra::Document::Change;
-$VERSION = '0.06';
+use strict;
+use warnings;
+
+our $VERSION = '0.06';
 
 # changing the current document
 
-use strict;
 
 # set document with a given nr as current document
 sub to_nr     { &to_number }

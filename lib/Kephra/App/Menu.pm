@@ -1,5 +1,8 @@
 package Kephra::App::Menu;
-$VERSION = '0.12';
+use strict;
+use warnings;
+
+our $VERSION = '0.12';
 
 =item1 Name
 
@@ -11,7 +14,6 @@ Module Kephra::App::Menu - Menu handling for the main app
 
 =cut
 
-use strict;
 use Wx qw (wxITEM_NORMAL wxITEM_CHECK wxITEM_RADIO wxBITMAP_TYPE_XPM);
 use Wx::Event qw (EVT_MENU EVT_MENU_OPEN EVT_MENU_HIGHLIGHT EVT_SET_FOCUS);
 

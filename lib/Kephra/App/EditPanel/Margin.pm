@@ -1,9 +1,9 @@
 package Kephra::App::EditPanel::Margin;
-$VERSION = '0.03';
-
-# 
-
 use strict;
+use warnings;
+
+our $VERSION = '0.03';
+
 use Wx qw(
 	wxSTC_STYLE_LINENUMBER
 	wxSTC_MARGIN_SYMBOL wxSTC_MARGIN_NUMBER

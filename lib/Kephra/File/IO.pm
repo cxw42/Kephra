@@ -1,7 +1,9 @@
 package Kephra::File::IO;
-$VERSION = '0.15';
-
 use strict;
+use warnings;
+
+our $VERSION = '0.15';
+
 
 # read a file into a scintilla buffer, is much faster then open_buffer
 sub open_pipe {

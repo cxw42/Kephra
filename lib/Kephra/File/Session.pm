@@ -1,7 +1,8 @@
 package Kephra::File::Session;
-$VERSION = '0.13';
-
 use strict;
+use warnings;
+
+our $VERSION = '0.13';
 
 ############################################################################
 # file session handling
@@ -213,7 +214,7 @@ sub import_scite {
 		$Kephra::temp{file}{filterstring}{scite}
 	);
 	if ( -r $file_name ) {
-		if ( open my $FILE, "<$file_name" ) {
+		if ( open my $FILE, '<', $file_name ) {
 			my @load_files;
 			my ( $start_file_nr, $file_nr );
 			while (<$FILE>) {
@@ -252,7 +253,7 @@ sub export_scite {
 		$Kephra::temp{file}{filterstring}{scite}
 	);
 	if ( length($file_name) > 0 ) {
-		if ( open my $FILE, ">$file_name" ) {
+		if ( open my $FILE, '>', $file_name ) {
 			my ( $current, $output ) = ( $Kephra::document{current_nr}, );
 			for ( 0 .. Kephra::Document::_get_last_nr() ) {
 				my %file = %{ $Kephra::document{open}[$_] };

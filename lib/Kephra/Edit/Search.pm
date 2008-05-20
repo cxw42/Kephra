@@ -1,10 +1,12 @@
 package Kephra::Edit::Search;
-$VERSION = '0.28';
+use strict;
+use warnings;
+
+our $VERSION = '0.28';
 
 # internal and menu functions about find and replace text
 # drag n drop target class
 
-use strict;
 use Wx qw(
 	wxSTC_FIND_WHOLEWORD wxSTC_FIND_MATCHCASE wxSTC_FIND_WORDSTART
 	wxSTC_INDIC_STRIKE wxSTC_INDIC_DIAGONAL wxSTC_INDIC_TT wxSTC_INDIC_PLAIN

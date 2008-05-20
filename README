@@ -1,6 +1,5 @@
 NAME
-    kephra - crossplatform, CPAN-installable GUI-Texteditor for Programmers,
-             UI designed along Perl's Paradigms 
+    kephra - crossplatform, GUI-Texteditor designed along Perl's Paradigms 
 
 SYNOPSIS
         > kephra [<files>]   # start with certain files open
@@ -10,8 +9,8 @@ DESCRIPTION
     and documentation for your programming, web and text authoring.
 
   Philosophy
-    I know, i know, there are plenty text editors out there, even some really
-    mighty IDE, but still no perfect solution for many Programmer. So lets
+    I know, I know, there are plenty text editors out there, even some really
+    mighty IDE, but still no perfect solution for many programmers. So lets
     learn from Perl what it takes to build a tool thats powerful and fun to
     play with for hours and months.
     

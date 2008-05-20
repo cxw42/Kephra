@@ -1,6 +1,7 @@
 package Kephra::Dialog::Keymap;
-
 use strict;
+use warnings;
+
 use Wx qw( wxNO_FULL_REPAINT_ON_RESIZE wxSYSTEM_MENU wxCAPTION 
 		wxMINIMIZE_BOX wxCLOSE_BOX wxRESIZE_BORDER
 		wxVERTICAL wxTOP wxGROW wxBOTTOM wxGROW wxBOTH

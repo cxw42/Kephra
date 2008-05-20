@@ -1,5 +1,4 @@
 #! /usr/bin/perl -w
-
 #############################################################################
 ## Author:      Herbert Breunung
 ## Purpose:     Kephra starter
@@ -21,15 +20,15 @@ for main Docs please go to the main Module named L<Kephra>.
 =cut
 
 use strict;
-use vars qw{ $STANDALONE $ALLINC $VERSION};
-$VERSION = '0.12';
+use vars qw{ $STANDALONE $ALLINC $VERSION $DEV_START};
+$VERSION = '0.13';
 
 use Benchmark ();
 my $t0;
 
 BEGIN {
 	# set it true if you like to have a relocatable (by simple copy) editor
-	$STANDALONE = 0;
+	$STANDALONE = 'dev' if $ENV{KEPHRA_DEV_START};
 	# set it true if this distro includes a full runtime env (KRE)
 	$ALLINC = 0;
 
@@ -42,11 +41,11 @@ BEGIN {
 use Kephra;
 
 $Kephra::STANDALONE = $STANDALONE;
-$Kephra::benchmark = 0;           # switch for benchmark output
+$Kephra::BENCHMARK = 0;           # switch for benchmark output
 
 print "src loaded in:",
 	Benchmark::timestr( Benchmark::timediff( Benchmark->new, $t0 ) ), "\n"
-	if $Kephra::benchmark;
+	if $Kephra::BENCHMARK;
 
 
 # first splashscreen without caution to app but fast

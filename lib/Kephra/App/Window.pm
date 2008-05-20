@@ -1,7 +1,9 @@
 package Kephra::App::Window;    # Main application window
-$VERSION = '0.06';
-
 use strict;
+use warnings;
+
+our $VERSION = '0.06';
+
 use base qw(Wx::Frame);      #use Wx; use base qw(Wx::Panel);
 use Wx qw(
 	wxDefaultPosition wxDefaultSize
@@ -39,7 +41,8 @@ sub load_icon {
 	my $type ;
 	if    ($icon_file =~ /.ico$/) { $type = wxBITMAP_TYPE_ICO }
 	elsif ($icon_file =~ /.xpm$/) { $type = wxBITMAP_TYPE_XPM }
-	my $icon = Wx::Icon->new( $icon_file, $type ) if $type;
+	my $icon;
+    $icon = Wx::Icon->new( $icon_file, $type ) if $type;
 	$frame->SetIcon( $icon ) if defined $icon;
 }
 

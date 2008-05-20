@@ -1,7 +1,9 @@
 package Kephra::Config::Default::ToolBars;
+use strict;
+use warnings;
+
 our $VERSION = '0.01';
 
-use strict;
 sub get {
 	return {
 		main_toolbar => [

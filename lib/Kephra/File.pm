@@ -1,11 +1,12 @@
 package Kephra::File;
-$VERSION = '0.37';
+use strict;
+
+our $VERSION = '0.37';
 
 ########################################################
 # file save events, drag n drop files, file menu calls #
 ########################################################
 
-use strict;
 use Wx qw(wxYES wxNO wxCANCEL);
 
 ###############

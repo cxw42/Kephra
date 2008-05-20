@@ -1,8 +1,10 @@
 package Kephra::Config::Global;
-$VERSION = '0.23';
+use strict;
+use warnings;
+
+our $VERSION = '0.23';
 
 # handling main config files under /config/global/
-use strict;
 
 sub _conf_sub_path {'global'}
 sub _current_file  {Kephra::Config::filepath( $Kephra::temp{file}{config}{auto});
@@ -10,6 +12,7 @@ sub _current_file  {Kephra::Config::filepath( $Kephra::temp{file}{config}{auto})
 sub load_autosaved {
 	my $autosave = _current_file();
 	my $backup = $autosave . '~';
+	#$main::logger->debug("load_autosaved");
 
 	for my $file ($autosave, $backup) {
 		if ( -e $file ) {
@@ -25,6 +28,7 @@ sub load_autosaved {
 }
 
 sub save_autosaved {
+	#$main::logger->debug("save_autosaved");
 	my $file_name = _current_file();
 	rename $file_name, $file_name . '~';
 	Kephra::Config::File::store( $file_name, \%Kephra::config );
@@ -72,7 +76,7 @@ sub evaluate {
 	Kephra::Config::Interface::load();
 	my $t1 = new Benchmark;
 print "  iface cnfg:", Benchmark::timestr( Benchmark::timediff( $t1, $t0 ) ), "\n"
-	if $Kephra::benchmark;
+	if $Kephra::BENCHMARK;
 
 	# set interna to default
 	$Kephra::app{GUI}{masterID}     = 20;
@@ -84,7 +88,7 @@ print "  iface cnfg:", Benchmark::timestr( Benchmark::timediff( $t1, $t0 ) ), "\
 	Kephra::Config::build_fileendings_filterstring();
 	my $t2 = new Benchmark;
 print "  prep. data:", Benchmark::timestr( Benchmark::timediff( $t2, $t1 ) ), "\n"
-	if $Kephra::benchmark;
+	if $Kephra::BENCHMARK;
 
 	# main window components
 	Kephra::App::Window::apply_settings();
@@ -98,14 +102,14 @@ print "  prep. data:", Benchmark::timestr( Benchmark::timediff( $t2, $t1 ) ), "\
 
 	my $t3 = new Benchmark;
 print "  create gui:", Benchmark::timestr( Benchmark::timediff( $t3, $t2 ) ), "\n"
-	if $Kephra::benchmark;
+	if $Kephra::BENCHMARK;
 
 	Kephra::App::ContextMenu::connect_all();
 	Kephra::App::EditPanel::apply_settings();
 	Kephra::Edit::Bookmark::define_marker();
 	my $t4 = new Benchmark;
 print "  apply sets:", Benchmark::timestr( Benchmark::timediff( $t4, $t3 ) ), "\n"
-	if $Kephra::benchmark;
+	if $Kephra::BENCHMARK;
 
 	Kephra::Config::Interface::del_temp_data();
 	Kephra::API::CommandList::del_temp_data();

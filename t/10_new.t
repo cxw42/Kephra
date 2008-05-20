@@ -11,6 +11,15 @@ BEGIN {
 use Test::More tests => 1;
 use Kephra;
 
+#File::Spec->catdir($basedir, 'config');
+#$Kephra::temp{path}{config} = './share/config';
+#$Kephra::temp{path}{help} = './share/help';
+
+$Kephra::STANDALONE = 1;
+
+unlink 'share/config/global/autosaved.conf';
+unlink 'share/config/global/autosaved.conf~';
+
 # Create the new Kephra object
 my $kephra = Kephra->new;
 isa_ok( $kephra, 'Kephra' );

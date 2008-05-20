@@ -1,7 +1,9 @@
 package Kephra::Document::SyntaxMode;
-$VERSION = '0.03';
-
 use strict;
+use warnings;
+
+our $VERSION = '0.03';
+
 use Wx qw(
 	wxSTC_LEX_NULL wxSTC_STYLE_DEFAULT
 	wxSTC_STYLE_BRACELIGHT wxSTC_STYLE_BRACEBAD wxSTC_STYLE_INDENTGUIDE

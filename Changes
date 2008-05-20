@@ -7,7 +7,14 @@ TODO 0.4:
  + keymap dialog
  + own statusbar
 
+0.3.9.10
+ ] Gabor: added first logging functions
+ ] renamed Config::Default::Global_Settings to Config::Default::GlobalSettings
+ ! mismatch in 2 other Default modules names
+
 0.3.9.9
+ ' documented API modules
+ ' repaired some POD in main module
  [ fixed tabbar icon tooltip texts
  ] switched from YAML to YAML::Tiny (less code, less memory, all we need)
  ] new starter.exe that starts kre\wperl.exe

@@ -5,10 +5,10 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.3.9.9';       # version of entire app
+our $VERSION    = '0.3.9.10';       # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
-our $BENCHNARK;                    #
+our $BENCHMARK;                    #
 our @ISA        = 'Wx::App';       # $NAME is a wx application
 
 # Configuration Phase
@@ -49,11 +49,12 @@ use Kephra::App::TabBar;           # API 2 Wx::Notebook
 use Kephra::App::Window;           # API 2 Wx::Frame and more
 use Kephra::Config;                # low level config manipulation
 use Kephra::Config::Default;       # build in emergency settings
-#
-#
-#
-#
-#
+#use Kephra::Config::Default::CommandList;
+#use Kephra::Config::Default::ContextMenus;
+#use Kephra::Config::Default::GlobalSettings;
+#use Kephra::Config::Default::Localisation;
+#use Kephra::Config::Default::MainMenu;
+#use Kephra::Config::Default::ToolBars;
 use Kephra::Config::File;          # API 2 ConfigParser: Config::General, YAML
 use Kephra::Config::Global;        # API 4 config, general content level
 use Kephra::Config::Interface;     #
@@ -127,22 +128,27 @@ and documentation for your programming, web and text authoring.
 
 =head2 Philosophy
 
-I know, i know, there are plenty text editors out there, even some really
-mighty IDE, but still no perfect solution for many Programmer. So lets
+I know, I know, there are plenty text editors out there, even some really
+mighty IDEs, but still no perfect solution for many Programmers. So lets
 learn from Perl what it takes to build a tool thats powerful and fun to
 play with for hours and months.
 
 =over 4
 
 =item *  make a low entry barrier
+
 =item *  copy what people like and are used to
-=item *  give choices (Timtowtdi) 
+
+=item *  give choices (TMTOWDI) 
 
 =over 2
 
 =item * usable with mouse and keyboard commands and menus 
+
 =item * deliver vi (commandline) and emacs (complex keybinding) input style
+
 =item * configure via dialog and yaml/conf files ...
+
 =item * much more ...
 
 =back
@@ -151,13 +157,18 @@ play with for hours and months.
 
 =back
 
-Furthermore i made some design decisions that should define Kephra:
+Furthermore I made some design decisions that should define Kephra:
 
 =over 4
 
 =item * beautiful, well crafted GUI with own Icons
+
 =item * most features are optional / configurable
+
+=item * easy extendable with our beloved perl
+
 =item * solve things with minimal effort (no bloat / minimal dependencies)
+
 =item * turn CPAN into a IDE and provide just the glue
 
 =back
@@ -172,7 +183,7 @@ That is the plan, but we are currently not nearly that far.
 
 =head2 Features
 
-Beside all the basic stuff that would you expect from a notepad, we have
+Beside all the basic stuff that you would expect from a notepad, we have
 file sessions, simple templates, recent closed files, and file functions
 applied to all files, where it makes sense.
 
@@ -193,7 +204,7 @@ line wrap and font.
 Every menu and toolbar is evaluated from a simple yaml file, so you can 
 change it easily by opening this files from the config menu.
 
-=head1 TO DO
+=head1 ROADMAP
 
 =head2 Stable Release 0.4
 
@@ -227,6 +238,8 @@ L<http://kephra.sourceforge.net>
 =item * Jens Neuwerk E<lt>jenne@gmxpro.netE<gt> (author of icons, GUI advisor)
 
 =item * Adam Kennedy E<lt>adamk@cpan.orgE<gt> (cpanification)
+
+=item * Gábor Szabó E<lt>szabgab@cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 

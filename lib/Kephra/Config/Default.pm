@@ -1,13 +1,15 @@
 package Kephra::Config::Default;
+use strict;
+use warnings;
+
 our $VERSION = '0.19';
 
 #   complete set of config to be able to start app under all circumstances
 
-use strict;
 
 sub global_settings {
-	require Kephra::Config::Default::Global_Settings;
-	Kephra::Config::Default::Global_Settings::get();
+	require Kephra::Config::Default::GlobalSettings;
+	Kephra::Config::Default::GlobalSettings::get();
 }
 
 sub commandlist {

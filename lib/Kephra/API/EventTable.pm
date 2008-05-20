@@ -1,5 +1,8 @@
 package Kephra::API::EventTable;
-$VERSION = '0.09';
+use strict;
+use warnings;
+
+our $VERSION = '0.09';
 
 =head1 NAME
 
@@ -41,7 +44,6 @@ Names of Events contain dots as separator of of namespaces.
 
 =cut
 
-use strict;
 use Wx qw( wxSTC_CMD_NEWLINE WXK_RETURN );
 use Wx::Event qw(
 	EVT_TIMER EVT_IDLE

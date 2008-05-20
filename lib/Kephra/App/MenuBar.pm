@@ -1,7 +1,8 @@
 package Kephra::App::MenuBar;
-$VERSION = 0.07;
-
 use strict;
+use warnings;
+
+our $VERSION = 0.07;
 
 sub _ref {
 	if (ref $_[0] eq 'Wx::MenuBar'){ $Kephra::app{menubar} = $_[0] }

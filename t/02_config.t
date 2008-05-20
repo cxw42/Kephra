@@ -8,7 +8,10 @@ BEGIN {
 	push @INC, 'lib';
 }
 
-use Test::More tests => 18;
+use Test::More tests => 18 + 7 + 1;
+use Test::NoWarnings;
+
+use Data::Dumper qw(Dumper);
 use Kephra;
 
 
@@ -77,5 +80,36 @@ SCOPE: {
 		is_icon( $icon2 );
 	}
 }
+
+#####################################################################
+# Kephra::Config::File
+
+require_ok('Kephra::Config::File');
+{
+    my $ref = Kephra::Config::File::load_node('share/config/interface/commands.conf', 'commandlist');
+    is( ref($ref), 'HASH', 'commandlist is HASH' );
+}
+
+{
+    #is( Kephra::Config::File::_get_type('mainmenuyml'), 'yaml', 'type is yaml' );
+    #is( Kephra::Config::File::_get_type('ymainmenuyml'), 'yaml', 'type is yaml' );
+    is( Kephra::Config::File::_get_type('/home/foo/.kephra/config/interface/mainmenu.yml'), 'yaml', 'type is yaml' );
+    is( Kephra::Config::File::_get_type('share/config/interface/mainmenu.yml'), 'yaml', 'type is yaml' );
+}
+
+{
+    my $file_name = 'share/config/interface/mainmenu.yml';
+    is( Kephra::Config::File::_get_type($file_name), 'yaml', 'type is yaml' );
+    my $ref = Kephra::Config::File::load_node($file_name, 'full_menubar');
+    is( ref($ref), 'ARRAY', 'full_menubar is ARRAY' );
+    $Kephra::temp{path}{config} = 'share/config';
+    my $menubar_def = Kephra::Config::File::load_from_config_node_data ( {
+          'responsive' => 1,
+          'file' => 'interface/mainmenu.yml',
+          'node' => 'full_menubar'
+        } );
+    is( ref($menubar_def), 'ARRAY', 'full_menubar is ARRAY' );
+}
+
 
 exit(0);

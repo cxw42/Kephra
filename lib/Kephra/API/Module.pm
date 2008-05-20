@@ -1,9 +1,12 @@
 package Kephra::API::Module;
-$VERSION = '0.00';
+use strict;
+use warnings;
+
+our $VERSION = '0.00';
 
 =head1 NAME
 
-Kephra::API::Module - Kephra's API for App parts with own Panel
+Kephra::API::Module - API for App parts with own Panel
 
 =head1 DESCRIPTION
 
@@ -13,7 +16,6 @@ modules-menu like e.g. a file manager.
 
 =cut
 
-use strict;
 
 
 1;

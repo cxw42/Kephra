@@ -1,7 +1,9 @@
-package Kephra::Config::Default::CommandList;
+package Kephra::Config::Default::Localisation;
+use strict;
+use warnings;
+
 our $VERSION = '0.01';
 
-use strict;
 sub get {
 	return {
 		about => {

@@ -1,5 +1,8 @@
 package Kephra::Document;
-$VERSION = '0.44';
+use strict;
+use warnings;
+
+our $VERSION = '0.44';
 
 =pod
  This module is in rewrite mode the purpose 
@@ -8,7 +11,6 @@ $VERSION = '0.44';
            and join it with Kephra::Document::Internal
 =cut
 
-use strict;
 use Wx qw( wxSTC_EOL_CR wxSTC_EOL_LF wxSTC_EOL_CRLF );
 
 # internal functions

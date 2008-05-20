@@ -1,5 +1,8 @@
 package Kephra::API::CommandList;
-$VERSION = '0.11';
+use strict;
+use warnings;
+
+our $VERSION = '0.11';
 
 =head1 NAME
 
@@ -47,7 +50,6 @@ CommandlistItem
 
 =cut
 
-use strict;
 use Wx qw(
 	WXK_ESCAPE WXK_BACK WXK_RETURN WXK_TAB WXK_SPACE
 	WXK_DELETE WXK_INSERT WXK_HOME WXK_END WXK_PAGEUP WXK_PAGEDOWN
@@ -182,6 +184,12 @@ sub eval_data {
 #
 # external API
 #
+
+sub add_cmd {}
+sub add_cmd_list {}
+sub del_cmd {}
+
+sub cmd_ID_free {}
 
 sub get_cmd_properties {
 	my $cmd_id = shift;

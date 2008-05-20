@@ -1,7 +1,9 @@
 package Kephra::Edit::Bookmark;
-$VERSION = '0.16';
-
 use strict;
+use warnings;
+
+our $VERSION = '0.16';
+
 use Wx qw(wxSTC_MARK_SHORTARROW);
 
 # internal subs

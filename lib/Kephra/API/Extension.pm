@@ -1,9 +1,12 @@
 package Kephra::API::Extension;
-$VERSION = '0.00';
+use strict;
+use warnings;
+
+our $VERSION = '0.00';
 
 =head1 NAME
 
-Kephra::API::Extension - Kephra's API for extentions (plugins)
+Kephra::API::Extension - API for extentions (plugins)
 
 =head1 DESCRIPTION
 
@@ -14,7 +17,6 @@ menus, menu items even whole modules.
 
 =cut
 
-use strict;
 
 sub install {}
 sub uninstall {}

@@ -2,6 +2,8 @@ use warnings;
 use strict;
 use inc::Module::Install;
 
+use 5.006;
+
 name           'Kephra';
 all_from       'lib/Kephra.pm';
 requires       'Cwd';
@@ -12,9 +14,13 @@ requires       'File::UserConfig';
 requires       'Config::General';
 requires       'YAML::Tiny'            => 0.31;
 requires       'Text::Wrap';
+requires       'Log::Dispatch';
+requires       'Log::Dispatch::File';
+requires       'POSIX';
 requires       'Wx'                    => 0.70;
 build_requires 'Test::More'            => 0.47;
 build_requires 'Test::Script'          => 0.01;
+build_requires 'Test::NoWarnings';
 install_share  'share';
 install_script 'bin/kephra';
 
