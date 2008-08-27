@@ -22,7 +22,7 @@ lib/Kephra.pm
 lib/Kephra/API/CommandList.pm
 lib/Kephra/API/EventTable.pm
 lib/Kephra/API/Extension.pm
-lib/Kephra/API/Module.pm
+lib/Kephra/API/Panel.pm
 lib/Kephra/App.pm
 lib/Kephra/App/ContextMenu.pm
 lib/Kephra/App/EditPanel.pm
@@ -39,6 +39,7 @@ lib/Kephra/Config.pm
 lib/Kephra/Config/Default.pm
 lib/Kephra/Config/Default/CommandList.pm
 lib/Kephra/Config/Default/ContextMenus.pm
+lib/Kephra/Config/Default/Global_Settings.pm
 lib/Kephra/Config/Default/GlobalSettings.pm
 lib/Kephra/Config/Default/Localisation.pm
 lib/Kephra/Config/Default/MainMenu.pm
@@ -68,6 +69,8 @@ lib/Kephra/Edit/Goto.pm
 lib/Kephra/Edit/History.pm
 lib/Kephra/Edit/Search.pm
 lib/Kephra/Edit/Select.pm
+lib/Kephra/Extention/Notepad.pm
+lib/Kephra/Extention/Output.pm
 lib/Kephra/File.pm
 lib/Kephra/File/History.pm
 lib/Kephra/File/IO.pm
@@ -82,6 +85,7 @@ Makefile.PL
 MANIFEST			This list of files
 META.yml
 README
+share/config/extention/installed.conf
 share/config/global/sub/documentation/cesky.conf
 share/config/global/sub/documentation/deutsch.conf
 share/config/global/sub/documentation/english.conf
@@ -134,6 +138,7 @@ share/config/interface/icon/set/jenne/go_last.xpm
 share/config/interface/icon/set/jenne/go_next.xpm
 share/config/interface/icon/set/jenne/go_previous.xpm
 share/config/interface/icon/set/jenne/goto_last_edit.xpm
+share/config/interface/icon/set/jenne/goto_line.xpm
 share/config/interface/icon/set/jenne/help_documentation.xpm
 share/config/interface/icon/set/jenne/help_home.xpm
 share/config/interface/icon/set/jenne/help_info.xpm
@@ -148,6 +153,7 @@ share/config/interface/icon/set/jenne/preview.xpm
 share/config/interface/icon/set/jenne/reload.xpm
 share/config/interface/icon/set/jenne/replace_next.xpm
 share/config/interface/icon/set/jenne/replace_previous.xpm
+share/config/interface/icon/set/jenne/replace_start.xpm
 share/config/interface/icon/set/jenne/stay_on_top.xpm
 share/config/interface/icon/splash/start_kephra.jpg
 share/config/interface/icon/splash/start_kephra.xpm
@@ -229,6 +235,7 @@ share/help/english/this_version.txt
 share/help/english/welcome.txt
 t/01_compile.t
 t/02_config.t
+t/03_config_default.t
 t/10_new.t
 xt/90-pod.t
 xt/91-pod-coverage.t

@@ -12,6 +12,7 @@ use File::Find qw(find);
 
 use Test::More;
 use Test::Script;
+use Test::NoWarnings;
 my @modules;
 
 find(\&get_module, 'lib');
@@ -30,7 +31,7 @@ sub get_module {
 #use Data::Dumper;
 # diag Dumper \@modules;
 
-plan tests => 2 + @modules;
+plan tests => 3 + @modules;
 
 ok( $] >= 5.006, 'Your perl is new enough' );
 foreach my $module (@modules) {

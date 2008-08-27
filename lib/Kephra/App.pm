@@ -33,6 +33,61 @@ sub splashscreen {
 	);
 }
 
+sub setup_logging {
+    eval {
+        require Log::Dispatch;
+        require Log::Dispatch::File;
+    };
+    if ($@) {
+        _setup_fake_logger();
+    } else {
+        _setup_real_logger();
+    }
+    $main::logger->info("Starting");
+
+
+    return;
+}
+
+sub _setup_fake_logger {
+    package Kephra::FakeLogger;
+    $main::logger = bless {}, __PACKAGE__; 
+    no strict 'refs';
+    foreach my $l ( qw( debug info notice warning err error crit critical alert emerg emergency ) )
+    {
+        *{$l} = sub {};
+    }
+    return;
+}
+
+sub _setup_real_logger {
+    mkdir $Kephra::temp{path}{logger};
+    # TODO: setup pseudo logger in case the directory does not exist or
+    # otherwise cannot start the logger, report error
+    $main::logger = Log::Dispatch->new;
+    require POSIX;
+    my $ts = POSIX::strftime("%Y%m%d", localtime);
+            print File::Spec->catfile($Kephra::temp{path}{logger}, "$ts.log");
+    $main::logger->add( Log::Dispatch::File->new( 
+            name        => 'file1',
+            min_level   => ($ENV{KEPHRA_LOGGIN} || 'debug'),
+            filename    => File::Spec->catfile($Kephra::temp{path}{logger}, "$ts.log"),
+            mode        => 'append',
+            callbacks   => \&_logger,
+    ));
+    $SIG{__WARN__} = sub { $main::logger->warning($_[0]) };
+    return;
+}
+
+
+sub _logger {
+    my %data = @_;
+    # TODO maybe we should use regular timestamp here and turn on the hires timestamp
+    # only if KEPHRA_TIME or similar env variable is set
+    require Time::HiRes;
+    return sprintf("%s - %s - %s - %s\n", Time::HiRes::time(), $$, $data{level}, $data{message});
+}
+
 sub assemble_layout {
 	my $win = Kephra::App::Window::_ref();
 
@@ -51,42 +106,12 @@ sub assemble_layout {
 	if ($search_pos eq 'bottom') {
 		$main_sizer->Add( Kephra::App::SearchBar::_ref(), 0, wxBOTTOM|wxGROW, 0)
 	}
+	$main_sizer->Add( Kephra::Extention::Output::create(),0, wxTOP|wxGROW, 0 );
 	$win->SetSizer($main_sizer);
 	$win->SetAutoLayout(1);
 	$win->Layout;
 	$win->SetBackgroundColour(Kephra::App::TabBar::_ref()->GetBackgroundColour);
 	Kephra::App::TabBar::show();
-}
-
-sub setup_logging {
-    require Log::Dispatch;
-    require Log::Dispatch::File;
-    mkdir $Kephra::temp{path}{logger};
-    # TODO: setup pseudo logger in case the directory does not exist or
-    # otherwise cannot start the logger, report error
-    $::logger = Log::Dispatch->new;
-    require POSIX;
-    my $ts = POSIX::strftime("%Y%m%d", localtime);
-    $main::logger->add( Log::Dispatch::File->new( 
-            name        => 'file1',
-            min_level   => ($ENV{KEPHRA_LOGGIN} || 'debug'),
-            filename    => File::Spec->catfile($Kephra::temp{path}{logger}, "$ts.log"),
-            mode        => 'append',
-            callbacks   => \&_logger,
-            ));
-    $main::logger->info("Starting");
-
-    $SIG{__WARN__} = sub { $main::logger->warn($_[0]) };
-
-    return;
-}
-
-sub _logger {
-    my %data = @_;
-    # TODO maybe we should use regular timestamp here and turn on the hires timestamp
-    # only if KEPHRA_TIME or similar env variable is set
-    require Time::HiRes;
-    return sprintf("%s - %s - %s - %s\n", Time::HiRes::time(), $$, $data{level}, $data{message});
 }
 
 sub start {

@@ -93,6 +93,7 @@ sub add {
 }
 
 sub save {
+	Kephra::Document::Internal::save_properties();
 	my $config      = _config();
 	my $config_file = shift ||
 		Kephra::Config::filepath( $config->{directory}, _config->{file} );

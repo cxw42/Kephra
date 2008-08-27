@@ -2,7 +2,7 @@ package Kephra::Edit::Goto;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 # editpanel navigation
 
@@ -10,17 +10,18 @@ use Wx qw( wxCANCEL wxSTC_CMD_PARAUP wxSTC_CMD_PARADOWN wxSTC_FIND_REGEXP);
 
 sub line_nr {
 	my $line = Kephra::Dialog::get_number( Kephra::App::Window::_ref(),
-		$Kephra::localisation{'dialog'}{'edit'}{'goto_line_input'},
-		$Kephra::localisation{'dialog'}{'edit'}{'goto_line_headline'},
+		$Kephra::localisation{dialog}{edit}{goto_line_input},
+		$Kephra::localisation{dialog}{edit}{goto_line_headline},
 		Kephra::App::EditPanel::_ref()->GetCurrentLine
 	);
+    print $line if substr($line,0,1) eq '+';
 	Kephra::Edit::_goto_pos( Kephra::App::EditPanel::_ref->PositionFromLine($line - 1) )
 		unless $line == wxCANCEL;
 }
 
 sub last_edit {
-	Kephra::Edit::_goto_pos($Kephra::document{'current'}{'edit_pos'})
-		if defined $Kephra::document{'current'}{'edit_pos'};
+	Kephra::Edit::_goto_pos($Kephra::document{current}{edit_pos})
+		if defined $Kephra::document{current}{edit_pos};
 }
 
 #########################

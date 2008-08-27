@@ -1,4 +1,4 @@
-package Kephra::API::Module;
+package Kephra::API::Panel;
 use strict;
 use warnings;
 

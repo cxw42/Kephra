@@ -334,6 +334,10 @@ full_menubar:
       - checkitem view-window-stay-on-top
       -
       -
+        menu view_panel:
+          - checkitem view-panel-notepad
+          - checkitem view-panel-output
+      -
         menu view_bars:
           - checkitem view-toolbar-main
           - checkitem view-tabbar

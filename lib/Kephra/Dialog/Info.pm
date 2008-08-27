@@ -45,7 +45,7 @@ sub simple {
 		. " - WxPerl $Wx::VERSION $info->{wrappes} \n"
 		. "   - " . wxVERSION_STRING . " $info->{and} $sciv\n"
 		. " - Config::General $Config::General::VERSION \n"
-		. " - YAML $YAML::VERSION \n"
+		. " - YAML::Tiny $YAML::Tiny::VERSION \n"
 		."\n\n $info->{dedication}"
 		. "";
 	my $title = "$info->{title} $Kephra::NAME $Kephra::VERSION";

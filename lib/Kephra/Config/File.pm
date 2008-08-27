@@ -2,22 +2,26 @@ package Kephra::Config::File;
 use strict;
 use warnings;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 #
 # internal
 #
 sub _get_type {
 	my $name = shift;
+	if (not defined $name) {
+		#$main::logger->error("
+		return;
+	}
 	return unless $name;
-	my $file_end = substr $name, rindex($name , '.') + 1 , 1;
-	return $file_end eq 'y' 
-		? 'yaml'
-		: 'conf';
-    # TODO: log or throw exception if no or invalid file given
-    
-    # make the extension checking stricter?
-    # accept only .yml .yaml and .conf extension?
+	return 'conf' if $name =~ /\.conf$/;
+	return 'yaml' if $name =~ /\.yml$/;
+	
+	return;
+	# TODO: log or throw exception if no or invalid file given
+	
+	# make the extension checking stricter?
+	# accept only .yml .yaml and .conf extension?
 }
 
 #
@@ -51,6 +55,7 @@ sub load {
 	my $file_name = shift;
 	return unless -e $file_name;
 	my $type = _get_type($file_name);
+	return unless $type;
 	if    ($type eq 'conf') { load_conf($file_name) }
 	elsif ($type eq 'yaml') { load_yaml($file_name) }
 }
@@ -91,7 +96,8 @@ sub load_conf {
 				-MergeDuplicateOptions => 0,
 				-MergeDuplicateBlocks  => 0,
 				-ConfigFile            => $configfilename,
-				-SplitPolicy           => 'equalsign'
+				-SplitPolicy           => 'equalsign',
+				-SaveSorted            => 1,
 			);
 			%config = $Kephra::app{config}{parser}->getall;
 		};

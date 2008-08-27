@@ -8,8 +8,13 @@ BEGIN {
 	push @INC, 'lib';
 }
 
-use Test::More tests => 18 + 7 + 1;
+use Test::More;
 use Test::NoWarnings;
+use Test::Exception;
+my $tests;
+
+plan tests => $tests + 1;
+
 
 use Data::Dumper qw(Dumper);
 use Kephra;
@@ -48,6 +53,7 @@ SCOPE: {
 		Kephra::Config::color('black');
 	};
 	like( $@, qr/Unknown color string/, 'Caught bad-string error' );
+    BEGIN { $tests += 4*4 + 2; }
 }
 
 
@@ -84,17 +90,24 @@ SCOPE: {
 #####################################################################
 # Kephra::Config::File
 
-require_ok('Kephra::Config::File');
 {
+    require_ok('Kephra::Config::File');
     my $ref = Kephra::Config::File::load_node('share/config/interface/commands.conf', 'commandlist');
     is( ref($ref), 'HASH', 'commandlist is HASH' );
+    BEGIN { $tests += 2; }
 }
 
+TODO: {
+    local $TODO = 'throw exception if file type is incorrect';
+    foreach my $file (qw(mainmenuyml ymainmenuyml)) {
+        throws_ok { Kephra::Config::File::_get_type($file)  } 'Kephra::Exception', "invalid extension exception $file" ;
+    }
+    BEGIN { $tests += 2; }
+}
 {
-    #is( Kephra::Config::File::_get_type('mainmenuyml'), 'yaml', 'type is yaml' );
-    #is( Kephra::Config::File::_get_type('ymainmenuyml'), 'yaml', 'type is yaml' );
     is( Kephra::Config::File::_get_type('/home/foo/.kephra/config/interface/mainmenu.yml'), 'yaml', 'type is yaml' );
     is( Kephra::Config::File::_get_type('share/config/interface/mainmenu.yml'), 'yaml', 'type is yaml' );
+    BEGIN { $tests += 2; }
 }
 
 {
@@ -109,6 +122,7 @@ require_ok('Kephra::Config::File');
           'node' => 'full_menubar'
         } );
     is( ref($menubar_def), 'ARRAY', 'full_menubar is ARRAY' );
+    BEGIN { $tests += 3; }
 }
 
 

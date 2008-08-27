@@ -20,8 +20,11 @@ for main Docs please go to the main Module named L<Kephra>.
 =cut
 
 use strict;
-use vars qw{ $STANDALONE $ALLINC $VERSION $DEV_START};
-$VERSION = '0.13';
+use vars qw{ $ALLINC $DEV_START};
+our $VERSION = '0.13';
+our $STANDALONE = '';
+
+
 
 use Benchmark ();
 my $t0;

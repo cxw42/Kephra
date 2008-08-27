@@ -16,7 +16,8 @@ sub load_autosaved {
 
 	for my $file ($autosave, $backup) {
 		if ( -e $file ) {
-			%Kephra::config = %{ Kephra::Config::File::load($file) };
+			my $config_tree = Kephra::Config::File::load($file);
+			%Kephra::config = %$config_tree if ref $config_tree eq 'HASH';
 			last if %Kephra::config;
 			rename $file, $file . '.failed';
 		}

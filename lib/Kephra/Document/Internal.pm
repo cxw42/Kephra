@@ -73,8 +73,8 @@ sub add {
 		Kephra::Document::_set_previous_nr($old_nr);
 		reset_tmp_data($doc_nr);
 		load_in_current_buffer($file_name);
-		reset_properties($doc_nr, $file_name);
 		Kephra::Document::_set_current_nr($doc_nr);
+		reset_properties($doc_nr, $file_name);
 		eval_properties($doc_nr);
 		Kephra::App::Window::refresh_title();
 		Kephra::App::EditPanel::Margin::autosize_line_number();
@@ -173,7 +173,6 @@ sub reset_properties {
 		'tab_size' => $def->{tab_size},
 		'tab_use'  => $def->{tab_use},
 	};
-
 	$doc_attr->{syntaxmode} = Kephra::Document::SyntaxMode::_get_auto($doc_nr)
 		if defined $doc_attr->{syntaxmode} and $doc_attr->{syntaxmode} eq 'auto';
 

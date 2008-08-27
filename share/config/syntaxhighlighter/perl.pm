@@ -5,7 +5,8 @@ sub load {
     use Wx qw(wxSTC_LEX_PERL wxSTC_H_TAG);
 
     $_[0]->SetLexer( wxSTC_LEX_PERL );         # Set Lexers to use
-    $_[0]->SetKeyWords(0,'NULL __FILE__ __LINE__ __PACKAGE__ __DATA__ __END__ 
+    $_[0]->SetKeyWords(0,'NULL 
+__FILE__ __LINE__ __PACKAGE__ __DATA__ __END__ __WARN__ __DIE__
 AUTOLOAD BEGIN CHECK CORE DESTROY END EQ GE GT INIT LE LT NE UNITCHECK 
 abs accept alarm and atan2 bind binmode bless break
 caller chdir chmod chomp chop chown chr chroot close closedir cmp connect

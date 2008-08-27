@@ -5,9 +5,9 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.3.9.10';       # version of entire app
+our $VERSION    = '0.3.9.14';      # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
-our $STANDALONE;                   # starter flag for moveable installations
+our $STANDALONE = '';              # starter flag for moveable installations
 our $BENCHMARK;                    #
 our @ISA        = 'Wx::App';       # $NAME is a wx application
 
@@ -35,6 +35,7 @@ use Wx::DND;                       # Drag'n Drop & Clipboard support (only K::Fi
 use Kephra::API::CommandList;      # UI API
 use Kephra::API::EventTable;       # internal app API
 use Kephra::API::Extension;        # Plugin API
+use Kephra::API::Panel;            #
 use Kephra::App;                   # App start & shut down sequence
 use Kephra::App::ContextMenu;      # contextmenu manager
 use Kephra::App::EditPanel;        #
@@ -60,12 +61,12 @@ use Kephra::Config::Global;        # API 4 config, general content level
 use Kephra::Config::Interface;     #
 use Kephra::Config::Tree;          #
 use Kephra::Dialog;                # API 2 dialogs, fileselectors, msgboxes
-#require Kephra::Dialog::Config;   # config dialog
-#require Kephra::Dialog::Exit;     # select files to be saved while exit program
-#require Kephra::Dialog::Info;     # info box
-#require Kephra::Dialog::Keymap;   #
-#require Kephra::Dialog::Notify    # inform about filechanges from outside
-#require Kephra::Dialog::Search;   # find and replace dialog
+#use Kephra::Dialog::Config;       # config dialog
+#use Kephra::Dialog::Exit;         # select files to be saved while exit program
+#use Kephra::Dialog::Info;         # info box
+#use Kephra::Dialog::Keymap;       #
+#use Kephra::Dialog::Notify        # inform about filechanges from outside
+#use Kephra::Dialog::Search;       # find and replace dialog
 use Kephra::Document;              # document menu funktions
 use Kephra::Document::Change;      # calls for changing current doc
 use Kephra::Document::Internal;    # doc handling helper methods
@@ -85,6 +86,8 @@ use Kephra::File::IO;              # API 2 FS, read write files
 use Kephra::File::Session;         # file session handling
 use Kephra::Module;                # Module Handling
 use Kephra::Show;                  # -DEP display content: files
+use Kephra::Extention::Notepad;
+use Kephra::Extention::Output;
 
 # global data
 our %app;           # ref to app parts and app data for GUI, Events, Parser
@@ -115,7 +118,7 @@ __END__
 
 =head1 NAME
 
-Kephra - crossplatform, CPAN-installable GUI-Texteditor along perllike Paradigms 
+Kephra - crossplatform, GUI-Texteditor along perllike Paradigms 
 
 =head1 SYNOPSIS
 

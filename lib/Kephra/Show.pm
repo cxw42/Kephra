@@ -1,5 +1,6 @@
 package Kephra::Show;
 use strict;
+use warnings;
 
 our $VERSION = '0.13';
 

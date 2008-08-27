@@ -1,8 +1,7 @@
-package Kephra::Config::Default::GlobalSettings;
-use strict;
-use warnings;
-
+package Kephra::Config::Default::Global_Settings;
 our $VERSION = '0.01';
+
+use strict;
 
 sub get {
 	return {
@@ -159,7 +158,7 @@ sub get {
 					width  => 2
 				},
 				caret_line => {
-					color   => 'f2f2df',
+					color   => 'eeeed7',
 					visible => 1,
 				},
 				end_of_line_marker => 0,
@@ -186,8 +185,8 @@ sub get {
 				fold => 0,
 				linenumber => {
 					autosize   => 1,
-					back_color => 'dddddd',
-					fore_color => '111144',
+					back_color => 'f5f5eb',
+					fore_color => '0,0,0',
 					min_width  => 4,
 					width      => 4,
 					visible    => 1,
@@ -195,12 +194,11 @@ sub get {
 				marker => {
 					back_color => '0022ff',
 					fore_color => '000055',
-					visible    => 1
+					visible    => 0
 				},
 				text => 4
 			},
 			scroll_width => '640',
-			word_chars => 'word_chars = $%-@_abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ0123456789',
 		},
 		file => {
 			current => {
@@ -213,7 +211,7 @@ sub get {
 				codepage    => 0,         # -NI codepage of the used charset, not implemented yet
 				cursor_pos  => 0,
 				readonly    => 'protect', # (0|1|2|on|off|protect) if =1 it set a write protection on readonly files
-				syntaxmode  => 'auto',    # (auto|none|lang_id) which syntaxstyle on new files
+				syntaxstyle => 'auto',    # (auto|none|lang_id) which syntaxstyle on new files
 				tab_size    => '4',       # (0..n) how much (white)spaces equals one tab?
 				tab_use     => 0,         # use tab chars
 			},
