@@ -12,9 +12,11 @@ no_index:
     - inc
     - share
     - t
+    - xt
 requires: 
   perl: 5.006
   Wx:   0.70
+  Wx-Perl-ProcessStream: 0;
   YAML-Tiny: 0.31
   Config-General: 0.30
   File-UserConfig: 0

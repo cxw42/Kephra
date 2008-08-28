@@ -13,11 +13,10 @@ use File::Find qw(find);
 use Test::More;
 use Test::Script;
 use Test::NoWarnings;
+#use Test::Exception;
+
 my @modules;
-
-find(\&get_module, 'lib');
-
-
+#find(\&get_module, 'lib');
 sub get_module {
     return if not -f $_ or $_ !~ /\.pm$/;
 
@@ -28,18 +27,28 @@ sub get_module {
     push @modules, $module;
 }
 
-#use Data::Dumper;
-# diag Dumper \@modules;
-
-plan tests => 3 + @modules;
+#use Data::Dumper; # diag Dumper \@modules;
+my $tests = 3;# + @modules
+plan tests => $tests;
 
 ok( $] >= 5.006, 'Your perl is new enough' );
-foreach my $module (@modules) {
-    require_ok($module);
+use_ok('Kephra');
+
+SKIP:{
+    ;
+    #skip(2);
+    #cmp_ok( scalar(@modules), '>', 58, 'at least 58 modules found' );
+    #foreach my $module (@modules) {
+    #    require_ok($module);
+    #}
+    #skip(1);
+    #script_compiles_ok('bin/kephra');
 }
-cmp_ok( scalar(@modules), '>', 50, 'at least 50 modules found' );
+
 
 # check the starter
-#script_compiles_ok('bin/kephra');
+TODO: {
+    ;
+}
 
-exit(0);
+#exit(0);

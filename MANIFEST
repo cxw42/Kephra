@@ -39,7 +39,6 @@ lib/Kephra/Config.pm
 lib/Kephra/Config/Default.pm
 lib/Kephra/Config/Default/CommandList.pm
 lib/Kephra/Config/Default/ContextMenus.pm
-lib/Kephra/Config/Default/Global_Settings.pm
 lib/Kephra/Config/Default/GlobalSettings.pm
 lib/Kephra/Config/Default/Localisation.pm
 lib/Kephra/Config/Default/MainMenu.pm
@@ -69,16 +68,14 @@ lib/Kephra/Edit/Goto.pm
 lib/Kephra/Edit/History.pm
 lib/Kephra/Edit/Search.pm
 lib/Kephra/Edit/Select.pm
+lib/Kephra/Extention/Demo.pm
 lib/Kephra/Extention/Notepad.pm
 lib/Kephra/Extention/Output.pm
+lib/Kephra/Extention/SnippetLib.pm
 lib/Kephra/File.pm
 lib/Kephra/File/History.pm
 lib/Kephra/File/IO.pm
 lib/Kephra/File/Session.pm
-lib/Kephra/Module.pm
-lib/Kephra/Module/Demo.pm
-lib/Kephra/Module/NotePad.pm
-lib/Kephra/Module/SnippetLib.pm
 lib/Kephra/Show.pm
 LICENSE
 Makefile.PL

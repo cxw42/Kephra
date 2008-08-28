@@ -92,21 +92,23 @@ sub assemble_layout {
 	my $win = Kephra::App::Window::_ref();
 
 	my $main_sizer = $win->{sizer} = Wx::BoxSizer->new(wxVERTICAL);
+	my $tg = wxTOP|wxGROW;
+
 	my $search_pos = Kephra::App::SearchBar::_config()->{position};
-	if ($search_pos eq 'top') {
-		$main_sizer->Add( Kephra::App::SearchBar::_ref(), 0, wxTOP|wxGROW, 0)
-	}
-	$main_sizer->Add( Kephra::App::TabBar::_get_sizer(), 0, wxTOP|wxGROW, 0);
+	my $search_bar = Kephra::App::SearchBar::_ref();
+
+	$main_sizer->Add( $search_bar, 0, wxTOP|wxGROW, 0) if $search_pos eq 'top';
+	$main_sizer->Add( Kephra::App::TabBar::_get_sizer(),  0, $tg, 0);
 	if ($search_pos eq 'middle') {
-		$main_sizer->Add( Kephra::App::SearchBar::_ref(), 0, wxTOP|wxGROW, 0);
+		$main_sizer->Add( $search_bar, 0, $tg, 0);
 		$main_sizer->Add( Wx::StaticLine->new
-			($win, -1, [-1,-1],[-1,2], wxLI_HORIZONTAL), 0, wxBOTTOM|wxGROW, 0);
+			($win, -1, [-1,-1],[-1,2], wxLI_HORIZONTAL),  0, $tg, 0);
 	}
-	$main_sizer->Add( Kephra::App::EditPanel::_ref(),    1, wxTOP|wxGROW, 0 );
-	if ($search_pos eq 'bottom') {
-		$main_sizer->Add( Kephra::App::SearchBar::_ref(), 0, wxBOTTOM|wxGROW, 0)
-	}
-	$main_sizer->Add( Kephra::Extention::Output::create(),0, wxTOP|wxGROW, 0 );
+	$main_sizer->Add( Kephra::App::EditPanel::_ref(),     1, $tg, 0 );
+	$main_sizer->Add( $search_bar, 0, $tg, 0) if $search_pos eq 'below';
+	$main_sizer->Add( Kephra::Extention::Output::create(),0, $tg, 0 );
+	$main_sizer->Add( $search_bar, 0, $tg, 0) if $search_pos eq 'bottom';
+
 	$win->SetSizer($main_sizer);
 	$win->SetAutoLayout(1);
 	$win->Layout;
@@ -123,6 +125,7 @@ sub start {
 	#setup_logging();
 	splashscreen();             # 2'nd splashscreen can close when app is ready
 	Wx::InitAllImageHandlers();
+	Kephra::Extention::Output::init();
 	my $frame = Kephra::App::Window::create();
 	my $ep = Kephra::App::EditPanel::create();
 	$Kephra::temp{document}{open}[0]{pointer} = $ep->GetDocPointer();

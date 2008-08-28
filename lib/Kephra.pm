@@ -5,7 +5,7 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.3.9.14';      # version of entire app
+our $VERSION    = '0.3.9.15';      # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE = '';              # starter flag for moveable installations
 our $BENCHMARK;                    #
@@ -22,7 +22,7 @@ use YAML::Tiny       ();
 use Wx;                            # Core wxWidgets Framework
 use Wx::STC;                       # Scintilla editor component
 use Wx::DND;                       # Drag'n Drop & Clipboard support (only K::File)
-#use Wx::Print;                    # Print cd..Support (used only in Kephra::File )
+#use Wx::Print;                    # Printing Support (used only in Kephra::File )
 #use Text::Wrap                    # for text formating
 
 # these will used in near future
@@ -30,6 +30,9 @@ use Wx::DND;                       # Drag'n Drop & Clipboard support (only K::Fi
 #use PPI ();                       # For refactoring support
 #use Params::Util ();              # Parameter checking
 #use Class::Inspector ();          # Class checking
+
+use Kephra::Extention::Notepad;
+use Kephra::Extention::Output;
 
 # used internal modules, parts of kephra
 use Kephra::API::CommandList;      # UI API
@@ -84,10 +87,7 @@ use Kephra::File;                  # file menu functions
 use Kephra::File::History;         # list of recent used Files
 use Kephra::File::IO;              # API 2 FS, read write files
 use Kephra::File::Session;         # file session handling
-use Kephra::Module;                # Module Handling
 use Kephra::Show;                  # -DEP display content: files
-use Kephra::Extention::Notepad;
-use Kephra::Extention::Output;
 
 # global data
 our %app;           # ref to app parts and app data for GUI, Events, Parser

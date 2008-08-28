@@ -20,9 +20,6 @@ use Data::Dumper qw(Dumper);
 use Kephra;
 
 
-
-
-
 #####################################################################
 # Kephra::Config::color
 

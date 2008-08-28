@@ -18,6 +18,7 @@ requires       'Log::Dispatch';
 requires       'Log::Dispatch::File';
 requires       'POSIX';
 requires       'Wx'                    => 0.70;
+requires       'Wx::Perl::ProcessStream';
 build_requires 'Test::More'            => 0.47;
 build_requires 'Test::Script'          => 0.01;
 build_requires 'Test::NoWarnings';
