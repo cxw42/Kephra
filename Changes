@@ -7,6 +7,13 @@ TODO 0.4:
  + keymap dialog
  + own statusbar
 
+0.3.9.16
+ * notepad panel works completely
+ + output panel recoveres its visibility state after restart
+ ~ output panel open if run script
+ ! output panel handles multiline output
+ ! can run files with whitespace in name (patch by reneeb)
+
 0.3.9.15
  * output panel works now
 

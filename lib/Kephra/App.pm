@@ -5,7 +5,7 @@ use warnings;
 our $VERSION = '0.06';
 
 use Wx qw(
-	wxDefaultPosition wxDefaultSize   wxGROW wxTOP wxBOTTOM wxVERTICAL 
+	wxDefaultPosition wxDefaultSize   wxGROW wxTOP wxBOTTOM wxVERTICAL wxHORIZONTAL
 	wxSTAY_ON_TOP wxSIMPLE_BORDER wxFRAME_NO_TASKBAR
 	wxSPLASH_CENTRE_ON_SCREEN wxSPLASH_TIMEOUT 
 	wxBITMAP_TYPE_ANY wxBITMAP_TYPE_XPM
@@ -91,23 +91,28 @@ sub _logger {
 sub assemble_layout {
 	my $win = Kephra::App::Window::_ref();
 
-	my $main_sizer = $win->{sizer} = Wx::BoxSizer->new(wxVERTICAL);
+	my $main_sizer = $win->{vsizer} = Wx::BoxSizer->new(wxVERTICAL);
+	my $hs_sizer = $win->{hsizer} = Wx::BoxSizer->new(wxHORIZONTAL);
 	my $tg = wxTOP|wxGROW;
 
 	my $search_pos = Kephra::App::SearchBar::_config()->{position};
 	my $search_bar = Kephra::App::SearchBar::_ref();
 
+
+	$hs_sizer->Add( Kephra::App::EditPanel::_ref(),      1, $tg, 0 );
+	$hs_sizer->Add( Kephra::Extention::Notepad::create(),0, $tg, 0 );
+
 	$main_sizer->Add( $search_bar, 0, wxTOP|wxGROW, 0) if $search_pos eq 'top';
-	$main_sizer->Add( Kephra::App::TabBar::_get_sizer(),  0, $tg, 0);
+	$main_sizer->Add( Kephra::App::TabBar::_get_sizer(), 0, $tg, 0 );
 	if ($search_pos eq 'middle') {
 		$main_sizer->Add( $search_bar, 0, $tg, 0);
 		$main_sizer->Add( Wx::StaticLine->new
-			($win, -1, [-1,-1],[-1,2], wxLI_HORIZONTAL),  0, $tg, 0);
+			($win, -1, [-1,-1],[-1,2], wxLI_HORIZONTAL), 0, $tg, 0 );
 	}
-	$main_sizer->Add( Kephra::App::EditPanel::_ref(),     1, $tg, 0 );
-	$main_sizer->Add( $search_bar, 0, $tg, 0) if $search_pos eq 'below';
+	$main_sizer->Add( $hs_sizer,   1, $tg, 0 );
+	$main_sizer->Add( $search_bar, 0, $tg, 0 ) if $search_pos eq 'below';
 	$main_sizer->Add( Kephra::Extention::Output::create(),0, $tg, 0 );
-	$main_sizer->Add( $search_bar, 0, $tg, 0) if $search_pos eq 'bottom';
+	$main_sizer->Add( $search_bar, 0, $tg, 0 ) if $search_pos eq 'bottom';
 
 	$win->SetSizer($main_sizer);
 	$win->SetAutoLayout(1);
@@ -180,8 +185,8 @@ sub exit {
 	Kephra::Config::Global::save_autosaved();
 	#Kephra::API::CommandList::store_cache();
 	Kephra::Config::set_xp_style(); #
-	wxTheClipboard->Flush;          # set copied text free to the global Clipboard
 	Kephra::App::Window::destroy(); # close window
+	wxTheClipboard->Flush;          # set copied text free to the global Clipboard
 	print "shut down in:",
 		Benchmark::timestr( Benchmark::timediff( new Benchmark, $t0 ) ), "\n"
 		if $Kephra::BENCHMARK;

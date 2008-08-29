@@ -175,6 +175,7 @@ full_menubar:
       - item bookmark-delete-all
   -
     menu tools:
+      - item tool-note
       - item tool-run-document
   -
     menu document:

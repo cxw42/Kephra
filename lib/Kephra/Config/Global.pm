@@ -66,6 +66,7 @@ sub update {
 	Kephra::App::Window::save_positions();
 	Kephra::Document::Internal::save_properties();
 	Kephra::Edit::Bookmark::save_all();
+	Kephra::Extention::Notepad::save();
 }
 
 sub evaluate {

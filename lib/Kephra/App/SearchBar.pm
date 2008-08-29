@@ -218,8 +218,7 @@ sub position {}
 # set visibility
 sub show {
 	_ref()->Show( get_visibility() );
-	my $sizer = Kephra::App::Window::_ref()->GetSizer;
-	$sizer->Layout() if $sizer;
+	Kephra::App::Window::_ref()->Layout();
 }
 sub get_visibility    { _config()->{visible} }
 sub switch_visibility { _config()->{visible} ^= 1; show(); }
