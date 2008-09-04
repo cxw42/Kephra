@@ -150,9 +150,9 @@ sub create {
 			connect_find_input($find_input);
 		}
 	}
-	$bar->Realize;
 	EVT_LEAVE_WINDOW($bar, \&leave_focus);
-	show();
+	$bar->Realize;
+	$bar;
 }
 
 
@@ -217,8 +217,13 @@ sub position {}
 
 # set visibility
 sub show {
-	_ref()->Show( get_visibility() );
-	Kephra::App::Window::_ref()->Layout();
+	my $visible = shift || get_visibility();
+	my $bar = _ref();
+	my $sizer = $bar->GetParent->GetSizer;#$Kephra::app{sizer}{main}
+	$sizer->Show( $bar, $visible );
+	$sizer->Layout();
+	#Kephra::App::Window::_ref()->Layout();
+	_config()->{visible} = $visible;
 }
 sub get_visibility    { _config()->{visible} }
 sub switch_visibility { _config()->{visible} ^= 1; show(); }

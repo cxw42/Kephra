@@ -5,7 +5,7 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.3.9.16';      # version of entire app
+our $VERSION    = '0.3.10';        # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE = '';              # starter flag for moveable installations
 our $BENCHMARK;                    # flag for benchmark loggings
@@ -31,8 +31,8 @@ use Wx::DND;                       # Drag'n Drop & Clipboard support (only K::Fi
 #use Params::Util ();              # Parameter checking
 #use Class::Inspector ();          # Class checking
 
-use Kephra::Extention::Notepad;
-use Kephra::Extention::Output;
+use Kephra::Extension::Notepad;
+use Kephra::Extension::Output;
 
 # used internal modules, parts of kephra
 use Kephra::API::CommandList;      # UI API

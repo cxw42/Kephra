@@ -22,6 +22,18 @@ sub get {
 			],},
 			'menu file_history',
 			'',
+			{'menu file_session' => [
+				'item file-session-open',
+				'item file-session-add',
+				'item file-session-save',
+				'',
+				'item file-session-backup-open',
+				'item file-session-backup-save',
+				'',
+				'item file-session-import',
+				'item file-session-export',
+			],},
+			'',
 			'item file-save',
 			#'menu file_save' => []
 			'item file-save-all',
@@ -179,6 +191,11 @@ sub get {
 			],},
 			'item bookmark-delete-all',
 		],},
+		{'menu tools' => [
+			'item tool-note',
+			'item tool-run-document',
+			'item tool-stop-document',
+		],},
 		{'menu document' => [
 			{'menu document_change' => [
 				'item document-change-prev',
@@ -323,17 +340,6 @@ sub get {
 				'radioitem document-readonly-on',
 				'radioitem document-readonly-off',
 			],},
-		],},
-		{'menu file_session' => [
-			'item file-session-open',
-			'item file-session-add',
-			'item file-session-save',
-			'',
-			'item file-session-backup-open',
-			'item file-session-backup-save',
-			'',
-			'item file-session-import',
-			'item file-session-export',
 		],},
 		{'menu view' => [
 			'checkitem view-window-stay-on-top',

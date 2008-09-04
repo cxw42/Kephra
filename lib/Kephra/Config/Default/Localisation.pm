@@ -35,6 +35,7 @@ sub get {
 				replace_functions => 'Replace Functions',
 				bookmark_goto => 'Goto Bookmark',
 				bookmark_toggle => 'Toggle Bookmark',
+				tools => 'Tools',
 				document => 'Document',
 				document_change => 'Change',
 				'&document_list' => 'Select',
@@ -259,6 +260,11 @@ sub get {
 						'0' => 'O',
 					},
 					'delete-all' => 'Delete Bookmarks',
+				},
+				tool => {
+					note => 'Note',
+					'run-document' => 'Run',
+					'stop-document' => 'Stop',
 				},
 				document => {
 					'auto-indention' => 'Autoindention',

@@ -42,6 +42,19 @@ sub get {
 				node => 'full_menubar',
 				responsive => 1,                              # (0|1) 0 prevent menubar item shading
 			},
+			panel => {
+				notepad => {
+					content => 'extension/notepad/content.txt',
+					font_size => 10,
+					size => 180,
+					visible => 0,
+				},
+				output => {
+					font_size => 9,
+					size => 100,
+					visible => 0,
+				},
+			},
 			statusbar => {
 				interactive => 1,
 				msg_nr => 0,
@@ -95,7 +108,7 @@ sub get {
 				save_position => 1,
 				size_x => 660,
 				size_y => 531,
-				'stay_on_top' => 0,
+				stay_on_top => 0,
 				title => '$filepath - $appname $version', 
 										# $filepath - path of current file
 										# $filename - just the name.exe
@@ -270,7 +283,7 @@ sub get {
 				web    => 'css html php perl js',
 			},
 			history => {
-				'length' => 7,
+				'length' => 10,
 				path => [],
 			},
 			'open' => {

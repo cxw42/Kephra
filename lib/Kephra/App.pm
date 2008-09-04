@@ -2,17 +2,19 @@ package Kephra::App;
 use strict;
 use warnings;
 
-our $VERSION = '0.06';
+our $VERSION = '0.08';
 
 use Wx qw(
 	wxDefaultPosition wxDefaultSize   wxGROW wxTOP wxBOTTOM wxVERTICAL wxHORIZONTAL
 	wxSTAY_ON_TOP wxSIMPLE_BORDER wxFRAME_NO_TASKBAR
 	wxSPLASH_CENTRE_ON_SCREEN wxSPLASH_TIMEOUT 
+	wxSP_3D wxSP_PERMIT_UNSPLIT wxSP_LIVE_UPDATE
 	wxBITMAP_TYPE_ANY wxBITMAP_TYPE_XPM
 	wxLI_HORIZONTAL
 	wxTheClipboard
 	wxNullAcceleratorTable 
 );
+use Wx::Event qw( EVT_SPLITTER_SASH_POS_CHANGED );
 
 sub _ref { 
 	if (ref $_[0] eq 'Kephra'){ $Kephra::app{ref} = $_[0] }
@@ -44,8 +46,6 @@ sub setup_logging {
         _setup_real_logger();
     }
     $main::logger->info("Starting");
-
-
     return;
 }
 
@@ -90,35 +90,65 @@ sub _logger {
 
 sub assemble_layout {
 	my $win = Kephra::App::Window::_ref();
-
-	my $main_sizer = $win->{vsizer} = Wx::BoxSizer->new(wxVERTICAL);
-	my $hs_sizer = $win->{hsizer} = Wx::BoxSizer->new(wxHORIZONTAL);
 	my $tg = wxTOP|wxGROW;
 
+	# setting up output splitter
+	my $output_splitter = $Kephra::app{splitter}{output} = Wx::SplitterWindow->new
+			( $win, -1, [-1,-1], [-1,-1], wxSP_PERMIT_UNSPLIT|wxSP_LIVE_UPDATE );
+	EVT_SPLITTER_SASH_POS_CHANGED( $output_splitter, $output_splitter, sub {
+		Kephra::API::EventTable::trigger( 'app.splitter.bottom.changed' );
+	} );
+	Kephra::Extension::Output::_ref()->Reparent( $output_splitter );
+	$output_splitter->SetSashGravity(1);
+	$output_splitter->SetMinimumPaneSize(10);
+
+	my $main_panel = $Kephra::app{panel}{main} = Wx::Panel->new($output_splitter, -1);
+	my $v_edit_panel = Wx::Panel->new($main_panel, -1);
+	my $note_splitter = $Kephra::app{splitter}{note} = Wx::SplitterWindow->new
+			( $v_edit_panel, -1, [-1,-1], [-1,-1], wxSP_PERMIT_UNSPLIT|wxSP_LIVE_UPDATE );
+	EVT_SPLITTER_SASH_POS_CHANGED( $note_splitter, $note_splitter, sub {
+		Kephra::API::EventTable::trigger( 'app.splitter.right.changed' );
+	} );
+	Kephra::App::EditPanel::_ref()->Reparent($note_splitter);
+	Kephra::Extension::Notepad::_ref()->Reparent($note_splitter);
+	$note_splitter->SetSashGravity(1);
+	$note_splitter->SetMinimumPaneSize(10);
+	my $v_edit_sizer = Wx::BoxSizer->new(wxVERTICAL);
+
+	$v_edit_panel->SetSizer($v_edit_sizer);
+	$v_edit_sizer->Add( $note_splitter, 1, wxTOP|wxGROW, 0);
+
+	my $main_sizer = $Kephra::app{sizer}{main} = Wx::BoxSizer->new(wxVERTICAL);
 	my $search_pos = Kephra::App::SearchBar::_config()->{position};
 	my $search_bar = Kephra::App::SearchBar::_ref();
-
-
-	$hs_sizer->Add( Kephra::App::EditPanel::_ref(),      1, $tg, 0 );
-	$hs_sizer->Add( Kephra::Extention::Notepad::create(),0, $tg, 0 );
-
+	my $tab_bar    = Kephra::App::TabBar::_ref();
+	$tab_bar->Reparent($main_panel);
+	$search_bar->Reparent($main_panel) if $search_pos ne 'bottom';
 	$main_sizer->Add( $search_bar, 0, wxTOP|wxGROW, 0) if $search_pos eq 'top';
-	$main_sizer->Add( Kephra::App::TabBar::_get_sizer(), 0, $tg, 0 );
-	if ($search_pos eq 'middle') {
+	$main_sizer->Add( $tab_bar, 0, $tg, 0 );
+	if ($search_pos eq 'above') {
 		$main_sizer->Add( $search_bar, 0, $tg, 0);
 		$main_sizer->Add( Wx::StaticLine->new
-			($win, -1, [-1,-1],[-1,2], wxLI_HORIZONTAL), 0, $tg, 0 );
+			($main_panel, -1, [-1,-1],[-1,2], wxLI_HORIZONTAL), 0, $tg, 0 );
 	}
-	$main_sizer->Add( $hs_sizer,   1, $tg, 0 );
+	$main_sizer->Add( $v_edit_panel, 1, $tg, 0 );
 	$main_sizer->Add( $search_bar, 0, $tg, 0 ) if $search_pos eq 'below';
-	$main_sizer->Add( Kephra::Extention::Output::create(),0, $tg, 0 );
-	$main_sizer->Add( $search_bar, 0, $tg, 0 ) if $search_pos eq 'bottom';
+	$main_panel->SetSizer($main_sizer);
+	$main_panel->SetAutoLayout(1);
 
-	$win->SetSizer($main_sizer);
+	my $win_sizer = Wx::BoxSizer->new(wxVERTICAL);
+	$search_bar->Reparent($win) if $search_pos eq 'bottom';
+	$win_sizer->Add( $output_splitter, 1, $tg, 0 );
+	$win_sizer->Add( $search_bar,      0, $tg, 0 ) if $search_pos eq 'bottom';
+	$win->SetSizer($win_sizer);
 	$win->SetAutoLayout(1);
-	$win->Layout;
-	$win->SetBackgroundColour(Kephra::App::TabBar::_ref()->GetBackgroundColour);
+	$win->SetBackgroundColour(Kephra::App::TabBar::_tabs()->GetBackgroundColour);
+
 	Kephra::App::TabBar::show();
+	Kephra::App::SearchBar::show();
+	Kephra::Extension::Notepad::show();
+	Kephra::Extension::Output::show();
+	#$win->Layout;
 }
 
 sub start {
@@ -130,7 +160,7 @@ sub start {
 	#setup_logging();
 	splashscreen();             # 2'nd splashscreen can close when app is ready
 	Wx::InitAllImageHandlers();
-	Kephra::Extention::Output::init();
+	Kephra::Extension::Output::init();
 	my $frame = Kephra::App::Window::create();
 	my $ep = Kephra::App::EditPanel::create();
 	$Kephra::temp{document}{open}[0]{pointer} = $ep->GetDocPointer();

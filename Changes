@@ -7,6 +7,19 @@ TODO 0.4:
  + keymap dialog
  + own statusbar
 
+0.3.10
+ ! add missing panel localisation
+
+0.3.9.18
+ + Output is resizable ans remembers its size
+ + Notepad is resizable ans remembers its size
+ ! Notepad knows its split staus after closed per mouse
+ 
+0.3.9.17
+ + output panel has now a stop function to kill hanging prozesses
+ [ enhance Notepad as STC that shares some settings with main STC
+ ! fix perl lexer color definition
+
 0.3.9.16
  * notepad panel works completely
  + output panel recoveres its visibility state after restart

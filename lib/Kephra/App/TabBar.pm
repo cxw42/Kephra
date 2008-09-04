@@ -20,37 +20,43 @@ use Wx::Event qw(
 );
 
 sub _ref { 
-	if ($_[0]) { $Kephra::app{window}{tabbar}{tabs} = $_[0] }
-	else       { $Kephra::app{window}{tabbar}{tabs} } 
+	if (ref $_[0] eq 'Wx::Panel') { $Kephra::app{window}{tabbar}{panel} = $_[0] }
+	else                          { $Kephra::app{window}{tabbar}{panel} } 
+}
+sub _tabs { 
+	if (ref $_[0] eq 'Wx::Notebook') { $Kephra::app{window}{tabbar}{tabs} = $_[0] }
+	else                             { $Kephra::app{window}{tabbar}{tabs} } 
 }
 sub _compound { $Kephra::app{window}{tabbar} }
-sub _get_sizer{ $Kephra::app{window}{tabbar}{sizer} }
-sub _set_sizer{ $Kephra::app{window}{tabbar}{sizer} = shift }
-sub _config{$Kephra::config{app}{tabbar} }
-#sub new{ return Kephra::App::Window::_get()->{notebook} = Wx::Notebook->new($frame, -1, [0,0], [1,1],)}
+sub _config   { $Kephra::config{app}{tabbar} }
 
 sub create {
 	my $win = Kephra::App::Window::_ref();
+	my $tb_panel = Wx::Panel->new($win, -1);
 
 	# create notebook if there is none
-	unless ( ref _ref() eq 'Wx::Notebook' ) {
-		_ref( Wx::Notebook->new($win, -1, [0,0], [-1,24]) );
+	unless (_tabs()) {
+		_tabs( Wx::Notebook->new( $tb_panel, -1, [0,0], [-1,23]) );
 		add_tab();
 	}
 	my $tabbar = _compound();
 	my $tabbar_h_sizer = $tabbar->{h_sizer} = Wx::BoxSizer->new(wxHORIZONTAL);
-	my $colour = $tabbar->{tabs}->GetBackgroundColour();
-	$tabbar_h_sizer->Add( $tabbar->{tabs} , 1, wxLEFT | wxGROW , 0 );
+	$tabbar_h_sizer->Add( $tabbar->{tabs} , 1, wxLEFT | wxGROW, 0 );
+	my $bg_colour = $tabbar->{tabs}->GetBackgroundColour();
+
+	$tabbar->{seperator_line} = Wx::StaticLine->new
+		($tb_panel, -1, [-1,-1],[-1,2], wxLI_HORIZONTAL);
+	$tabbar->{seperator_line}->SetBackgroundColour(wxWHITE);
 
 	# create icons above panels
 	my $cmd_new_data = Kephra::API::CommandList::get_cmd_properties('file-new');
 	if (ref $cmd_new_data->{icon} eq 'Wx::Bitmap'){
 		my $new_btn = $tabbar->{button}{new} = Wx::BitmapButton->new
-			($win, -1, $cmd_new_data->{icon}, [-1,-1], [-1,-1], wxNO_BORDER );
+			($tb_panel, -1, $cmd_new_data->{icon}, [-1,-1], [-1,-1], wxNO_BORDER );
 		$new_btn->SetToolTip( (split /\t/, $cmd_new_data->{label})[0] );
-		$new_btn->SetBackgroundColour( $colour );
+		$new_btn->SetBackgroundColour( $bg_colour );
 		$tabbar_h_sizer->Prepend($new_btn, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 2);
-		EVT_BUTTON($win, $new_btn, $cmd_new_data->{call} );
+		EVT_BUTTON($tb_panel, $new_btn, $cmd_new_data->{call} );
 		EVT_ENTER_WINDOW( $new_btn, sub {
 			Kephra::App::StatusBar::info_msg( $cmd_new_data->{help} )
 		});
@@ -60,26 +66,16 @@ sub create {
 	my $cmd_close_data = Kephra::API::CommandList::get_cmd_properties('file-close');
 	if (ref $cmd_close_data->{icon} eq 'Wx::Bitmap'){
 		my $close_btn = $tabbar->{button}{close} = Wx::BitmapButton->new
-			($win, -1, $cmd_close_data->{icon}, [-1,-1], [-1,-1], wxNO_BORDER );
+			($tb_panel, -1, $cmd_close_data->{icon}, [-1,-1], [-1,-1], wxNO_BORDER );
 		$close_btn->SetToolTip( (split /\t/, $cmd_close_data->{label})[0] );
-		$close_btn->SetBackgroundColour( $colour );
+		$close_btn->SetBackgroundColour( $bg_colour );
 		$tabbar_h_sizer->Add($close_btn, 0, wxRIGHT|wxALIGN_CENTER_VERTICAL, 2);
-		EVT_BUTTON($win, $close_btn, $cmd_close_data->{call} );
+		EVT_BUTTON($tb_panel, $close_btn, $cmd_close_data->{call});
 		EVT_ENTER_WINDOW($close_btn, sub {
 			Kephra::App::StatusBar::info_msg( $cmd_close_data->{help} )
 		});
 		EVT_LEAVE_WINDOW( $close_btn, \&Kephra::App::StatusBar::refresh_info_msg );
 	}
-
-	#
-	$tabbar->{seperator_line} = Wx::StaticLine->new
-		($win, -1, [-1,-1],[-1,2], wxLI_HORIZONTAL);
-	$tabbar->{seperator_line}->SetBackgroundColour(wxWHITE);
-
-	# assemble tabbar seperator line
-	my $tabbar_v_sizer = $tabbar->{v_sizer} = Wx::BoxSizer->new(wxVERTICAL);
-	$tabbar_v_sizer->Add( $tabbar->{seperator_line}, 0, wxTOP | wxGROW , 0 );
-	$tabbar_v_sizer->Add( $tabbar_h_sizer          , 1, wxTOP | wxGROW , 0 );
 
 	EVT_LEFT_UP(   $tabbar->{tabs}, \&left_off_tabs);
 	EVT_LEFT_DOWN( $tabbar->{tabs}, \&left_on_tabs);
@@ -91,10 +87,18 @@ sub create {
 				( _config()->{middle_click}, 'call' )
 		);
 	}
-	EVT_NOTEBOOK_PAGE_CHANGED($win,$tabbar->{tabs}, \&change_tab);
+	EVT_NOTEBOOK_PAGE_CHANGED( $tb_panel, $tabbar->{tabs}, \&change_tab);
 
-	_set_sizer($tabbar_v_sizer);
+	# assemble tabbar seperator line
+	my $tabbar_v_sizer = $tabbar->{v_sizer} = Wx::BoxSizer->new(wxVERTICAL);
+	$tabbar_v_sizer->Add( $tabbar->{seperator_line}, 0, wxTOP | wxGROW , 0 );
+	$tabbar_v_sizer->Add( $tabbar_h_sizer          , 1, wxTOP | wxGROW , 0 );
 	refresh_layout();
+
+	$tb_panel->SetSizer($tabbar_v_sizer);
+	$tb_panel->SetAutoLayout(1);
+	$tb_panel->Layout;
+	_ref($tb_panel);
 }
 
 sub left_on_tabs {
@@ -113,14 +117,14 @@ sub left_off_tabs {
 # tab functions
 ##################################
 sub add_tab {
-	my $tabs = _ref();
+	my $tabs = _tabs();
 	$tabs->AddPage( Wx::Panel->new( $tabs, -1, [ -1, -1 ], [ -1, 0 ] ), '', 0 );
 }
 
 sub switch_tab_content {
 	my ($old_nr, $new_nr) = @_;
 	return unless defined $new_nr;
-	my $tabs = _ref();
+	my $tabs = _tabs();
 	my $text = $tabs->GetPageText($new_nr);
 	$tabs->SetPageText($new_nr, $tabs->GetPageText($old_nr) );
 	$tabs->SetPageText($old_nr, $text );
@@ -128,7 +132,7 @@ sub switch_tab_content {
 
 sub rot_tab_content {
 	my $dir = shift;
-	my $tabs = _ref();
+	my $tabs = _tabs();
 	my $max = $tabs->GetPageCount() - 1;
 	if ($dir eq 'left'){
 		my $text = $tabs->GetPageText($max);
@@ -147,11 +151,11 @@ sub change_tab {
 	Kephra::Document::Change::to_number( $event->GetSelection );
 	$event->Skip;
 }
-sub delete_tab { _ref()->DeletePage(shift) }
+sub delete_tab { _tabs()->DeletePage(shift) }
 sub set_current_page {
 	my $nr = shift;
-	my $tabbar = _ref();
-	$tabbar->SetSelection($nr) unless $nr == $tabbar->GetSelection;
+	my $tabs = _tabs();
+	$tabs->SetSelection($nr) unless $nr == $tabs->GetSelection;
 }
 
 # refresh the label of given number
@@ -182,7 +186,7 @@ sub refresh_label {
 		$label .= ' #' if $doc_info->{readonly};
 		$label .= ' *' if $doc_info->{modified};
 	}
-	_ref()->SetPageText( $doc_nr, $label );
+	_tabs()->SetPageText( $doc_nr, $label );
 }
 
 sub refresh_current_label{ refresh_label(Kephra::Document::_get_current_nr()) }
@@ -201,11 +205,14 @@ sub switch_visibility {
 	show();
 }
 sub show {
-	my $main_sizer = Kephra::App::Window::_ref()->GetSizer;
-
-	$main_sizer->Show( _ref()->{v_sizer}, get_visibility() );
+	my $visible = shift || get_visibility();
+	my $panel = _ref();
+	my $sizer = $panel->GetParent->GetSizer;
 	refresh_layout();
-	$main_sizer->Layout();
+	$sizer->Show( $panel, $visible );
+	$sizer->Layout();
+	#Kephra::App::Window::_ref()->Layout();
+	_config()->{visible} = $visible;
 }
 
 # visibility of parts

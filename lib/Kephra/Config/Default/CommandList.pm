@@ -197,6 +197,11 @@ sub get {
 				},
 				'delete-all' => 'Kephra::Edit::Bookmark::delete_all()',
 			},
+			tool => {
+				note => 'Kephra::Extension::Notepad::note()',
+				'run-document' => 'Kephra::Extension::Output::run()',
+				'stop-document' => 'Kephra::Extension::Output::stop()',
+			},
 			document => {
 				'auto-indention' => 'Kephra::Document::switch_autoindention()',
 				'brace-indention' => 'Kephra::Document::switch_braceindention()',
@@ -326,6 +331,10 @@ sub get {
 							12 => 'Kephra::App::EditPanel::Margin::set_text_width(12)',
 						},
 					},
+				},
+				panel => {
+					notepad = 'Kephra::Extension::Notepad::switch_visibility()',
+					output = 'Kephra::Extension::Output::switch_visibility()',
 				},
 				statusbar => 'Kephra::App::StatusBar::switch_visibility()',
 				'statusbar-contexmenu' => 'Kephra::App::StatusBar::switch_contextmenu_visibility()',
@@ -474,6 +483,10 @@ sub get {
 				'with-confirm' => 'Kephra::Edit::Search::_exist_find_item()',
 				selection => 'Kephra::Edit::can_copy()',
 			},
+			tool => {
+				'run-document' => '! Kephra::Extension::Output::is_running()',
+				'stop-document' => 'Kephra::Extension::Output::is_running()',
+			},
 		},
 		enable_event => {
 			'file-save' => 'document.savepoint',
@@ -502,6 +515,10 @@ sub get {
 				all => 'find.item.changed',
 				'with-confirm' => 'find.item.changed',
 				selection => 'document.text.select',
+			},
+			tool => {
+				'run-document' = 'extension.output.run',
+				'stop-document' = 'extension.output.run',
 			},
 		},
 		state => {
@@ -638,6 +655,10 @@ sub get {
 							12 => 'Kephra::App::EditPanel::Margin::get_text_width() == 12',
 						},
 					},
+				},
+				panel => {
+					notepad => 'Kephra::Extension::Notepad::get_visibility()',
+					output => 'Kephra::Extension::Output::get_visibility()',
 				},
 				statusbar => 'Kephra::App::StatusBar::get_visibility()',
 				'statusbar-contexmenu' => 'Kephra::App::StatusBar::get_contextmenu_visibility()',
@@ -845,6 +866,11 @@ sub get {
 					0 => 'ctrl+shift+0',
 				},
 			},
+			tool => {
+				note = 'f4',
+				'run-document' = 'f5',
+				'stop-document' = 'shift+f5',
+			},
 			document => {
 				change => {
 					back => 'ctrl+shift+back',
@@ -867,6 +893,8 @@ sub get {
 					info => 'alt+shift+i',
 					keymap => 'alt+shift+k',
 				},
+				'panel-notepad' => 'ctrl+f4',
+				'panel-output' => 'ctrl+f5',
 				'window-stay-on-top' => 'ctrl+t',
 			},
 		},

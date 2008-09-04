@@ -30,6 +30,7 @@ sub open_pipe {
 		}
 	}
 }
+#use PerlIO::encoding; binmode FH, ":encoding(iso- 8859-1)".
 
 # reading file into buffer variable
 sub open_buffer {

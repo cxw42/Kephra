@@ -44,6 +44,40 @@
  ] added and removed dependencies
 
 
+0.3.10
+ * notepad panel extension
+ * output panel extension for perl programs
+ + added Menu: Tools
+ + added Menu: View > Panel 
+ + avennue highlighter
+ + BAAN highlighter
+ + .bat highlighter
+ + diff highlighter
+ + errorlist highlighter
+ + makefile highlighter
+ + matlab highlighter
+ + property file highlighter
+ ~ added __WARN__ and __DIE__ to perl lexer
+ [ splashscreen img and app icon now as xpm too
+ [ + goto line icon
+ [ fixed tabbar icon tooltip texts
+ ] complete new starter
+ ] internal file namespace cleanup
+ ] renamed Config::Embedded -> Config::Defaults
+ ] finished last Kephra::Config::Tree functions
+ ] switched from YAML to YAML::Tiny (less code, less memory, all we need)
+ ] making DragAcceptFiles optional because not supported by GTK
+ ' added and extended POD for main and API Modules
+ ' POD fix in Kephra.pm
+ ' removed "all rightes reserved" 
+ ! restore curser pos in current file after restart
+ ! fix perl lexer color definition
+ ! fixed about dialog
+ ! crash on file open
+ ! Gabor: optimized config file type recogition
+ ! toolbar appeared in wrong status bar cell
+ ! wordchar settings where missing
+
 0.3.9
  + now complete embedded configs making Kephra selfhosting without config files
  + added pbp.conf according perl best practices

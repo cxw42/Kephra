@@ -66,7 +66,8 @@ sub update {
 	Kephra::App::Window::save_positions();
 	Kephra::Document::Internal::save_properties();
 	Kephra::Edit::Bookmark::save_all();
-	Kephra::Extention::Notepad::save();
+	Kephra::Extension::Notepad::save();
+	Kephra::Extension::Output::save();
 }
 
 sub evaluate {
@@ -100,6 +101,10 @@ print "  prep. data:", Benchmark::timestr( Benchmark::timediff( $t2, $t1 ) ), "\
 	Kephra::App::SearchBar::create();
 	Kephra::App::TabBar::create();
 	Kephra::App::StatusBar::create();
+
+	Kephra::Extension::Notepad::create();
+	Kephra::Extension::Output::create();
+
 	Kephra::App::assemble_layout();
 
 	my $t3 = new Benchmark;

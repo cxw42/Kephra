@@ -68,7 +68,7 @@ sub connect_editpanel {
 	} else { disconnect_widget($edit_panel) }
 }
 sub connect_tabbar {
-	my $tabbar = Kephra::App::TabBar::_ref();
+	my $tabbar = Kephra::App::TabBar::_tabs();
 	if ( Kephra::App::TabBar::get_contextmenu_visibility() ) {
 		connect_widget( $tabbar, Kephra::App::TabBar::_config()->{contextmenu} )
 	} else {
@@ -100,8 +100,6 @@ sub set_editpanel {
 	Kephra::App::EditPanel::_config()->{contextmenu}{visible} = $mode;
 	connect_editpanel();
 }
-sub get_editpanel { 
-	Kephra::App::EditPanel::_config()->{contextmenu}{visible} 
-}
+sub get_editpanel { Kephra::App::EditPanel::_config()->{contextmenu}{visible} }
 
 1;
