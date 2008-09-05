@@ -27,7 +27,7 @@ sub create {
 
 sub apply_settings{
 	my $win = _ref();
-	$win->DragAcceptFiles(1) unless Wx::wxGTK();
+#	$win->DragAcceptFiles(1) unless Wx::wxGTK();
 	my $icon_file = Kephra::Config::existing_filepath( _config()->{icon} );
 	load_icon( $win, $icon_file );
 	restore_positions();

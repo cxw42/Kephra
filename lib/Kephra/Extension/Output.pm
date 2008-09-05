@@ -20,7 +20,7 @@ sub _ref {
 	else                             { $Kephra::app{panel}{output} } 
 }
 sub _config { $Kephra::config{app}{panel}{output} }
-sub _splitter { $Kephra::app{splitter}{output} }
+sub _splitter { $Kephra::app{splitter}{bottom} }
 
 sub init {}
 
@@ -72,16 +72,16 @@ sub show {
 	my $config = _config();
 	$visibile  = $config->{visible} unless defined $visibile;
 	my $win    = Kephra::App::Window::_ref();
-	my $mpanel = $Kephra::app{panel}{main};
+	my $cpanel = $Kephra::app{panel}{center};
 	my $output = _ref();
 	my $splitter = _splitter();
 	if ($visibile) {
-		$splitter->SplitHorizontally( $mpanel, $output );
+		$splitter->SplitHorizontally( $cpanel, $output );
 		$splitter->SetSashPosition( $win->GetSize->GetHeight - $config->{size}, 1);
 	} else {
 		save_size();
 		$splitter->Unsplit();
-		$splitter->Initialize( $mpanel );
+		$splitter->Initialize( $cpanel );
 	}
 	$output->Show($visibile);
 	$win->Layout;

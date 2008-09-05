@@ -6,7 +6,7 @@ our $VERSION = '0.00';
 
 =head1 NAME
 
-Kephra::API::Module - API for App parts with own Panel
+Kephra::API::Panel - API for App parts with own Panel
 
 =head1 DESCRIPTION
 

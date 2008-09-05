@@ -92,54 +92,59 @@ sub assemble_layout {
 	my $win = Kephra::App::Window::_ref();
 	my $tg = wxTOP|wxGROW;
 
-	# setting up output splitter
-	my $output_splitter = $Kephra::app{splitter}{output} = Wx::SplitterWindow->new
+	my $right_splitter = $Kephra::app{splitter}{right} = Wx::SplitterWindow->new
 			( $win, -1, [-1,-1], [-1,-1], wxSP_PERMIT_UNSPLIT|wxSP_LIVE_UPDATE );
-	EVT_SPLITTER_SASH_POS_CHANGED( $output_splitter, $output_splitter, sub {
-		Kephra::API::EventTable::trigger( 'app.splitter.bottom.changed' );
-	} );
-	Kephra::Extension::Output::_ref()->Reparent( $output_splitter );
-	$output_splitter->SetSashGravity(1);
-	$output_splitter->SetMinimumPaneSize(10);
-
-	my $main_panel = $Kephra::app{panel}{main} = Wx::Panel->new($output_splitter, -1);
-	my $v_edit_panel = Wx::Panel->new($main_panel, -1);
-	my $note_splitter = $Kephra::app{splitter}{note} = Wx::SplitterWindow->new
-			( $v_edit_panel, -1, [-1,-1], [-1,-1], wxSP_PERMIT_UNSPLIT|wxSP_LIVE_UPDATE );
-	EVT_SPLITTER_SASH_POS_CHANGED( $note_splitter, $note_splitter, sub {
+	EVT_SPLITTER_SASH_POS_CHANGED( $right_splitter, $right_splitter, sub {
 		Kephra::API::EventTable::trigger( 'app.splitter.right.changed' );
 	} );
-	Kephra::App::EditPanel::_ref()->Reparent($note_splitter);
-	Kephra::Extension::Notepad::_ref()->Reparent($note_splitter);
-	$note_splitter->SetSashGravity(1);
-	$note_splitter->SetMinimumPaneSize(10);
-	my $v_edit_sizer = Wx::BoxSizer->new(wxVERTICAL);
+	$right_splitter->SetSashGravity(1);
+	$right_splitter->SetMinimumPaneSize(10);
 
-	$v_edit_panel->SetSizer($v_edit_sizer);
-	$v_edit_sizer->Add( $note_splitter, 1, wxTOP|wxGROW, 0);
+	my $column_panel = $Kephra::app{panel}{main} = Wx::Panel->new($right_splitter);
 
-	my $main_sizer = $Kephra::app{sizer}{main} = Wx::BoxSizer->new(wxVERTICAL);
-	my $search_pos = Kephra::App::SearchBar::_config()->{position};
+	# setting up output splitter
+	my $bottom_splitter = $Kephra::app{splitter}{bottom} = Wx::SplitterWindow->new
+			( $column_panel, -1, [-1,-1], [-1,-1], wxSP_PERMIT_UNSPLIT|wxSP_LIVE_UPDATE );
+	EVT_SPLITTER_SASH_POS_CHANGED( $bottom_splitter, $bottom_splitter, sub {
+		Kephra::API::EventTable::trigger( 'app.splitter.bottom.changed' );
+	} );
+	$bottom_splitter->SetSashGravity(1);
+	$bottom_splitter->SetMinimumPaneSize(10);
+
+	my $center_panel = $Kephra::app{panel}{center} = Wx::Panel->new($bottom_splitter);
+
+	my $edit_panel = Kephra::App::EditPanel::_ref();
 	my $search_bar = Kephra::App::SearchBar::_ref();
-	my $tab_bar    = Kephra::App::TabBar::_ref();
-	$tab_bar->Reparent($main_panel);
-	$search_bar->Reparent($main_panel) if $search_pos ne 'bottom';
-	$main_sizer->Add( $search_bar, 0, wxTOP|wxGROW, 0) if $search_pos eq 'top';
-	$main_sizer->Add( $tab_bar, 0, $tg, 0 );
+	my $search_pos = Kephra::App::SearchBar::_config()->{position};
+	my $notepad_panel = Kephra::Extension::Notepad::_ref();
+	my $output_panel = Kephra::Extension::Output::_ref();
+	$edit_panel->Reparent($center_panel);
+	$search_bar->Reparent($center_panel) if $search_pos eq 'above' or $search_pos eq 'below';
+	$search_bar->Reparent($column_panel) if $search_pos eq 'bottom';
+	$notepad_panel->Reparent($right_splitter);
+	$output_panel->Reparent( $bottom_splitter );
+
+	my $center_sizer = Wx::BoxSizer->new(wxVERTICAL);
 	if ($search_pos eq 'above') {
-		$main_sizer->Add( $search_bar, 0, $tg, 0);
-		$main_sizer->Add( Wx::StaticLine->new
-			($main_panel, -1, [-1,-1],[-1,2], wxLI_HORIZONTAL), 0, $tg, 0 );
+		$center_sizer->Add( $search_bar, 0, $tg, 0);
+		$center_sizer->Add( Wx::StaticLine->new
+			($center_panel, -1, [-1,-1],[-1,2], wxLI_HORIZONTAL), 0, $tg, 0 );
 	}
-	$main_sizer->Add( $v_edit_panel, 1, $tg, 0 );
-	$main_sizer->Add( $search_bar, 0, $tg, 0 ) if $search_pos eq 'below';
-	$main_panel->SetSizer($main_sizer);
-	$main_panel->SetAutoLayout(1);
+	$center_sizer->Add( $edit_panel, 1, $tg, 0 );
+	$center_sizer->Add( $search_bar, 0, $tg, 0 ) if $search_pos eq 'below';
+	$center_panel->SetSizer($center_sizer);
+	$center_panel->SetAutoLayout(1);
+
+	my $column_sizer = Wx::BoxSizer->new(wxVERTICAL);
+	$column_sizer->Add( $bottom_splitter, 1, $tg, 0);
+	$column_sizer->Add( $search_bar,      0, $tg, 0) if $search_pos eq 'bottom';
+	$column_panel->SetSizer($column_sizer);
+	$column_panel->SetAutoLayout(1);
 
 	my $win_sizer = Wx::BoxSizer->new(wxVERTICAL);
-	$search_bar->Reparent($win) if $search_pos eq 'bottom';
-	$win_sizer->Add( $output_splitter, 1, $tg, 0 );
-	$win_sizer->Add( $search_bar,      0, $tg, 0 ) if $search_pos eq 'bottom';
+	$win_sizer->Add( $search_bar, 0, wxTOP|wxGROW, 0) if $search_pos eq 'top';
+	$win_sizer->Add( Kephra::App::TabBar::_ref(),  0, $tg, 0 );
+	$win_sizer->Add( $right_splitter,              1, $tg, 0 );
 	$win->SetSizer($win_sizer);
 	$win->SetAutoLayout(1);
 	$win->SetBackgroundColour(Kephra::App::TabBar::_tabs()->GetBackgroundColour);

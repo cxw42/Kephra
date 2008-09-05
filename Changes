@@ -7,8 +7,14 @@ TODO 0.4:
  + keymap dialog
  + own statusbar
 
+0.3.10.1
+ [ changed panel layout: column division first
+ ' POD fix for Panel API
+ ! workaround for a Wx bug
+
 0.3.10
  ! add missing panel localisation
+ ! resized output panel when started closed
 
 0.3.9.18
  + Output is resizable ans remembers its size

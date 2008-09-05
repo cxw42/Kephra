@@ -3,7 +3,7 @@
       | Special Features of Kephra  |
        -----------------------------
 
-Many standart functions, like opening a file or moving the blinking cursor (that's
+Many standard functions, like opening a file or moving the blinking cursor (that's
 called caret), don't need any explanation, or Kephra wouldn't be a good editor. 
 Nevertheless there are some functionalities that are very helpful, but are often
 overlooked. Maybe because you don't expect them, or they are not in the main menu.

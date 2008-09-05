@@ -165,6 +165,7 @@ sub insert {
 	}
 }
 
+sub save         { save_current(@_) }
 sub save_current {
 	my ($ctrl, $event) = @_;
 	my $ep = Kephra::App::EditPanel::_ref();

@@ -1,5 +1,5 @@
 package Kephra::Extension::Notepad;
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 use strict;
 use warnings;
@@ -18,7 +18,7 @@ sub _ref {
 }
 
 sub _config { $Kephra::config{app}{panel}{notepad} }
-sub _splitter { $Kephra::app{splitter}{note} }
+sub _splitter { $Kephra::app{splitter}{right} }
 
 sub create {
 	my $win    = Kephra::App::Window::_ref();
@@ -80,18 +80,18 @@ sub show {
 	my $config = _config();
 	$visibile = $config->{visible} unless defined $visibile;
 	my $win = Kephra::App::Window::_ref();
-	my $np  = _ref();
-	my $ep  = Kephra::App::EditPanel::_ref();
+	my $main_panel = $Kephra::app{panel}{main};
+	my $notepad  = _ref();
 	my $splitter = _splitter();
 	if ($visibile) {
-		$splitter->SplitVertically( $ep, $np );
+		$splitter->SplitVertically( $main_panel, $notepad );
 		$splitter->SetSashPosition( $win->GetSize->GetWidth - $config->{size}, 1);
 	} else {
 		save_size();
 		$splitter->Unsplit();
-		$splitter->Initialize( $ep );
+		$splitter->Initialize( $main_panel );
 	}
-	$np->Show( $visibile );
+	$notepad->Show( $visibile );
 	$win->Layout;
 	$config->{visible} = $visibile;
 	Kephra::API::EventTable::trigger('extension.notepad.visible');
