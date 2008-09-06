@@ -70,7 +70,7 @@ sub apply_settings {
 	$ep->SetScrollWidth($conf->{scroll_width}) 
 		unless $conf->{scroll_width} eq 'auto';
 
-	$ep->SetCodePage(0);
+	$ep->SetCodePage(65001);
 	set_word_chars();
 
 	# internal
@@ -85,9 +85,10 @@ sub set_word_chars {
 	my $ep   = _ref();
 	my $conf = _config();
 	if ( $conf->{word_chars} ) {
-		$ep->SetWordChars( $conf->{word_chars} );
+		$ep->SetWordChars( '$%-@_abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ0123456789' );
+		#$ep->SetWordChars( $conf->{word_chars} );
 	} else {
-		$ep->SetWordChars( 'abcdefghijklmnopqrstuvwxyz_' );
+		$ep->SetWordChars( '$%-@_abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ0123456789' );
 	}
 }
 

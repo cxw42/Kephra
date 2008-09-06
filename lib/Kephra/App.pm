@@ -181,7 +181,9 @@ sub start {
 		Benchmark::timestr( Benchmark::timediff( new Benchmark, $t1 ) ), "\n"
 		if $Kephra::BENCHMARK;
 	my $t2 = new Benchmark;
+print "pre eval\n";
 	if (Kephra::Config::Global::evaluate()) {
+print "post eval\n";
 		#Kephra::API::EventTable::freeze_all();
 
 		#clean_acc_table();

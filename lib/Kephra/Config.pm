@@ -18,7 +18,7 @@ sub init {
 		? Cwd::cwd()
 		: Kephra::configdir()
 	;
-	$basedir = File::Spec->catdir($basedir, 'share') 
+	$basedir = File::Spec->catdir($basedir, 'base/share') 
 		if $Kephra::STANDALONE eq 'dev';
 	#$basedir = './share' unless -d $basedir;
 	$Kephra::temp{path}{config} = File::Spec->catdir($basedir, 'config');

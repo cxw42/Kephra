@@ -5,7 +5,7 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.3.10.1';      # version of entire app
+our $VERSION    = '0.3.10.2';      # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE = '';              # starter flag for moveable installations
 our $BENCHMARK;                    # flag for benchmark loggings
@@ -131,8 +131,8 @@ and documentation for your programming, web and text authoring.
 
 =head2 Philosophy
 
-I know, I know, there are plenty text editors out there, even some really
-mighty IDEs, but still no perfect solution for many Programmers. So lets
+
+There are plenty text editors out there, even some mighty IDEs, but still no perfect solution for many Programmers. So lets
 learn from Perl what it takes to build a tool thats powerful and fun to
 play with for hours and months.
 
@@ -241,8 +241,6 @@ L<http://kephra.sourceforge.net>
 =item * Jens Neuwerk E<lt>jenne@gmxpro.netE<gt> (author of icons, GUI advisor)
 
 =item * Adam Kennedy E<lt>adamk@cpan.orgE<gt> (cpanification)
-
-=item * Gábor Szabó E<lt>szabgab@cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 

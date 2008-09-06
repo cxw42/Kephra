@@ -7,6 +7,11 @@ TODO 0.4:
  + keymap dialog
  + own statusbar
 
+0.3.10.2
+ ! fixed codepage setting
+ ! fixed wordchar settings
+ ! fixed and moved dev.pl outside the distro
+
 0.3.10.1
  [ changed panel layout: column division first
  ' POD fix for Panel API
