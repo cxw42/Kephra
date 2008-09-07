@@ -1,4 +1,6 @@
 package Kephra::Dialog::Keymap;
+our $VERSION = '0.02';
+
 use strict;
 use warnings;
 
@@ -7,9 +9,6 @@ use Wx qw( wxNO_FULL_REPAINT_ON_RESIZE wxSYSTEM_MENU wxCAPTION
 		wxVERTICAL wxTOP wxGROW wxBOTTOM wxGROW wxBOTH
 		wxWHITE wxWANTS_CHARS 
 );
-
-			
-
 
 sub keymap {
 	my $frame = shift;

@@ -47,8 +47,10 @@ sub create {
 	my $file_name = $config->{content};
 	if ($file_name) {
 		$file_name = Kephra::Config::filepath($file_name);
-		open my $FILE, '<', $file_name;
-		$notepad->AppendText( $_ ) while <$FILE>;
+		if (-e $file_name){
+			open my $FILE, '<', $file_name;
+			$notepad->AppendText( $_ ) while <$FILE>;
+		}
 	}
 	$notepad->Show( get_visibility() );
 

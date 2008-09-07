@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name: Kephra
-version: 0.3.10.1
+version: 0.3.10.3
 abstract: crossplatform GUI Text-Editor
 author: lichtkind@cpan.org
 license: gpl
@@ -16,12 +16,14 @@ no_index:
 requires: 
   perl: 5.006
   Wx:   0.70
-  Wx-Perl-ProcessStream: 0;
+  Wx-Perl-ProcessStream: 0
   YAML-Tiny: 0.31
   Config-General: 0.30
+  Cwd: 0
   File-UserConfig: 0
   File-HomeDir: 0
   File-Spec: 0
+  Text-Wrap: 0
 resources:
     homepage: http://kephra.sf.net
     repository: http://kephra.svn.sourceforge.net/viewvc/kephra/dev/base/

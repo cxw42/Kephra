@@ -162,6 +162,7 @@ share/config/localisation/deutsch.conf
 share/config/localisation/deutsch_iso.conf
 share/config/localisation/english.conf
 share/config/macro/test.macro
+share/config/session/current.conf
 share/config/syntaxhighlighter/ada.pm
 share/config/syntaxhighlighter/as.pm
 share/config/syntaxhighlighter/asm.pm

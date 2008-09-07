@@ -181,12 +181,9 @@ sub start {
 		Benchmark::timestr( Benchmark::timediff( new Benchmark, $t1 ) ), "\n"
 		if $Kephra::BENCHMARK;
 	my $t2 = new Benchmark;
-print "pre eval\n";
 	if (Kephra::Config::Global::evaluate()) {
-print "post eval\n";
 		#Kephra::API::EventTable::freeze_all();
 
-		#clean_acc_table();
 		$frame->Show(1);
 		print " configs eval:",
 			Benchmark::timestr( Benchmark::timediff( new Benchmark, $t2 ) ), "\n"
@@ -204,6 +201,8 @@ print "post eval\n";
 		print " event table:",
 			Benchmark::timestr( Benchmark::timediff( new Benchmark, $t4 ) ), "\n"
 			if $Kephra::BENCHMARK;
+		Kephra::App::EditPanel::gets_focus();
+		Kephra::Edit::_let_caret_visible();
 		print "app startet:",
 			Benchmark::timestr( Benchmark::timediff( new Benchmark, $t0 ) ), "\n"
 			if $Kephra::BENCHMARK;

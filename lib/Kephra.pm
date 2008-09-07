@@ -5,7 +5,7 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.3.10.2';      # version of entire app
+our $VERSION    = '0.3.10.3';      # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE = '';              # starter flag for moveable installations
 our $BENCHMARK;                    # flag for benchmark loggings
@@ -131,10 +131,35 @@ and documentation for your programming, web and text authoring.
 
 =head2 Philosophy
 
+=head3 Main Goals
 
-There are plenty text editors out there, even some mighty IDEs, but still no perfect solution for many Programmers. So lets
-learn from Perl what it takes to build a tool thats powerful and fun to
-play with for hours and months.
+4 main desires I want to fulfill with Kephra:
+
+=over 2
+
+=item * low entrance / easy to use
+
+=item * highly configurable/adaptable to personal preferences
+
+=item * rich feature set / new developements
+
+=item * beauty / good integration on GUI, code and config level
+
+=back
+
+=head3 Name
+
+Especially from the last item derives the name, which is old egyptian and means
+something like heart. Because true beauty and a harmonic synchronisation of all
+parts of the consciousness begins when your heart awakens. Some call that true
+love. In egypt tradition this was symbolized with a rising sun (ra) and the
+principle of this was pictured as a scarab beatle that has wings. Thats also
+a nice metaphor for an editor through which we give birth to programs, before
+they rise on their own.
+
+=head3 Details
+
+I believe that Kephra's agenda is very similar to Perl's.
 
 =over 4
 

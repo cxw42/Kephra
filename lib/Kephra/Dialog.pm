@@ -14,22 +14,23 @@ use Wx qw (wxDefaultPosition wxDefaultSize
 sub _set_icon { my ($d, $cmd_id) = @_; }
 
 sub msg_box {
-	Wx::MessageBox( $_[1], $_[2], wxOK | wxSTAY_ON_TOP, $_[0], -1, -1 );
+	Wx::MessageBox
+		( $_[1], $_[2], wxOK | wxSTAY_ON_TOP, $_[0] );
 }
 
 sub info_box {
-	Wx::MessageBox( $_[1], $_[2], wxOK | wxICON_INFORMATION | wxSTAY_ON_TOP,
-		$_[0], -1, -1 );
+	Wx::MessageBox
+		( $_[1], $_[2], wxOK | wxICON_INFORMATION | wxSTAY_ON_TOP, $_[0] );
 }
 
 sub warning_box {
-	Wx::MessageBox( $_[1], $_[2], wxOK | wxICON_WARNING | wxSTAY_ON_TOP,
-		$_[0], -1, -1 );
+	Wx::MessageBox
+		( $_[1], $_[2], wxOK | wxICON_WARNING | wxSTAY_ON_TOP, $_[0] );
 }
 
 sub get_confirm_2 {
-	Wx::MessageBox( $_[1], $_[2], wxYES_NO | wxICON_QUESTION | wxSTAY_ON_TOP,
-		$_[0], -1, -1 );
+	Wx::MessageBox
+		( $_[1], $_[2], wxYES_NO | wxICON_QUESTION | wxSTAY_ON_TOP, $_[0]);
 }
 
 sub get_confirm_3 {

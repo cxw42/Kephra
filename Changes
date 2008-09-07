@@ -7,6 +7,10 @@ TODO 0.4:
  + keymap dialog
  + own statusbar
 
+0.3.10.3
+ ! caret visible on app start
+ ! tried to load non existing notepad cache
+
 0.3.10.2
  ! fixed codepage setting
  ! fixed wordchar settings

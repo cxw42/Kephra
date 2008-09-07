@@ -333,8 +333,8 @@ sub get {
 					},
 				},
 				panel => {
-					notepad = 'Kephra::Extension::Notepad::switch_visibility()',
-					output = 'Kephra::Extension::Output::switch_visibility()',
+					notepad => 'Kephra::Extension::Notepad::switch_visibility()',
+					output => 'Kephra::Extension::Output::switch_visibility()',
 				},
 				statusbar => 'Kephra::App::StatusBar::switch_visibility()',
 				'statusbar-contexmenu' => 'Kephra::App::StatusBar::switch_contextmenu_visibility()',
@@ -517,8 +517,8 @@ sub get {
 				selection => 'document.text.select',
 			},
 			tool => {
-				'run-document' = 'extension.output.run',
-				'stop-document' = 'extension.output.run',
+				'run-document' => 'extension.output.run',
+				'stop-document' => 'extension.output.run',
 			},
 		},
 		state => {
@@ -867,9 +867,9 @@ sub get {
 				},
 			},
 			tool => {
-				note = 'f4',
-				'run-document' = 'f5',
-				'stop-document' = 'shift+f5',
+				note => 'f4',
+				'run-document' => 'f5',
+				'stop-document' => 'shift+f5',
 			},
 			document => {
 				change => {
