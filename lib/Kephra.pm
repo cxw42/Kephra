@@ -5,7 +5,7 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.3.10.3';      # version of entire app
+our $VERSION    = '0.3.10.4';      # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE = '';              # starter flag for moveable installations
 our $BENCHMARK;                    # flag for benchmark loggings
@@ -14,7 +14,6 @@ our @ISA        = 'Wx::App';       # $NAME is a wx application
 # Configuration Phase
 use Cwd;
 use File::Spec::Functions ':ALL';
-use File::HomeDir    ();
 use File::UserConfig ();
 use Config::General  ();
 use YAML::Tiny       ();
@@ -131,110 +130,136 @@ and documentation for your programming, web and text authoring.
 
 =head2 Philosophy
 
-=head3 Main Goals
+=over 4
 
-4 main desires I want to fulfill with Kephra:
+=item Main Goals
+
+My ideal is a balance of:
 
 =over 2
 
 =item * low entrance / easy to use
 
-=item * highly configurable/adaptable to personal preferences
+=item * rich feature set
 
-=item * rich feature set / new developements
+=item * highly configurable / adaptable to personal preferences
 
 =item * beauty / good integration on GUI, code and config level
 
 =back
 
-=head3 Name
+That sounds maybe generic but we go for the grail of editing nothing lesser.
+
+=item Name
 
 Especially from the last item derives the name, which is old egyptian and means
 something like heart. Because true beauty and a harmonic synchronisation of all
 parts of the consciousness begins when your heart awakens. Some call that true
 love. In egypt tradition this was symbolized with a rising sun (ra) and the
-principle of this was pictured as a scarab beatle that has wings. Thats also
-a nice metaphor for an editor through which we give birth to programs, before
+principle of this was pictured as a scarab beatle with wings. Thats also a 
+nice metaphor for an editor through which we give birth to programs, before
 they rise on their own.
 
-=head3 Details
+=item Details
 
-I believe that Kephra's agenda is very similar to Perl's.
-
-=over 4
-
-=item *  make a low entry barrier
-
-=item *  copy what people like and are used to
-
-=item *  give choices (TMTOWDI) 
-
-=over 2
-
-=item * usable with mouse and keyboard commands and menus 
-
-=item * deliver vi (commandline) and emacs (complex keybinding) input style
-
-=item * configure via dialog and yaml/conf files ...
-
-=item * much more ...
-
-=back
-
-=item * but keep an eye on the overall, that all fits together nicely
-
-=back
-
-Furthermore I made some design decisions that should define Kephra:
+I believe that Kephra's agenda is very similar to Perl's. Its common wisdom
+that freedom means not only happiness but also life works most effective in
+freedom. So there should not only be more than one way to write a programm,
+but also more than one way use an editor. You could:
 
 =over 4
 
-=item * beautiful, well crafted GUI with own Icons
+=item * select menu items
 
-=item * most features are optional / configurable
+=item * make kombinations of keystrokes
 
-=item * easy extendable with our beloved perl
+=item * point and click your way with the mouse
 
-=item * solve things with minimal effort (no bloat / minimal dependencies)
-
-=item * turn CPAN into a IDE and provide just the glue
+=item * type short edit commands
 
 =back
 
-I believe strongly that there is much more possible with GUI editors
-and text editors in general than we are used today. So I try to design
-Kephra in a way, that every programmer can alter and extend it easily.
-That can speed up progress or at least makes Kephra more comfortable 
-for you.
+So the question should not be vi or emacs, but how to combine the different
+strengths (command input field and optional emacs-like keymap possibilities).
+Perl was also a combination of popular tools and concepts into a single
+powerfull language that fits many brains naturally.
 
-That is the plan, but we are currently not nearly that far.
+Though I don't want to just adopt what has proven to be mighty. There are a lot
+of tools (especially in the graphical realm) that are still waiting to be
+discovered or aren't widely known. In Perl we write and rewrite them faster
+and much more dense than in C or Java. Some function that help me every day
+a lot, were written in very few lines.
+
+But many good tools are already on CPAN and Kephra should be just the glue
+and graphical layer to give you the possibilities of these module to your 
+fingertips in that form you prefer. This helpes you and our feedback improves
+these modules and even spurs the development of new one. It motivates 
+important the community, when we can use their own tools and the perl 
+ecosystem has not to depend on outer software like eclipse.
+
+Besides TIMTOWTDI is Perl's second slogan: "Keep easy things easy and make
+hard things possible". Or with other words: only scalable tools are widely
+useful.
+
 
 =head2 Features
 
-Beside all the basic stuff that you would expect from a notepad, we have
-file sessions, simple templates, recent closed files, and file functions
-applied to all files, where it makes sense.
+Beside all the basic stuff that you would expect I listed here some features
+by category in main menu:
 
-We have also a pile of advanced text navigation (on braces or blockwise),
-goto last edit or 10 doc spanning Bookmarks as well as find in files. 
+=item File
 
-Advanced undo, line editing (edit functions that take the current line as
-input), move selected text by mouse or keyboard. Formating funtions like 
-blockformat, align blocks, indenting, commenting ...
+file sessions, recents, simple templates, open all of a dir, insert,
+autosave by timer, save copy as, rename, close all other, detection if
+file where changed elsewhere
 
-Documents have several properties like syntax styling, auto indention, tab
-width, tab use, write protection.
+=item Editing
 
-View options contain switches for any GUI element and marker for: current
-line, end of line bytes, right margin, indetion guides, bracehiglighting,
-line wrap and font.
+unlimited undo with fast modes, replace (clipboard and selection),
+line edit functions, move line/selection, indenting, block formating,
+delete trailing space, comment, convert (case, space or indention)
+rectangular selection with mouse and keyboard, auto- and braceindention
 
-Every menu and toolbar is evaluated from a simple yaml file, so you can 
-change it easily by opening this files from the config menu.
+=item Navigation
+
+bracenav, blocknav, doc spanning bookmarks, goto last edit, last doc, 
+rich search, incremental search, searchbar and search dialog
+
+=item Tools
+
+run script (integrated output panel), notepad panel
+
+=item Doc Property
+
+syntax mode, tab use, tab width, EOL, write protection
+
+=item View
+
+all app parts and margins can be switched on and off, syntaxhighlighting
+bracelight, ight margin, indention guide, caret line, line wrap, EOL marker,
+visible whitespace, changeable font
+
+=item Configs
+
+config files to be opened through a menu: 
+settings, all menus, commandID's, event binding, icon binding, key binding, 
+localisation (translate just one file to transelate the app), syntaxmodes
+
+and some help texts to be opened as normal files
 
 =head1 ROADMAP
 
+=head2 TODO
+
+fix test suite
+
+fix install under linux and mac
+
 =head2 Stable Release 0.4
+
+main features: 
+
+GUI abstraction layer, searchbar, output panel, config dialog, syntaxmodes
 
 This release is about getting the editor liquid or highly configurable.
 Its also about improvements in the user interface and of course the little
@@ -243,9 +268,8 @@ can concentrate more on features for coding support.
 
 =head2 Stable Release 0.5
 
-Things like output panel, code folding, snippet lib, help integration,
-autocompletition and so on. Hope that by the end of 0.4.n series will be
-the extention API stable.
+Things like code folding, snippet lib, help integration, autocompletition 
+and so on. wish that by the end of 0.4.n series will be the extention API stable.
 
 =head1 SUPPORT
 

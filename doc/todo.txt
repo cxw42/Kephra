@@ -1,7 +1,6 @@
 
 0.5
  
- * scripte starten + output panel
  * code falten
  * utf unterstützung + coding in statuszeile wählen
  * perl tidy
@@ -11,3 +10,5 @@
 
 internals:
  + nested menu prepare event
+ 
+ my @methods = reverse sort $text =~ m{^sub\s+(\w+)}gm;

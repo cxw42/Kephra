@@ -1,7 +1,7 @@
 package Kephra::Config;
 use strict;
 
-our $VERSION = '0.30';
+our $VERSION = '0.31';
 
 # low level config manipulation
 
@@ -14,12 +14,15 @@ use Wx qw( wxBITMAP_TYPE_ANY );
 ##################################
 
 sub init {
-	my $basedir = $Kephra::STANDALONE
-		? Cwd::cwd()
-		: Kephra::configdir()
-	;
-	$basedir = File::Spec->catdir($basedir, 'base/share') 
-		if $Kephra::STANDALONE eq 'dev';
+	my $basedir;
+	if ($Kephra::STANDALONE) {
+		$basedir = Cwd::cwd();
+		$basedir = File::Spec->catdir($basedir, 'share')
+			if $Kephra::STANDALONE eq 'dev';
+	} else {
+		$basedir = Kephra::configdir();
+		Kephra::user_config() if not -d File::Spec->catdir($basedir, 'share');
+	}
 	#$basedir = './share' unless -d $basedir;
 	$Kephra::temp{path}{config} = File::Spec->catdir($basedir, 'config');
 	$Kephra::temp{path}{help} = File::Spec->catdir($basedir, 'help');
@@ -30,6 +33,7 @@ sub init {
 	$Kephra::temp{file}{img}{splashscreen} = 'interface/icon/splash/start_kephra.jpg';
 
 	# make config files acessable
+	# absolete when real syntax modes work
 	push @INC, $Kephra::temp{path}{config};
 }
 

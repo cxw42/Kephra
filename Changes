@@ -7,7 +7,12 @@ TODO 0.4:
  + keymap dialog
  + own statusbar
 
+0.3.10.4
+ ' rewritten parts of Kephra.pm POD
+ ! fix install problem hopefully
+
 0.3.10.3
+ ] Keymap Dialog had no Version number
  ! caret visible on app start
  ! tried to load non existing notepad cache
 
