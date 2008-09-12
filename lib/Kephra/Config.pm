@@ -1,7 +1,8 @@
 package Kephra::Config;
-use strict;
+our $VERSION = '0.32';
 
-our $VERSION = '0.31';
+use strict;
+use warnings;
 
 # low level config manipulation
 
@@ -15,22 +16,37 @@ use Wx qw( wxBITMAP_TYPE_ANY );
 
 sub init {
 	my $basedir;
+	#$Kephra::temp{path}{user} = $ENV{HOME};
+	# set locations of boot files
+	$Kephra::temp{file}{config}{auto}      = 'global/autosaved.conf';
+	$Kephra::temp{file}{img}{splashscreen} = 'interface/icon/splash/start_kephra.jpg';
+
 	if ($Kephra::STANDALONE) {
 		$basedir = Cwd::cwd();
 		$basedir = File::Spec->catdir($basedir, 'share')
 			if $Kephra::STANDALONE eq 'dev';
 	} else {
+		my $copy_defaults;
 		$basedir = Kephra::configdir();
-		Kephra::user_config() if not -d File::Spec->catdir($basedir, 'share');
+		if (not -d $basedir) {$copy_defaults = 1 }
+		else {
+			my $bootfile = File::Spec->catfile
+				( $basedir, 'config', $Kephra::temp{file}{config}{auto} );
+			if (-r $bootfile) {
+				my $config_tree = Kephra::Config::File::load($bootfile);
+				$copy_defaults = 1 if not defined $config_tree->{about}{version}
+				                   or $config_tree->{about}{version} ne $Kephra::VERSION;
+			}
+		}
+		Kephra::user_config() if $copy_defaults;
+		my $testfile = File::Spec->catfile( $basedir, 'config', 'syntaxmode', 'perl.conf');
+		if (-e $testfile and not -w $testfile) {
+			File::Find::find( sub {chmod(0700, $_)  if -f $_}, ($basedir));
+		}
 	}
-	#$basedir = './share' unless -d $basedir;
 	$Kephra::temp{path}{config} = File::Spec->catdir($basedir, 'config');
 	$Kephra::temp{path}{help} = File::Spec->catdir($basedir, 'help');
 	$Kephra::temp{path}{logger} = File::Spec->catdir($basedir, 'log');
-	#$Kephra::temp{path}{user} = $ENV{HOME};
-	# set locations of boot files
-	$Kephra::temp{file}{config}{auto}      = 'global/autosaved.conf';
-	$Kephra::temp{file}{img}{splashscreen} = 'interface/icon/splash/start_kephra.jpg';
 
 	# make config files acessable
 	# absolete when real syntax modes work
@@ -38,9 +54,7 @@ sub init {
 }
 
 # Generate a path to a configuration file
-sub filepath {
-	File::Spec->catfile( $Kephra::temp{path}{config}, @_ );
-}
+sub filepath { File::Spec->catfile( $Kephra::temp{path}{config}, @_ ) }
 
 sub existing_filepath {
 	my $path = filepath( @_ );
@@ -50,9 +64,7 @@ sub existing_filepath {
 	return $path;
 }
 
-sub dirpath {
-	File::Spec->catdir( $Kephra::temp{path}{config}, @_ );
-}
+sub dirpath { File::Spec->catdir( $Kephra::temp{path}{config}, @_ ) }
 
 sub existing_dirpath {
 	my $path = dirpath( @_ );

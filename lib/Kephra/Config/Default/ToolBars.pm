@@ -10,7 +10,7 @@ sub get {
 			'item file-new',
 			'item file-open',
 			'item file-print#', 
-			'item file-close#',
+			'item file-close-current#',
 			'item file-save-all',
 			'item file-save',
 			'',

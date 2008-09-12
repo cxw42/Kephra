@@ -1,8 +1,9 @@
 package Kephra::Edit;
+our $VERSION = '0.31';
+
 use strict;
 use warnings;
 
-our $VERSION = '0.31';
 
 # edit menu basic calls and internals for editing
 

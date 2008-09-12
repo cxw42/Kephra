@@ -1,8 +1,8 @@
 package Kephra::Edit::Format;
+our $VERSION = '0.23';
+
 use strict;
 use warnings;
-
-our $VERSION = '0.23';
 
 use Wx qw(
 	wxSTC_CMD_NEWLINE wxSTC_CMD_DELETEBACK wxSTC_CMD_LINEEND

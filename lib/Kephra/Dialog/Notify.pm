@@ -1,8 +1,9 @@
 package Kephra::Dialog::Notify;
+our $VERSION = '0.03';
+
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
 
 use Wx qw(
 		wxVERTICAL wxHORIZONTAL             wxRIGHT wxLEFT wxGROW wxTOP wxALL
@@ -25,7 +26,8 @@ sub file_changed {
 	$dialog = $Kephra::app{dialog}{exit} = Wx::Dialog->new(
 		Kephra::App::Window::_ref(), -1,
 		$file_name.' '.$g10n->{changed},
-		[-1,-1], [340, 145], wxNO_FULL_REPAINT_ON_RESIZE | 
+		[-1,-1], [340, 145], 
+		wxNO_FULL_REPAINT_ON_RESIZE | 
 		wxCAPTION | wxSYSTEM_MENU | wxCAPTION | wxCLOSE_BOX | wxSTAY_ON_TOP,
 	);
 	Kephra::App::Window::load_icon
@@ -39,16 +41,22 @@ sub file_changed {
 	my $b_ignore  = Wx::Button->new( $dialog, -1, $g10n->{ignore});
 	EVT_BUTTON($dialog, $b_reload,  sub {
 		quit_dialog();
-		Kephra::File::reload_current();
+		if (-e $file_path) { Kephra::File::reload_current() }
+		else               { Kephra::App::EditPanel::_ref()->ClearAll }
 	} );
 	EVT_BUTTON($dialog, $b_sreload, sub { 
 		quit_dialog();
 		Kephra::File::save_copy_as();
-		Kephra::File::reload_current(); 
+		if (-e $file_path) { Kephra::File::reload_current() }
+		else               { Kephra::App::EditPanel::_ref()->ClearAll }
 	} );
 	EVT_BUTTON($dialog, $b_ignore,  sub {
 		quit_dialog();
-		Kephra::Document::set_tmp_value('did_notify', $file_age, $file_nr);
+		if (-e $file_path) { 
+            Kephra::Document::set_tmp_value('did_notify', $file_age, $file_nr);
+		} else {
+			Kephra::Document::set_tmp_value('did_notify', 'gone', $file_nr);
+		}
 	} );
 	my $h_sizer = Wx::BoxSizer->new(wxHORIZONTAL);
 	$h_sizer->Add( $b_reload  ,0, wxRIGHT, 10);

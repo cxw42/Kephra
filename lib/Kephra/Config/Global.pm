@@ -1,8 +1,8 @@
 package Kephra::Config::Global;
+our $VERSION = '0.23';
+
 use strict;
 use warnings;
-
-our $VERSION = '0.23';
 
 # handling main config files under /config/global/
 

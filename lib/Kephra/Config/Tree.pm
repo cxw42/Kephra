@@ -1,8 +1,8 @@
 package Kephra::Config::Tree;
+our $VERSION = '0.02';
+
 use strict;
 use warnings;
-
-our $VERSION = '0.02';
 
 # verbose config hash ops
 

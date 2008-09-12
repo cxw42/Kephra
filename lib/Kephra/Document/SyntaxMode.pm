@@ -1,8 +1,9 @@
 package Kephra::Document::SyntaxMode;
+our $VERSION = '0.03';
+
 use strict;
 use warnings;
 
-our $VERSION = '0.03';
 
 use Wx qw(
 	wxSTC_LEX_NULL wxSTC_STYLE_DEFAULT
@@ -90,7 +91,8 @@ sub change_to {
 	return $style;
 }
 
-sub eval {
-}
+sub compile {}
+
+sub apply_color {}
 
 1;

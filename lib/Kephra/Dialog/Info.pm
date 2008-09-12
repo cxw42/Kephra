@@ -1,8 +1,8 @@
 package Kephra::Dialog::Info;
+our $VERSION = '0.06';
+
 use strict;
 use warnings;
-
-our $VERSION = '0.06';
 
 use Wx qw(wxSYSTEM_MENU wxCAPTION wxMINIMIZE_BOX wxCLOSE_BOX
           wxBOTH wxVERSION_STRING

@@ -1,5 +1,5 @@
 package Kephra::Extension::Output;
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 use strict;
 use warnings;
@@ -42,7 +42,11 @@ sub create {
 	});
 	Kephra::API::EventTable::add_call
 		( 'app.splitter.bottom.changed', 'extension_notepad', sub {
-			show( 0 ) if get_visibility() and not _splitter()->IsSplit();
+			if ( get_visibility() and not _splitter()->IsSplit() ) {
+				show( 0 );
+				return;
+			}
+			save_size();
 	});
 
 	EVT_WXP_PROCESS_STREAM_STDOUT( $win, sub { 
@@ -106,11 +110,13 @@ sub output {
 sub run {
 	my $win = Kephra::App::Window::_ref();
 	my $doc = Kephra::Document::_get_current_file_path();
+	my $dir = $Kephra::config{file}{current}{directory};
 	switch_visibility() unless get_visibility();
 	Kephra::File::save_current();
 	if ($doc) {
+		chdir $dir;
 		my $proc = _ref()->{process} = Wx::Perl::ProcessStream->OpenProcess
-			(qq~perl "$doc"~ , 'Output-Extension', $win);
+			(qq~perl $doc~ , 'Output-Extension', $win); # -I$dir 
 		_ref()->Clear;
 		Kephra::API::EventTable::trigger('extension.output.run');
 		if (not $proc) {

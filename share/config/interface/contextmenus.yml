@@ -9,10 +9,10 @@ editpanel_contextmenu:
  - item goto-last-edit
  - item view-dialog-find
  -
- - item file-save
+ - item file-save-current
  - item file-open
  -
- - item file-close
+ - item file-close-current
 
 textselection_contextmenu:
  - item edit-copy

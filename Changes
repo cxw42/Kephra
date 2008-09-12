@@ -1,11 +1,25 @@
 BUGS:
  !!! makefile.pl fails
  ! textchanged event triggers twice
+ ! file change reminder on deleted files
 
 TODO 0.4:
  * config dialog
  + keymap dialog
  + own statusbar
+
+0.3.10.6
+ + 3 close unsaved functions
+ ' extend Kephra.pm POD
+ [ save notepad with when resize
+ [ rearrange file menu
+
+0.3.10.5
+ ] copy configs unto userconfig when configs are old
+ ] current filepath is known to interpreter when run script
+ ! copied config files where readonly
+ ! could not write autosaved file sessions when no file was there
+ ! changed_notify_check could not handle deleted files
 
 0.3.10.4
  ' rewritten parts of Kephra.pm POD

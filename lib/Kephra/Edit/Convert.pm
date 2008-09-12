@@ -1,8 +1,8 @@
 package Kephra::Edit::Convert;
+our $VERSION = '0.08';
+
 use strict;
 use warnings;
-
-our $VERSION = '0.08';
 
 use Wx qw(wxSTC_CMD_UPPERCASE wxSTC_CMD_LOWERCASE wxSTC_CMD_WORDRIGHT);
 

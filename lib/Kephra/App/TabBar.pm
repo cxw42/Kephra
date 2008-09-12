@@ -63,7 +63,7 @@ sub create {
 		EVT_LEAVE_WINDOW( $new_btn, \&Kephra::App::StatusBar::refresh_info_msg );
 	}
 
-	my $cmd_close_data = Kephra::API::CommandList::get_cmd_properties('file-close');
+	my $cmd_close_data = Kephra::API::CommandList::get_cmd_properties('file-close-current');
 	if (ref $cmd_close_data->{icon} eq 'Wx::Bitmap'){
 		my $close_btn = $tabbar->{button}{close} = Wx::BitmapButton->new
 			($tb_panel, -1, $cmd_close_data->{icon}, [-1,-1], [-1,-1], wxNO_BORDER );

@@ -1,12 +1,13 @@
 package Kephra::File::Session;
+our $VERSION = '0.14';
+
 use strict;
 use warnings;
 
-our $VERSION = '0.13';
-
 ############################################################################
 # file session handling
-# a session is the total sum of all opened files
+# current session is the group of all opened files
+# sessionfiles contain metadata like syntaxmode, tabsize, cursorpos, -NI codset
 ############################################################################
 
 sub _config { $Kephra::config{file}{session} }
@@ -141,7 +142,7 @@ sub save_backup {
 sub autosave {
 	my $config = _config();
 	my $file = Kephra::Config::filepath($config->{directory}, $config->{current});
-	save( $file ) if $config->{autosave} eq 'extern' and -w $file;
+	save( $file ) if $config->{autosave} eq 'extern';
 }
 
 # restore autosaved

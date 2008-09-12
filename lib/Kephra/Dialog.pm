@@ -1,8 +1,8 @@
 package Kephra::Dialog;
+our $VERSION = '0.18';
+
 use strict;
 use warnings;
-
-our $VERSION = '0.18';
 
 use Wx qw(:filedialog );    # :messagebox
 use Wx qw (wxDefaultPosition wxDefaultSize

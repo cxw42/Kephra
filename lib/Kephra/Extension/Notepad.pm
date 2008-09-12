@@ -1,5 +1,5 @@
 package Kephra::Extension::Notepad;
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use strict;
 use warnings;
@@ -68,7 +68,11 @@ sub create {
 
 	Kephra::API::EventTable::add_call
 		( 'app.splitter.right.changed', 'extension_notepad', sub {
-			show( 0 ) if get_visibility() and not _splitter()->IsSplit();
+			if ( get_visibility() and not _splitter()->IsSplit() ) {
+				show( 0 );
+				return;
+			}
+			save_size();
 	});
 
 	_ref($notepad);
@@ -109,9 +113,8 @@ sub save {
 	my $file_name = $config->{content};
 	if ($file_name) {
 		$file_name = Kephra::Config::filepath($file_name);
-		open my $FILE, '>', $file_name;
-		print $FILE _ref()->GetText;
-		close $FILE;
+		open my $FH, '>', $file_name;
+		print $FH _ref()->GetText;
 	}
 	save_size();
 }

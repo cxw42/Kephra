@@ -1,8 +1,8 @@
 package Kephra::Edit::Goto;
+our $VERSION = '0.05';
+
 use strict;
 use warnings;
-
-our $VERSION = '0.05';
 
 # editpanel navigation
 

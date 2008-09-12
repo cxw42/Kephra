@@ -1,8 +1,8 @@
 package Kephra::Config::Default::GlobalSettings;
+our $VERSION = '0.02';
+
 use strict;
 use warnings;
-
-our $VERSION = '0.01';
 
 sub get {
 	return {
@@ -72,7 +72,7 @@ sub get {
 				insert => 'rightmost',         # -NI tab position of opened file
 				mark_configs => 1,             # (0|1) set configfile names in square brackets
 				max_tab_width => 25,           # max tab width in chars, longer filenames will be cut and ... added
-				middle_click => 'file-close',  # command that is performed when middle click over tabbar
+				middle_click => 'file-close-current',  # command that is performed when middle click over tabbar
 				number_tabs => 0,              # (0|1) display a number before the file name in the tabs
 				seperator_line => 1,           # (0|1) visibility of seperator line above
 				switch_back => 1,              # (0|1) switch back if you klick on current tab
@@ -312,11 +312,11 @@ sub get {
 				autosave  => 'extern',
 				backup    => 'backup.conf',
 				current   => 'current.conf',
-				directory => 'session/', # subdir of config where to look for session files
+				directory => 'session', # subdir of config where to look for session files
 				node      => 'files',
 			},
 			templates => {
-				directory => 'templates/',
+				directory => 'templates',
 				file      => 'perl.conf',
 			},
 		},

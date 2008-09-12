@@ -1,8 +1,9 @@
 package Kephra::File;
+our $VERSION = '0.39';
+
 use strict;
 use warnings;
 
-our $VERSION = '0.37';
 
 ########################################################
 # file save events, drag n drop files, file menu calls #
@@ -39,6 +40,7 @@ sub changed_notify_check {
 		my $path = Kephra::Document::get_attribute('file_path', $file_nr);
 		next unless $path;
 		my $remembered = Kephra::Document::get_tmp_value('file_changed', $file_nr);
+		#next if (not -e $path) and $remembered eq 'gone';
 		my $current_age= _file_age($path);
 		unless ( $remembered == $current_age) {
 			my $last_time = Kephra::Document::get_tmp_value('did_notify', $file_nr);
@@ -126,7 +128,7 @@ sub open_all_of_dir{
 	add_dir( $dir );
 }
 
-sub reload { &reload_current } # alias
+sub reload { reload_current(@_) } # alias
 sub reload_current {
 	my $file_path = Kephra::Document::_get_current_file_path();
 	my $nr = Kephra::Document::_get_current_nr();
@@ -293,15 +295,14 @@ sub print {
 	$printout->Destroy;
 }
 
+sub close { close_current(@_) }
 sub close_current {
 	my ( $frame, $event ) = @_;
 	my $ep           = Kephra::App::EditPanel::_ref();
-	my $close_tab_nr = Kephra::Document::_get_current_nr();
-	my $path         = Kephra::Document::_get_current_file_path();
 	my $config       = $Kephra::config{file}{save};
 	my $save_answer  = wxNO;
 
-	# save text if options allow it
+	# save text if options demand it
 	if ($ep->GetModify == 1 or $config->{unchanged} eq 1) {
 		if ($ep->GetTextLength > 0 or $config->{empty} eq 1) {
 			if ($config->{b4_close} eq 'ask' or $config->{b4_close} eq '2'){
@@ -315,6 +316,26 @@ sub close_current {
 			else{ savepoint_reached() if $ep->GetModify }
 		}
 	}
+
+	# proceed
+	close_unsaved($frame, $event);
+}
+
+
+sub close_other {
+	my $doc_nr = Kephra::Document::_get_current_nr();
+	Kephra::Document::Change::to_number(0);
+	$_ != $doc_nr ? close_current() : Kephra::Document::Change::to_number(1)
+		for 0 .. Kephra::Document::_get_last_nr();
+}
+
+sub close_all { close_current() for 0 .. Kephra::Document::_get_last_nr() }
+
+sub close_unsaved {
+	my ( $frame, $event ) = @_;
+	my $ep           = Kephra::App::EditPanel::_ref();
+	my $close_tab_nr = Kephra::Document::_get_current_nr();
+	my $path         = Kephra::Document::_get_current_file_path();
 
 	# empty last document
 	if ( $Kephra::temp{document}{buffer} == 1 ) {
@@ -355,15 +376,13 @@ sub close_current {
 	Kephra::File::History::add( $path );
 }
 
+sub close_all_unsaved { close_unsaved() for 0..Kephra::Document::_get_last_nr() }
 
-sub close_other {
+sub close_other_unsaved {
 	my $doc_nr = Kephra::Document::_get_current_nr();
 	Kephra::Document::Change::to_number(0);
-	$_ != $doc_nr ? close_current() : Kephra::Document::Change::to_number(1)
+	$_ != $doc_nr ? close_unsaved() : Kephra::Document::Change::to_number(1)
 		for 0 .. Kephra::Document::_get_last_nr();
 }
 
-
-sub close_all { close_current() for 0 .. Kephra::Document::_get_last_nr() }
-
-1;#Kephra::Dialog::msg_box(undef, $file_name, '');
+1;

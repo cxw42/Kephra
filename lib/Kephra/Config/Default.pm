@@ -1,8 +1,8 @@
 package Kephra::Config::Default;
+our $VERSION = '0.19';
+
 use strict;
 use warnings;
-
-our $VERSION = '0.19';
 
 #   complete set of config to be able to start app under all circumstances
 

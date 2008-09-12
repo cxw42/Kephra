@@ -1,8 +1,9 @@
 package Kephra::App::EditPanel::Margin;
+our $VERSION = '0.03';
+
 use strict;
 use warnings;
 
-our $VERSION = '0.03';
 
 use Wx qw(
 	wxSTC_STYLE_LINENUMBER

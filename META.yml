@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name: Kephra
-version: 0.3.10.4
+version: 0.3.10.5
 abstract: crossplatform GUI Text-Editor
 author: lichtkind@cpan.org
 license: gpl
@@ -20,6 +20,7 @@ requires:
   YAML-Tiny: 0.31
   Config-General: 0.30
   Cwd: 0
+  File-Find: 0
   File-UserConfig: 0
   Text-Wrap: 0
 resources:

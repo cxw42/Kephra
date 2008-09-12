@@ -1,8 +1,8 @@
 package Kephra::Dialog::Exit;
+our $VERSION = '0.05';
+
 use strict;
 use warnings;
-
-our $VERSION = '0.05';
 
 use Wx qw(
 			wxDefaultPosition wxDefaultSize wxBOTH

@@ -5,7 +5,7 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.3.10.4';      # version of entire app
+our $VERSION    = '0.3.10.6';      # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE = '';              # starter flag for moveable installations
 our $BENCHMARK;                    # flag for benchmark loggings
@@ -13,6 +13,7 @@ our @ISA        = 'Wx::App';       # $NAME is a wx application
 
 # Configuration Phase
 use Cwd;
+use File::Find;
 use File::Spec::Functions ':ALL';
 use File::UserConfig ();
 use Config::General  ();
@@ -99,7 +100,7 @@ our %syntaxmode;    # -NI
 
 sub user_config {
 	$_[0] and $_[0] eq $NAME and shift;
-	File::UserConfig->new(@_);
+	my $dir = File::UserConfig->new(@_);
 }
 
 sub configdir {
@@ -140,7 +141,7 @@ My ideal is a balance of:
 
 =item * low entrance / easy to use
 
-=item * rich feature set
+=item * rich feature set (CPAN IDE)
 
 =item * highly configurable / adaptable to personal preferences
 
@@ -182,24 +183,25 @@ but also more than one way use an editor. You could:
 So the question should not be vi or emacs, but how to combine the different
 strengths (command input field and optional emacs-like keymap possibilities).
 Perl was also a combination of popular tools and concepts into a single
-powerfull language that fits many brains naturally.
+powerful language.
 
 Though I don't want to just adopt what has proven to be mighty. There are a lot
 of tools (especially in the graphical realm) that are still waiting to be
 discovered or aren't widely known. In Perl we write and rewrite them faster
 and much more dense than in C or Java. Some function that help me every day
-a lot, were written in very few lines.
+a lot, I written were in very few lines.
 
-But many good tools are already on CPAN and Kephra should be just the glue
+But many good tools are already on CPAN and Kephra should just be the glue
 and graphical layer to give you the possibilities of these module to your 
-fingertips in that form you prefer. This helpes you and our feedback improves
-these modules and even spurs the development of new one. It motivates 
-important the community, when we can use their own tools and the perl 
-ecosystem has not to depend on outer software like eclipse.
+fingertips in that form you prefer. This helpes also to improve these modules,
+when they have more users that can give the authors feedback. It motivates
+the community, when we can use our own tools and the perl ecosystem does not
+depend on outer software like eclipse, even if it's sometimes useful.
 
-Besides TIMTOWTDI is Perl's second slogan: "Keep easy things easy and make
-hard things possible". Or with other words: only scalable tools are widely
-useful.
+Perl's second slogan is "Keep easy things easy and make hard things possible".
+To me it reads "Don't scare away the beginners and grow as you go". And like
+Perl I want to handle the complex things with as least effort as possible.
+From the beginning Kephra was a useful programm and will continue so.
 
 
 =head2 Features
@@ -251,11 +253,11 @@ and some help texts to be opened as normal files
 
 =head2 TODO
 
+fix config install under linux and mac
+
 fix test suite
 
-fix install under linux and mac
-
-=head2 Stable Release 0.4
+=head2 Stable 0.4
 
 main features: 
 
@@ -266,7 +268,7 @@ Its also about improvements in the user interface and of course the little
 things we missed. And its about time that it will released so that can we 
 can concentrate more on features for coding support.
 
-=head2 Stable Release 0.5
+=head2 Stable 0.5
 
 Things like code folding, snippet lib, help integration, autocompletition 
 and so on. wish that by the end of 0.4.n series will be the extention API stable.

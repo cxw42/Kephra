@@ -1,8 +1,8 @@
 package Kephra::Edit::History;
+our $VERSION = '0.02';
+
 use strict;
 use warnings;
-
-our $VERSION = '0.02';
 
 # undo, redo etc.
 

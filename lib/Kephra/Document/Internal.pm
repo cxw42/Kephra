@@ -1,8 +1,8 @@
 package Kephra::Document::Internal;
+our $VERSION = '0.10';
+
 use strict;
 use warnings;
-
-our $VERSION = '0.10';
 
 use Wx qw(wxYES wxNO);
 

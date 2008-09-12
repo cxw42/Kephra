@@ -1,8 +1,8 @@
 package Kephra::Document;
+our $VERSION = '0.44';
+
 use strict;
 use warnings;
-
-our $VERSION = '0.44';
 
 =pod
  This module is in rewrite mode the purpose 

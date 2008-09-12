@@ -1,8 +1,9 @@
 package Kephra::App;
+our $VERSION = '0.08';
+
 use strict;
 use warnings;
 
-our $VERSION = '0.08';
 
 use Wx qw(
 	wxDefaultPosition wxDefaultSize   wxGROW wxTOP wxBOTTOM wxVERTICAL wxHORIZONTAL
@@ -165,7 +166,6 @@ sub start {
 	#setup_logging();
 	splashscreen();             # 2'nd splashscreen can close when app is ready
 	Wx::InitAllImageHandlers();
-	Kephra::Extension::Output::init();
 	my $frame = Kephra::App::Window::create();
 	my $ep = Kephra::App::EditPanel::create();
 	$Kephra::temp{document}{open}[0]{pointer} = $ep->GetDocPointer();

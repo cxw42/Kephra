@@ -1,8 +1,8 @@
 package Kephra::Config::Interface;
+our $VERSION = '0.03';
+
 use strict;
 use warnings;
-
-our $VERSION = '0.03';
  
 # handling config files under config/interface and config/localisation
 

@@ -3,9 +3,9 @@ main_toolbar:
  - item file-new
  - item file-open
  - item file-print# 
- - item file-close#
+ - item file-close-current#
  - item file-save-all
- - item file-save
+ - item file-save-current
  -
  - item edit-changes-undo
  - item edit-changes-redo

@@ -1,8 +1,8 @@
 package Kephra::Config::Default::Localisation;
+our $VERSION = '0.02';
+
 use strict;
 use warnings;
-
-our $VERSION = '0.01';
 
 sub get {
 	return {
@@ -18,10 +18,11 @@ sub get {
 			},
 			menu => {
 				file => 'File',
-				file_insert_templates => 'Templates',
-				file_open => 'Open More',
+				file_open => 'Open',
+				file_close => 'Close',
 				file_history => 'Recent',
 				file_session => 'Session',
+				file_insert_templates => 'Templates',
 				edit => 'Edit',
 				edit_changes => 'History',
 				current_line => 'Line',
@@ -92,13 +93,20 @@ sub get {
 					'reload-all' => 'Reload All',
 					rename => 'Rename ...',
 					insert => 'Insert ...',
-					close => 'Close',
-					'close-all' => 'Close All',
-					'close-other' => 'Close Other',
-					save => 'Save',
-					'save-all' => 'Save All',
-					'save-as' => 'Save As ...',
-					'save-copy-as' => 'Save Copy ...',
+					close => {
+						current => 'Close',
+						all => 'Close All',
+						other => 'Close Other',
+						unsaved => 'Close Unsaved',
+						'all-unsaved' => 'Close All Unsaved',
+						'other-unsaved' => 'Close Other Unsaved',
+					},
+					save => {
+						current => 'Save',
+						all => 'Save All',
+						as => 'Save As ...',
+						'copy-as' => 'Save Copy ...',
+					},
 					print => 'Print ...',
 					session => {
 						open => 'Open ...',
@@ -500,13 +508,20 @@ sub get {
 					'reload-all' => 'reload all opened files',
 					'rename' => 'change current files name',
 					insert => 'insert file content at caret position',
-					'close' => 'close current document, if preset the file will be saved',
-					'close-all' => 'close all open documents',
-					'close-other' => 'close all open documents but not the current visible',
-					save => 'save the displayed state of the current file',
-					'save-all' => 'save all the currently opened files',
-					'save-as' => 'save current document under different file name',
-					'save-copy-as' => 'save doc with different name, keep current version open',
+					close => {
+						current => 'close current document, if preset the file will be saved',
+						all => 'close all open documents',
+						other => 'close all open documents but not the current visible',
+						unsaved => 'close current document without save it before it',
+						'all-unsaved' => 'close all document without save it before it',
+						'other-unsaved' => 'unsaved closing of all open docs but not the current visible',
+					},
+					save =>{
+						current => 'save the displayed state of the current file',
+						all => 'save all the currently opened files',
+						as => 'save current document under different file name',
+						'copy-as' => 'save doc with different name, keep current version open',
+					},
 					'print' => 'print the current document',
 					session => {
 						'open' => 'restore an once saved file session',

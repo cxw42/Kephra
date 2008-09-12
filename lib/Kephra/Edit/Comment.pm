@@ -1,8 +1,8 @@
 package Kephra::Edit::Comment;
+our $VERSION = '0.07';
+
 use strict;
 use warnings;
-
-our $VERSION = '0.07';
 
 # Comment
 sub add_block {

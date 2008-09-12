@@ -1,8 +1,8 @@
 package Kephra::Edit::Search;
+our $VERSION = '0.28';
+
 use strict;
 use warnings;
-
-our $VERSION = '0.28';
 
 # internal and menu functions about find and replace text
 # drag n drop target class

@@ -1,8 +1,8 @@
 package Kephra::Config::Default::ContextMenus;
+our $VERSION = '0.01';
+
 use strict;
 use warnings;
-
-our $VERSION = '0.01';
 
 sub get {
 	return {
@@ -16,10 +16,10 @@ sub get {
 			'item goto-last-edit',
 			'item view-dialog-find',
 			'',
-			'item file-save',
+			'item file-save-current',
 			'item file-open',
 			'',
-			'item file-close',
+			'item file-close-current',
 		],
 		'textselection_contextmenu' => [
 			'item edit-copy',

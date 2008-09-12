@@ -1,9 +1,8 @@
 package Kephra::Config::Default::CommandList;
+our $VERSION = '0.02';
+
 use strict;
 use warnings;
-
-our $VERSION = '0.01';
-
 
 sub get {
 	return {
@@ -18,15 +17,22 @@ sub get {
 				'reload' => 'Kephra::File::reload_current()',
 				'reload-all' => 'Kephra::File::reload_all()',
 				'insert' => 'Kephra::File::insert()',
-				'save' => 'Kephra::File::save_current()',
-				'save-all' => 'Kephra::File::save_all()',
-				'save-as' => 'Kephra::File::save_as()',
-				'save-copy-as' => 'Kephra::File::save_copy_as()',
+				save => {
+					'current' => 'Kephra::File::save_current()',
+					'all' => 'Kephra::File::save_all()',
+					'as' => 'Kephra::File::save_as()',
+					'copy-as' => 'Kephra::File::save_copy_as()',
+				},
 				'rename' => 'Kephra::File::rename()',
 				'print' => 'Kephra::File::print()',
-				'close' => 'Kephra::File::close_current()',
-				'close-all' => 'Kephra::File::close_all()',
-				'close-other' => 'Kephra::File::close_other()',
+				close => {
+					'current' => 'Kephra::File::close()',
+					'all' => 'Kephra::File::close_all()',
+					'other' => 'Kephra::File::close_other()',
+					'unsaved' => 'Kephra::File::close_unsaved()',
+					'all-unsaved' => 'Kephra::File::close_all_unsaved()',
+					'other-unsaved' => 'Kephra::File::close_other_unsaved()',
+				},
 				session => {
 					'open' => 'Kephra::File::Session::open_file()',
 					'add' => 'Kephra::File::Session::add()',
@@ -439,7 +445,7 @@ sub get {
 		},
 		enable => {
 			file => {
-				'save' => 'Kephra::File::can_save()',
+				'save-current' => 'Kephra::File::can_save()',
 				'save-all' => 'Kephra::File::can_save_all()',
 			},
 			edit => {
@@ -489,7 +495,7 @@ sub get {
 			},
 		},
 		enable_event => {
-			'file-save' => 'document.savepoint',
+			'file-save-current' => 'document.savepoint',
 			'file-save-all' => 'document.savepoint',
 			edit => {
 				changes => {
@@ -664,7 +670,7 @@ sub get {
 				'statusbar-contexmenu' => 'Kephra::App::StatusBar::get_contextmenu_visibility()',
 				'statusbar-info' => {
 					date => 'Kephra::App::StatusBar::info_msg_nr() == 2',
-					'length' => 'Kephra::App::StatusBar::info_msg_nr() == 1',
+					length => 'Kephra::App::StatusBar::info_msg_nr() == 1',
 					none => 'Kephra::App::StatusBar::info_msg_nr()  == 0',
 				},
 				tabbar => 'Kephra::App::TabBar::get_visibility()',
@@ -693,10 +699,10 @@ sub get {
 			file => {
 				new => 'file_new.xpm',
 				'open' => 'file_open.xpm',
-				save => 'file_save.xpm',
+				'save-current' => 'file_save.xpm',
 				'save-all' => 'file_save_all.xpm',
-				'print' => 'file_print.xpm',
-				'close' => 'file_close.xpm',
+				print => 'file_print.xpm',
+				'close-current' => 'file_close.xpm',
 			},
 			edit => {
 				changes => {
@@ -707,7 +713,7 @@ sub get {
 				copy => 'edit_copy.xpm',
 				paste => 'edit_paste.xpm',
 				replace => 'edit_replace.xpm',
-				'delete' => 'edit_delete.xpm',
+				delete => 'edit_delete.xpm',
 			},
 			find => {
 				prev => 'find_previous.xpm',
@@ -742,15 +748,17 @@ sub get {
 				reload => 'ctrl+shift+o',
 				'reload-all' => 'ctrl+alt+o',
 				insert => 'ctrl+shift+i',
-				save => 'ctrl+s',
+				'save-current' => 'ctrl+s',
 				'save-all' => 'ctrl+alt+s',
 				'save-as' => 'ctrl+shift+s',
 				'save-copy-as' => 'alt+shift+s',
 				rename => 'ctrl+alt+shift+s',
 				print => 'ctrl+p',
-				close => 'ctrl+q',
-				'close-all' => 'alt+q',
-				'close-other' => 'ctrl+shift+q',
+				close => {
+					current => 'ctrl+q',
+					all => 'alt+q',
+					other => 'ctrl+shift+q',
+				},
 			},
 			edit => {
 				changes => {

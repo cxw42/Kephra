@@ -1,8 +1,9 @@
 package Kephra::Document::Change;
+our $VERSION = '0.06';
+
 use strict;
 use warnings;
 
-our $VERSION = '0.06';
 
 # changing the current document
 

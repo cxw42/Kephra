@@ -1,27 +1,34 @@
 package Kephra::Config::Default::MainMenu;
+our $VERSION = '0.03';
+
 use strict;
 use warnings;
-
-our $VERSION = '0.01';
 
 sub get {
 	return [
 		{'menu file' => [
 			'item file-new',
-			'',
-			'menu file_insert_templates',
-			'',
-			'item file-open',
 			{'menu file_open' => [
-				'item file-reload',
-				'item file-reload-all',
+				'item file-open',
+				'item file-open-dir',
 				'',
 				'item file-insert',
 				'',
-				'item file-open-dir',
+				'item file-reload',
+				'item file-reload-all',
 			],},
-			'menu file_history',
+			{'menu file_close' => [
+				'item file-close-current',
+				'item file-close-other',
+				'item file-close-all',
+				'',
+				'item file-close-unsaved',
+				'item file-close-other-unsaved',
+				'item file-close-all-unsaved',
+			],},
 			'',
+			'menu file_history',
+			'menu file_insert_templates',
 			{'menu file_session' => [
 				'item file-session-open',
 				'item file-session-add',
@@ -34,17 +41,13 @@ sub get {
 				'item file-session-export',
 			],},
 			'',
-			'item file-save',
+			'item file-save-current',
 			#'menu file_save' => []
 			'item file-save-all',
 			'item file-save-as',
 			'item file-save-copy-as',
 			'item file-rename',
 			#'item file-print',
-			'',
-			'item file-close',
-			'item file-close-other',
-			'item file-close-all',
 			'',
 			'item app-exit',
 		],},
@@ -193,6 +196,7 @@ sub get {
 		],},
 		{'menu tools' => [
 			'item tool-note',
+			'',
 			'item tool-run-document',
 			'item tool-stop-document',
 		],},
