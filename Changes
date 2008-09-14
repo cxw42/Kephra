@@ -8,6 +8,12 @@ TODO 0.4:
  + keymap dialog
  + own statusbar
 
+0.3.10.7
+ - append option in output panel 
+ ] changed session.conf to yaml due sorting problems with current (2.4) C::G
+ ] switch to Module::install 0.77
+ ! reload configs works again
+
 0.3.10.6
  + 3 close unsaved functions
  ' extend Kephra.pm POD

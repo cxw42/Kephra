@@ -5,7 +5,7 @@ abstract: crossplatform GUI Text-Editor
 author: lichtkind@cpan.org
 license: gpl
 distribution_type: module
-generated_by: Module::Install version 0.68
+generated_by: Module::Install version 0.77
 no_index: 
   directory: 
     - doc

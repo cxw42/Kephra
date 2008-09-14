@@ -1,5 +1,5 @@
 package Kephra::Extension::Notepad;
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use strict;
 use warnings;
@@ -93,7 +93,6 @@ sub show {
 		$splitter->SplitVertically( $main_panel, $notepad );
 		$splitter->SetSashPosition( $win->GetSize->GetWidth - $config->{size}, 1);
 	} else {
-		save_size();
 		$splitter->Unsplit();
 		$splitter->Initialize( $main_panel );
 	}

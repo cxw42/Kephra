@@ -89,30 +89,43 @@ sub _logger {
     return sprintf("%s - %s - %s - %s\n", Time::HiRes::time(), $$, $data{level}, $data{message});
 }
 
+
 sub assemble_layout {
 	my $win = Kephra::App::Window::_ref();
 	my $tg = wxTOP|wxGROW;
+	Kephra::API::EventTable::freeze
+		( qw(app.splitter.right.changed app.splitter.bottom.changed) );
 
-	my $right_splitter = $Kephra::app{splitter}{right} = Wx::SplitterWindow->new
-			( $win, -1, [-1,-1], [-1,-1], wxSP_PERMIT_UNSPLIT|wxSP_LIVE_UPDATE );
+	$Kephra::app{splitter}{right} = Wx::SplitterWindow->new
+		($win, -1, [-1,-1], [-1,-1], wxSP_PERMIT_UNSPLIT|wxSP_LIVE_UPDATE)
+			unless exists $Kephra::app{splitter}{right};
+	my $right_splitter = $Kephra::app{splitter}{right};
 	EVT_SPLITTER_SASH_POS_CHANGED( $right_splitter, $right_splitter, sub {
 		Kephra::API::EventTable::trigger( 'app.splitter.right.changed' );
 	} );
 	$right_splitter->SetSashGravity(1);
 	$right_splitter->SetMinimumPaneSize(10);
 
-	my $column_panel = $Kephra::app{panel}{main} = Wx::Panel->new($right_splitter);
+	$Kephra::app{panel}{main} = Wx::Panel->new($right_splitter)
+		unless exists $Kephra::app{panel}{main};
+	my $column_panel = $Kephra::app{panel}{main};
+	$column_panel->Reparent($right_splitter);
 
 	# setting up output splitter
-	my $bottom_splitter = $Kephra::app{splitter}{bottom} = Wx::SplitterWindow->new
-			( $column_panel, -1, [-1,-1], [-1,-1], wxSP_PERMIT_UNSPLIT|wxSP_LIVE_UPDATE );
+	$Kephra::app{splitter}{bottom} = Wx::SplitterWindow->new
+		($column_panel, -1, [-1,-1], [-1,-1], wxSP_PERMIT_UNSPLIT|wxSP_LIVE_UPDATE)
+			unless exists $Kephra::app{splitter}{bottom};
+	my $bottom_splitter = $Kephra::app{splitter}{bottom};
 	EVT_SPLITTER_SASH_POS_CHANGED( $bottom_splitter, $bottom_splitter, sub {
 		Kephra::API::EventTable::trigger( 'app.splitter.bottom.changed' );
 	} );
 	$bottom_splitter->SetSashGravity(1);
 	$bottom_splitter->SetMinimumPaneSize(10);
 
-	my $center_panel = $Kephra::app{panel}{center} = Wx::Panel->new($bottom_splitter);
+	$Kephra::app{panel}{center} = Wx::Panel->new($bottom_splitter)
+		unless exists $Kephra::app{panel}{center};
+	my $center_panel = $Kephra::app{panel}{center};
+	$center_panel->Reparent($bottom_splitter);
 
 	my $edit_panel = Kephra::App::EditPanel::_ref();
 	my $search_bar = Kephra::App::SearchBar::_ref();
@@ -152,6 +165,10 @@ sub assemble_layout {
 
 	Kephra::App::TabBar::show();
 	Kephra::App::SearchBar::show();
+
+	Kephra::API::EventTable::thaw
+		( qw(app.splitter.right.changed app.splitter.bottom.changed) );
+
 	Kephra::Extension::Notepad::show();
 	Kephra::Extension::Output::show();
 	#$win->Layout;

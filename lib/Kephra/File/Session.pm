@@ -103,7 +103,7 @@ sub save {
 	undef $temp_config{document};
 	Kephra::Config::Tree::_convert_node_2_AoH( \$Kephra::document{open} );
 	# sorting out docs without file
-	@{ $Kephra::document{open} } = @{_forget_gone_files(\$Kephra::document{open})};
+	@{ $Kephra::document{open} } = @{_forget_gone_files($Kephra::document{open}) };
 	$temp_config{document} = $Kephra::document{open};
 	$temp_config{current_nr} = $Kephra::document{current_nr};
 	Kephra::Config::File::store( $config_file, \%temp_config );

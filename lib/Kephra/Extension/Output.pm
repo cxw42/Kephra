@@ -1,5 +1,5 @@
 package Kephra::Extension::Output;
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use strict;
 use warnings;
@@ -83,7 +83,6 @@ sub show {
 		$splitter->SplitHorizontally( $cpanel, $output );
 		$splitter->SetSashPosition( $win->GetSize->GetHeight - $config->{size}, 1);
 	} else {
-		save_size();
 		$splitter->Unsplit();
 		$splitter->Initialize( $cpanel );
 	}
@@ -117,7 +116,9 @@ sub run {
 		chdir $dir;
 		my $proc = _ref()->{process} = Wx::Perl::ProcessStream->OpenProcess
 			(qq~perl $doc~ , 'Output-Extension', $win); # -I$dir 
-		_ref()->Clear;
+		_config()->{append}
+			? _ref()->AppendText( "\n\n" )
+			: _ref()->Clear;
 		Kephra::API::EventTable::trigger('extension.output.run');
 		if (not $proc) {
 		}

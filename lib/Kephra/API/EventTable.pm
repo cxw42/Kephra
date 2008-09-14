@@ -195,17 +195,17 @@ sub init_key_events {
 	});
 }
 
-sub add_call{
+sub add_call {
 	return until ref $_[2] eq 'CODE';
 	$Kephra::app{eventtable}{ $_[0] }{ $_[1] } = $_[2];
 }
 
-sub add_frozen_call{
+sub add_frozen_call {
 	return until ref $_[2] eq 'CODE';
 	$Kephra::temp{eventtable}{ $_[0] }{ $_[1] } = $_[2];
 }
 
-sub trigger{
+sub trigger {
 	my $list = _get_active();
 	for my $event (@_){
 		if (ref $list->{$event} eq 'HASH'){
@@ -217,7 +217,7 @@ sub trigger{
 	}
 }
 
-sub freeze{
+sub freeze {
 	my $list = _get_active();
 	my $frozen = _get_frozen();
 	for my $event (@_){
@@ -228,7 +228,7 @@ sub freeze{
 	}
 }
 
-sub freeze_all{
+sub freeze_all {
 	my $list = _get_active();
 	my $frozen = _get_frozen();
 	for my $event (keys %$list ){
@@ -239,7 +239,7 @@ sub freeze_all{
 	}
 }
 
-sub thaw{
+sub thaw {
 	my $list = _get_active();
 	my $frozen = _get_frozen();
 	for my $event (@_){
@@ -250,7 +250,7 @@ sub thaw{
 	}
 }
 
-sub thaw_all{
+sub thaw_all {
 	my $list = _get_active();
 	my $frozen = _get_frozen();
 	for my $event (keys %$frozen ){

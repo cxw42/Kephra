@@ -1,5 +1,5 @@
 package Kephra::Config::Default::GlobalSettings;
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use strict;
 use warnings;
@@ -50,6 +50,7 @@ sub get {
 					visible => 0,
 				},
 				output => {
+					append => 0,
 					font_size => 9,
 					size => 100,
 					visible => 0,
@@ -213,7 +214,7 @@ sub get {
 				text => 4
 			},
 			scroll_width => '640',
-			word_chars => 'word_chars = $%-@_abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ0123456789',
+			word_chars => 'word_chars' => '$%-@_abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ0123456789',
 		},
 		file => {
 			current => {
@@ -310,8 +311,8 @@ sub get {
 			},
 			session => {
 				autosave  => 'extern',
-				backup    => 'backup.conf',
-				current   => 'current.conf',
+				backup    => 'backup.yaml',
+				current   => 'current.yaml',
 				directory => 'session', # subdir of config where to look for session files
 				node      => 'files',
 			},

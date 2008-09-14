@@ -1,5 +1,5 @@
 package Kephra::Config::File;
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use strict;
 use warnings;
@@ -15,11 +15,13 @@ sub _get_type {
 	}
 	return unless $name;
 	return 'conf' if $name =~ /\.conf$/;
+	return 'conf' if $name =~ /\.cfg$/;
+	return 'yaml' if $name =~ /\.yaml$/;
 	return 'yaml' if $name =~ /\.yml$/;
 	
 	return;
 	# TODO: log or throw exception if no or invalid file given
-	
+
 	# make the extension checking stricter?
 	# accept only .yml .yaml and .conf extension?
 }
