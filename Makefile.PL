@@ -11,8 +11,6 @@ requires       'File::UserConfig';
 requires       'Config::General'       => 2.40;
 requires       'YAML::Tiny'            => 0.31;
 requires       'Text::Wrap';
-requires       'Log::Dispatch';
-requires       'Log::Dispatch::File';
 requires       'POSIX';
 requires       'Wx'                    => 0.70;
 requires       'Wx::Perl::ProcessStream';

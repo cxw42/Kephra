@@ -12,6 +12,7 @@ use Wx qw(
 	wxSTC_CMD_DOCUMENTSTART wxSTC_CMD_DOCUMENTEND
 	WXK_ESCAPE WXK_RETURN WXK_F3 WXK_PAGEUP WXK_PAGEDOWN
 	WXK_UP WXK_DOWN  WXK_LEFT WXK_RIGHT WXK_HOME WXK_END WXK_BACK
+	wxTE_PROCESS_ENTER
 );
 use Wx::Event qw( 
 	EVT_TEXT EVT_KEY_DOWN EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_COMBOBOX
@@ -36,8 +37,11 @@ sub create {
 	# apply special searchbar widgets
 	for my $item_data (@$rest_widgets){
 		if ($item_data->{type} eq 'combobox' and $item_data->{id} eq 'find'){
-			my $find_input = $bar->{find_input} = Wx::ComboBox->new
-				($bar , -1, '', [-1,-1],[$item_data->{size},-1]);
+			my $find_input = $bar->{find_input} = Wx::ComboBox->new (
+				$bar , -1, '', [-1,-1], [$item_data->{size},-1], [],
+				wxTE_PROCESS_ENTER
+			);
+			wxTE_PROCESS_ENTER
 			$find_input->SetDropTarget( SearchInputTarget->new($find_input, 'find'));
 			$find_input->SetValue( Kephra::Edit::Search::get_find_item() );
 			$find_input->SetSize($item_data->{size},-1) if $item_data->{size};

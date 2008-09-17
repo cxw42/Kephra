@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 
-use base qw(Wx::Frame);      #use Wx; use base qw(Wx::Panel);
+use base qw(Wx::Frame);
 use Wx qw(
 	wxDefaultPosition wxDefaultSize
 	wxDEFAULT_FRAME_STYLE wxNO_FULL_REPAINT_ON_RESIZE wxSTAY_ON_TOP 

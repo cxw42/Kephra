@@ -15,14 +15,15 @@ no_index:
     - xt
 requires: 
   perl: 5.006
-  Wx:   0.70
-  Wx-Perl-ProcessStream: 0
-  YAML-Tiny: 0.31
-  Config-General: 0.30
   Cwd: 0
+  POSIX: 0
+  Text-Wrap: 0
   File-Find: 0
   File-UserConfig: 0
-  Text-Wrap: 0
+  Config-General: 0.30
+  YAML-Tiny: 0.31
+  Wx:   0.70
+  Wx-Perl-ProcessStream: 0
 resources:
     homepage: http://kephra.sf.net
     repository: http://kephra.svn.sourceforge.net/viewvc/kephra/dev/base/

@@ -75,6 +75,7 @@ lib/Kephra/File.pm
 lib/Kephra/File/History.pm
 lib/Kephra/File/IO.pm
 lib/Kephra/File/Session.pm
+lib/Kephra/Log.pm
 lib/Kephra/Show.pm
 LICENSE
 Makefile.PL

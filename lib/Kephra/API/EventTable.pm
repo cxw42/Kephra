@@ -2,7 +2,7 @@ package Kephra::API::EventTable;
 use strict;
 use warnings;
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 =head1 NAME
 
@@ -58,10 +58,10 @@ use Wx::Event qw(
 # EVT_STC_CHARADDED EVT_STC_MODIFIED
 
 # get pointer to the event list
-sub _get_active { $Kephra::app{eventtable} }
-sub _get_frozen { $Kephra::temp{eventtable} }
+sub _ref { $Kephra::app{eventtable} }
 my  $timer;
 
+sub init { $Kephra::app{eventtable}{active}{init} = 1 }
 
 sub connect_all {
 	my $win = Kephra::App::Window::_ref();
@@ -75,7 +75,8 @@ sub connect_all {
 	EVT_DROP_FILES ($win,  \&Kephra::File::add_dropped);
 	EVT_MENU_OPEN  ($win,  sub {
 #print"menu ",$_[1]->GetMenuId, ' ', $_[1]->GetMenu, "\n";
-		trigger('menu.open') });
+		trigger('menu.open') 
+	});
 	#EVT_IDLE       ($win,  sub { } );
 
 
@@ -197,65 +198,62 @@ sub init_key_events {
 
 sub add_call {
 	return until ref $_[2] eq 'CODE';
-	$Kephra::app{eventtable}{ $_[0] }{ $_[1] } = $_[2];
+	my $list = _ref();
+	$list->{active}{ $_[0] }{ $_[1] } = $_[2];
 }
 
 sub add_frozen_call {
 	return until ref $_[2] eq 'CODE';
-	$Kephra::temp{eventtable}{ $_[0] }{ $_[1] } = $_[2];
+	my $list = _ref();
+	$list->{frozen}{ $_[0] }{ $_[1] } = $_[2];
 }
 
 sub trigger {
-	my $list = _get_active();
+	my $active = _ref()->{active};
 	for my $event (@_){
-		if (ref $list->{$event} eq 'HASH'){
-#if ($event eq 'document.list'){
-	#print "event: $event $_\n" for keys %{ $list->{$event} };
-#}
-			$_->() for values %{ $list->{$event} }
+		if (ref $active->{$event} eq 'HASH'){
+			$_->() for values %{ $active->{$event} }
 		}
 	}
 }
 
 sub freeze {
-	my $list = _get_active();
-	my $frozen = _get_frozen();
+	my $list = _ref();
 	for my $event (@_){
-		if (ref $list->{$event} eq 'HASH'){
-			$frozen->{$event} = $list->{$event};
-			delete $list->{$event};
+		if (ref $list->{active}{$event} eq 'HASH'){
+			$list->{frozen}{$event} = $list->{active}{$event};
+			delete $list->{active}{$event};
 		}
 	}
 }
 
 sub freeze_all {
-	my $list = _get_active();
-	my $frozen = _get_frozen();
-	for my $event (keys %$list ){
-		if (ref $list->{$event} eq 'HASH'){
-			$frozen->{$event} = $list->{$event};
-			delete $list->{$event};
+	my $list = _ref();
+	my $active = $list->{active};
+	for my $event (keys %$active) {
+		if (ref $active->{$event} eq 'HASH'){
+			$list->{frozen}{$event} = $active->{$event};
+			delete $active->{$event};
 		}
 	}
 }
 
 sub thaw {
-	my $list = _get_active();
-	my $frozen = _get_frozen();
+	my $list = _ref();
 	for my $event (@_){
-		if (ref $frozen->{$event} eq 'HASH'){
-			$list->{$event} = $frozen->{$event};
-			delete $frozen->{$event};
+		if (ref $list->{frozen}{$event} eq 'HASH'){
+			$list->{active}{$event} = $list->{frozen}{$event};
+			delete $list->{frozen}{$event};
 		}
 	}
 }
 
 sub thaw_all {
-	my $list = _get_active();
-	my $frozen = _get_frozen();
+	my $list = _ref();
+	my $frozen = _ref()->{frozen};
 	for my $event (keys %$frozen ){
 		if (ref $frozen->{$event} eq 'HASH'){
-			$list->{$event} = $frozen->{$event};
+			$list->{active}{$event} = $frozen->{$event};
 			delete $frozen->{$event};
 		}
 	}
@@ -263,17 +261,17 @@ sub thaw_all {
 
 sub del_call{
 	return until $_[1];
-	my $list = _get_active();
+	my $list = _ref()->{active};
 	delete $list->{ $_[0] }{ $_[1] } if exists $list->{ $_[0] }{ $_[1] };
 }
 
 sub delete_active{
-	my $list = _get_active();
+	my $list = _ref()->{active};
 	delete $list->{ $_ } for keys %$list;
 }
 
 sub delete_frozen{
-	my $frozen = _get_frozen();
+	my $frozen = _ref()->{frozen};
 	delete $frozen->{ $_ } for keys %$frozen;
 }
 

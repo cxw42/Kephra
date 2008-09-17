@@ -76,6 +76,11 @@ sub existing_dirpath {
 
 sub standartize_path_slashes { File::Spec->canonpath( shift ) }
 
+sub path_matches {
+	my $given = shift;
+	for (@_) { return 1 if $given eq standartize_path_slashes($_) }
+	return 0;
+}
 ##################################
 # Wx GUI Stuff
 ##################################

@@ -1,12 +1,24 @@
 BUGS:
  !!! makefile.pl fails
  ! textchanged event triggers twice
- ! file change reminder on deleted files
 
 TODO 0.4:
  * config dialog
- + keymap dialog
- + own statusbar
+ * syntaxmodes
+
+0.3.10.10
+ ] founding Kephra::Log
+ ] adapt makefile becaue no longer need Log::Dispatch
+ ! wount crash when not find splashscreen image file
+ ! reload settings when save active config file works again
+
+0.3.10.9
+ ~ rename file > "Instert ..." into "insert from ..."
+ ! searchbar input works again (they changes standart behavior when press enter)
+
+0.3.10.8
+ ! fix event table data structure
+ ! repair (beginnings of) czech localisation
 
 0.3.10.7
  - append option in output panel 

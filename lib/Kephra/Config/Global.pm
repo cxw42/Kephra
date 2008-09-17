@@ -156,34 +156,36 @@ sub reload_tree {
 sub reload_current { reload( _current_file() ) }
 
 sub eval_config_file {
-	my $file_name   = shift;
+	my $file_path   = Kephra::Config::standartize_path_slashes( shift );
 	my $config_path = Kephra::Config::dirpath();
 	my $l_path = length $config_path;
-	if ($config_path eq substr( $file_name, 0, $l_path)){
-		$file_name = substr $file_name, $l_path;
+	if ($config_path eq substr( $file_path, 0, $l_path)){
+		$file_path = substr $file_path, $l_path+1;
 	}
-
 	my $conf = $Kephra::config{app};
+	my $match = \&Kephra::Config::path_matches;
 
-	if ($file_name eq $Kephra::temp{file}{config}{auto} or
-		$file_name eq $conf->{localisation_file}        or
-		$file_name eq $conf->{commandlist}{file}           ) {
+	if ( &$match( $file_path, 
+		$Kephra::temp{file}{config}{auto},
+		$conf->{localisation_file},
+		$conf->{commandlist}{file}        )) {
 		return reload();
 	}
-	if ( $file_name eq $conf->{menubar}{file}) {
-		Kephra::App::MenuBar::create() 
+	if ( &$match( $file_path, $conf->{menubar}{file} ) ) {
+		return Kephra::App::MenuBar::create() 
 	}
-	if ($file_name eq $conf->{toolbar}{main}{file} ) {
-		Kephra::App::MainToolBar::create();
+	if ( &$match( $file_path, $conf->{toolbar}{main}{file} ) ) {
+		return Kephra::App::MainToolBar::create();
 	} 
-	if ($file_name eq $conf->{toolbar}{search}{file} ) {
+	if ( &$match( $file_path, $conf->{toolbar}{search}{file} ) ) {
 		Kephra::App::SearchBar::create();
 		Kephra::App::SearchBar::position();
+		return;
 	}
 	# reload template menu wenn template file changed
 	my $cfg = $Kephra::config{file}{templates};
 	my $path = File::Spec->catfile( $cfg->{directory}, $cfg->{file} );
-	if ( substr($file_name, - length $path) eq $path ) {
+	if ( substr($file_path, - length $path) eq $path ) {
 		Kephra::App::Menu::set_absolete('file_insert_templates');
 		Kephra::App::Menu::ready('file_insert_templates');
 	}

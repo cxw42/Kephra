@@ -92,7 +92,6 @@ sub change_to {
 }
 
 sub compile {}
-
 sub apply_color {}
 
 1;
