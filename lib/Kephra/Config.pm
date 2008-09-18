@@ -1,5 +1,5 @@
 package Kephra::Config;
-our $VERSION = '0.32';
+our $VERSION = '0.33';
 
 use strict;
 use warnings;
@@ -54,7 +54,7 @@ sub init {
 }
 
 # Generate a path to a configuration file
-sub filepath { File::Spec->catfile( $Kephra::temp{path}{config}, @_ ) }
+sub filepath { File::Spec->catfile( $Kephra::temp{path}{config}, @_ ) if $_[0] }
 
 sub existing_filepath {
 	my $path = filepath( @_ );
@@ -64,7 +64,7 @@ sub existing_filepath {
 	return $path;
 }
 
-sub dirpath { File::Spec->catdir( $Kephra::temp{path}{config}, @_ ) }
+sub dirpath { File::Spec->catdir( $Kephra::temp{path}{config}, @_ ) if $_[0] }
 
 sub existing_dirpath {
 	my $path = dirpath( @_ );

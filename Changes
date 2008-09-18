@@ -6,6 +6,16 @@ TODO 0.4:
  * config dialog
  * syntaxmodes
 
+0.3.10.12
+ 
+
+0.3.10.11
+ + exit without save
+ ] rewritten parts of Edit::Goto.pm
+ ] made localisation configs saner
+ ! goto line dialog showed 1 line less than current
+ ! fixing default localisation
+
 0.3.10.10
  ] founding Kephra::Log
  ] adapt makefile becaue no longer need Log::Dispatch

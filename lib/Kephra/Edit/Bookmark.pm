@@ -1,5 +1,5 @@
 package Kephra::Edit::Bookmark;
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 use strict;
 use warnings;
@@ -147,7 +147,7 @@ sub goto_nr {
 	if ( _refresh_data_nr($nr) ) {
 		Kephra::Document::Change::to_number
 			( $Kephra::temp{search}{bookmark}{$nr}{doc_nr} );
-		Kephra::Edit::_goto_pos( $Kephra::config{search}{bookmark}{$nr}{pos} );
+		Kephra::Edit::Goto::pos( $Kephra::config{search}{bookmark}{$nr}{pos} );
 	}
 }
 

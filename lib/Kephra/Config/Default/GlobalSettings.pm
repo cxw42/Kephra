@@ -1,5 +1,5 @@
 package Kephra::Config::Default::GlobalSettings;
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use strict;
 use warnings;
@@ -35,8 +35,11 @@ sub get {
 				},
 			},
 			error_output => 'dialog',                         # (dialog|console|none)
-			iconset_path => 'interface/icon/set/jenne/',                # rootpath for all icons
-			localisation_file => 'english.conf', # file relative to the localisation directory, defines language of the texts in the program
+			iconset_path => 'interface/icon/set/jenne',                # rootpath for all icons
+			localisation => {
+				directory => 'localisation',
+				file => 'english.conf',                                # file relative to the localisation directory, defines language of the texts in the program
+			},
 			menubar => {
 				file => 'interface/mainmenu.yml',
 				node => 'full_menubar',

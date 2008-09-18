@@ -44,6 +44,7 @@ full_menubar:
       - item file-rename
       - item file-print#
       -
+      - item app-exit-unsaved
       - item app-exit
   -
     menu edit:

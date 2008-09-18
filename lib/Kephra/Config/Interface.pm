@@ -5,18 +5,18 @@ use strict;
 use warnings;
  
 # handling config files under config/interface and config/localisation
-
+sub _loc_conf { $Kephra::config{app}{localisation} }
 
 sub load {
-	my $conf      = $Kephra::config{app};
 	#my $gui_store = $Kephra::temp{configfile};
 	#my $gui_ref   = $Kephra::temp{config};
 	#my $conf_path = $Kephra::temp{path}{config};
 
 	# localisation
-	my $l = Kephra::Config::File::load(
-		Kephra::Config::filepath( 'localisation', $conf->{localisation_file} ),
-	);
+	my $l_conf = _loc_conf();
+	my $l_file = Kephra::Config::filepath( $l_conf->{directory}, $l_conf->{file} )
+		if exists $l_conf->{directory} and exists $l_conf->{file};
+	my $l = Kephra::Config::File::load( $l_file ) if defined $l_file;
 	unless ( $l and %$l ) {
 		$l = Kephra::Config::Default::localisation();
 	}
@@ -66,11 +66,8 @@ sub change_localisation {
 
 sub localisation_file {
 	my $file = shift;
-	if (defined $file) {
-		$Kephra::config{app}{localisation_file} = $file
-	} else {
-		$Kephra::config{app}{localisation_file};
-	}
+	if (defined $file) { _loc_conf()->{file} = $file }
+	else               { _loc_conf()->{file}         }
 }
 
 sub set_documentation_lang {

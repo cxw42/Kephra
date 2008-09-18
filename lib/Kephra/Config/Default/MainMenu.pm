@@ -1,5 +1,5 @@
 package Kephra::Config::Default::MainMenu;
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use strict;
 use warnings;
@@ -49,6 +49,7 @@ sub get {
 			'item file-rename',
 			#'item file-print',
 			'',
+			'item app-exit-unsaved',
 			'item app-exit',
 		],},
 		{'menu edit' => [

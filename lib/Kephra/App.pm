@@ -179,10 +179,15 @@ sub start {
 }
 
 sub exit { 
+	Kephra::API::EventTable::stop_timer();
+	return if Kephra::Dialog::save_on_exit() eq 'cancel';
+	exit_unsaved();
+}
+
+sub exit_unsaved {
 	my $t0 = new Benchmark;
 	Kephra::API::EventTable::stop_timer();
 	Kephra::File::Session::autosave();
-	return if Kephra::Dialog::save_on_exit() eq 'cancel';
 	Kephra::Config::Global::update();
 	Kephra::Config::Global::save_autosaved();
 	#Kephra::API::CommandList::store_cache();

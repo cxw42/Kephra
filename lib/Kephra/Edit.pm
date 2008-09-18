@@ -41,28 +41,9 @@ sub _let_caret_visible {
 }
 
 sub _center_caret{
- my $ep = _get_panel();
+	my $ep = _get_panel();
 	$ep->ScrollToLine($ep->GetCurrentLine - ( $ep->LinesOnScreen / 2 ));
 	$ep->EnsureCaretVisible;
-}
-
-#Kephra::App::EditPanel::_get()->GotoPos(shift);
-sub _goto_pos {
-	my $pos = shift;
-	my $ep  = _get_panel();
-	my $max = $ep->GetLength;
-	my $fvl = $ep->GetFirstVisibleLine;
-	my $visible = $ep->GetLineVisible( $ep->LineFromPosition($pos) );
-
-	$pos = 0 unless $pos or $pos < 0;
-	$pos = $max if $pos > $max;
-	$ep->SetCurrentPos($pos);
-	$ep->SetSelection ($pos, $pos);
-	$ep->SearchAnchor;
-	_center_caret();
-	#$visible ? $ep->ScrollToLine($fvl) : _center_caret();
-	$ep->EnsureCaretVisible;
-	#_keep_focus();
 }
 
 sub _save_positions {

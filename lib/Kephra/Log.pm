@@ -57,5 +57,10 @@ sub _logger {
     return sprintf("%s - %s - %s - %s\n", Time::HiRes::time(), $$, $data{level}, $data{message});
 }
 
+sub msg { message(@_) }
+sub message {
+	
+}
+
 
 1;

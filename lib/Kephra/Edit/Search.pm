@@ -1,5 +1,5 @@
 package Kephra::Edit::Search;
-our $VERSION = '0.28';
+our $VERSION = '0.29';
 
 use strict;
 use warnings;
@@ -218,12 +218,12 @@ sub _find_prev {
 }
 
 sub _find_first {
-	Kephra::Edit::_goto_pos(0);
+	Kephra::Edit::Goto::pos(0);
 	return _find_next();
 }
 
 sub _find_last  {
-	Kephra::Edit::_goto_pos(-1);
+	Kephra::Edit::Goto::pos(-1);
 	_find_prev();
 }
 
@@ -263,12 +263,12 @@ sub find_all{
 		return 0 if $search_result == -1;
 		while ($search_result > -1){
 			($sel_start, $sel_end) = $ep->GetSelection;
-			Kephra::Edit::_goto_pos( $sel_end );
+			Kephra::Edit::Goto::pos( $sel_end );
 			$ep->StartStyling($sel_start, 224);#224
 			$ep->SetStyleBytes($sel_end - $sel_start, 128);
 			$search_result = _find_next();
 		}
-		Kephra::Edit::_goto_pos( $sel_end );
+		Kephra::Edit::Goto::pos( $sel_end );
 		$ep->Colourise( 0, $sel_end);
 		return 1;
 	} else {
@@ -284,7 +284,7 @@ sub find_prev {
 	my $return = -1;
 	if ( _exist_find_item() ) {
 		Kephra::Edit::_save_positions;
-		Kephra::Edit::_goto_pos( $ep->GetSelectionStart - 1 );
+		Kephra::Edit::Goto::pos( $ep->GetSelectionStart - 1 );
 		$return = _find_prev();
 		if ( $return == -1 ) {
 			if ( get_range() eq 'document' ) {
@@ -322,7 +322,7 @@ sub find_next {
 
 	if ( _exist_find_item() ) {
 		Kephra::Edit::_save_positions();
-		Kephra::Edit::_goto_pos( $ep->GetSelectionEnd );
+		Kephra::Edit::Goto::pos( $ep->GetSelectionEnd );
 		$return = _find_next();
 		if ( $return == -1 ) {
 			if ( get_range() eq 'document' ) {
@@ -359,7 +359,7 @@ sub fast_back {
 	if (_exist_find_item()) {
 		for ( 1 .. $attr->{fast_steps} ) {
 			Kephra::Edit::_save_positions();
-			Kephra::Edit::_goto_pos( $ep->GetSelectionStart - 1 );
+			Kephra::Edit::Goto::pos( $ep->GetSelectionStart - 1 );
 			$return = _find_prev();
 			if ( $return == -1 ) {
 				if ( get_range() eq 'document' ) {
@@ -395,7 +395,7 @@ sub fast_fore {
 	if (_exist_find_item()) {
 		for ( 1 .. $attr->{fast_steps} ) {
 			Kephra::Edit::_save_positions();
-			Kephra::Edit::_goto_pos( $ep->GetSelectionEnd );
+			Kephra::Edit::Goto::pos( $ep->GetSelectionEnd );
 			$return = _find_next();
 			if ( $return == -1 ) {
 				if ( get_range() eq 'document' ) {
@@ -441,7 +441,7 @@ sub find_first {
 			set_range('selection') 
 		}
 		if ( get_range() eq 'selection' ) {
-			Kephra::Edit::_goto_pos($sel_begin);
+			Kephra::Edit::Goto::pos($sel_begin);
 			$return = _find_next();
 			if ($return > -1 and $ep->GetCurrentPos + $len <= $sel_end) {
 				Kephra::Edit::_let_caret_visible();
@@ -497,7 +497,7 @@ sub find_last {
 			set_range('selection');
 		}
 		if ( get_range() eq 'selection' ) {
-			Kephra::Edit::_goto_pos($sel_end);
+			Kephra::Edit::Goto::pos($sel_end);
 			$return = _find_prev();
 			if ($return > -1 and $ep->GetCurrentPos >= $sel_begin) {
 				Kephra::Edit::_let_caret_visible();
@@ -644,7 +644,7 @@ sub replace_confirm {
 		my ( $ep, $sel_begin, $sel_end, $len, $line ) = @_;
 		my $l10n = $Kephra::localisation{dialog}{search}{confirm};
 		my $answer;
-		Kephra::Edit::_goto_pos($sel_begin);
+		Kephra::Edit::Goto::pos($sel_begin);
 		$ep->BeginUndoAction();
 		while ( _find_next() > -1 ) {
 			last if $ep->GetCurrentPos + $len >= $sel_end;
@@ -656,7 +656,7 @@ sub replace_confirm {
 			else                  {$ep->SetCurrentPos( $ep->GetCurrentPos + 1 )}
 		}
 		$ep->EndUndoAction;
-		Kephra::Edit::_goto_pos( $ep->PositionFromLine($line) );
+		Kephra::Edit::Goto::pos( $ep->PositionFromLine($line) );
 		Kephra::Edit::_let_caret_visible();
 		$answer;
 	}

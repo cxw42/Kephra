@@ -1,5 +1,5 @@
 package Kephra::Config::Default::CommandList;
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use strict;
 use warnings;
@@ -9,6 +9,7 @@ sub get {
 		call => {
 			app => {
 				exit => 'Kephra::App::exit()',
+				'exit-unsaved' => 'Kephra::App::exit_unsaved()',
 			},
 			file => {
 				'new' => 'Kephra::File::new()',
@@ -742,9 +743,10 @@ sub get {
 			#use_file_type' => '1
 		},
 		key => {
+			'app-exit' => 'alt+f4',
 			file => {
 				new => 'ctrl+n',
-				'open' => 'ctrl+o',
+				open => 'ctrl+o',
 				reload => 'ctrl+shift+o',
 				'reload-all' => 'ctrl+alt+o',
 				insert => 'ctrl+shift+i',
