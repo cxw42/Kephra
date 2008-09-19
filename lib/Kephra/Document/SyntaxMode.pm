@@ -10,14 +10,12 @@ use Wx qw(
 	wxSTC_STYLE_BRACELIGHT wxSTC_STYLE_BRACEBAD wxSTC_STYLE_INDENTGUIDE
 );
 
-# syntaxstyles
-sub set { $Kephra::document{current}{syntaxmode} = shift }
-sub get { 
-	if (exists $Kephra::document{current}{syntaxmode} and 
-	           $Kephra::document{current}{syntaxmode}     ) {
-		$Kephra::document{current}{syntaxmode}
-	} else { $Kephra::localisation{dialog}{general}{none} }
+sub _ID {
+	if (defined $_[0]) { $Kephra::document{current}{syntaxmode} = $_[0] }
+	else               { $Kephra::document{current}{syntaxmode}         }
 }
+
+# syntaxstyles
 
 sub _get_auto{ &_get_by_fileending }
 sub _get_by_fileending {
@@ -35,11 +33,11 @@ sub _get_by_fileending {
 
 sub switch_auto {
 	my $auto_style = _get_auto();
-	if (get() ne $auto_style) {change_to($auto_style)}
+	if (_ID() ne $auto_style) {change_to($auto_style)}
 	else                      {change_to('none')     }
 }
 
-sub reload { change_to( get() ) }
+sub reload { change_to( _ID() ) }
 
 sub change_to {
 	my $ep      = Kephra::App::EditPanel::_ref();
@@ -58,10 +56,10 @@ sub change_to {
 	$ep->StyleResetDefault;
 	Kephra::App::EditPanel::load_font();
 	$ep->StyleClearAll;
-	$ep->SetKeyWords( 0, '' );
 
 	# load syntax style
 	if ( $style eq 'none' ) { 
+        $ep->SetKeyWords( 0, '' );
 		$ep->SetLexer(wxSTC_LEX_NULL);
 	} else {
 		eval("require syntaxhighlighter::$style");
@@ -84,7 +82,7 @@ sub change_to {
 
 	# cleanup
 	$Kephra::temp{document}{syntaxmode} = $style;
-	set($style);
+	_ID($style);
 	$ep->Colourise( 0, $ep->GetTextLength ); # refresh editpanel painting
 	Kephra::App::EditPanel::Margin::apply_color();
 	Kephra::App::StatusBar::style_info($style);

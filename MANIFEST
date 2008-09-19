@@ -1,6 +1,6 @@
 bin/kephra
 Changes
-doc/current fixes.txt
+doc/current-fixes.txt
 doc/draft.txt
 doc/interna/manifest.txt
 doc/interna/perlrules.txt
@@ -14,6 +14,7 @@ inc/Module/Install/Can.pm
 inc/Module/Install/Fetch.pm
 inc/Module/Install/Makefile.pm
 inc/Module/Install/Metadata.pm
+inc/Module/Install/Scripts.pm
 inc/Module/Install/Share.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm

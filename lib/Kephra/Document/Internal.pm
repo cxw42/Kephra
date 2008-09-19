@@ -68,14 +68,13 @@ sub add {
 		}
 		save_properties();
 		my $doc_nr = new_if_allowed('add');
-		#return if $old_nr == $doc_nr; why?
-		$file_name = File::Spec->canonpath( $file_name );
-		Kephra::Document::_set_previous_nr($old_nr);
+		$file_name = Kephra::Config::standartize_path_slashes( $file_name );
 		reset_tmp_data($doc_nr);
-		load_in_current_buffer($file_name);
-		Kephra::Document::_set_current_nr($doc_nr);
 		reset_properties($doc_nr, $file_name);
+		load_in_current_buffer($file_name);
 		eval_properties($doc_nr);
+		Kephra::Document::_set_previous_nr($old_nr);
+		Kephra::Document::_set_current_nr($doc_nr);
 		Kephra::App::Window::refresh_title();
 		Kephra::App::EditPanel::Margin::autosize_line_number();
 		Kephra::API::EventTable::trigger('document.list');

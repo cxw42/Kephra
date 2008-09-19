@@ -234,7 +234,7 @@ sub first_increment {
 		Kephra::Edit::_save_positions;
 		if ( _find_first() > -1 ) {
 			#_caret_2_sel_end();
-			Kephra::Edit::_let_caret_visible;
+			Kephra::Edit::_center_caret;
 			return 1;
 		}
 	}
@@ -309,7 +309,7 @@ sub find_prev {
 			}
 		}
 		if ( $return == -1 ) { Kephra::Edit::_restore_positions() }
-		else { _caret_2_sel_end(); Kephra::Edit::_let_caret_visible() }
+		else { _caret_2_sel_end(); Kephra::Edit::_center_caret() }
 		refresh_find_history($return);
 	}
 	$return;
@@ -346,7 +346,7 @@ sub find_next {
 			}
 		}
 		if ( $return == -1 ) { Kephra::Edit::_restore_positions() }
-		else { _caret_2_sel_end(); Kephra::Edit::_let_caret_visible(); }
+		else { _caret_2_sel_end(); Kephra::Edit::_center_caret(); }
 		refresh_find_history($return);
 	}
 	$return;
@@ -383,7 +383,7 @@ sub fast_back {
 			}
 			refresh_find_history($return) if ( $_ == 1 );
 			if ( $return == -1 ) { Kephra::Edit::_restore_positions(); last; }
-			else { _caret_2_sel_end(); Kephra::Edit::_let_caret_visible(); }
+			else { _caret_2_sel_end(); Kephra::Edit::_center_caret(); }
 		}
 	}
 }
@@ -420,7 +420,7 @@ sub fast_fore {
 			}
 			refresh_find_history($return) if $_ == 1;
 			if ( $return == -1 ) { Kephra::Edit::_restore_positions(); last; }
-			else { _caret_2_sel_end(); Kephra::Edit::_let_caret_visible(); }
+			else { _caret_2_sel_end(); Kephra::Edit::_center_caret(); }
 		}
 	}
 }
@@ -444,7 +444,7 @@ sub find_first {
 			Kephra::Edit::Goto::pos($sel_begin);
 			$return = _find_next();
 			if ($return > -1 and $ep->GetCurrentPos + $len <= $sel_end) {
-				Kephra::Edit::_let_caret_visible();
+				Kephra::Edit::_center_caret();
 			} else {
 				Kephra::Edit::_restore_positions();
 				$return = -1;
@@ -471,7 +471,7 @@ sub find_first {
 			}
 			if ( $return > -1 ) {
 				_caret_2_sel_end();
-				Kephra::Edit::_let_caret_visible();
+				Kephra::Edit::_center_caret();
 			} else {
 				Kephra::Edit::_restore_positions();
 			}
@@ -500,7 +500,7 @@ sub find_last {
 			Kephra::Edit::Goto::pos($sel_end);
 			$return = _find_prev();
 			if ($return > -1 and $ep->GetCurrentPos >= $sel_begin) {
-				Kephra::Edit::_let_caret_visible();
+				Kephra::Edit::_center_caret();
 			} else {
 				Kephra::Edit::_restore_positions();
 				$return = -1;
@@ -528,7 +528,7 @@ sub find_last {
 			}
 			if ( $return > -1 ) {
 				_caret_2_sel_end();
-				Kephra::Edit::_let_caret_visible();
+				Kephra::Edit::_center_caret();
 			} else {
 				Kephra::Edit::_restore_positions();
 			}
@@ -648,7 +648,7 @@ sub replace_confirm {
 		$ep->BeginUndoAction();
 		while ( _find_next() > -1 ) {
 			last if $ep->GetCurrentPos + $len >= $sel_end;
-			Kephra::Edit::_let_caret_visible();
+			Kephra::Edit::_center_caret();
 			$answer = Kephra::Dialog::get_confirm_3
 				(undef, $l10n->{text}, $l10n->{title}, 100, 100);
 			last if $answer == wxCANCEL;
@@ -657,7 +657,7 @@ sub replace_confirm {
 		}
 		$ep->EndUndoAction;
 		Kephra::Edit::Goto::pos( $ep->PositionFromLine($line) );
-		Kephra::Edit::_let_caret_visible();
+		Kephra::Edit::_center_caret();
 		$answer;
 	}
 	refresh_replace_history();

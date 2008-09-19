@@ -1,5 +1,5 @@
 package Kephra::Config::File;
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 use strict;
 use warnings;
@@ -87,22 +87,20 @@ sub store_yaml { &YAML::Tiny::DumpFile }
 sub load_conf {
 	my ( $configfilename, %config ) = shift;
 	my $error_msg = $Kephra::localisation{dialog}{error};
+	$Kephra::app{config}{parser}{conf} = Config::General->new(
+		-AutoTrue              => 1,
+		-UseApacheInclude      => 1,
+		-IncludeRelative       => 1,
+		-InterPolateVars       => 0,
+		-AllowMultiOptions     => 1,
+		-MergeDuplicateOptions => 0,
+		-MergeDuplicateBlocks  => 0,
+		-ConfigFile            => $configfilename,
+		-SplitPolicy           => 'equalsign',
+		-SaveSorted            => 1,
+	);
 	if ( -e $configfilename ) {
-		eval {
-			$Kephra::app{config}{parser} = Config::General->new(
-				-AutoTrue              => 1,
-				-UseApacheInclude      => 1,
-				-IncludeRelative       => 1,
-				-InterPolateVars       => 0,
-				-AllowMultiOptions     => 1,
-				-MergeDuplicateOptions => 0,
-				-MergeDuplicateBlocks  => 0,
-				-ConfigFile            => $configfilename,
-				-SplitPolicy           => 'equalsign',
-				-SaveSorted            => 1,
-			);
-			%config = $Kephra::app{config}{parser}->getall;
-		};
+		eval { %config = $Kephra::app{config}{parser}{conf}->getall };
 		Kephra::Dialog::warning_box (undef,
 			"$configfilename: \n $@", $error_msg->{config_read})
 				if $@ or !%config;
@@ -115,7 +113,7 @@ sub load_conf {
 
 sub store_conf {
 	my ( $configfilename, $config ) = @_;
-	$Kephra::app{config}{parser}->save_file( $configfilename, $config );
+	$Kephra::app{config}{parser}{conf}->save_file( $configfilename, $config );
 }
 
 1;

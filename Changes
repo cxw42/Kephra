@@ -7,7 +7,10 @@ TODO 0.4:
  * syntaxmodes
 
 0.3.10.12
- 
+ [ search finding better visible
+ ! safer conf file parser init
+ ! didn't remember changed syntaxstyle of opened file
+ ! proper file dialog filter for config files
 
 0.3.10.11
  + exit without save

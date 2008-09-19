@@ -40,7 +40,7 @@ sub _let_caret_visible {
 	$ep->EnsureCaretVisible;
 }
 
-sub _center_caret{
+sub _center_caret {
 	my $ep = _get_panel();
 	$ep->ScrollToLine($ep->GetCurrentLine - ( $ep->LinesOnScreen / 2 ));
 	$ep->EnsureCaretVisible;

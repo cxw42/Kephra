@@ -1,5 +1,5 @@
 package Kephra::App;
-our $VERSION = '0.08';
+our $VERSION = '0.0)';
 
 use strict;
 use warnings;

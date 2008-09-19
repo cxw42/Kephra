@@ -165,7 +165,7 @@ sub caret_pos_info {
 
 sub style_info {
 	my $style = shift;
-	$style = Kephra::Document::SyntaxMode::get() unless defined $style;
+	$style = Kephra::Document::SyntaxMode::_ID() unless defined $style;
 	$style = $Kephra::localisation{dialog}{general}{none} unless defined $style;
 	Kephra::App::Window::_ref()->SetStatusText
 		( ' ' . $style, $Kephra::temp{app}{status}{style}{index} );

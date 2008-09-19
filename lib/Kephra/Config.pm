@@ -178,7 +178,7 @@ sub build_fileendings_filterstring {
 			.= "|$filter_name $files ($file_filter)|$file_filter";
 	}
 	$Kephra::temp{file}{filterstring}{config}
-		= "Config $files (*.conf)|*.conf|$all";
+		= "Config $files (*.conf;*.yaml)|*.conf;*.yaml|$all";
 	$Kephra::temp{file}{filterstring}{scite}
 		= "Scite $files (*.ses)|*.ses|$all";
 }
