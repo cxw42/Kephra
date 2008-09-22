@@ -72,6 +72,7 @@ sub create {
 				switch_visibility() if $event->ControlDown;
 			} elsif ($key == WXK_F5) {
 				my ( $sel_beg, $sel_end ) = $notepad->GetSelection;
+				Kephra::Extension::Output::ensure_visibility();
 				my $code = $sel_beg == $sel_end
 					? $notepad->GetText
 					: $notepad->GetSelectedText;

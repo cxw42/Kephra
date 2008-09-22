@@ -6,6 +6,12 @@ TODO 0.4:
  * config dialog
  * syntaxmodes
 
+0.3.10.16
+ ] sane doc nr validation
+ ! false trigger of file changed notify dialog
+ ! wrong win titel when open file
+ ! fix default global settings hash
+
 0.3.10.15
  ! output panel can run scripts again
 

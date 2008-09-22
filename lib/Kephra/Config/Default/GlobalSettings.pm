@@ -1,5 +1,5 @@
 package Kephra::Config::Default::GlobalSettings;
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use strict;
 use warnings;
@@ -217,7 +217,7 @@ sub get {
 				text => 4
 			},
 			scroll_width => '640',
-			word_chars => 'word_chars' => '$%-@_abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ0123456789',
+			word_chars => '$%-@_abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ0123456789',
 		},
 		file => {
 			current => {

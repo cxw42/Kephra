@@ -52,12 +52,12 @@ sub create {
 	EVT_WXP_PROCESS_STREAM_STDOUT( $win, sub { 
 		my ($self, $event) = @_;
 		$event->Skip(1);
-		output($event->GetLine."\n");
+		_append($event->GetLine."\n");
 	} );
 	EVT_WXP_PROCESS_STREAM_STDERR( $win, sub {
 		my ($self, $event) = @_;
 		$event->Skip(1);
-		output($event->GetLine."\n");
+		_append($event->GetLine."\n");
 	} );
 	EVT_WXP_PROCESS_STREAM_EXIT  ( $win, sub {
 		my ($self, $event) = @_;
@@ -71,6 +71,7 @@ sub create {
 
 sub get_visibility    { _config()->{visible} }
 sub switch_visibility { show( get_visibility() ^ 1 ) }
+sub ensure_visibility { switch_visibility() unless get_visibility() }
 sub show {
 	my $visibile = shift;
 	my $config = _config();
@@ -106,14 +107,15 @@ sub output {
 	_config()->{append}
 		? $panel->AppendText( "\n\n" )
 		: $panel->Clear;
-	$panel->AppendText( @_ ) if @_ ;
+	_append( @_ );
 }
+sub _append { _ref()->AppendText( @_ ) if @_ }
 
 sub run {
 	my $win = Kephra::App::Window::_ref();
 	my $doc = Kephra::Document::_get_current_file_path();
 	my $dir = $Kephra::config{file}{current}{directory};
-	switch_visibility() unless get_visibility();
+	ensure_visibility();
 	Kephra::File::save_current();
 	if ($doc) {
 		chdir $dir;

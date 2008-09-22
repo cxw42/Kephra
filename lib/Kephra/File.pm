@@ -55,8 +55,8 @@ sub changed_notify_check {
 }
 
 sub _remember_save_moment {
-	my $path = shift;
-	Kephra::Document::set_tmp_value( 'file_changed', _file_age($path) );
+	my ($path, $doc_nr) = @_;
+	Kephra::Document::set_tmp_value( 'file_changed', _file_age($path), $doc_nr);
 }
 
 sub _file_age {

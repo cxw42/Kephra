@@ -6,10 +6,11 @@ use warnings;
 
 use Wx qw(wxYES wxNO);
 
+sub validate_nr { &Kephra::Document::validate_nr }
 
 # make document empty and reset all document properties to default
 sub reset {
-	my $doc_nr = shift;
+	my $doc_nr = validate_nr(shift);
 	$doc_nr = Kephra::Document::_get_current_nr() if not defined $doc_nr;
 	my $edit_panel = Kephra::App::EditPanel::_ref();
 	Kephra::Document::set_readonly(0);
@@ -20,67 +21,6 @@ sub reset {
 	reset_properties($doc_nr);
 	eval_properties($doc_nr);
 	Kephra::App::StatusBar::update_all();
-}
-
-# restore once opened file from his settings
-sub restore {
-	my %file_settings = %{ shift; };
-	my $file_name = $file_settings{file_path};
-	if ( -e $file_name ) {
-
-		# open only text files and empty files
-		return if !-z $file_name and -B $file_name
-			and ( $Kephra::config{file}{open}{only_text} == 1 );
-		# check if file is already open and goto this already opened
-		if ( $Kephra::config{file}{open}{each_once} == 1 ){
-			for ( 0 .. Kephra::Document::_get_last_nr() ) {
-				return if $Kephra::document{open}[$_]{file_path} eq $file_name;
-			}
-		}
-
-		my $doc_nr = new_if_allowed('restore');
-		load_in_current_buffer($file_name);
-		%{ $Kephra::document{open}[$doc_nr] } = %file_settings;
-		Kephra::Document::set_file_path($file_name, $doc_nr);
-		Kephra::App::TabBar::refresh_label()
-	}
-}
-
-
-# add newly opened file
-sub add {
-	my $file_name = shift;
-	my $old_nr = Kephra::Document::_get_current_nr();
-	if ( defined $file_name and -e $file_name ) {
-
-		# open only text files and empty files
-		return if ( !-z $file_name and -B $file_name
-			and $Kephra::config{file}{open}{only_text} == 1 );
-
-		# check if file is already open and goto this already opened
-		if ( $Kephra::config{file}{open}{each_once} == 1){
-			for ( 0 .. Kephra::Document::_get_last_nr() ) {
-				my $path = Kephra::Document::_get_path_from_nr($_);
-				if ($path and $path eq $file_name ){
-					Kephra::Document::Change::to_number($_);
-					return;
-				}
-			}
-		}
-		save_properties();
-		my $doc_nr = new_if_allowed('add');
-		$file_name = Kephra::Config::standartize_path_slashes( $file_name );
-		load_in_current_buffer($file_name);
-		reset_tmp_data($doc_nr);
-		reset_properties($doc_nr, $file_name);
-		eval_properties($doc_nr);
-		Kephra::Document::_set_previous_nr($old_nr);
-		Kephra::Document::_set_current_nr($doc_nr);
-		Kephra::App::Window::refresh_title();
-		Kephra::App::EditPanel::Margin::autosize_line_number();
-		Kephra::API::EventTable::trigger('document.list');
-	}
-
 }
 
 # create a new document if settings allow it
@@ -120,8 +60,70 @@ sub new_if_allowed {
 }
 
 
+# restore once opened file from his settings
+sub restore {
+	my %file_settings = %{ shift; };
+	my $file_name = $file_settings{file_path};
+	if ( -e $file_name ) {
+
+		# open only text files and empty files
+		return if !-z $file_name and -B $file_name
+			and ( $Kephra::config{file}{open}{only_text} == 1 );
+		# check if file is already open and goto this already opened
+		if ( $Kephra::config{file}{open}{each_once} == 1 ){
+			for ( 0 .. Kephra::Document::_get_last_nr() ) {
+				return if $Kephra::document{open}[$_]{file_path} eq $file_name;
+			}
+		}
+
+		my $doc_nr = new_if_allowed('restore');
+		load_in_current_buffer($file_name);
+		%{ $Kephra::document{open}[$doc_nr] } = %file_settings;
+		Kephra::Document::set_file_path($file_name, $doc_nr);
+		Kephra::App::TabBar::refresh_label()
+	}
+}
+
+
+# add newly opened file
+sub add {
+	my $file_name = shift;
+	$file_name = Kephra::Config::standartize_path_slashes( $file_name );
+	my $old_nr = Kephra::Document::_get_current_nr();
+	if ( defined $file_name and -e $file_name ) {
+
+		# open only text files and empty files
+		return if ( !-z $file_name and -B $file_name
+			and $Kephra::config{file}{open}{only_text} == 1 );
+
+		# check if file is already open and goto this already opened
+		if ( $Kephra::config{file}{open}{each_once} == 1){
+			for ( 0 .. Kephra::Document::_get_last_nr() ) {
+				my $path = Kephra::Document::_get_path_from_nr($_);
+				if ($path and $path eq $file_name ){
+					Kephra::Document::Change::to_number($_);
+					return;
+				}
+			}
+		}
+		save_properties();
+		my $doc_nr = new_if_allowed('add');
+		reset_tmp_data($doc_nr);
+		reset_properties($doc_nr, $file_name);
+		Kephra::Document::_set_previous_nr($old_nr);
+		Kephra::Document::_set_current_nr($doc_nr);
+		load_in_current_buffer($file_name);
+		eval_properties($doc_nr);
+		Kephra::App::Window::refresh_title();
+		Kephra::App::EditPanel::Margin::autosize_line_number();
+		Kephra::API::EventTable::trigger('document.list');
+	}
+
+}
+
+
 sub load_in_current_buffer {
-	my $file_name = shift || '';
+	my $file_name  = shift || '';
 	my $edit_panel = Kephra::App::EditPanel::_ref();
 	$edit_panel->ClearAll();
 	Kephra::File::IO::open_pipe($file_name);
@@ -161,9 +163,9 @@ sub check_b4_overwite {
 # set the config default to the selected document
 sub reset_properties {
 	my ($doc_nr, $file_name) = @_;
-	$doc_nr = Kephra::Document::_get_current_nr() unless defined $doc_nr;
-	$file_name = Kephra::Document::_get_current_file_path() unless defined $file_name;
-	Kephra::Document::set_file_path($file_name);
+	$doc_nr = validate_nr($doc_nr);
+	$file_name = Kephra::Document::_get_path_from_nr($doc_nr)
+		unless defined $file_name;
 	my $default = $Kephra::config{file}{defaultsettings};
 	my $doc_attr = $Kephra::document{open}[$doc_nr] = {
 		'codepage' => $default->{codepage},
@@ -174,16 +176,12 @@ sub reset_properties {
 		'tab_size' => $default->{tab_size},
 		'tab_use'  => $default->{tab_use},
 	};
-
-	$doc_attr->{syntaxmode} = Kephra::Document::SyntaxMode::_get_auto($doc_nr)
-		if defined $doc_attr->{syntaxmode} and $doc_attr->{syntaxmode} eq 'auto';
 	$doc_attr->{cursor_pos} = $default->{cursor_pos} ? $default->{cursor_pos} : 0;
-
 	if ($file_name and ( -e $file_name )) 
 		 {$doc_attr->{EOL} = $default->{EOL_open}}
-	else {$doc_attr->{EOL} = $default->{EOL_new};
-		Kephra::Document::set_EOL_mode( $doc_attr->{EOL} );
-	}
+	else {$doc_attr->{EOL} = $default->{EOL_new} }
+
+	Kephra::Document::set_file_path($file_name);
 }
 
 sub reset_tmp_data {
@@ -198,7 +196,7 @@ sub reset_tmp_data {
 
 
 sub eval_properties {
-	my $doc_nr = shift;
+	my $doc_nr = validate_nr(shift);
 	$doc_nr = Kephra::Document::_get_current_nr() unless defined $doc_nr;
 	my $doc_attr = \%{$Kephra::document{open}[$doc_nr]};
 	my $doc_data = \%{$Kephra::temp{document}{open}[$doc_nr]};
@@ -245,8 +243,7 @@ sub save_properties {
 
 
 sub change_pointer {
-	my $newtab = shift;
-	$newtab = 0 unless $newtab ;
+	my $newtab = validate_nr(shift);
 	my $oldtab  = Kephra::Document::_get_current_nr();
 	my $docsdata = $Kephra::temp{document}{open};
 	my $ep      = Kephra::App::EditPanel::_ref();
@@ -259,6 +256,7 @@ sub change_pointer {
 # various helper
 sub dissect_path {
 	my ($file_path, $doc_nr) = @_;
+	$doc_nr = validate_nr($doc_nr);
 	my $doc_data = $Kephra::temp{document}{open}[$doc_nr];
 	my ($volume, $directories, $file) = File::Spec->splitpath( $file_path );
 	$directories = $volume.$directories if $volume;

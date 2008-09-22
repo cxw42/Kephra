@@ -11,7 +11,7 @@ use warnings;
 # set document with a given nr as current document
 sub to_nr     { &to_number }
 sub to_number {
-	my $newtab = shift;
+	my $newtab = Kephra::Document::validate_nr(shift);;
 	my $oldtab = Kephra::Document::_get_current_nr();
 
 	if ($newtab != $oldtab and ref $Kephra::document{open}[$newtab] eq 'HASH') {

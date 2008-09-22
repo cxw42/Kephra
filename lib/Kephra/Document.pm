@@ -14,10 +14,10 @@ use warnings;
 use Wx qw( wxSTC_EOL_CR wxSTC_EOL_LF wxSTC_EOL_CRLF );
 
 # internal functions
-# doc number
 sub _attributes { $Kephra::document{open} } 
 sub _temp_data  { $Kephra::temp{document}{open} }
 
+# doc number
 sub _get_count      { @{ _attributes() } }
 sub _get_previous_nr{ $Kephra::document{previous_nr} }
 sub _set_previous_nr{ $Kephra::document{previous_nr} = shift }
@@ -30,10 +30,20 @@ sub _set_current_nr {
 }
 sub current_nr {
 	my $nr = shift;
+	if (defined $nr) { _set_current_nr($nr) }
+	else             { _get_current_nr()    }
+}
+sub validate_nr {
+	my $nr = shift;
 	if (defined $nr) {
-		_set_current_nr($nr)
-	} else {
-		_get_current_nr()
+		if (exists _temp_data()->[$nr]) {
+			return $nr;
+		} else {
+			if ($nr < 0) { return 0 }
+			else         { return _get_last_nr() }
+		}
+	} else { 
+		return _get_current_nr() 
 	}
 }
 sub _get_last_nr      { $#{ $Kephra::document{open} } }
