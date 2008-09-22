@@ -11,8 +11,8 @@ use Wx qw(
 );
 
 sub _ID {
-	if (defined $_[0]) { $Kephra::document{current}{syntaxmode} = $_[0] }
-	else               { $Kephra::document{current}{syntaxmode}         }
+	if (defined $_[0]) { $Kephra::temp{current}{syntaxmode} = $_[0] }
+	else               { $Kephra::temp{current}{syntaxmode}         }
 }
 
 # syntaxstyles
@@ -45,8 +45,8 @@ sub change_to {
 	my $style   = shift;
 	$style = _get_by_fileending() if $style eq 'auto';
 	$style = 'none' unless $style;
-	# do nothing when syntaxmode of new dox is the same
-	return if $Kephra::temp{document}{syntaxmode} eq $style;
+	# do nothing when syntaxmode of next doc is the same
+	return if _ID() eq $style;
 
 	# prevent clash between big lexer & indicator
 	if ( $style =~ /asp|html|php|xml/ ) { $ep->SetStyleBits(7) }
@@ -80,10 +80,10 @@ sub change_to {
 			(wxSTC_STYLE_INDENTGUIDE,&$color($indicator->{indent_guide}{color}));
 	}
 
-	# cleanup
-	$Kephra::temp{document}{syntaxmode} = $style;
+	Kephra::Document::set_attribute( 'syntaxmode', $style );
 	_ID($style);
 	$ep->Colourise( 0, $ep->GetTextLength ); # refresh editpanel painting
+	# cleanup
 	Kephra::App::EditPanel::Margin::apply_color();
 	Kephra::App::StatusBar::style_info($style);
 	return $style;

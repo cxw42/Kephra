@@ -6,6 +6,18 @@ TODO 0.4:
  * config dialog
  * syntaxmodes
 
+0.3.10.15
+ ! output panel can run scripts again
+
+0.3.10.14
+ + perl eval of notepad
+ + define find and replace item in notepad
+ ! enable right tool button after doc change
+
+0.3.10.13
+ ! cleanup doc internal mess
+ ! fix stting of current syntaxmode 
+
 0.3.10.12
  [ search finding better visible
  ! safer conf file parser init

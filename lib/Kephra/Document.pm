@@ -66,8 +66,7 @@ sub _get_all_pathes {
 
 sub set_file_path {
 	my ( $file_path, $doc_nr ) = @_;
-	$doc_nr ||= 0;
-	$doc_nr = _get_current_nr() unless $doc_nr;
+	$doc_nr = _get_current_nr() unless defined $doc_nr;
 	_attributes()->[$doc_nr]{file_path} = $file_path;
 	Kephra::Document::Internal::dissect_path( $file_path, $doc_nr );
 	Kephra::App::TabBar::refresh_label($doc_nr);

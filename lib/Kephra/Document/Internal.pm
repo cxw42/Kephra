@@ -41,6 +41,7 @@ sub restore {
 		my $doc_nr = new_if_allowed('restore');
 		load_in_current_buffer($file_name);
 		%{ $Kephra::document{open}[$doc_nr] } = %file_settings;
+		Kephra::Document::set_file_path($file_name, $doc_nr);
 		Kephra::App::TabBar::refresh_label()
 	}
 }
@@ -69,9 +70,9 @@ sub add {
 		save_properties();
 		my $doc_nr = new_if_allowed('add');
 		$file_name = Kephra::Config::standartize_path_slashes( $file_name );
+		load_in_current_buffer($file_name);
 		reset_tmp_data($doc_nr);
 		reset_properties($doc_nr, $file_name);
-		load_in_current_buffer($file_name);
 		eval_properties($doc_nr);
 		Kephra::Document::_set_previous_nr($old_nr);
 		Kephra::Document::_set_current_nr($doc_nr);
@@ -126,7 +127,6 @@ sub load_in_current_buffer {
 	Kephra::File::IO::open_pipe($file_name);
 	$edit_panel->EmptyUndoBuffer;
 	$edit_panel->SetSavePoint;
-	Kephra::Document::set_file_path($file_name);
 	Kephra::File::_remember_save_moment($file_name);
 	$Kephra::temp{document}{loaded}++;
 	#if ($Kephra::config{editpanel}{scroll_width} eq 'auto'){}
@@ -162,25 +162,28 @@ sub check_b4_overwite {
 sub reset_properties {
 	my ($doc_nr, $file_name) = @_;
 	$doc_nr = Kephra::Document::_get_current_nr() unless defined $doc_nr;
-	my $def = $Kephra::config{file}{defaultsettings};
+	$file_name = Kephra::Document::_get_current_file_path() unless defined $file_name;
+	Kephra::Document::set_file_path($file_name);
+	my $default = $Kephra::config{file}{defaultsettings};
 	my $doc_attr = $Kephra::document{open}[$doc_nr] = {
-		'codepage' => $def->{codepage},
+		'codepage' => $default->{codepage},
 		'edit_pos' => -1,
 		'file_path'=> $file_name,
-		'readonly' => $def->{readonly},
-		'syntaxmode'=>$def->{syntaxmode},
-		'tab_size' => $def->{tab_size},
-		'tab_use'  => $def->{tab_use},
+		'readonly' => $default->{readonly},
+		'syntaxmode'=>$default->{syntaxmode},
+		'tab_size' => $default->{tab_size},
+		'tab_use'  => $default->{tab_use},
 	};
+
 	$doc_attr->{syntaxmode} = Kephra::Document::SyntaxMode::_get_auto($doc_nr)
 		if defined $doc_attr->{syntaxmode} and $doc_attr->{syntaxmode} eq 'auto';
+	$doc_attr->{cursor_pos} = $default->{cursor_pos} ? $default->{cursor_pos} : 0;
 
 	if ($file_name and ( -e $file_name )) 
-		 {$doc_attr->{EOL} = $def->{EOL_open}}
-	else {$doc_attr->{EOL} = $def->{EOL_new};
+		 {$doc_attr->{EOL} = $default->{EOL_open}}
+	else {$doc_attr->{EOL} = $default->{EOL_new};
 		Kephra::Document::set_EOL_mode( $doc_attr->{EOL} );
 	}
-	$doc_attr->{cursor_pos} = $def->{cursor_pos} ? $def->{cursor_pos} : 0;
 }
 
 sub reset_tmp_data {
@@ -196,7 +199,7 @@ sub reset_tmp_data {
 
 sub eval_properties {
 	my $doc_nr = shift;
-	$doc_nr = Kephra::Document::_get_current_nr() if ( !$doc_nr );
+	$doc_nr = Kephra::Document::_get_current_nr() unless defined $doc_nr;
 	my $doc_attr = \%{$Kephra::document{open}[$doc_nr]};
 	my $doc_data = \%{$Kephra::temp{document}{open}[$doc_nr]};
 	my $ep = Kephra::App::EditPanel::_ref();

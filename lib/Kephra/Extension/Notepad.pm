@@ -7,7 +7,7 @@ use Wx qw(
 	wxDEFAULT wxNORMAL wxLIGHT
 	wxTE_MULTILINE wxTE_LEFT 
 	wxFONTSTYLE_NORMAL wxFONTWEIGHT_NORMAL
-	WXK_ESCAPE WXK_F4
+	WXK_ESCAPE WXK_F3 WXK_F4 WXK_F5
 	wxSTC_WRAP_WORD wxSTC_STYLE_DEFAULT
 );
 use Wx::Event qw( EVT_KEY_DOWN );
@@ -57,11 +57,27 @@ sub create {
 	EVT_KEY_DOWN( $notepad, sub {
 			my ( $fi, $event ) = @_;
 			my $key = $event->GetKeyCode;
+			my $ep = Kephra::App::EditPanel::_ref();
 			if ($key == WXK_ESCAPE) {
-				Wx::Window::SetFocus( Kephra::App::EditPanel::_ref() );
+				Wx::Window::SetFocus( $ep );
+			} elsif ($key == WXK_F3) {
+				if ($event->ControlDown) {
+					my $sel = $notepad->GetSelectedText;
+					$event->ShiftDown
+						? Kephra::Edit::Search::set_replace_item($sel)
+						: Kephra::Edit::Search::set_find_item($sel);
+				}
 			} elsif ($key == WXK_F4) {
-				Wx::Window::SetFocus( Kephra::App::EditPanel::_ref() );
+				Wx::Window::SetFocus( $ep );
 				switch_visibility() if $event->ControlDown;
+			} elsif ($key == WXK_F5) {
+				my ( $sel_beg, $sel_end ) = $notepad->GetSelection;
+				my $code = $sel_beg == $sel_end
+					? $notepad->GetText
+					: $notepad->GetSelectedText;
+				my $result = eval $code;
+				$result = $@ if $@;
+				Kephra::Extension::Output::output($result);
 			}
 			$event->Skip;
 	});	

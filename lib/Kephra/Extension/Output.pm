@@ -103,7 +103,10 @@ sub save_size {
 
 sub output { 
 	my $panel = _ref();
-	$panel->AppendText( @_ );
+	_config()->{append}
+		? $panel->AppendText( "\n\n" )
+		: $panel->Clear;
+	$panel->AppendText( @_ ) if @_ ;
 }
 
 sub run {
@@ -116,9 +119,7 @@ sub run {
 		chdir $dir;
 		my $proc = _ref()->{process} = Wx::Perl::ProcessStream->OpenProcess
 			(qq~perl $doc~ , 'Output-Extension', $win); # -I$dir 
-		_config()->{append}
-			? _ref()->AppendText( "\n\n" )
-			: _ref()->Clear;
+		output();
 		Kephra::API::EventTable::trigger('extension.output.run');
 		if (not $proc) {
 		}

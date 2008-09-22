@@ -23,7 +23,12 @@ sub to_number {
 		Kephra::App::Window::refresh_title();
 		Kephra::Edit::_center_caret();
 		Kephra::Document::_set_previous_nr($oldtab);
-		Kephra::API::EventTable::trigger('document.current.number.changed');
+		Kephra::API::EventTable::trigger( qw(
+			document.current.number.changed'
+			document.savepoint
+			document.text.change
+			document.text.select
+		) );
 		return 1;
 	}
 	return 0;

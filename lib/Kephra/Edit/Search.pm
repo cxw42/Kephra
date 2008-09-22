@@ -168,7 +168,6 @@ sub set_find_item {
 	if (defined $new and $new ne $old){
 		_history()->{current_find_item} = $new;
 		$Kephra::temp{search}{item}{found} = 1;
-#print "item changes\n";
 		Kephra::API::EventTable::trigger('find.item.changed');
 	}
 }
