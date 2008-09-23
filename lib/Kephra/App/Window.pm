@@ -28,7 +28,7 @@ sub create {
 
 sub apply_settings{
 	my $win = _ref();
-	$win->DragAcceptFiles(1) if Wx::wxMSW();
+	#$win->DragAcceptFiles(1) if Wx::wxMSW();
 	my $icon_file = Kephra::Config::existing_filepath( _config()->{icon} );
 	load_icon( $win, $icon_file );
 	restore_positions();
@@ -56,12 +56,11 @@ sub set_title {
 sub refresh_title {
 	my $appname = $Kephra::NAME;
 	my $version = $Kephra::VERSION;
-	my $filepath = Kephra::Document::_get_current_file_path()
-			|| "<$Kephra::localisation{app}{general}{untitled}>";
-	my $filename = Kephra::Document::_get_current_name()
-			|| "<$Kephra::localisation{app}{general}{untitled}>";
-	my $docnr = Kephra::Document::_get_current_nr() + 1;
-	my $doccount = Kephra::Document::_get_last_nr();
+	my $untitled = $Kephra::localisation{app}{general}{untitled};
+	my $filepath = Kephra::Document::get_file_path() || "<$untitled>";
+	my $filename = Kephra::Document::file_name() || "<$untitled>";
+	my $docnr = Kephra::Document::current_nr() + 1;
+	my $doccount = Kephra::Document::last_nr();
 	set_title( eval qq/"$Kephra::config{app}{window}{title}"/ );
 }
 
@@ -85,8 +84,8 @@ sub save_positions{
 	my $app_win = Kephra::App::Window::_ref();
 	my $config  = _config();
 	if ($config->{save_position}){
-		($config->{position_x},$config->{position_y})=$app_win->GetPositionXY;
-		($config->{size_x},    $config->{size_y})    =$app_win->GetSizeWH;
+		($config->{position_x},$config->{position_y}) = $app_win->GetPositionXY;
+		($config->{size_x},    $config->{size_y})     = $app_win->GetSizeWH;
 	}
 }
 sub restore_positions{

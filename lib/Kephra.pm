@@ -5,7 +5,7 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.3.10.16';     # version of entire app
+our $VERSION    = '0.3.10.18';     # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE = '';              # starter flag for moveable installations
 our $BENCHMARK;                    # flag for benchmark loggings
@@ -73,7 +73,7 @@ use Kephra::Dialog;                # API 2 dialogs, fileselectors, msgboxes
 use Kephra::Document;              # document menu funktions
 use Kephra::Document::Change;      # calls for changing current doc
 use Kephra::Document::Internal;    # doc handling helper methods
-use Kephra::Document::SyntaxMode;  # doc handling helper methods
+use Kephra::Document::SyntaxMode;  # language specific settings
 use Kephra::Edit;                  # basic edit menu funktions
 use Kephra::Edit::Comment;         # comment functions
 use Kephra::Edit::Convert;         # convert functions

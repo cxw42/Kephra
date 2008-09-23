@@ -1,5 +1,5 @@
 package Kephra::Document;
-our $VERSION = '0.44';
+our $VERSION = '0.45';
 
 use strict;
 use warnings;
@@ -14,212 +14,79 @@ use warnings;
 use Wx qw( wxSTC_EOL_CR wxSTC_EOL_LF wxSTC_EOL_CRLF );
 
 # internal functions
-sub _attributes { $Kephra::document{open} } 
-sub _temp_data  { $Kephra::temp{document}{open} }
+sub _attributes    { Kephra::Document::Internal::attributes() } 
+sub _temp_data     { Kephra::Document::Internal::temp_data()  }
+sub _get_attribute { Kephra::Document::Internal::get_attribute(@_) }
+sub _set_attribute { Kephra::Document::Internal::set_attribute(@_) }
 
 # doc number
-sub _get_count      { @{ _attributes() } }
-sub _get_previous_nr{ $Kephra::document{previous_nr} }
-sub _set_previous_nr{ $Kephra::document{previous_nr} = shift }
-sub _get_current_nr { $Kephra::document{current_nr} }
-sub _set_current_nr {
-	my $nr = shift || 0;
-	$Kephra::document{current_nr} = $nr;
-	$Kephra::document{current}    = _attributes()->[$nr];
-	$Kephra::temp{current_doc}    = _temp_data()->[$nr];
-}
-sub current_nr {
-	my $nr = shift;
-	if (defined $nr) { _set_current_nr($nr) }
-	else             { _get_current_nr()    }
-}
-sub validate_nr {
-	my $nr = shift;
-	if (defined $nr) {
-		if (exists _temp_data()->[$nr]) {
-			return $nr;
-		} else {
-			if ($nr < 0) { return 0 }
-			else         { return _get_last_nr() }
-		}
-	} else { 
-		return _get_current_nr() 
-	}
-}
-sub _get_last_nr      { $#{ $Kephra::document{open} } }
-sub _get_nr_from_path {
+sub get_count      { Kephra::Document::Internal::count()        }
+sub current_nr     { &Kephra::Document::Internal::current_nr    }
+sub get_current_nr { Kephra::Document::Internal::current_nr()   }
+sub set_current_nr { Kephra::Document::Internal::current_nr(@_) }
+sub last_nr        { Kephra::Document::Internal::last_nr()      }
+sub get_last_nr    { Kephra::Document::Internal::last_nr()      }
+sub previous_nr    { Kephra::Document::Internal::previous_nr()  }
+sub all_nr         { Kephra::Document::Internal::all_nr()       }
+sub validate_nr    { Kephra::Document::Internal::validate_nr(@_)}
+
+sub get_attribute { Kephra::Document::Internal::get_attribute(@_) }
+sub set_attribute { Kephra::Document::Internal::set_attribute(@_) }
+sub get_tmp_value { Kephra::Document::Internal::get_tmp_value(@_) }
+sub set_tmp_value { Kephra::Document::Internal::set_tmp_value(@_) }
+
+sub nr_from_file_path {
 	my $given_path = shift;
-	my $attr = _attributes();
-	my @answer = ();
-	for ( 0 .. _get_last_nr() ) {
-		push @answer, $_ if $attr->[$_]{file_path} eq $given_path;
+	my @files = @{ all_file_pathes() };
+	for ( 0 .. $#files ) {
+		return $_ if $files[$_] eq $given_path
 	}
-	$#answer == -1 ? return 0 : return \@answer;
 }
-
-sub _get_path_from_nr {
-	my $nr = shift;
-	_attributes()->[$nr]{file_path} if $nr <= _get_last_nr()
-}
-
-sub _get_current_file_path {
-	$Kephra::document{current}{file_path}
-		if exists $Kephra::document{current}{file_path};
-}
-
-sub _get_all_pathes {
+sub all_file_pathes {
 	my @pathes;
 	my $attr = _attributes();
-	$pathes[$_] = $attr->[$_]{file_path} for 0 .. _get_last_nr();
+	$pathes[$_] = $attr->[$_]{file_path} for @{ all_nr() };
 	return \@pathes;
 }
+sub get_file_path { Kephra::Document::Internal::get_file_path( $_[0]) }
+sub set_file_path { Kephra::Document::Internal::set_file_path( @_ )   }
 
-sub set_file_path {
-	my ( $file_path, $doc_nr ) = @_;
-	$doc_nr = _get_current_nr() unless defined $doc_nr;
-	_attributes()->[$doc_nr]{file_path} = $file_path;
-	Kephra::Document::Internal::dissect_path( $file_path, $doc_nr );
-	Kephra::App::TabBar::refresh_label($doc_nr);
-	Kephra::App::Window::refresh_title();
-}
-
-sub _get_current_name { $Kephra::temp{current_doc}{name} }
-sub _get_name_from_nr {
-	my $nr = shift;
-	$Kephra::temp{document}{open}[$nr]{name}  if $nr <= _get_last_nr()
-}
-
-sub _get_all_names {
+sub file_name { Kephra::Document::Internal::get_tmp_value('name', $_[0]) }
+sub all_file_names {
 	my @names;
-	my $docs = \@{$Kephra::temp{document}{open}};
-	$names[$_] = $docs->[$_]{name} for 0 .. _get_last_nr();
+	$names[$_] = file_name($_) for @{ all_nr() };
 	return \@names;
 }
+sub first_name { Kephra::Document::Internal::get_tmp_value('firstname', $_[0]) }
 
-sub _get_current_pos {
+sub do_with_all { Kephra::Document::Internal::do_with_all(@_) }
+
+sub cursor_pos {
 	return $Kephra::document{current}{cursor_pos}
 		unless $Kephra::temp{document}{loaded};
 }
 
-sub _get_current_firstname { $Kephra::temp{current_doc}{firstname} }
+############################################################################
 
-sub do_with_all {
-	my $code = shift;
-	return unless ref $code eq 'CODE';
-	my $nr = _get_current_nr();
-	my $docs = $Kephra::temp{document}{open};
-	Kephra::Document::Internal::save_properties();
-	for ( 0 .. _get_last_nr() ) {
-		Kephra::Document::Internal::change_pointer($_);
-		&$code( $docs->[$_] );
-	}
-	Kephra::Document::Internal::change_pointer($nr);
-	Kephra::Document::Internal::eval_properties($nr);
+sub convert_indent2tabs   { _edit( \&Kephra::Edit::Convert::indent2tabs  )}
+sub convert_indent2spaces { _edit( \&Kephra::Edit::Convert::indent2spaces)}
+sub convert_spaces2tabs   { _edit( \&Kephra::Edit::Convert::spaces2tabs  )}
+sub convert_tabs2spaces   { _edit( \&Kephra::Edit::Convert::tabs2spaces  )}
+sub del_trailing_spaces   { _edit( \&Kephra::Edit::Format::del_trailing_spaces)}
+
+sub _edit{
+	my $coderef = shift;
+	return unless ref $coderef eq 'CODE';
+	my @txt_events = ('document.text.change','document.text.select','caret.move');
+	Kephra::API::EventTable::freeze(@txt_events);
+	Kephra::Edit::_save_positions();
+	Kephra::Edit::Select::document();
+	&$coderef();
+	Kephra::Edit::_restore_positions();
+	Kephra::API::EventTable::thaw(@txt_events);
+	Kephra::API::EventTable::trigger(@txt_events);
+	1;
 }
-#
-sub get_attribute {
-	my $attr = shift;
-	return unless $attr;
-	my $nr = shift;
-	$nr = _get_current_nr() unless defined $nr;
-	my $docs = _attributes();
-	return unless ref $docs eq 'ARRAY';
-	$docs->[ $nr ]{$attr};
-}
-
-sub set_attribute {
-	my $attr = shift;
-	my $value = shift;
-	return unless $value;
-	my $nr = shift;
-	$nr = _get_current_nr() unless defined $nr;
-	_attributes()->[ $nr ]{$attr} = $value
-}
-
-sub get_tmp_value {
-	my $name = shift;
-	return unless $name;
-	my $nr = shift;
-	$nr = _get_current_nr() unless defined $nr;
-	my $tmp_data = $Kephra::temp{document}{open};
-	$tmp_data->[ $nr ]{$name} if ref $tmp_data->[ $nr ] eq 'HASH';
-}
-
-sub set_tmp_value {
-	my $name = shift;
-	my $value = shift;
-	return unless $value;
-	my $nr = shift;
-	$nr = _get_current_nr() unless defined $nr;
-	$Kephra::temp{document}{open}[ $nr ]{$name} = $value
-}
-
-
-#########################################
-
-sub move_left {
-	my $old_nr = current_nr();
-	my $new_nr = $old_nr - 1;
-	if ($new_nr > -1) { switch($old_nr, $new_nr) }
-	else { 
-		$new_nr = _get_last_nr();
-		my $attr = _attributes();
-		my $data = _temp_data();
-		my $doc_a = shift @$attr;
-		push @$attr, $doc_a;
-		my $doc_d = shift @$data;
-		push @$data, $doc_d;
-		_set_current_nr($new_nr);
-		Kephra::App::TabBar::rot_tab_content('right');
-		Kephra::App::TabBar::set_current_page($new_nr);
-		Kephra::App::EditPanel::gets_focus();
-		Kephra::API::EventTable::trigger('document.list');
-	}
-}
-
-sub move_right {
-	my $old_nr = current_nr(); 
-	my $new_nr = $old_nr + 1;
-	if ( $new_nr <= _get_last_nr() ) { switch($old_nr, $new_nr) }
-	else {
-		$new_nr = 0;
-		my $attr = _attributes();
-		my $data = _temp_data();
-		my $doc_a = pop @$attr;
-		unshift @$attr, $doc_a;
-		my $doc_d = pop @$data;
-		unshift @$data, $doc_d;
-		_set_current_nr($new_nr);
-		Kephra::App::TabBar::rot_tab_content('left');
-		Kephra::App::TabBar::set_current_page($new_nr);
-		Kephra::App::EditPanel::gets_focus();
-		Kephra::API::EventTable::trigger('document.list');
-	}
-}
-
-sub switch {
-	my ($old_nr, $new_nr) = @_;
-	return unless defined $new_nr;
-	my $cur_nr = current_nr(); 
-	my $attr = _attributes();
-	my $data = _temp_data();
-	($attr->[$old_nr], $attr->[$new_nr]) = ($attr->[$new_nr], $attr->[$old_nr]);
-	($data->[$old_nr], $data->[$new_nr]) = ($data->[$new_nr], $data->[$old_nr]);
-	Kephra::App::TabBar::switch_tab_content($old_nr, $new_nr);
-	if ($cur_nr == $old_nr) {
-		_set_current_nr($new_nr);
-		Kephra::App::TabBar::set_current_page($new_nr);
-	} 
-	elsif ($cur_nr == $new_nr) {
-		_set_current_nr($old_nr);
-		Kephra::App::TabBar::set_current_page($old_nr);
-	}
-	Kephra::App::EditPanel::gets_focus();
-	Kephra::API::EventTable::trigger('document.list');
-}
-#########################################
-# getter/setter for Document properties
-#########################################
 
 sub set_codepage {
 	my $ep = Kephra::App::EditPanel::_get();
@@ -228,8 +95,10 @@ sub set_codepage {
 	#Kephra::Dialog::msg_box(undef, Wx::wxUNICODE(), '');
 	#use Wx::STC qw(wxSTC_CP_UTF8);
 }
+##################################################################
+# Properties
+##################################################################
 
-#
 sub get_tab_size { $Kephra::document{current}{tab_size} }
 sub set_tab_size {
 	my $size = shift;
@@ -255,26 +124,6 @@ sub set_tab_mode {
 sub set_tabs_hard  { set_tab_mode(1) }
 sub set_tabs_soft  { set_tab_mode(0) }
 sub switch_tab_mode{ get_tab_mode() ? set_tab_mode(0) : set_tab_mode(1) }
-#
-sub convert_indent2tabs   { _edit( \&Kephra::Edit::Convert::indent2tabs  )}
-sub convert_indent2spaces { _edit( \&Kephra::Edit::Convert::indent2spaces)}
-sub convert_spaces2tabs   { _edit( \&Kephra::Edit::Convert::spaces2tabs  )}
-sub convert_tabs2spaces   { _edit( \&Kephra::Edit::Convert::tabs2spaces  )}
-sub del_trailing_spaces   { _edit( \&Kephra::Edit::Format::del_trailing_spaces)}
-
-sub _edit{
-	my $coderef = shift;
-	return unless ref $coderef eq 'CODE';
-	my @txt_events = ('document.text.change','document.text.select','caret.move');
-	Kephra::API::EventTable::freeze(@txt_events);
-	Kephra::Edit::_save_positions();
-	Kephra::Edit::Select::document();
-	&$coderef();
-	Kephra::Edit::_restore_positions();
-	Kephra::API::EventTable::thaw(@txt_events);
-	Kephra::API::EventTable::trigger(@txt_events);
-	1;
-}
 
 #
 sub get_EOL_mode { $Kephra::document{current}{EOL} }
@@ -290,7 +139,7 @@ sub set_EOL_mode {
 	elsif ( $mode eq 'cr+lf'or $mode eq 'win') {$ep->SetEOLMode(wxSTC_EOL_CRLF);
 		$$eoll = 2;
 	}
-	set_attribute('EOL', $mode);
+	_set_attribute('EOL', $mode);
 	Kephra::App::StatusBar::EOL_info($mode);
 }
 
@@ -301,7 +150,7 @@ sub set_EOL_mode_auto { set_EOL_mode('auto' ) }
 
 sub convert_EOL {
 	my $ep = Kephra::App::EditPanel::_ref();
-	my $doc_nr    = &_get_current_nr;
+	my $doc_nr    = current_nr();
 	my $mode      = shift;
 	$mode = $Kephra::config{file}{defaultsettings}{EOL_new} if ( !$mode );
 
@@ -331,7 +180,6 @@ sub detect_EOL_mode {
 		return 'auto';
 	}
 }
-
 
 
 # auto indention
@@ -389,8 +237,8 @@ sub set_bracelight_off {
 sub get_readonly { $Kephra::document{current}{readonly} }
 sub set_readonly {
 	my $status     = shift;
-	my $ep = Kephra::App::EditPanel::_ref();
-	my $file_name  = _get_current_file_path();
+	my $ep         = Kephra::App::EditPanel::_ref();
+	my $file_name  = get_file_path();
 	my $old_state  = $ep->GetReadOnly;
 
 	if ( not $status or $status eq 'off' ) {

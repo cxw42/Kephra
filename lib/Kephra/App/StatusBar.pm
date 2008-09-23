@@ -241,7 +241,7 @@ sub _get_file_info {
 
 	# show how old file is
 	} elsif ( $selector == 2 ) {
-		my $file_name = Kephra::Document::_get_current_file_path();
+		my $file_name = Kephra::Document::get_file_path();
 		if ($file_name) {
 			my @time = localtime( $^T - ( -M $file_name ) * 86300 );
 			return sprintf ' %s: %02d:%02d - %02d.%02d.%d', $l10->{last_change},

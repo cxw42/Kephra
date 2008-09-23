@@ -161,7 +161,7 @@ sub set_current_page {
 # refresh the label of given number
 sub refresh_label {
 	my $doc_nr = shift;
-	$doc_nr = Kephra::Document::_get_current_nr() unless defined $doc_nr;
+	$doc_nr = Kephra::Document::current_nr() unless defined $doc_nr;
 	return unless defined $Kephra::temp{document}{open}[$doc_nr];
 
 	my $config   = _config();
@@ -176,7 +176,7 @@ sub refresh_label {
 	}
 	# set config files in square brackets
 	if (    $config->{mark_configs}
-		and Kephra::Document::get_attribute('config_file', $doc_nr)
+		and Kephra::Document::Internal::get_attribute('config_file', $doc_nr)
 		and $Kephra::config{file}{save}{reload_config}              ) {
 		$label = '$ ' . $label;
 	}
@@ -189,12 +189,12 @@ sub refresh_label {
 	_tabs()->SetPageText( $doc_nr, $label );
 }
 
-sub refresh_current_label{ refresh_label(Kephra::Document::_get_current_nr()) }
+sub refresh_current_label{ refresh_label(Kephra::Document::current_nr()) }
 
 sub refresh_all_label {
 	if ( $Kephra::temp{document}{loaded} ) {
-		refresh_label($_) for 0 .. Kephra::Document::_get_last_nr();
-		set_current_page( Kephra::Document::_get_current_nr() );
+		refresh_label($_) for @{ Kephra::Document::all_nr() };
+		set_current_page( Kephra::Document::current_nr() );
 	}
 }
 

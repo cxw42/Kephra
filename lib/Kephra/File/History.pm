@@ -1,5 +1,5 @@
 package Kephra::File::History;
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use strict;
 use warnings;
@@ -26,7 +26,7 @@ sub init {
 	Kephra::API::EventTable::add_call( 
 		'document.list', 'file_history', sub {
 			my @history = @{ _get() };
-			my $path = Kephra::Document::_get_current_file_path();
+			my $path = Kephra::Document::get_file_path();
 			return unless $path;
 			my @uniq = grep { $_ ne $path } @history;
 			_set(\@uniq);

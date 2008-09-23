@@ -26,7 +26,7 @@ sub _indicator_config { _config()->{indicator} }
 #
 sub create {
 	my $ep = Wx::StyledTextCtrl->new( Kephra::App::Window::_ref() );
-	$ep->DragAcceptFiles(1) if Wx::wxMSW();
+	#$ep->DragAcceptFiles(1) if Wx::wxMSW();
 	_ref($ep);
 	return $ep;
 }
@@ -69,7 +69,7 @@ sub apply_settings {
 
 	$ep->SetScrollWidth($conf->{scroll_width}) 
 		unless $conf->{scroll_width} eq 'auto';
-
+	#wxSTC_CP_UTF8 Wx::wxUNICODE()
 	$ep->SetCodePage(65001);
 	set_word_chars();
 
@@ -137,6 +137,7 @@ sub apply_bracelight_settings{
 sub paint_bracelight {
 	my $ep       = _ref();
 	my $pos      = $ep->GetCurrentPos;
+	my $tab_size = $Kephra::document{current}{tab_size};
 	my $matchpos = $ep->BraceMatch(--$pos);
 	$matchpos = $ep->BraceMatch(++$pos) if $matchpos == -1;
 
@@ -149,7 +150,7 @@ sub paint_bracelight {
 		my $indent = $ep->GetLineIndentation( $ep->LineFromPosition($pos) );
 		# highlighting indenting guide
 		$ep->SetHighlightGuide($indent)
-			if $indent % $Kephra::document{current}{tab_size} == 0;
+			if $indent and $tab_size and $indent % $tab_size == 0;
 	} else {
 		# disbale all highlight
 		$ep->BraceHighlight( -1, -1 );

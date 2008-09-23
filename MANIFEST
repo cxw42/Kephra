@@ -57,7 +57,6 @@ lib/Kephra/Dialog/Search.pm
 lib/Kephra/Document.pm
 lib/Kephra/Document/Change.pm
 lib/Kephra/Document/Internal.pm
-lib/Kephra/Document/Property.pm
 lib/Kephra/Document/SyntaxMode.pm
 lib/Kephra/Edit.pm
 lib/Kephra/Edit/Bookmark.pm

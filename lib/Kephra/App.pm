@@ -180,7 +180,10 @@ sub start {
 
 sub exit { 
 	Kephra::API::EventTable::stop_timer();
-	return if Kephra::Dialog::save_on_exit() eq 'cancel';
+	if (Kephra::Dialog::save_on_exit() eq 'cancel') {
+		Kephra::API::EventTable::start_timer();
+		return;
+	}
 	exit_unsaved();
 }
 

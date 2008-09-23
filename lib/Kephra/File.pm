@@ -35,15 +35,15 @@ sub can_save     { $Kephra::temp{current_doc}{modified} }
 sub can_save_all { $Kephra::temp{document}{modified} }
 
 sub changed_notify_check {
-	my $current_doc = Kephra::Document::_get_current_nr();
-	for my $file_nr ( 0 .. Kephra::Document::_get_last_nr() ) {
-		my $path = Kephra::Document::get_attribute('file_path', $file_nr);
+	my $current_doc = Kephra::Document::current_nr();
+	for my $file_nr ( @{ Kephra::Document::all_nr() } ) {
+		my $path = Kephra::Document::get_file_path($file_nr);
 		next unless $path;
-		my $remembered = Kephra::Document::get_tmp_value('file_changed', $file_nr);
+		my $remembered = Kephra::Document::Internal::get_tmp_value('file_changed', $file_nr);
 		#next if (not -e $path) and $remembered eq 'gone';
 		my $current_age= _file_age($path);
 		unless ( $remembered == $current_age) {
-			my $last_time = Kephra::Document::get_tmp_value('did_notify', $file_nr);
+			my $last_time = Kephra::Document::Internal::get_tmp_value('did_notify', $file_nr);
 			next if defined  $last_time and $last_time == $current_age;
 			Kephra::Document::Change::to_number( $file_nr );
 			_remember_save_moment($path);
@@ -51,12 +51,13 @@ sub changed_notify_check {
 		}
 	}
 	Kephra::Document::Change::to_number($current_doc) 
-		unless $current_doc == Kephra::Document::_get_current_nr();
+		unless $current_doc == Kephra::Document::current_nr();
 }
 
 sub _remember_save_moment {
 	my ($path, $doc_nr) = @_;
-	Kephra::Document::set_tmp_value( 'file_changed', _file_age($path), $doc_nr);
+	Kephra::Document::Internal::set_tmp_value
+		( 'file_changed', _file_age($path), $doc_nr);
 }
 
 sub _file_age {
@@ -100,7 +101,7 @@ sub add_dir{
 sub new {
 	my $doc_nr = Kephra::Document::Internal::new_if_allowed('new');
 	Kephra::Document::Internal::reset();
-	Kephra::Document::_set_current_nr( $doc_nr );
+	Kephra::Document::set_current_nr( $doc_nr );
 }
 
 sub add { &Kephra::Document::Internal::add }
@@ -130,8 +131,8 @@ sub open_all_of_dir{
 
 sub reload { reload_current(@_) } # alias
 sub reload_current {
-	my $file_path = Kephra::Document::_get_current_file_path();
-	my $nr = Kephra::Document::_get_current_nr();
+	my $file_path = Kephra::Document::get_file_path();
+	my $nr = Kephra::Document::current_nr();
 	if ($file_path and -e $file_path){
 		my $ep = Kephra::App::EditPanel::_ref();
 		Kephra::Document::Internal::save_properties();
@@ -171,7 +172,7 @@ sub save         { save_current(@_) }
 sub save_current {
 	my ($ctrl, $event) = @_;
 	my $ep = Kephra::App::EditPanel::_ref();
-	my $file_name   = Kephra::Document::_get_current_file_path();
+	my $file_name   = Kephra::Document::get_file_path();
 	my $save_config = $Kephra::config{file}{save};
 	if ( $ep->GetModify == 1 or $save_config->{unchanged} ) {
 		if ( $file_name and -e $file_name ) {
@@ -188,7 +189,7 @@ sub save_current {
 				# reloads the needed configs if the file was a config file
 				Kephra::Config::Global::eval_config_file($file_name)
 					if $save_config->{reload_config} == 1
-					and Kephra::Document::get_attribute('config_file');
+					and Kephra::Document::Internal::get_attribute('config_file');
 				_remember_save_moment($file_name);
 				$ep->SetSavePoint;
 			}
@@ -208,7 +209,7 @@ sub save_as {
 	    and Kephra::Document::Internal::check_b4_overwite($file_name) ) {
 
 		my $ep = Kephra::App::EditPanel::_ref();
-		my $oldname = Kephra::Document::_get_current_file_path();
+		my $oldname = Kephra::Document::get_file_path();
 		$Kephra::temp{document}{loaded}++ if defined $oldname and $oldname;
 
 		Kephra::Document::set_file_path($file_name);
@@ -241,7 +242,7 @@ sub rename {
 		$Kephra::config{file}{current}{directory},
 		$Kephra::temp{file}{filterstring}{all} );
 	if ($new_path_name){
-		my $old_path_name = Kephra::Document::_get_current_file_path();
+		my $old_path_name = Kephra::Document::get_file_path();
 		rename $old_path_name, $new_path_name if $old_path_name;
 		Kephra::Document::set_file_path($new_path_name);
 		Kephra::Document::SyntaxMode::change_to('auto');
@@ -270,7 +271,7 @@ sub save_all_named {
 	my $unsaved = can_save_all();
 	return unless $unsaved;
 	if ($unsaved == 1 and can_save() ) {
-		save_current() if Kephra::Document::_get_current_name();
+		save_current() if Kephra::Document::get_file_path();
 	}
 	else {
 		Kephra::Document::do_with_all( sub {
@@ -286,8 +287,7 @@ sub print {
 	my $ep       = Kephra::App::EditPanel::_ref();
 	my $printer  = Wx::Printer->new;
 	my $printout = Wx::Printout->new(
-		"$Kephra::NAME $Kephra::VERSION : " .
-		Kephra::Document::_get_current_name()
+		"$Kephra::NAME $Kephra::VERSION : " . Kephra::Document::name()
 	);
 	#$ep->FormatRange(doDraw,startPos,endPos,draw,target,renderRect,pageRect);
 	#$printer->Print( $frame, $printout, 1 );
@@ -323,19 +323,19 @@ sub close_current {
 
 
 sub close_other {
-	my $doc_nr = Kephra::Document::_get_current_nr();
+	my $doc_nr = Kephra::Document::current_nr();
 	Kephra::Document::Change::to_number(0);
 	$_ != $doc_nr ? close_current() : Kephra::Document::Change::to_number(1)
-		for 0 .. Kephra::Document::_get_last_nr();
+		for @{ Kephra::Document::all_nr() };
 }
 
-sub close_all { close_current() for 0 .. Kephra::Document::_get_last_nr() }
+sub close_all { close_current() for @{ Kephra::Document::all_nr() } }
 
 sub close_unsaved {
 	my ( $frame, $event ) = @_;
 	my $ep           = Kephra::App::EditPanel::_ref();
-	my $close_tab_nr = Kephra::Document::_get_current_nr();
-	my $path         = Kephra::Document::_get_current_file_path();
+	my $close_tab_nr = Kephra::Document::current_nr();
+	my $path         = Kephra::Document::get_file_path();
 
 	# empty last document
 	if ( $Kephra::temp{document}{buffer} == 1 ) {
@@ -366,7 +366,7 @@ sub close_unsaved {
 		}
 
 		#set correct internal pointer to new current file
-		Kephra::Document::_set_current_nr($Kephra::document{current_nr});
+		Kephra::Document::set_current_nr( Kephra::Document::current_nr() );
 		Kephra::App::TabBar::refresh_all_label();
 	}
 	#
@@ -376,13 +376,13 @@ sub close_unsaved {
 	Kephra::File::History::add( $path );
 }
 
-sub close_all_unsaved { close_unsaved() for 0..Kephra::Document::_get_last_nr() }
+sub close_all_unsaved { close_unsaved() for @{ Kephra::Document::all_nr() } }
 
 sub close_other_unsaved {
-	my $doc_nr = Kephra::Document::_get_current_nr();
+	my $doc_nr = Kephra::Document::current_nr();
 	Kephra::Document::Change::to_number(0);
 	$_ != $doc_nr ? close_unsaved() : Kephra::Document::Change::to_number(1)
-		for 0 .. Kephra::Document::_get_last_nr();
+		for @{ Kephra::Document::all_nr() };
 }
 
 1;

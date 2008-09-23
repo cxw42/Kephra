@@ -51,7 +51,7 @@ sub load {
 			Kephra::App::EditPanel::Margin::reset_line_number_width();
 			Kephra::Document::Internal::eval_properties($#load_files);
 			Kephra::Document::Change::to_number($start_nr);
-			Kephra::Document::_set_previous_nr($start_nr);
+			Kephra::Document::Internal::set_previous_nr($start_nr);
 		} else {
 			Kephra::Dialog::warning_box(undef, $file_name,
 			    $Kephra::localisation{dialog}{error}{config_parse});
@@ -69,8 +69,8 @@ sub add {
 	if ( -r $file_name ) {
 		my %temp_config = %{ Kephra::Config::File::load($file_name) };
 		if (%temp_config) {
-			my $current_doc_nr = $Kephra::document{current_nr};
-			my $prev_doc_nr    = $Kephra::document{previous_nr};
+			my $current_doc_nr = Kephra::Document::current_nr();
+			my $prev_doc_nr    = Kephra::Document::previous_nr();
 			#my $start_node = $Kephra::config{file}{current}{session}{node};
 			my @load_files = @{ Kephra::Config::Tree::_convert_node_2_AoH(
 					\$temp_config{document}
@@ -80,7 +80,7 @@ sub add {
 			# open remembered files with all properties
 			Kephra::Document::Internal::save_properties($current_doc_nr);
 			Kephra::Document::Internal::restore( \%{ $load_files[$_] } )
-				for ( 0 .. $#load_files );
+				for 0 .. $#load_files;
 
 			# make file history like before
 			Kephra::Document::Internal::change_pointer($current_doc_nr);
@@ -103,9 +103,9 @@ sub save {
 	undef $temp_config{document};
 	Kephra::Config::Tree::_convert_node_2_AoH( \$Kephra::document{open} );
 	# sorting out docs without file
-	@{ $Kephra::document{open} } = @{_forget_gone_files($Kephra::document{open}) };
-	$temp_config{document} = $Kephra::document{open};
-	$temp_config{current_nr} = $Kephra::document{current_nr};
+	@{ $Kephra::document{open} } = @{ _forget_gone_files($Kephra::document{open}) };
+	$temp_config{document} = Kephra::Document::_attributes();
+	$temp_config{current_nr} = Kephra::Document::current_nr();
 	Kephra::Config::File::store( $config_file, \%temp_config );
 }
 
@@ -173,7 +173,7 @@ sub autoload {
 	}
 
 	# delete all existing doc
-	undef $Kephra::document{open};
+	$Kephra::document{open} = [];
 	# throw gone files
 	@load_files = @{ &_forget_gone_files( \@load_files ) };
 	# open remembered files with all properties
@@ -193,7 +193,7 @@ sub autoload {
 		$start_file_nr >= $intern->{loaded} and $intern->{loaded};
 	Kephra::Document::Change::to_number($start_file_nr) or
 		Kephra::Document::Internal::eval_properties($#load_files);
-	Kephra::Document::_set_previous_nr($start_file_nr);
+	Kephra::Document::Internal::previous_nr($start_file_nr);
 	Kephra::App::StatusBar::update_all();
 }
 

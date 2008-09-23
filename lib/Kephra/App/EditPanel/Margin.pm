@@ -1,5 +1,5 @@
 package Kephra::App::EditPanel::Margin;
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use strict;
 use warnings;
@@ -72,22 +72,19 @@ sub apply_line_number_width {
 
 sub reset_line_number_width{
 	my $config = _line_config();
-	my ($width, $doc_line_with);
+	my ($max_digits, $lnr_digits);
 
 	if ( $config->{start_with_min} ) {
-		$width = $config->{min_width};
+		$max_digits = $config->{min_width};
 		if ((ref $Kephra::document{open} eq 'ARRAY') and $config->{autosize}) {
 			my $ep = _ep_ref();
-			my $doc_nr = Kephra::Document::_get_current_nr();
-			for ( 0 .. $#{ $Kephra::document{open} } ) {
-				Kephra::Document::Internal::change_pointer($_);
-				$doc_line_with = length $ep->GetLineCount;
-				$width = $doc_line_with if $doc_line_with > $width;
-			}
-			Kephra::Document::Internal::change_pointer($doc_nr);
+			Kephra::Document::do_with_all( sub { 
+				$lnr_digits = length $ep->GetLineCount;
+				$max_digits = $lnr_digits if $lnr_digits > $max_digits;
+			} )
 		}
-		$config->{width} = $width;
-		$Kephra::temp{margin_linemax} = 10 ** $width - 1;
+		$config->{width} = $max_digits;
+		$Kephra::temp{margin_linemax} = 10 ** $max_digits - 1;
 	}
 	apply_line_number_width();
 }

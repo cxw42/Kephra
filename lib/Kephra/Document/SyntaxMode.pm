@@ -19,7 +19,7 @@ sub _ID {
 
 sub _get_auto{ &_get_by_fileending }
 sub _get_by_fileending {
-	my $file_ending = Kephra::Document::get_tmp_value('ending', shift );
+	my $file_ending = Kephra::Document::Internal::get_tmp_value('ending', shift );
 	my $language_id;
 	chop $file_ending if $file_ending and (substr ($file_ending, -1) eq '~');
 	if ($file_ending) {
@@ -56,10 +56,10 @@ sub change_to {
 	$ep->StyleResetDefault;
 	Kephra::App::EditPanel::load_font();
 	$ep->StyleClearAll;
+	$ep->SetKeyWords( $_, '' ) for 0 .. 1;
 
 	# load syntax style
 	if ( $style eq 'none' ) { 
-        $ep->SetKeyWords( 0, '' );
 		$ep->SetLexer(wxSTC_LEX_NULL);
 	} else {
 		eval("require syntaxhighlighter::$style");
@@ -80,9 +80,10 @@ sub change_to {
 			(wxSTC_STYLE_INDENTGUIDE,&$color($indicator->{indent_guide}{color}));
 	}
 
-	Kephra::Document::set_attribute( 'syntaxmode', $style );
+	Kephra::Document::Internal::set_attribute( 'syntaxmode', $style );
 	_ID($style);
 	$ep->Colourise( 0, $ep->GetTextLength ); # refresh editpanel painting
+	$ep->SetCodePage(65001);
 	# cleanup
 	Kephra::App::EditPanel::Margin::apply_color();
 	Kephra::App::StatusBar::style_info($style);

@@ -1,5 +1,5 @@
 package Kephra::Edit::Bookmark;
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 
 use strict;
 use warnings;
@@ -22,15 +22,15 @@ sub _refresh_data_nr {
 	return unless $temp->{set};
 
 	my $config = $Kephra::config{search}{bookmark}{$nr};
-	my $cur_doc_nr = Kephra::Document::_get_current_nr();
+	my $cur_doc_nr = Kephra::Document::current_nr();
 	my $ep = Kephra::App::EditPanel::_ref();
 	my $marker_byte = 1 << $nr;
 	my $line;
 
-	if ($temp->{doc_nr} < Kephra::Document::_get_count()){
+	if ($temp->{doc_nr} < Kephra::Document::get_count()){
 		Kephra::Document::Internal::change_pointer($temp->{doc_nr});
 		goto bookmark_found if $marker_byte & $ep->MarkerGet( $temp->{line} );
-		if ( $config->{file} eq $Kephra::document{open}[$nr]{path} ) {
+		if ( $config->{file} eq Kephra::Document::get_file_path($nr) ) {
 			$line = $ep->MarkerNext(0, $marker_byte);
 			if ($line > -1) {
 				$temp->{line} = $line;
@@ -39,7 +39,7 @@ sub _refresh_data_nr {
 		}
 	}
 
-	my $doc_nr = Kephra::Document::_get_nr_from_path( $config->{file} );
+	my $doc_nr = Kephra::Document::nr_from_file_path( $config->{file} );
 	if (ref $doc_nr eq 'ARRAY'){
 		for my $doc_nr (@{$doc_nr}){
 			Kephra::Document::Internal::change_pointer($doc_nr);
@@ -89,13 +89,13 @@ sub define_marker {
 
 sub restore_all {
 	my $edit_panel = Kephra::App::EditPanel::_ref();
-	my $cur_doc_nr = Kephra::Document::_get_current_nr();
+	my $cur_doc_nr = Kephra::Document::current_nr();
 	my $bookmark   = $Kephra::config{search}{bookmark};
 
 	for my $nr ( 0 .. 9 ) {
 		if ($bookmark->{$nr}){
 			next unless $bookmark->{$nr};
-			my $doc_nr = Kephra::Document::_get_nr_from_path( $bookmark->{$nr}{file} );
+			my $doc_nr = Kephra::Document::nr_from_file_path( $bookmark->{$nr}{file} );
 			if (ref $doc_nr eq 'ARRAY') { $doc_nr = $doc_nr->[0] }
 			else                        { next }
 			Kephra::Document::Internal::change_pointer( $doc_nr );
@@ -121,9 +121,9 @@ sub toggle_nr {
 		my $temp = \%{$Kephra::temp{search}{bookmark}{$nr}};
 		my $config = \%{$Kephra::config{search}{bookmark}{$nr}};
 		$edit_panel->MarkerAdd( $line, $nr);
-		$config->{file} = Kephra::Document::_get_current_file_path();
+		$config->{file} = Kephra::Document::file_path();
 		$config->{pos}  = $pos;
-		$temp->{doc_nr} = Kephra::Document::_get_current_nr();
+		$temp->{doc_nr} = Kephra::Document::current_nr();
 		$temp->{col}    = $config->{pos} - $edit_panel->PositionFromLine($line);
 		$temp->{line}   = $line;
 		$temp->{set}    = 1;

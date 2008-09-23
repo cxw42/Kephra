@@ -225,8 +225,8 @@ sub get {
 					'lf' => "Kephra::Document::convert_EOL('lf')",
 				},
 				move => {
-					left => 'Kephra::Document::move_left()',
-					right => 'Kephra::Document::move_right()',
+					left => 'Kephra::Document::Change::move_left()',
+					right => 'Kephra::Document::Change::move_right()',
 				},
 				readonly => {
 					'as-attr' => "Kephra::Document::set_readonly('protect')",
@@ -282,7 +282,7 @@ sub get {
 				tabs => {
 					hard => 'Kephra::Document::set_tabs_hard()',
 					soft => 'Kephra::Document::set_tabs_soft()',
-					'use' => 'Kephra::Document::switch_tab_mode()',
+					use => 'Kephra::Document::switch_tab_mode()',
 					width => {
 						1 => 'Kephra::Document::set_tab_size(1)',
 						2 => 'Kephra::Document::set_tab_size(2)',

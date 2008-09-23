@@ -49,7 +49,7 @@ sub _center_caret {
 sub _save_positions {
 	my $ep = _get_panel();
 	my %pos;
-	$pos{document}  = &Kephra::Document::_get_current_nr;
+	$pos{document}  = Kephra::Document::current_nr();
 	$pos{pos}       = $ep->GetCurrentPos;
 	$pos{line}      = $ep->GetCurrentLine;
 	$pos{col}       = $ep->GetColumn( $pos{pos} );
@@ -63,7 +63,7 @@ sub _restore_positions {
 	my %pos      = %{ pop @{ $Kephra::temp{edit}{caret}{positions} } };
 	if (%pos) {
 		Kephra::Document::Change::to_number( $pos{document} )
-			if $pos{document} != &Kephra::Document::_get_current_nr;
+			if $pos{document} != Kephra::Document::current_nr();
 		$ep->SetCurrentPos( $pos{pos} );
 		$ep->GotoLine( $pos{line} ) if $ep->GetCurrentLine != $pos{line};
 		if ( $ep->GetColumn( $ep->GetCurrentPos ) == $pos{col} ) {

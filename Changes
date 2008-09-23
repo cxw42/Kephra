@@ -6,6 +6,16 @@ TODO 0.4:
  * config dialog
  * syntaxmodes
 
+0.3.10.18
+ ! 0 div in indent guid highlighting
+ ! restore doc attribute from doc nr 0 correctly
+ ! umlaut problem no longer
+ ! clean up all lexer words
+
+0.3.10.17
+ ] massive refactoring of Kephra::Document namespace
+ ! restart timer when canceled app shutdown
+
 0.3.10.16
  ] sane doc nr validation
  ! false trigger of file changed notify dialog

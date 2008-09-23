@@ -69,15 +69,16 @@ sub create_dynamic {
 				$tmp = Kephra::Config::Tree::_convert_node_2_AoH(\$tmp->{template});
 				for my $template ( @{$tmp} ) {
 					my %item;
+					my $untitled = $Kephra::localisation{app}{general}{untitled};
 					$item{type} = 'item';
 					$item{label}= $template->{name};
 					$item{call} = sub {
-						my $filepath = Kephra::Document::_get_current_file_path()
-							|| "<$Kephra::localisation{app}{general}{untitled}>";
-						my $filename = Kephra::Document::_get_current_name()
-							|| "<$Kephra::localisation{app}{general}{untitled}>";
-						my $firstname = Kephra::Document::_get_current_firstname()
-							|| "<$Kephra::localisation{app}{general}{untitled}>";
+						my $filepath = 
+							Kephra::Document::get_file_path() || "<$untitled>";
+						my $filename = 
+							Kephra::Document::file_name() || "<$untitled>";
+						my $firstname = 
+							Kephra::Document::first_name() || "<$untitled>";
 						my $content = $template->{content};
 						$content =~ s/\[\$\$firstname\]/$firstname/g;
 						$content =~ s/\[\$\$filename\]/$filename/g;
@@ -125,8 +126,8 @@ sub create_dynamic {
 
 		set_update( $menu_id, sub {
 			return unless exists $Kephra::temp{document}{buffer};
-			my $filenames = Kephra::Document::_get_all_names();
-			my $pathes = Kephra::Document::_get_all_pathes();
+			my $filenames = Kephra::Document::all_file_names();
+			my $pathes = Kephra::Document::all_file_pathes();
 			my $untitled = $Kephra::localisation{app}{general}{untitled};
 			my $space = ' ';
 			my @menu_data;
@@ -144,7 +145,7 @@ sub create_dynamic {
 
 		add_onopen_check( $menu_id, 'select', sub {
 			my $menu = _ref($menu_id);
-			my $check_nr = Kephra::Document::_get_current_nr();
+			my $check_nr = Kephra::Document::current_nr();
 			$menu->FindItemByPosition($check_nr)->Check(1);
 		});
 

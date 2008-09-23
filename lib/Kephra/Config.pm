@@ -64,7 +64,7 @@ sub existing_filepath {
 	return $path;
 }
 
-sub dirpath { File::Spec->catdir( $Kephra::temp{path}{config}, @_ ) if $_[0] }
+sub dirpath { File::Spec->catdir( $Kephra::temp{path}{config}, @_ ) }
 
 sub existing_dirpath {
 	my $path = dirpath( @_ );

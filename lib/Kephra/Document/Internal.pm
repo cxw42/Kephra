@@ -1,34 +1,120 @@
 package Kephra::Document::Internal;
-our $VERSION = '0.10';
+our $VERSION = '0.12';
 
 use strict;
 use warnings;
 
 use Wx qw(wxYES wxNO);
 
-sub validate_nr { &Kephra::Document::validate_nr }
 
-# make document empty and reset all document properties to default
-sub reset {
-	my $doc_nr = validate_nr(shift);
-	$doc_nr = Kephra::Document::_get_current_nr() if not defined $doc_nr;
-	my $edit_panel = Kephra::App::EditPanel::_ref();
-	Kephra::Document::set_readonly(0);
-	$edit_panel->ClearAll;
-	$edit_panel->EmptyUndoBuffer;
-	$edit_panel->SetSavePoint;
-	reset_tmp_data($doc_nr);
-	reset_properties($doc_nr);
-	eval_properties($doc_nr);
-	Kephra::App::StatusBar::update_all();
+sub attributes  { $Kephra::document{open}       } 
+sub temp_data   { $Kephra::temp{document}{open} }
+sub count       { @{ attributes() }             }
+
+sub last_nr     { $#{ $Kephra::document{open} } }
+sub previous_nr { 
+	if (defined $_[0]) { $Kephra::document{previous_nr} = validate_nr($_[0]) }
+	else               { $Kephra::document{previous_nr} }
 }
+sub current_nr { 
+	if (defined $_[0]) {
+		my $nr = shift;
+		return if $nr < 0 or $nr > count();
+		$Kephra::document{current_nr} = $nr;
+		$Kephra::document{current}    = attributes()->[$nr];
+		$Kephra::temp{current_doc}    = temp_data()->[$nr];
+	} else { $Kephra::document{current_nr} }
+}
+sub get_current_nr { current_nr() }
+sub set_current_nr { current_nr(@_) if @_ }
+sub all_nr         { [ 0 .. last_nr() ]   }
+
+sub validate_nr { 
+	my $nr = shift;
+	if (defined $nr) {
+		$nr = int $nr;
+		if (exists temp_data()->[$nr]) {
+			return $nr;
+		} else {
+			if ($nr < 0) { return 0 }
+			else         { return count()-1 }
+		}
+	} else { 
+		return current_nr()
+	}
+}
+
+####################################################################
+
+sub get_attribute {
+	my $attr = shift or return;
+	return unless $attr;
+	my $nr = validate_nr(shift);
+	my $docs = attributes();
+	return unless ref $docs eq 'ARRAY';
+	$docs->[ $nr ]{$attr};
+}
+
+sub set_attribute {
+	my $attr = shift;
+	my $value = shift;
+	return unless $value;
+	my $nr = validate_nr(shift);
+	attributes()->[ $nr ]{$attr} = $value
+}
+
+sub get_tmp_value {
+	my $name = shift;
+	return unless $name;
+	my $nr = validate_nr(shift);
+	my $tmp_data = $Kephra::temp{document}{open};
+	$tmp_data->[ $nr ]{$name} if ref $tmp_data->[ $nr ] eq 'HASH';
+}
+
+sub set_tmp_value {
+	my $name = shift;
+	my $value = shift;
+	return unless $value;
+	my $nr = validate_nr(shift);
+	$Kephra::temp{document}{open}[ $nr ]{$name} = $value
+}
+
+####################################################################
+
+sub get_file_path { get_attribute('file_path', $_[0]) }
+sub set_file_path {
+	my ( $file_path, $doc_nr ) = @_;
+	$doc_nr = validate_nr($doc_nr);
+	set_attribute('file_path', $file_path, $doc_nr);
+	dissect_path( $file_path, $doc_nr );
+	Kephra::App::TabBar::refresh_label($doc_nr);
+	Kephra::App::Window::refresh_title();
+}
+
+sub dissect_path {
+	my ($file_path, $doc_nr) = @_;
+	$doc_nr = validate_nr($doc_nr);
+	my $doc_data = temp_data()->[$doc_nr];
+	my ($volume, $directories, $file) = File::Spec->splitpath( $file_path );
+	$directories = $volume.$directories if $volume;
+	$doc_data->{directory} = $directories;
+	$doc_data->{name}      = $file;
+
+	if ( length($file) > 0 ) {
+		my @filenameparts = split /\./, $file ;
+		$doc_data->{ending} = pop @filenameparts if @filenameparts > 1;
+		$doc_data->{firstname} = join '.', @filenameparts;
+	}
+}
+####################################################################
 
 # create a new document if settings allow it
 sub new_if_allowed {
-	my $mode = shift;	# new(empty), add(open) restore(open session)
+	# new(empty), add(open) restore(open session)
+	my $mode = shift;
 	my $ep  = Kephra::App::EditPanel::_ref();
-	my $file_name = Kephra::Document::_get_current_file_path();
-	my $old_doc_nr= Kephra::Document::_get_current_nr();
+	my $file_name = get_file_path();
+	my $old_doc_nr= current_nr();
 	my $doc_nr    = $Kephra::temp{document}{buffer};
 	my $config    = $Kephra::config{file}{open};
 
@@ -50,7 +136,7 @@ sub new_if_allowed {
 	}
 
 	# still there? ok now we make a new document
-	$Kephra::temp{document}{open}[$doc_nr]{pointer}= $ep->CreateDocument;
+	temp_data()->[$doc_nr]{pointer}= $ep->CreateDocument;
 	$Kephra::temp{document}{buffer}++;
 
 	change_pointer($doc_nr);
@@ -64,6 +150,7 @@ sub new_if_allowed {
 sub restore {
 	my %file_settings = %{ shift; };
 	my $file_name = $file_settings{file_path};
+	my $attr = attributes();
 	if ( -e $file_name ) {
 
 		# open only text files and empty files
@@ -71,16 +158,16 @@ sub restore {
 			and ( $Kephra::config{file}{open}{only_text} == 1 );
 		# check if file is already open and goto this already opened
 		if ( $Kephra::config{file}{open}{each_once} == 1 ){
-			for ( 0 .. Kephra::Document::_get_last_nr() ) {
-				return if $Kephra::document{open}[$_]{file_path} eq $file_name;
+			for (  0 .. last_nr() ) {
+				return if $attr->[$_]{file_path} eq $file_name;
 			}
 		}
 
 		my $doc_nr = new_if_allowed('restore');
 		load_in_current_buffer($file_name);
-		%{ $Kephra::document{open}[$doc_nr] } = %file_settings;
-		Kephra::Document::set_file_path($file_name, $doc_nr);
-		Kephra::App::TabBar::refresh_label()
+		%{ $attr->[$doc_nr] } = %file_settings;
+		set_file_path($file_name, $doc_nr);
+		Kephra::App::TabBar::refresh_label();
 	}
 }
 
@@ -89,7 +176,7 @@ sub restore {
 sub add {
 	my $file_name = shift;
 	$file_name = Kephra::Config::standartize_path_slashes( $file_name );
-	my $old_nr = Kephra::Document::_get_current_nr();
+	my $old_nr = current_nr();
 	if ( defined $file_name and -e $file_name ) {
 
 		# open only text files and empty files
@@ -98,8 +185,8 @@ sub add {
 
 		# check if file is already open and goto this already opened
 		if ( $Kephra::config{file}{open}{each_once} == 1){
-			for ( 0 .. Kephra::Document::_get_last_nr() ) {
-				my $path = Kephra::Document::_get_path_from_nr($_);
+			for (  0 .. last_nr() ) {
+				my $path = Kephra::Document::nr_from_file_path($_);
 				if ($path and $path eq $file_name ){
 					Kephra::Document::Change::to_number($_);
 					return;
@@ -110,8 +197,8 @@ sub add {
 		my $doc_nr = new_if_allowed('add');
 		reset_tmp_data($doc_nr);
 		reset_properties($doc_nr, $file_name);
-		Kephra::Document::_set_previous_nr($old_nr);
-		Kephra::Document::_set_current_nr($doc_nr);
+		previous_nr($old_nr);
+		current_nr($doc_nr);
 		load_in_current_buffer($file_name);
 		eval_properties($doc_nr);
 		Kephra::App::Window::refresh_title();
@@ -160,11 +247,25 @@ sub check_b4_overwite {
 	} else { return -1 }
 }
 
+# make document empty and reset all document properties to default
+sub reset {
+	my $doc_nr = validate_nr(shift);
+	my $edit_panel = Kephra::App::EditPanel::_ref();
+	Kephra::Document::set_readonly(0);
+	$edit_panel->ClearAll;
+	$edit_panel->EmptyUndoBuffer;
+	$edit_panel->SetSavePoint;
+	reset_tmp_data($doc_nr);
+	reset_properties($doc_nr);
+	eval_properties($doc_nr);
+	Kephra::App::StatusBar::update_all();
+}
+
 # set the config default to the selected document
 sub reset_properties {
 	my ($doc_nr, $file_name) = @_;
 	$doc_nr = validate_nr($doc_nr);
-	$file_name = Kephra::Document::_get_path_from_nr($doc_nr)
+	$file_name = Kephra::Document::get_file_path($doc_nr)
 		unless defined $file_name;
 	my $default = $Kephra::config{file}{defaultsettings};
 	my $doc_attr = $Kephra::document{open}[$doc_nr] = {
@@ -181,25 +282,23 @@ sub reset_properties {
 		 {$doc_attr->{EOL} = $default->{EOL_open}}
 	else {$doc_attr->{EOL} = $default->{EOL_new} }
 
-	Kephra::Document::set_file_path($file_name);
+	set_file_path($file_name);
 }
 
 sub reset_tmp_data {
-	my $doc_nr = shift;
-	$doc_nr = Kephra::Document::_get_current_nr() unless defined $doc_nr;
-	my $pointer = $Kephra::temp{document}{open}[$doc_nr]{pointer};
-	$Kephra::temp{document}{open}[$doc_nr] = {
+	my $doc_nr = validate_nr(shift);
+	my $data   = temp_data();
+	my $pointer = $data->[$doc_nr]{pointer};
+	$data ->[$doc_nr] = {
 		'pointer'    => $pointer,
-		'cursor_pos' => 0,
 	};
 }
 
 
 sub eval_properties {
 	my $doc_nr = validate_nr(shift);
-	$doc_nr = Kephra::Document::_get_current_nr() unless defined $doc_nr;
-	my $doc_attr = \%{$Kephra::document{open}[$doc_nr]};
-	my $doc_data = \%{$Kephra::temp{document}{open}[$doc_nr]};
+	my $doc_attr = attributes()->[$doc_nr];
+	my $doc_data = temp_data()->[$doc_nr];
 	my $ep = Kephra::App::EditPanel::_ref();
 
 	$doc_attr->{syntaxmode} = "none" unless $doc_attr->{syntaxmode};
@@ -230,10 +329,9 @@ sub eval_properties {
 
 
 sub save_properties {
-	my $doc_nr = shift;
-	$doc_nr = Kephra::Document::_get_current_nr() unless defined $doc_nr;
-	my $doc_attr = $Kephra::document{open}[$doc_nr];
-	my $doc_data = $Kephra::temp{document}{open}[$doc_nr];
+	my $doc_nr = validate_nr(shift);
+	my $doc_attr = attributes()->[$doc_nr];
+	my $doc_data = temp_data()->[$doc_nr];
 	my $ep = Kephra::App::EditPanel::_ref();
 
 	$doc_attr->{cursor_pos}= $ep->GetCurrentPos;
@@ -241,36 +339,31 @@ sub save_properties {
 	$doc_data->{selend}    = $ep->GetSelectionEnd;
 }
 
-
 sub change_pointer {
 	my $newtab = validate_nr(shift);
-	my $oldtab  = Kephra::Document::_get_current_nr();
-	my $docsdata = $Kephra::temp{document}{open};
+	my $oldtab  = current_nr();
+	my $docsdata = temp_data();
 	my $ep      = Kephra::App::EditPanel::_ref();
 	$ep->AddRefDocument( $docsdata->[$oldtab]{pointer} );
 	$ep->SetDocPointer( $docsdata->[$newtab]{pointer} );
 	$ep->ReleaseDocument( $docsdata->[$newtab]{pointer} );
-	Kephra::Document::_set_current_nr($newtab);
+	set_current_nr($newtab);
+}
+
+sub do_with_all {
+	my $code = shift;
+	return unless ref $code eq 'CODE';
+	my $nr = current_nr();
+	my $docs = temp_data();
+	save_properties();
+	for ( @{ all_nr() } ) {
+		change_pointer($_);
+		&$code( $docs->[$_] );
+	}
+	change_pointer($nr);
+	eval_properties($nr);
 }
 
 # various helper
-sub dissect_path {
-	my ($file_path, $doc_nr) = @_;
-	$doc_nr = validate_nr($doc_nr);
-	my $doc_data = $Kephra::temp{document}{open}[$doc_nr];
-	my ($volume, $directories, $file) = File::Spec->splitpath( $file_path );
-	$directories = $volume.$directories if $volume;
-	$doc_data->{directory} = $directories;
-	$doc_data->{name}      = $file;
-
-	if ( length($file) > 0 ) {
-		my @filenameparts = split /\./, $file ;
-		$doc_data->{ending} = pop @filenameparts if @filenameparts > 1;
-		$doc_data->{firstname} = join '.', @filenameparts;
-	}
-}
-
-# depreciated
-sub set_path_slashes_to_OS_standart{ File::Spec->canonpath( shift ) }
 
 1;
