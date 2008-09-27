@@ -1,7 +1,7 @@
 package Kephra::Document;
-our $VERSION = '0.45';
+our $VERSION = '0.46';
 
-use strict;
+use strict qw/vars subs/;;
 use warnings;
 
 =pod
@@ -11,29 +11,24 @@ use warnings;
            and join it with Kephra::Document::Internal
 =cut
 
+my $this   = __PACKAGE__ . '::';
+my $intern = 'Kephra::Document::Internal::';
+
+*{$this . '_' . $_} = \*{$intern . $_} 
+	for qw( attributes temp_data get_attribute set_attribute );
+
+*{$this . $_} = \*{$intern . $_} 
+	for qw( get_attribute set_attribute get_tmp_value set_tmp_value
+			count current_nr last_nr previous_nr all_nr validate_nr 
+			file_path get_file_path set_file_path do_with_all      );
+
+use strict;
 use Wx qw( wxSTC_EOL_CR wxSTC_EOL_LF wxSTC_EOL_CRLF );
 
-# internal functions
-sub _attributes    { Kephra::Document::Internal::attributes() } 
-sub _temp_data     { Kephra::Document::Internal::temp_data()  }
-sub _get_attribute { Kephra::Document::Internal::get_attribute(@_) }
-sub _set_attribute { Kephra::Document::Internal::set_attribute(@_) }
-
-# doc number
-sub get_count      { Kephra::Document::Internal::count()        }
-sub current_nr     { &Kephra::Document::Internal::current_nr    }
-sub get_current_nr { Kephra::Document::Internal::current_nr()   }
-sub set_current_nr { Kephra::Document::Internal::current_nr(@_) }
-sub last_nr        { Kephra::Document::Internal::last_nr()      }
-sub get_last_nr    { Kephra::Document::Internal::last_nr()      }
-sub previous_nr    { Kephra::Document::Internal::previous_nr()  }
-sub all_nr         { Kephra::Document::Internal::all_nr()       }
-sub validate_nr    { Kephra::Document::Internal::validate_nr(@_)}
-
-sub get_attribute { Kephra::Document::Internal::get_attribute(@_) }
-sub set_attribute { Kephra::Document::Internal::set_attribute(@_) }
-sub get_tmp_value { Kephra::Document::Internal::get_tmp_value(@_) }
-sub set_tmp_value { Kephra::Document::Internal::set_tmp_value(@_) }
+sub get_count      { count()       }
+sub get_current_nr { current_nr()  }
+sub set_current_nr { current_nr(@_)}
+sub get_last_nr    { last_nr()     }
 
 sub nr_from_file_path {
 	my $given_path = shift;
@@ -48,8 +43,6 @@ sub all_file_pathes {
 	$pathes[$_] = $attr->[$_]{file_path} for @{ all_nr() };
 	return \@pathes;
 }
-sub get_file_path { Kephra::Document::Internal::get_file_path( $_[0]) }
-sub set_file_path { Kephra::Document::Internal::set_file_path( @_ )   }
 
 sub file_name { Kephra::Document::Internal::get_tmp_value('name', $_[0]) }
 sub all_file_names {
@@ -58,8 +51,6 @@ sub all_file_names {
 	return \@names;
 }
 sub first_name { Kephra::Document::Internal::get_tmp_value('firstname', $_[0]) }
-
-sub do_with_all { Kephra::Document::Internal::do_with_all(@_) }
 
 sub cursor_pos {
 	return $Kephra::document{current}{cursor_pos}

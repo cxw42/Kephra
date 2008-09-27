@@ -1,5 +1,5 @@
 package Kephra::File;
-our $VERSION = '0.39';
+our $VERSION = '0.40';
 
 use strict;
 use warnings;
@@ -39,11 +39,12 @@ sub changed_notify_check {
 	for my $file_nr ( @{ Kephra::Document::all_nr() } ) {
 		my $path = Kephra::Document::get_file_path($file_nr);
 		next unless $path;
-		my $remembered = Kephra::Document::Internal::get_tmp_value('file_changed', $file_nr);
+		my $remembered = Kephra::Document::get_tmp_value('file_changed', $file_nr);
+		# gone files are a problem
 		#next if (not -e $path) and $remembered eq 'gone';
 		my $current_age= _file_age($path);
 		unless ( $remembered == $current_age) {
-			my $last_time = Kephra::Document::Internal::get_tmp_value('did_notify', $file_nr);
+			my $last_time = Kephra::Document::get_tmp_value('did_notify', $file_nr);
 			next if defined  $last_time and $last_time == $current_age;
 			Kephra::Document::Change::to_number( $file_nr );
 			_remember_save_moment($path);
@@ -56,8 +57,7 @@ sub changed_notify_check {
 
 sub _remember_save_moment {
 	my ($path, $doc_nr) = @_;
-	Kephra::Document::Internal::set_tmp_value
-		( 'file_changed', _file_age($path), $doc_nr);
+	Kephra::Document::set_tmp_value( 'file_changed', _file_age($path), $doc_nr);
 }
 
 sub _file_age {
@@ -189,7 +189,7 @@ sub save_current {
 				# reloads the needed configs if the file was a config file
 				Kephra::Config::Global::eval_config_file($file_name)
 					if $save_config->{reload_config} == 1
-					and Kephra::Document::Internal::get_attribute('config_file');
+					and Kephra::Document::_get_attribute('config_file');
 				_remember_save_moment($file_name);
 				$ep->SetSavePoint;
 			}
@@ -287,7 +287,7 @@ sub print {
 	my $ep       = Kephra::App::EditPanel::_ref();
 	my $printer  = Wx::Printer->new;
 	my $printout = Wx::Printout->new(
-		"$Kephra::NAME $Kephra::VERSION : " . Kephra::Document::name()
+		"$Kephra::NAME $Kephra::VERSION : " . Kephra::Document::file_name()
 	);
 	#$ep->FormatRange(doDraw,startPos,endPos,draw,target,renderRect,pageRect);
 	#$printer->Print( $frame, $printout, 1 );
@@ -307,7 +307,8 @@ sub close_current {
 		if ($ep->GetTextLength > 0 or $config->{empty} eq 1) {
 			if ($config->{b4_close} eq 'ask' or $config->{b4_close} eq '2'){
 				my $l10n = $Kephra::localisation{dialog}{file};
-				$save_answer = Kephra::Dialog::get_confirm_3( Kephra::App::Window::_ref(),
+				$save_answer = Kephra::Dialog::get_confirm_3( 
+					Kephra::App::Window::_ref(),
 					$l10n->{save_current}, $l10n->{close_unsaved} );
 			}
 			return if $save_answer == wxCANCEL;

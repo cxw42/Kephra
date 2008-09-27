@@ -4,6 +4,7 @@ our $VERSION = '0.07';
 use strict;
 use warnings;
 
+use Cwd();
 use Wx qw(
 	wxDEFAULT wxNORMAL wxLIGHT    
 	wxTE_MULTILINE wxTE_READONLY wxTE_LEFT
@@ -19,23 +20,27 @@ sub _ref {
 	if (ref $_[0] eq 'Wx::TextCtrl') { $Kephra::app{panel}{output} = $_[0] }
 	else                             { $Kephra::app{panel}{output} } 
 }
-sub _config { $Kephra::config{app}{panel}{output} }
+sub _config   { $Kephra::config{app}{panel}{output} }
 sub _splitter { $Kephra::app{splitter}{bottom} }
 
 sub init {}
 
 sub create {
 	my $win = Kephra::App::Window::_ref();
-	my $output_panel = Wx::TextCtrl->new($win, -1, '', [-1,-1], [-1, -1],
-			wxTE_MULTILINE | wxTE_READONLY | wxTE_LEFT );
+	my $output_panel = Wx::TextCtrl->new (
+		$win, -1, '', [-1,-1], [-1, -1], wxTE_MULTILINE|wxTE_READONLY|wxTE_LEFT
+	);
 	_ref($output_panel);
-	$output_panel->SetBackgroundColour( Kephra::Config::color('000000') );
-	$output_panel->SetForegroundColour( Kephra::Config::color('FFFFFF') );
+	my $config = _config();
+	my $color = \&Kephra::Config::color;
+	$output_panel->SetForegroundColour( &$color( $config->{fore_color} ) );
+	$output_panel->SetBackgroundColour( &$color( $config->{back_color} ) );
+
 	#my $caret = Wx::Caret->new($output_panel, 0, 0);
 	#$caret->SetSize(0,0);
 	#$output_panel->SetCaret( $caret );
 	$output_panel->SetFont( Wx::Font->new
-		( _config()->{font_size}, wxFONTSTYLE_NORMAL, wxNORMAL, wxLIGHT, 0, 'Terminal' )
+		($config->{font_size}, wxFONTSTYLE_NORMAL, wxNORMAL, wxLIGHT, 0, 'Terminal')
 	);
 
 	Kephra::API::EventTable::add_call('extension.output.run', 'panel_output', sub {
@@ -113,14 +118,16 @@ sub _append { _ref()->AppendText( @_ ) if @_ }
 
 sub run {
 	my $win = Kephra::App::Window::_ref();
-	my $doc = Kephra::Document::_get_current_file_path();
+	my $doc = Kephra::Document::get_file_path();
 	my $dir = $Kephra::config{file}{current}{directory};
 	ensure_visibility();
 	Kephra::File::save_current();
 	if ($doc) {
+		my $dir = Cwd::cwd();
 		chdir $dir;
 		my $proc = _ref()->{process} = Wx::Perl::ProcessStream->OpenProcess
 			(qq~perl $doc~ , 'Output-Extension', $win); # -I$dir 
+		chdir $dir;
 		output();
 		Kephra::API::EventTable::trigger('extension.output.run');
 		if (not $proc) {

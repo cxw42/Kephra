@@ -218,7 +218,7 @@ sub _find_prev {
 
 sub _find_first {
 	Kephra::Edit::Goto::pos(0);
-	return _find_next();
+	_find_next();
 }
 
 sub _find_last  {

@@ -6,6 +6,17 @@ TODO 0.4:
  * config dialog
  * syntaxmodes
 
+0.3.10.20
+ [ forward calls from doc to doc::Internal via glob
+ ! invalid Doc::name call in file.pm
+
+0.3.10.19
+ + define output colors by config
+ ~ new config option: interpreter for notpad eval
+ ~ added '&' as default wordchar
+ ! output used removed Doc API
+ ! output restores cwd
+
 0.3.10.18
  ! 0 div in indent guid highlighting
  ! restore doc attribute from doc nr 0 correctly

@@ -78,7 +78,7 @@ sub standartize_path_slashes { File::Spec->canonpath( shift ) }
 
 sub path_matches {
 	my $given = shift;
-	for (@_) { return 1 if $given eq standartize_path_slashes($_) }
+	for my $path (@_) { return 1 if $given eq standartize_path_slashes($path) }
 	return 0;
 }
 ##################################

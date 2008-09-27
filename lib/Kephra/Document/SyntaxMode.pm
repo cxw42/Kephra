@@ -1,5 +1,5 @@
 package Kephra::Document::SyntaxMode;
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use strict;
 use warnings;
@@ -20,8 +20,8 @@ sub _ID {
 sub _get_auto{ &_get_by_fileending }
 sub _get_by_fileending {
 	my $file_ending = Kephra::Document::Internal::get_tmp_value('ending', shift );
-	my $language_id;
 	chop $file_ending if $file_ending and (substr ($file_ending, -1) eq '~');
+	my $language_id;
 	if ($file_ending) {
 		$language_id = $Kephra::temp{file}{end2langmap}
 				{ Kephra::Config::_lc_utf($file_ending) };

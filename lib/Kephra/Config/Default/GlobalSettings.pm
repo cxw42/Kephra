@@ -48,13 +48,16 @@ sub get {
 			panel => {
 				notepad => {
 					content => 'extension/notepad/content.txt',
+					eval_with => 'eval',
 					font_size => 10,
 					size => 180,
 					visible => 0,
 				},
 				output => {
 					append => 0,
+					back_color => '000022',
 					font_size => 9,
+					fore_color => 'ffffff',
 					size => 100,
 					visible => 0,
 				},

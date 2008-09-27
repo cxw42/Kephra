@@ -90,6 +90,8 @@ sub set_file_path {
 	Kephra::App::TabBar::refresh_label($doc_nr);
 	Kephra::App::Window::refresh_title();
 }
+sub file_path { return defined $_[0] ? set_file_path($_[0]) : get_file_path() }
+
 
 sub dissect_path {
 	my ($file_path, $doc_nr) = @_;
