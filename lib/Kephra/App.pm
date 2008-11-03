@@ -1,5 +1,5 @@
 package Kephra::App;
-our $VERSION = '0.0)';
+our $VERSION = '0.10';
 
 use strict;
 use warnings;
@@ -137,17 +137,16 @@ sub start {
 	$Kephra::temp{document}{open}[0]{pointer} = $ep->GetDocPointer();
 	$Kephra::temp{document}{buffer} = 1;
 	#$main::logger->debug("init app pntr");
-	print " init app pntr:",
+	print " init app:",
 		Benchmark::timestr( Benchmark::timediff( new Benchmark, $t0 ) ), "\n"
 		if $Kephra::BENCHMARK;
 	my $t1 = new Benchmark;
-	Kephra::Config::Global::load_autosaved();
 	#$main::logger->debug("glob cfg load");
 	print " glob cfg load:",
 		Benchmark::timestr( Benchmark::timediff( new Benchmark, $t1 ) ), "\n"
 		if $Kephra::BENCHMARK;
 	my $t2 = new Benchmark;
-	if (Kephra::Config::Global::evaluate()) {
+	if (Kephra::Config::Global::load_autosaved()) {
 		#Kephra::API::EventTable::freeze_all();
 
 		$frame->Show(1);

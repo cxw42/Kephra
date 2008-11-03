@@ -29,7 +29,7 @@
 
  2. Zusammenfassung der Neuheiten
     + Suchzeile am unteren Ende
-    + Dialog für Einstellungen
+    + die ersten 2 Erweiterungen
     + wesentlich bessere drag'n drop-Unterstützung
     + 10 dateiübergreifende Lesezeichen und Geh zur letzten Änderung
     + Kontexmenüs über markiertem Text und der Reiterleiste, die nun 2 optionale
@@ -176,10 +176,24 @@
     ihr auch dazu verwenden könnt, seht ihr in config/global/default/default.conf
     + Die im Titel angezeigten Pfade sind jetzt auch immer OS-konform.
 
+ - die ersten 2 Erweiterungen
+    + Mit <Strg>+<F4> oder dem Icon in der Werkzeugleiste öffnet und schließt
+      sich der Notitzblock. In ihm geschriebene Texte sind immer sichtbar, auch
+      beim nächsten Start des Programms. <F4> lässt den Cursor hin oder zurück
+      springen und <F5> evaluiert den Inhalt als Perl.
+    + Befindet sich der Cursor im Beabeitungsfeld führt <F5> das aktuelle Perl-
+      Programm aus und fügt die die Ausgabe ins Ausgabefeld ein. <Shift>+<F5>
+      kann das Programm auch abbrechen lassen und <Strg>+<F5> läßt das Ausgabefeld
+      auf und zuklappen.
+    + Alle Einstellungsmöglichkeiten der Erweiterungen sind unter app > panel
+      zu finden.
+
+
 
  4. bekannte Fehler und Probleme
 
-    + Installation unter Linux und Mac ist noch (bald) nicht ganz einfach.
+    + Installation aus der CPAN-Shell derzeit nur mit force und manchmal ist es 
+      auch noch nötig die configs manuell zu kopieren.
 
 
  5. Hinweise

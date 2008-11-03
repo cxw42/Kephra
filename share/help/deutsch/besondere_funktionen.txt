@@ -100,5 +100,5 @@ inhaltlich geordnet.
       einer Datei könnt ihr das ganze Programm übersetzen.
     + Syntaxmodi enthalen alle Farbdefinitionen und Schlüsselwörter für eine 
       Programmiersprache, den Parser kann man damit leider noch nicht ändern.
-    + Templates sind odt verwendete Textbausteine die durch Sondervariablen
+    + Templates sind oft verwendete Textbausteine die durch Sondervariablen
       aktuelle Informationen enthalten können. Sie sind im Dateimenü aufgelistet.

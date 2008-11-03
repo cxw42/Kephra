@@ -4,7 +4,6 @@ our $VERSION = '0.40';
 use strict;
 use warnings;
 
-
 ########################################################
 # file save events, drag n drop files, file menu calls #
 ########################################################
@@ -116,7 +115,6 @@ sub open {
 		$Kephra::config{file}{current}{directory},
 		$Kephra::temp{file}{filterstring}{all}
 	);
-
 	# opening selected files
 	if (ref $files eq 'ARRAY') { Kephra::Document::Internal::add($_) for @$files }
 }

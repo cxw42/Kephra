@@ -26,8 +26,11 @@ sub get {
 			'checkitem view-editpanel-line-wrap',
 			'checkitem view-window-stay-on-top',
 			'',
+			'checkitem view-panel-notepad',
+			'checkitem view-panel-output',
+			'',
 			'item view-dialog-find#',
-			'item view-dialog-config',
+			'item view-dialog-config#',
 			'item view-dialog-keymap#',
 		],
 		searchbar => [

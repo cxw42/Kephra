@@ -28,7 +28,7 @@
 
  2. News summary
     + searchbar on the bottom.
-    + config dialog
+    + first 2 extentions
     + much better drag 'n drop support
     + 10 doc spanning bookmarks and goto last edit
     + context menu on selected text and tabbar, which has 2 new optional icons
@@ -173,20 +173,36 @@
     Titelleiste verändern. Welche Informationen, die sich aktualisieren werden,
     ihr auch dazu verwenden könnt, seht ihr in config/global/default/default.conf
     + Die im Titel angezeigten Pfade sind jetzt auch immer OS-konform.
+    
+ - First 2 extentions
+    + With <Ctrl>+<F4> or the icon in the toolbar you can open or close the 
+      notepad
+    öffnet und schließt
+      sich der Notitzblock. In ihm geschriebene Texte sind immer sichtbar, auch
+      beim nächsten Start des Programms. <F4> lässt den Cursor hin oder zurück
+      springen und <F5> evaluiert den Inhalt als Perl.
+    + Befindet sich der Cursor im Beabeitungsfeld führt <F5> das aktuelle Perl-
+      Programm aus und fügt die die Ausgabe ins Ausgabefeld ein. <Shift>+<F5>
+      kann das Programm auch abbrechen lassen und <Ctrl>+<F5> läßt das Ausgabefeld
+      auf und zuklappen.
+    + Alle Einstellungsmöglichkeiten der Erweiterungen sind unter app > panel
+      zu finden.
+
 
 
  4. Known bugs and issues
 
-    + Installation under Linux und Mac ist in't (yet) that simple as it could be.
+    + Installation from CPAN shell works only with force and copy configs by 
+      hand is sometimes needed.
 
 
  5. Hints
 
     + Read the "Advanced - Tour" in the "Help" menu. This is full of goodies, 
-    which makes your editing with Kephra much more effektiv.
+    which makes your editing with Kephra much more effective.
     
     + To understand the main config file better, look into the defaults under:
-    pce/config/global/default/default.conf. It explaines many keys and tells you 
+    pce/config/global/default/default.conf. It explanes many keys and tells you 
     about possible settings.
 
 

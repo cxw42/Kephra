@@ -95,14 +95,8 @@ sub create {
 					}
 				} elsif ($key == 81) { # Q
 					switch_visibility() if $event->ControlDown;
-				} elsif ( $key == WXK_LEFT ){
-					if ($event->ControlDown) {
-						$ep->CmdKeyExecute( wxSTC_CMD_CHARLEFT ); return;
-					}
-				} elsif ($key == WXK_RIGHT ){
-					if ($event->ControlDown) {
-						$ep->CmdKeyExecute( wxSTC_CMD_CHARRIGHT ); return;
-					}
+				#} elsif ( $key == WXK_LEFT ){ wxSTC_CMD_CHARLEFT return
+				#} elsif ($key == WXK_RIGHT ){ wxSTC_CMD_CHARRIGHT return;
 				} elsif ($key == WXK_UP){
 					if ($event->ControlDown) {
 						$ep->CmdKeyExecute( wxSTC_CMD_LINESCROLLUP ); return;

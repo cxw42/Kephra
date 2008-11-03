@@ -10,8 +10,11 @@ Nacht Tasten geordnet :
      BildHoch              blättere Seite nach oben
      BildRunter            blättere Seite nach unten
      F3                    suche nächsten Eintrag
+     F4                    spring in den Notitzblock
+     F5                    starte Perlprogramm
 
      Shift+F3              suche vorigen Eintrag
+     Shift+F5              stoppe Perlprogramm
      Shift+Back            delete to next tabstop
 
      Strg+Tab              rücke um ein Tab ein
@@ -93,6 +96,7 @@ Nacht Tasten geordnet :
      Strg+Alt+Z            rückgängig bis zum Anfang
 
      Strg+Alt+Shift+Z      wiederhohlen bis zum jüngsten Stand
+
 
 Inhaltlich geordnet:
 

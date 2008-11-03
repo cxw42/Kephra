@@ -1,5 +1,5 @@
 package Kephra::Config::Global;
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 
 use strict;
 use warnings;
@@ -22,10 +22,10 @@ sub load_autosaved {
 			rename $file, $file . '.failed';
 		}
 	}
-	# emergency program if configs missing
-	unless ( %Kephra::config ) {
-		%Kephra::config = %{ Kephra::Config::Default::global_settings() };
-	}
+
+	%Kephra::config
+		? evaluate()
+		: load_defaults();
 }
 
 sub save_autosaved {
@@ -48,7 +48,7 @@ sub load_backup_file { reload( _current_file().'~' ) }
 
 sub load_defaults {
 	require Kephra::Config::Embedded;
-	%Kephra::config = %{ Kephra::Config::Embedded::global_settings() };
+	%Kephra::config = %{ Kephra::Config::Default::global_settings() };
 	evaluate();
 }
 

@@ -43,7 +43,7 @@ sub switch_back { to_number( Kephra::Document::previous_nr() ) }
 # change to the previous used document
 sub tab_left {
 	my $new_doc_nr = Kephra::Document::current_nr() - 1;
-	$new_doc_nr = Kephra::Document::_get_last_nr() if $new_doc_nr == -1;
+	$new_doc_nr = Kephra::Document::last_nr() if $new_doc_nr == -1;
 	to_number($new_doc_nr);
 	$new_doc_nr;
 }
@@ -81,7 +81,7 @@ sub move_left {
 sub move_right {
 	my $old_nr = Kephra::Document::current_nr(); 
 	my $new_nr = $old_nr + 1;
-	if ( $new_nr <= _Kephra::Document::get_last_nr() ) { switch($old_nr, $new_nr) }
+	if ( $new_nr <= Kephra::Document::get_last_nr() ) { switch($old_nr, $new_nr) }
 	else {
 		$new_nr = 0;
 		my $attr = Kephra::Document::_attributes();

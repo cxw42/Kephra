@@ -7,14 +7,19 @@ Key Order :
 
      Del                   delete selection
      Pos1                  jump to line begin or first wordcharacter(push twice)
+     PgUp                  move page up
+     PgDown                move page down
      F3                    find next
+     F4                    jump into notepad
+     F5                    run Perl program
 
      Shift+F3              find previous
+     Shift+F5              stop Perl program
      Shift+Back            tabweise einrücken
 
      Ctrl+Tab              indent selection a tab
      Ctrl+Space            indent selection a space
-     Strg+Back             jump to last selected file
+     Ctrl+Back             jump to last selected file
      Ctrl+Left             jump one word left
      Ctrl+Right            jump one word right
      Ctrl+Up               scroll text 1 line up

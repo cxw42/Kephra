@@ -1,13 +1,4 @@
 
-0.5
- 
- * code falten
- * utf unterstützung + coding in statuszeile wählen
- * perl tidy
- * autovervollständigung
- * snippet lib
-
-
 internals:
  + nested menu prepare event
 
