@@ -51,13 +51,11 @@ sub change_to {
 	# prevent clash between big lexer & indicator
 	if ( $style =~ /asp|html|php|xml/ ) { $ep->SetStyleBits(7) }
 	else                                { $ep->SetStyleBits(5) }
-
 	# clear style infos
 	$ep->StyleResetDefault;
 	Kephra::App::EditPanel::load_font();
 	$ep->StyleClearAll;
 	$ep->SetKeyWords( $_, '' ) for 0 .. 1;
-
 	# load syntax style
 	if ( $style eq 'none' ) { 
 		$ep->SetLexer(wxSTC_LEX_NULL);
@@ -74,8 +72,12 @@ sub change_to {
 		$ep->StyleSetBold( wxSTC_STYLE_BRACEBAD,   1 );
 		$ep->StyleSetForeground
 			( wxSTC_STYLE_BRACELIGHT, &$color( $bracelight->{good_color} ) );
+		$ep->StyleSetBackground
+			( wxSTC_STYLE_BRACELIGHT, &$color( $bracelight->{back_color} ) );
 		$ep->StyleSetForeground
 			( wxSTC_STYLE_BRACEBAD, &$color( $bracelight->{bad_color} ) );
+		$ep->StyleSetBackground
+			( wxSTC_STYLE_BRACEBAD, &$color( $bracelight->{back_color} ) );
 		$ep->StyleSetForeground 
 			(wxSTC_STYLE_INDENTGUIDE,&$color($indicator->{indent_guide}{color}));
 	}

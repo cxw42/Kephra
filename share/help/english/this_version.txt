@@ -27,16 +27,16 @@
 
 
  2. News summary
-    + searchbar on the bottom.
-    + first 2 extentions
+    + search bar on the bottom.
+    + first 2 extensions
     + much better drag 'n drop support
     + 10 doc spanning bookmarks and goto last edit
     + context menu on selected text and tabbar, which has 2 new optional icons
-      and moveable tabs.
+      and movable tabs.
     + "recent files" and "insert template" menus
     + menu and toolbar items can be checked and respond to events and states.
     + all menus and bar can modified via simple config files
-    + menu labels have german umlauts
+    + menu labels have German umlauts
     + autosave, autonotify and blockformat
     + rename file and open all files of a dir
 
@@ -151,10 +151,11 @@
     markierten Zeilen an.
 
  - Configs
-    Die neuen Menüs und Leisten sind nützlich, aber die wirklich große Änderung 
-    von 0.3 zu 0.4 war das Ersetzen des XRC gegen etwas Eigenes und mächtigereres.
-    + Dadurch findet ihr in den Menüs jetzt endlich deutsche Umlaute.
-    + Auch einzelne Einträge können mit einem Häckchen (ja/nein) oder Kreis
+    The new menus and bars are useful, but the real change from version 0.3 to
+    0.4 is the replacement of XRC with homegrown, more powerfull technology.
+    + Thatswhy menus can not contain german umlauts.
+    + Also 
+    Auch einzelne Einträge können mit einem Häckchen (ja/nein) oder Kreis
     (Auswahl) versehen sein werden, oder auch deaktiviert werden. Knöpfen in
     Werkzeugleisten können einen eingedrückten Zustand haben.
     + Neu ist auch die in dem Menü Einstellungen > Benutzerschnittstellen 
@@ -174,20 +175,17 @@
     ihr auch dazu verwenden könnt, seht ihr in config/global/default/default.conf
     + Die im Titel angezeigten Pfade sind jetzt auch immer OS-konform.
     
- - First 2 extentions
-    + With <Ctrl>+<F4> or the icon in the toolbar you can open or close the 
-      notepad
-    öffnet und schließt
-      sich der Notitzblock. In ihm geschriebene Texte sind immer sichtbar, auch
-      beim nächsten Start des Programms. <F4> lässt den Cursor hin oder zurück
-      springen und <F5> evaluiert den Inhalt als Perl.
-    + Befindet sich der Cursor im Beabeitungsfeld führt <F5> das aktuelle Perl-
-      Programm aus und fügt die die Ausgabe ins Ausgabefeld ein. <Shift>+<F5>
-      kann das Programm auch abbrechen lassen und <Ctrl>+<F5> läßt das Ausgabefeld
-      auf und zuklappen.
-    + Alle Einstellungsmöglichkeiten der Erweiterungen sind unter app > panel
-      zu finden.
-
+ - First 2 Extensions
+    + With <Ctrl>+<F4> or the icon in the tool bar you can open or close the 
+      notepad panel on the right side. There you can leave text that always is
+      visible, even after a restart. <F4> let the cursor jump between the editor
+      and the notepad and <F5> does a perl "eval" with the content of the notepad.
+      The output will be shown in the output panel.
+    + Is the cursor at the edit panel active you can run with <F5> the current
+      file as a Perl script and stop that any time with <Shift>+<F5>. <Ctrl>+<F5>
+      opens or closes the output panel.
+    + All settings regarding these panel like color, font size or behavior can
+      be found under app > panel.
 
 
  4. Known bugs and issues
@@ -202,14 +200,14 @@
     which makes your editing with Kephra much more effective.
     
     + To understand the main config file better, look into the defaults under:
-    pce/config/global/default/default.conf. It explanes many keys and tells you 
-    about possible settings.
+    kephra/config/global/default/default.conf. It explains many keys and tells
+    you about possible settings.
 
 
  6. Plans
  
-    + We have man wishes. For instance we would like to have Modules (extentions)
+    + We have man wishes. For instance we would like to have Modules (Extensions)
     like snippet libraries, file manager, command line, debugger, text folding or
     outlining (a link list of all variables and subroutines).
 
-    + Print support would also be good.
+    + Print and UTF support would also be good.

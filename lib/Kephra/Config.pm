@@ -89,9 +89,7 @@ sub path_matches {
 # Either hex "0066FF" or decimal "0,128,255" is allowed.
 sub color {
 	my $string = shift;
-	unless ( defined $string ) {
-		die "Color string is not defined";
-	}
+	return Kephra::App::warn("Color string is not defined") unless defined $string;
 
 	# Handle hex format
 	$string = lc $string;

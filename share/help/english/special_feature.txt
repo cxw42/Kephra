@@ -10,95 +10,80 @@ overlooked. Maybe because you don't expect them, or they are not in the main men
 Thatswhy they are listed here, sorted by topic.
 
  - Text Navigation
-    + <Ctrl>+<Shift>+<G> springt im aktuellen Dokument zu der Stelle, die als 
-      letztes bearbeitet wurde, <Ctrl>+<Rück> zum zuletzt gesehenen Dokument.
-    + <Alt>+<Shift>+<Richtungstasten> markiert einen rechteckigen Textausschnitt.
-    + Klammernavigation: <Alt>+<Richtungstasten> bewegt den Cursor zwischen den 
-      Klammern. Vertikal entspricht zusammenhängenden Klammern einer Art und 
-      horizontal dem Sprung zwischen Klammern aller Arten.
-    + Blocknavigation: Hält man <Alt>, kann man mit <Bildhoch> und <Bildrunter>
-      blockweise springen. Blöcke werden durch Leerzeilen getrennt.
+    + <Ctrl>+<Shift>+<G> jumps to the position of last change text in the current
+    document.
+    + <Alt>+<Shift>+<cursor keys> makes a rectangular text selection.
+    + brace navigation: <Alt>+<cursor keys> moves the cursor between braces. Up
+      and down goes to the matching brace or to the next brace of the same kind.
+      Left and right jumps to the previous or next brace of any kind.
+    + block navigation: Holding <Alt>, you can jump with <PageUp> and <PageDown>
+      block wise. Blocks are junks of lines, separated by empty lines.
 
  - Text Editing
-    + Mit <Alt>[+<Shift>]+<Z> kann man mehrere Änderungen auf einmal rückgängig 
-      machen oder weiderholen. Nimmt man noch <Ctrl> hinzu, bewegt man sich 
-      zwischen den Endpunkten der Aufzeichnung.
-    + <Ctrl>+<W> ersetzt die Markierung mit dem Inhalt der Zwischenablage.
-    + <Ctrl>+<D> verDoppelt, fügt eine Kopie hinter den markierten Text an.
-    + Verschieben: <Ctrl>+<Alt>+<Richtungstasten oder Bildhochrunter> bewegt den
-      markierten Text. Ist nichts markiert, wird die aktuelle Zeile bewegt.
-    + Zeilenweises bearbeiten: Füge <Shift> hinzu, und die meißten Funktionen
-      der einfachen Textbearbeitung beziehen sich auf die aktuelle zeile. Zwei
-      jedoch (<Ctrl>+<Shift>+<L> und <Ctrl>+<Shift>+<R>) sind hier besonders.
-      Sie löschen vom Cursor aus gesehen den linken oder rechten Teil der Zeile.
+    + With <Alt>[+<Shift>]+<Z> several changes are undone or redone. Add <Ctrl>,
+      and you move to the begin or endpoint of the edit history.
+    + <Ctrl>+<W> puts the selected text into the clipboard and vice versa.
+    + <Ctrl>+<D> pastes, a copy of the selected text or the current line under
+      under the original.
+    + move: <Ctrl>+<Alt>+<cursor|page keys> moves the selected text inside the
+      document. If nothing is selected, the current line will be moved.
+    + edit line wise: Add <Shift> and most simple edit functions will be applied
+      to the current line. But <Ctrl>+<Shift>+<L> and <Ctrl>+<Shift>+<R> do only
+      apply to line. They delete the left or right part of the cursor.
 
  - Files
-    In diesem Menü ist fast alles selbsterklärend. Auch Datei erneut laden oder
-    andere schließen (alle Dokumente außer dem Sichtbaren) sollte beim blättern
-    einleuten. 2 Funktionen die Dateien speichern möchte ich jedoch hervorheben.
-    + Mit <Alt>+<Shift>+<S> wird der aktuelle Stand des Dokumentes in einer Datei
-      gespeichert, dem Dokument ist jedoch weiterhin die alte Datei zugehörig.
-    + <Ctrl>+<Alt>+<Shift>+<S> speichert und verändert den Dateiname.
+    In this menu is nearly everything self explaining. Even reload or close other
+    (all but the visible) are easy to understand, from there positioning in the
+    menu. But 2 items should be highlighted.
+    + <Alt>+<Shift>+<S> saves current text under a different file name, but the
+      document is still associated with the previous file name.
+    + <Ctrl>+<Alt>+<Shift>+<S> does save the content and change the file name.
 
  - View Options
-    + Reiterleiste: bietet sehr viele Einstellmöglichkeiten.
-      * Optional gibt es hier ganz links einen Knopf für ein neues Dokument und
-        ganz rechts einen zum schließen des aktuellen Textes.
-      * Gleiches tut auch ein Klick mit der mittlere Maustaste, kann aber gegen
-        jede andere Funktion ersetzt werden.
-      * Ein Rechtsklick ruft ein Kontextmenü, mit dem man alle Dateien mit vollem
-        Pfad sehen und auch die aktuelle Datei wählen kann.
-      * Ein Linksklick aus den hervorgehoben Reiter wechselt zum letztbenutzen
-        text (switch_back).
-    + Suchzeile: ist an sich selbsterklärend. Hier offenbaht Ein Klick mit der 
-      rechten Maustaste ein Menü mit den Suchoptionen. Und ist man in der 
-      Eingeabezeile und blättert die Suchergebnisse mit <Enter> kann man auch mit
-      <Shift>+<Enter> rückwärts blättern, mit <Ctrl>+<Enter> zum ersten 
-      Suchergebnis und mit <Ctrl>+<Shift>+<Enter> zum letzten. Hältst du <Ctrl>
-      gedrückt, so kannst du auch aus der Eingabe der Suchzeile aus den Text
-      bewegen, wie im Text auch. Mit <Bildhoch> und <Bildrunter> kannst du wie
-      im Text seitenweise blättern und hältst du dabei <Ctrl>, sogar das Dokument
-      wechseln.
-    + Die Statuszeile liefert viele aktuelle Information, ermöglicht aber auch,
-      Eigenschaften des Dokumentes zu verändern. Dabei wechselt ein Linksklick 
-      zwischen den üblichsten Einstellungen und der Rechtsklick ein Menü mit mehr
-      Möglichkeiten. Die meißten Zellen sind dabei weitestgehend selbsterklärend.
-      Nicht offensichtlich ist lediglich das mit jedem Linksklick auf die Zelle
-      ganz rechts andere Informationen über die aktuelle Datei angezeigt werden.
-    + Die Editorkomponente kann vieles sichtbar machen, wie die aktuelle Zeile,
-      einen rechten Rand, die Tabs und Leerzeichen aber was wirklich erklärenswert
-      sein könnte, sind die Einrückmarkierungen. Das sind senkrechte, gepunktete
-      Hilfslinien, die in Einrückungen (Leerzeichen oder Tabs) zu sehen sind. Sie
-      haben einen Abstand von einer aktuellen Tabbreite zueinander und können auch
-      aufläuchten wenn die 2 zugehörige Klammern verbinden, die du mit dem Cursor
-      berührst.
+    + The tabbar has many possibilities of configuration.
+      * 2 optional icons: one leftmost for a new document and one rightmost to
+        close the current document.
+      * Right-click calls a context menu with all filenames with the full path.
+      * A click with the middle mouse button does the same, but that behavior
+        can be changed.
+      * A left-click on the highlighted tab switches back to the last used doc.
+    + Searchbar is mostly self explaining. All search options are hidden behind
+      a left click. And if the cursor is in the search input you can jump between
+      all search findings with <Enter> (forward) and <Shift>+<Enter> (backward).
+      <Ctrl>+<Enter> jumps to the first and <Ctrl>+<Shift>+<Enter> to the last
+      finding. And if you hold <Ctrl> down, you move the text like inside the
+      editor with the cursor keys, including <page up> and <page down>, which
+      switches between the docs.
+    + The status bar shows a lot of recent doc settings, which can be changed
+      also via right click and a context menu. A left click switches this property
+      on or off. Only exception ist the rightmost panel, which can show different
+      infos about the current doc/file.
+    + The editor panel has a lot of visual helpers to highlight the current line,
+      spaces and tabs or a right margin. But more unusual are indention guides, 
+      vertical dotted lines, which can help to recognize indention depths. The
+      distance between the indention guides equals the set tab size and they can
+      highlight if they connect 2 highlighted braces.
 
  - Configurations
-    + Haupteinstellungen sind die generellen Einstellungen, die das Verhalten und
-      das Aussehen des Programmes bestimmen.
-    + Kommandoliste ist eine Liste über fast alle Befehle die der Benutzer dem
-      Programm geben kann. 
-      * Im ersten Teil werden jedem Namen (ID) die interne Funktion (<call>)
-        zugeordnet. Ändert hier nur etwas wenn ihr wirklich wisst was ihr da tut.
-      * Die <enable> Sektion bestimmt wann diese Kommandos überhaupt gerufen
-        dürfen (wenn angegebene routinen wahr zurück geben).
-      * <enable_event> gibt die events an bei denen sich das der "enable"-Wert
-        ändern könnte.
-      * <state> gibt einen 0|1-Zustand zurück, zum beispiel für Kippschalter in
-        der Werkzeugleiste. 
-      * <state_event> ist entsprechend das Ereignis wenn sich der <state> ändert.
-      * <icon> ordnet den Befehlen eine Bitmapdatei zu.
-      * <key> ist die letzte und vielleicht für euch interessanteste sektion.
-        Hier könnt ihr den Funktionen Tastaturkombinationen zuordnen. Sind diese
-        einmal gültig, seht ihr das auch in allen Menüs und Leisten, aber bitte
-        denkt daran, es heißt hier ctrl, nicht Ctrl, auch wenn in einem deutschen
-        Menü ctrl zu Ctrl übersetzt wird.
-    + Menüdefinitionen sind nur noch eine Liste aus Kommandos, und daher sehr
-      übersichtlich. Zum Kommentieren hier die Raute(#) bitte ans Zeilenende.
-    + Sprachdateien enthalten zu jedem Kommando die Beschriftung und Kurzhilfe,
-      aber auch die Beschriftung aller Dialoge und sonstigen Anzeigen. Mit solch
-      einer Datei könnt ihr das ganze Programm übersetzen.
-    + Syntaxmodi enthalen alle Farbdefinitionen und Schlüsselwörter für eine 
-      Programmiersprache, den Parser kann man damit leider noch nicht ändern.
-    + Templates sind oft verwendete Textbausteine die durch Sondervariablen
-      aktuelle Informationen enthalten können. Sie sind im Dateimenü aufgelistet.
+    + Main or general configs is the internal name for the apps settings.
+    + The command list contains all commands a user can give the application.
+      * In the first part, every name (ID) gets an internal function (<call>).
+        Change that only if you really know what you're doing.
+      * The <enable> section gives to some ID a function that determines with a
+        positive result, if its currently possible to call the command.
+      * <enable_event> should fire, when the result of <enable> changes.
+      * <state> function return the command status, e.g. for toolbar switch button.
+      * <state_event> triggeres if the <state> changes.
+      * <icon> assigns to some calls a filename, containing a bitmap.
+      * <key> is the last and maybe most interesting section, because it sets the
+        global key binding, that is also displayed (translated) in the main menu.
+        Please use here lowercase and English key names only.
+    + Menu definitions are just (sometimes nested) lists of commands, and thats
+      why very readable. To comment a menu entry out, just append a "#".
+    + Localization files contain all labels and short help texts for the commands,
+      but also labels to all buttons and dialogs. You can translate the whole app
+      by translating this file.
+    + Syntax modes holding all the coloring definitions per programming language
+      and its keywords. The parsing rules unfortunate.
+    + Templates are often used chunks of text, that may contain special variables,
+      that will replaced with current data. They are listed in the file menu.

@@ -188,7 +188,7 @@ sub add {
 		# check if file is already open and goto this already opened
 		if ( $Kephra::config{file}{open}{each_once} == 1){
 			for (  0 .. last_nr() ) {
-				my $path = Kephra::Document::nr_from_file_path($_);
+				my $path = get_file_path($_);
 				if ($path and $path eq $file_name ){
 					Kephra::Document::Change::to_number($_);
 					return;
@@ -257,8 +257,8 @@ sub reset {
 	$edit_panel->ClearAll;
 	$edit_panel->EmptyUndoBuffer;
 	$edit_panel->SetSavePoint;
+	reset_properties($doc_nr, '');
 	reset_tmp_data($doc_nr);
-	reset_properties($doc_nr);
 	eval_properties($doc_nr);
 	Kephra::App::StatusBar::update_all();
 }

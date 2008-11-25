@@ -1,17 +1,16 @@
 
        ---------------------
-      | Kephra Feature Tour |
+      | Kephra Feature List |
        ---------------------
 
-Auch wenn der Editor noch nicht alles vermag, was wir gerne hätten, so möchten
-wir ihn mächtig nennen weil diese Liste lang ist. Wenn euch Texteditoren bereits
-vertraut sind, kann vieles hier übersprungen werden. Dann empfehle ich die
-'besondere_funktionen.txt' zu lesen, die im Menü auch unter Hilfe > Nützliches
-zu findet ist.
+Even if the editor currently doesn't do everything we wish, he already has a big
+pile of features. If you're already familiar with text editors, you can skip a
+lot of the following and switch to the "Advanced Tour", also to be found in the 
+help menu.
 
-Sollte euch eine volltändige, thematisch nach dem Hauptmenü sortierte Übersicht 
-der Funktionen dennoch interessieren, so schreitet weiter. Alle Config-Schlüssel 
-beziehen sich auf die Datei "config/general/autosaved.conf" (Haupteinstellungen).
+But if you're interested in a complete and sorted (order as main menu) overview
+of all features, go on. The config keys refer to "config/general/autosaved.conf",
+the main config file.
 
 
 Content:

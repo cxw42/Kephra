@@ -47,7 +47,6 @@ sub open_current_file {
 sub load_backup_file { reload( _current_file().'~' ) }
 
 sub load_defaults {
-	require Kephra::Config::Embedded;
 	%Kephra::config = %{ Kephra::Config::Default::global_settings() };
 	evaluate();
 }

@@ -3,6 +3,13 @@ BUGS:
  !!! test suite fails
  ! textchanged event triggers twice
 
+0.3.10.24
+ ~ background color for brace highlighting
+ ' more docs translation
+ ! a Config::Global sub required a gone module
+ ! internal doc propert reset didn't delete file name
+ ! file > open > each_once works again
+
 0.3.10.23
  ~ hide config dialog
  ' update docs

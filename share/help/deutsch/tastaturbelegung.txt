@@ -1,9 +1,9 @@
 
-  ------------------------
-  | PCE Tastaturbelegung |
-  ------------------------
+  ----------------------------------
+  | Kephra Standardtastaturbelegung |
+  ----------------------------------
 
-Nacht Tasten geordnet :
+Nach Tasten geordnet :
 
      Entf                  lösche Markierung
      Pos1                  springe an Zeilenanfang, 1. Buchstaben (2mal drücken)
@@ -25,11 +25,11 @@ Nacht Tasten geordnet :
      Strg+Hoch             bewege Text eine Zeile hoch
      Strg+Runter           bewege Text eine Zeile runter
      Strg+Entf             entferne alle Leerzeichen rechts
-     Strg+Pos1             gehe an textanfang
-     Strg+Ende             gehe an textende
+     Strg+Pos1             gehe an Textanfang
+     Strg+Ende             gehe an Textende
      Strg+BildHoch         gehe zu vorigem offenem Dokument
      Strg+BildRunter       gehe zu nächstem offenem Dokument
-     Strg++                Text vergrössern (zoomen)
+     Strg++                Text vergrößern (zoomen)
      Strg+-                Text verkleinern
      Strg+A                markiere ganzen Text des Dokumentes
      Strg+B                kommentiere Markierung (stream comment)
@@ -39,7 +39,7 @@ Nacht Tasten geordnet :
      Strg+N                neues Dokument
      Strg+O                öffne Datei
      Strg+P                kommentiere Zeilen (block comment wie in perl, ruby, python, php)
-     Strg+Q                schliesse Datei
+     Strg+Q                schließe Datei
      Strg+R                ersetzen
      Strg+S                speichere Datei
      Strg+T                schalte Fenster im Vordergrund Modus an und aus
@@ -60,7 +60,7 @@ Nacht Tasten geordnet :
      Strg+Shift+L          lösche Zeile links vom Textcursor(caret)
      Strg+Shift+O          lade Datei erneut
      Strg+Shift+P          Zeilen markieren ( #perl, ruby, php, python)
-     Strg+Shift+Q          alle anderen Dokumente schliessen
+     Strg+Shift+Q          alle anderen Dokumente schließen
      Strg+Shift+R          lösche Zeile rechts vom Textcursor(caret)
      Strg+Shift+S          speichere Datei unter
      Strg+Shift+W          akuelle Zeile mit Zwischenablage austauschen
@@ -91,7 +91,7 @@ Nacht Tasten geordnet :
      Strg+Alt+Links        bewege Markierung zeichenweise links
      Strg+Alt+Rechts       bewege Markierung zeichenweise rechts
      Strg+Alt+O            lese alle Dateien erneut ein
-     Strg+Alt+Q            schliesse alle Dateien
+     Strg+Alt+Q            schließe alle Dateien
      Strg+Alt+S            speichere alle Dateien
      Strg+Alt+Z            rückgängig bis zum Anfang
 

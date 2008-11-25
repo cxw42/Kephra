@@ -37,6 +37,7 @@ sub splashscreen {
 	) if $img and -e $img;
 }
 
+sub warn { Kephra::App::StatusBar::info_msg{@_} }
 
 sub assemble_layout {
 	my $win = Kephra::App::Window::_ref();

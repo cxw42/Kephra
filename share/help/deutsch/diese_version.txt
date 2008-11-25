@@ -202,8 +202,8 @@
     umso nützlicherere Funktionen für fortgeschrittene Benutzer hier zu entdecken.
 
     + Um die Haupteinstellungsdatei besser zu verstehen hilft es die Datei mit
-    den Voreinstellungen: pce/config/global/default/default.conf zu lesen, denn
-    sie ist auskommentiert, wenn auch bloß englisch.
+    den Voreinstellungen: kephra/config/global/default/default.conf zu lesen,
+    denn sie ist auskommentiert, wenn auch bloß englisch.
 
 
  6. Geplantes
@@ -212,4 +212,4 @@
     für Programmier sind wie Templatebibliohteken, Dateimanager, Befehlszeile,
     Debugger, Text falten oder Outline (Liste aller Variablen und Routinen).
 
-    + Und drucken wäre natürlich auch nicht schlecht.
+    + Und drucken sowie UTF-Uterstuetzung wäre natürlich auch nicht schlecht.

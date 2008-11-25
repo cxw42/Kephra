@@ -1,3 +1,5 @@
+Wx::LaunchDefaultBrowser($url);
+
 
 internals:
  + nested menu prepare event

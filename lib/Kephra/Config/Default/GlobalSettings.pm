@@ -168,6 +168,7 @@ sub get {
 			},
 			indicator => {
 				bracelight => {
+					back_color => '99ff99',
 					bad_color  => 'ff0000',
 					good_color => '0000ff',
 					mode       => 'adjacent',
