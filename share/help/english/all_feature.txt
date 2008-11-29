@@ -15,16 +15,17 @@ the main config file.
 
 Content:
 
- 1 Navigation in text
- 2 Selecting text
- 3 Text editing (edit menu)
- 4 History of changes (edit menu)
- 5 Clipboard functions (edit menu)
- 6 Search menu and search dialog
- 7 File menu
- 8 Document menu - Document settings
- 9 View menu
- 10 Config menu
+  1 Navigation in text
+  2 Selecting text
+  3 Text editing (edit menu)
+  4 History of changes (edit menu)
+  5 Clipboard functions (edit menu)
+  6 Search menu and search dialog
+  7 Tools Menu
+  8 File menu
+  9 Document menu - Document settings
+ 10 View menu
+ 11 Config menu
  11 Help menu
 
 
@@ -194,7 +195,16 @@ Content:
    -"Goto Line" or <Ctrl>+<G> calls a Dialog where you can type into the number
      of the line, you wish to jump to.
 
- 7 File menu
+ 7 Tools Menu
+   The notepad is a parallel panel, just for keeping a bit of unformatted text.
+   - <F4> jumps into the notepad and back. <Ctrl>+<F4> opens or closes it. <F5>
+     inside the notepad does a Perl eval with the content. Results will be shown
+     in the output panel.
+   - <F5> runs the current document with a defined interpreter. This process can
+      be stopped with <Shift>+<F5>. The result will be displayed  in the output 
+      panel. This can be opened and closed with <Ctrl>+<F5>.
+  
+ 8 File menu
    Containes all the functionality that has access to your permanent storage
    (harddrive e.g.). The only exceptions are new and quit, but they belong here
    too i think.
@@ -224,7 +234,7 @@ Content:
      session files from other editors but currently is only SciTE session file
      format supportet.
 
- 8 Document menu - Document settings
+ 9 Document menu - Document settings
    do (mostly) change a property of the current document. The syntaxstyle und the
    tabmode can also be set by using the interactive statusbar. All document
    properties will be saved in the session file and will be restored be the next
@@ -280,45 +290,45 @@ Content:
      but you can still safe the doc under another name. Or you maybe want to use
      this feature to protect some mature text against your own inattention.
 
- 9 View menu
-   Functions that do only visual changes to the text or the program are
-   summarized here. All Settings here effect all documents equally.
-   - "Stay On Top" you can toggle with <Ctrl>+<T> and it means that the main
-     window will always displayed above all other windows.
-   - "Toolbar"-"Statuscontext" This block of menu items switches (toggles) the
-     visibility of the visual(GUI) elements of the program. The elements are
-     sorted from top to the bottom of the applikation window. All menu items
-     blow this block refer to the text area.
-   - "Numbermargin" defines the width of the line number margin. Normally is the
-     width always sufficient to display all line number, but in case you turned
-     the autosize off(config key: editpanel > margin > linenumber > autosize),
-     or want to switch the visibility of the line number margin you can use this
-     submenu. Also color and default width can be changed in the config files.
-   - "Textmargin": Width of the extra margin (in pixel) on the left and right
-     side of the text area. here can you adjust the spacing between the pure
-     text and the margins on the left side.
-   - "Right Margin" Switches visibility of a vertical line that indicates how
-     long the text lines should be at maximum. Color and position of this line
-     can be set in the config at the key: editpanel > indicator > right_margin.
-   - "Indention Guide" toggles vertical lines that do indicating how far to
-     indent your source code. These lines appear above text indention
-     (whitespace) at intervals of the current width of a tab.
-   - "Caret Line", if activated, the current text line will be highlighting with
-      a chosen background color. config key: editpanel > indicator > caret_line
-   - "Line Wrap" means that text lines that don't fit into the current window
-      size will displayed in several parts among each other.
-   - "end Of Line" (eOL) makes the (otherwise invisible) control character that
-      are marking the end of the line visible. They are 3 different types
-      symbolized by 3 different indicators.
-   - "Whitespace" sets whitespaces and tabs visible with dot and arrow symbols.
-      the color of these symbols can be changed by config file.
-   - "Font" calls an dialog, which allows you to change all properties of the
-      displayed font. see also config key editpanel > font
+ 10 View menu
+    Functions that do only visual changes to the text or the program are
+    summarized here. All Settings here effect all documents equally.
+    - "Stay On Top" you can toggle with <Ctrl>+<T> and it means that the main
+      window will always displayed above all other windows.
+    - "Toolbar"-"Statuscontext" This block of menu items switches (toggles) the
+      visibility of the visual(GUI) elements of the program. The elements are
+      sorted from top to the bottom of the applikation window. All menu items
+      blow this block refer to the text area.
+    - "Numbermargin" defines the width of the line number margin. Normally is the
+      width always sufficient to display all line number, but in case you turned
+      the autosize off(config key: editpanel > margin > linenumber > autosize),
+      or want to switch the visibility of the line number margin you can use this
+      submenu. Also color and default width can be changed in the config files.
+    - "Textmargin": Width of the extra margin (in pixel) on the left and right
+      side of the text area. here can you adjust the spacing between the pure
+      text and the margins on the left side.
+    - "Right Margin" Switches visibility of a vertical line that indicates how
+      long the text lines should be at maximum. Color and position of this line
+      can be set in the config at the key: editpanel > indicator > right_margin.
+    - "Indention Guide" toggles vertical lines that do indicating how far to
+      indent your source code. These lines appear above text indention
+      (whitespace) at intervals of the current width of a tab.
+    - "Caret Line", if activated, the current text line will be highlighting with
+       a chosen background color. config key: editpanel > indicator > caret_line
+    - "Line Wrap" means that text lines that don't fit into the current window
+       size will displayed in several parts among each other.
+    - "end Of Line" (eOL) makes the (otherwise invisible) control character that
+       are marking the end of the line visible. They are 3 different types
+       symbolized by 3 different indicators.
+    - "Whitespace" sets whitespaces and tabs visible with dot and arrow symbols.
+       the color of these symbols can be changed by config file.
+    - "Font" calls an dialog, which allows you to change all properties of the
+       displayed font. see also config key editpanel > font
 
- 10 Config menu:
+ 11 Config menu:
     Helps to open all config files directly to edit them in the editor itself.
     Hint: changes will be performed immediately when you save them.
 
- 11 Help menu:
+ 12 Help menu:
     Contains several texts with information about this programm. This may ease
     the usage for some users or help to understand what this project all about.

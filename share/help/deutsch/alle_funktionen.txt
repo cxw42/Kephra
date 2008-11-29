@@ -17,17 +17,18 @@ beziehen sich auf die Datei "config/general/autosaved.conf" (Haupteinstellungen)
 
 Inhalt:
 
- 1 im Text Navigieren
- 2 Text Markieren 
- 3 Textbearbeitung (Bearbeiten Menü)
- 4 History (Bearbeiten Menü)
- 5 Zwischenablage (Bearbeiten Menü)
- 6 Suchen-Menü und Suchen-Dialog
- 7 Datei-Menü
- 8 Dokument-Menü
- 9 Ansicht-Menü
- 10 Konfgurations-Menü:
- 11 Hilfe-Menü:
+  1 im Text Navigieren
+  2 Text Markieren 
+  3 Textbearbeitung (Bearbeiten Menü)
+  4 History (Bearbeiten Menü)
+  5 Zwischenablage (Bearbeiten Menü)
+  6 Suchen-Menü und Suchen-Dialog
+  7 Werkzeuge-Menü
+  8 Datei-Menü
+  9 Dokument-Menü
+ 10 Ansicht-Menü
+ 11 Konfgurations-Menü
+ 12 Hilfe-Menü
 
 
 
@@ -188,7 +189,18 @@ Inhalt:
    -"Gehe zu Zeile" oder <Strg>+<G> ruft einen Dialog mit dem man zu einer
      angegeben Zeilennummer im aktuellen Dokument springen kann.
 
- 7 Datei-Menü
+ 7 Werkzeuge-Menü
+   Der Notizblock ist eine paralleles Panel in dem einfach etwas unformatierter
+   Text gespeichert wird.
+   - Mit <F4> springt der Cursor in den Notizblock und zurück. <Strg>+<F4> läßt
+     den Notizblock nur auf- und zuklappen. Ein <F5> im Notizblock evaluiert den
+     Inhalt als Perlcode. Das Ergebnis wird im Ausgabepanel angezeigt.
+   - <F5> startet einen Interpreter mit dem aktuellen Dokument als Eingabe. Der
+     Prozess kann jederzeit mit <Shift>+<F5> angehalten werden. Das Ergebnis oder
+     Fehlermeldung werden im Ausgabepanel angezeigt, daß mit <Strg>+<F5> auf oder
+     zugeklappt werden kann.
+
+ 8 Datei-Menü
    Enthält alle Funktionen die auf die Festplatte zugreifen, einzige Ausnahmen 
    sind "neu" und "beenden" die aber noch am ehesesten hierher gehören.
    - "neu" erstellt neues leeres Dokument das noch keinem Dateinamen zugeordnet 
@@ -214,7 +226,7 @@ Inhalt:
      andere Formate benutzen solche Gruppen zu speichern bietet der Editor
      auch die Möglichkeit an, diese zu importieren oder zu exportieren.
 
- 8 Dokument-Einstellungen
+ 9 Dokument-Einstellungen
    sind (meistens) Eigenschaften die für jedes Dokument getrennt gespeichert und
    verändert werden können. Das Meiste davon verstellt man über das Dokument-Menü
    oder direkt in der Haupkonfigurationsdatei: "config/general/autosaved.conf" .
@@ -255,42 +267,42 @@ Inhalt:
      einer Raute im Reiter gekennzeichnet und können nicht im Editor bearbeitet
      werden. Der Schreibschutz ist aber über das Menü an und abschaltbar.
 
- 9 Ansicht-Einstellungen
-   Ändern nichts am Text sondern nur an der Optik des Textes oder des Programmes.
-   Sie gelten für alle Dokumente in gleicher Weise.
-   - "Im Vordergrund" ist er mit <Strg>+<T> aktiviert überlagert der Editor jedes
-     andere Fenster und bleibt ständig sichtbar.
-   - "Symbolleiste"-"Statuskontext" Dieser Block im Ansichtmenü dient zum Ein- 
-     und Ausblenden von Teilen der Programmoberfläche. Alle Einstellungen 
-     unterhalb beziehen sich auf das Textfeld.
-   - "Zeilennummern" bestimmt die Breite der Anzeige der Zeilennummern. Diese 
-     passt sich den Bedürfnissen an, solange die Breite nicht 0 ist oder 
-     config: editpanel > margin > linenumber > autosize aktiv ist. Auch Farben 
-     und Mindestbreite können dort eingestellt werden.
-   - "Extrarand": Damit kann ein zusätzlicher Abstand an den Rändern des
-     Textfeldes links und rechts eingestellt werden.
-   - "Rechter Rand" blendet eine senkrechte Linie ein oder aus, an der man die 
-      Zeilenenden ausrichten kann. Farbe und Position sind in der Config-Datei
-      unter editpanel > indicator > right_margin gespeichert.
-   - "Einrückmarkierung" blendet auch senkrechte Linien ein/aus, an denen man 
-      die Einrückungen der Zeilen orientieren kann. Diese Linien erscheinen
-      nur dort wo Leerzeichen sind, in Abständen, die der aktuellen 
-      Tabulatorbreite entsprechen.
-   - "Aktuelle Zeile" markiert die Zeile in der sich der Caret befindet mit 
-      einer besonderen Hintergrundfarbe. (editpanel > indicator > caret_line)
-   - "Zeilenumbruch" bricht Zeilen am Fensterrand um, und stellt lange Zeilen in 
-      mehreren Teilen untereinander dar.
-   - "Zeilenendsymbol" blendet Symbole für die sonst unsichtbaren Zeilentrenn-
-     zeichen ein oder aus.
-   - "Leerzeichen" mache Leerzeichen und Tabulatoren mit Punkten und Pfeilen
-      sichtbar oder unsichtbar.
-   - "Schriftart" ruft einen Dialog mit dem man alle Eigenschaften der 
-     verwendeten Schriftart einstellen kann.
+ 10 Ansicht-Einstellungen
+    Ändern nichts am Text sondern nur an der Optik des Textes oder des Programmes.
+    Sie gelten für alle Dokumente in gleicher Weise.
+    - "Im Vordergrund" ist er mit <Strg>+<T> aktiviert überlagert der Editor jedes
+      andere Fenster und bleibt ständig sichtbar.
+    - "Symbolleiste"-"Statuskontext" Dieser Block im Ansichtmenü dient zum Ein- 
+      und Ausblenden von Teilen der Programmoberfläche. Alle Einstellungen 
+      unterhalb beziehen sich auf das Textfeld.
+    - "Zeilennummern" bestimmt die Breite der Anzeige der Zeilennummern. Diese 
+      passt sich den Bedürfnissen an, solange die Breite nicht 0 ist oder 
+      config: editpanel > margin > linenumber > autosize aktiv ist. Auch Farben 
+      und Mindestbreite können dort eingestellt werden.
+    - "Extrarand": Damit kann ein zusätzlicher Abstand an den Rändern des
+      Textfeldes links und rechts eingestellt werden.
+    - "Rechter Rand" blendet eine senkrechte Linie ein oder aus, an der man die 
+       Zeilenenden ausrichten kann. Farbe und Position sind in der Config-Datei
+       unter editpanel > indicator > right_margin gespeichert.
+    - "Einrückmarkierung" blendet auch senkrechte Linien ein/aus, an denen man 
+       die Einrückungen der Zeilen orientieren kann. Diese Linien erscheinen
+       nur dort wo Leerzeichen sind, in Abständen, die der aktuellen 
+       Tabulatorbreite entsprechen.
+    - "Aktuelle Zeile" markiert die Zeile in der sich der Caret befindet mit 
+       einer besonderen Hintergrundfarbe. (editpanel > indicator > caret_line)
+    - "Zeilenumbruch" bricht Zeilen am Fensterrand um, und stellt lange Zeilen in 
+       mehreren Teilen untereinander dar.
+    - "Zeilenendsymbol" blendet Symbole für die sonst unsichtbaren Zeilentrenn-
+       zeichen ein oder aus.
+    - "Leerzeichen" mache Leerzeichen und Tabulatoren mit Punkten und Pfeilen
+       sichtbar oder unsichtbar.
+    - "Schriftart" ruft einen Dialog mit dem man alle Eigenschaften der 
+      verwendeten Schriftart einstellen kann.
 
- 10 Konfgurations-Menü:
+ 11 Konfgurations-Menü:
     Ist eine Übersicht über alle Konfigurtaions-Dateien die hier schnell geöffnet
     oder geladen werden können.
    
- 11 Hilfe-Menü:
+ 12 Hilfe-Menü:
     Texte mit Informationen über das Programm. Soll angeblich die Benutzung 
     erleichtern.

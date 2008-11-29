@@ -67,17 +67,17 @@ sub create_dynamic {
 			my @menu_data;
 			if (exists $tmp->{template}){
 				$tmp = Kephra::Config::Tree::_convert_node_2_AoH(\$tmp->{template});
+				my $untitled = $Kephra::localisation{app}{general}{untitled};
 				for my $template ( @{$tmp} ) {
 					my %item;
-					my $untitled = $Kephra::localisation{app}{general}{untitled};
 					$item{type} = 'item';
 					$item{label}= $template->{name};
 					$item{call} = sub {
-						my $filepath = 
+						my $filepath =
 							Kephra::Document::get_file_path() || "<$untitled>";
-						my $filename = 
+						my $filename =
 							Kephra::Document::file_name() || "<$untitled>";
-						my $firstname = 
+						my $firstname =
 							Kephra::Document::first_name() || "<$untitled>";
 						my $content = $template->{content};
 						$content =~ s/\[\$\$firstname\]/$firstname/g;
@@ -85,7 +85,7 @@ sub create_dynamic {
 						$content =~ s/\[\$\$filepath\]/$filepath/g;
 						Kephra::Edit::insert_text($content);
 					};
-					$item{help}= $template->{description};
+					$item{help} = $template->{description};
 					push @menu_data, \%item; 
 				}
 			}

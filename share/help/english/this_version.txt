@@ -31,7 +31,7 @@
     + first 2 extensions
     + much better drag 'n drop support
     + 10 doc spanning bookmarks and goto last edit
-    + context menu on selected text and tabbar, which has 2 new optional icons
+    + context menu on selected text and tab bar, which has 2 new optional icons
       and movable tabs.
     + "recent files" and "insert template" menus
     + menu and toolbar items can be checked and respond to events and states.
@@ -44,136 +44,111 @@
  3. News in detail
 
  - Searchbar
-    + Diese sichtbarste und nützlichste Neuerung findet ihr am unteren Rand, über
-    der Statuszeile. Sie enthält eine Textzeile, die man anklicken oder mit
-    <Ctrl>+<F> anwählen kann (und damit auch wieder zurückspringen kann). Fängt
-    man dann an einen Begriff dort einzugeben, wird bereits nach der Eingabe
-    gesucht (inkrementelle Suche). Das war schon vom Dialog bekannt nur konnte der
-    das Gefundene verdecken, die Suchzeile nicht.
-    + Es ist jetzt auch möglich, einen markierten Text in die Textfelder der Such-
-    zeile und des Suchdialoges mit der Maus zu ziehen. (Drag'n Drop)
-    + In der Combobox kann man auch mit den Tasten <Hoch> und <Runter> bereits
-    verwendete Suchbegriffe auswählen.
-    + Folgende Tastaturkombinationen tun das gleiche wie im Textfeld und dienen
-    der Navigation: <Bildhoch>, <Bildrunter>, beides auch mit <Ctrl> zum wechseln
-    des Dokumentes sowie <Ctrl>+<Cursor Keys>.
-    + <Enter> bzw. <Shift>+<Enter> sucht nach dem nächsten oder vorigen Vorkommen
-    des Suchbegriffes. Diese Funktionen bringen auch die beiden Knöpfe rechts der
-    Kombobox. <Ctrl>+<Enter> läßt zum ersten Fundort, +<Shift> zum letzten 
-    springen.
-    + Der dritte aktiviert das neue "goto last edit" (<Ctrl>+<Shift>+<G>),
-    welches den Cursor an die Stelle springen lässt, an dem dieser Text zuletzt
-    geändert wurde.
-    + Der letzte Knopf ruft den bekannten Suchdialog, der alle Such- und Ersetzen-
-    funktionen beinhaltet. Das Ändern der Suchoptionen geht aber auch mit einem
-    Kontextmenü das sich bei Rechtsklick über der Suchzeile öffnet.
-    + Sie kann auch mit dem roten X ganz links zugeklappt werden und wird sich
-    mit dem nächsten Aufruf wieder öffnen. Ein Verlassen mit <Ctrl>+<Q> schließt
-    auch.
+    + This is probably the most visible and useful addition. You find it usually
+      above the status bar, but you can - as nearly everything in Kephra - change
+      its position as well. It contains an input field you can click on or jump
+      into and back with <Ctrl>+<F>. With every letter you type, it starts a new
+      search with the new search phrase (incremental search). The still existing
+      search dialog can do that as well, but he sometimes covers the finding.
+    + It's now possible to drag text with the mouse into the text input of search
+      bar and search dialog. (Drag'n Drop)
+    + The <Up> and <Down> keys let you skim through the previous used search items.
+    + Following key combination do inside the search bar the same as in the editor.
+      <PageUp>, <PageDown>, both also with <Ctrl> to change the doc as well as 
+      <Ctrl>+<Cursor Keys>.
+    + <Enter> or <Shift>+<Enter> skips to the next or last finding of the search
+      item. It's the same as the two buttons next to the text input. 
+      <Ctrl>+<Enter> jumps to the first finding, +<Shift> to the last.
+    + The third button jumps to the spot of the last text change (goto last edit)
+      (<Ctrl>+<Shift>+<G>).
+    + The last two button are calling the well known goto and search dialog. The
+      ladder contains all the search and replace functions. A right click above
+      the search bar opens a context menu with all search options.
+    + The leftmost, red X, or a <Ctrl>+<Q> closes the bar. It reappears with the
+      next <Ctrl>+<F>. <Esc> jumps back into the editor without closing the bar.
 
  - Bookmarks and more Navigation
-    Wenn es nicht genügt, daß der Editor den Ort der letzten Änderung speichert,
-    verwendet Lesezeichen. Derer gibt es insgesamt 10, denn ihr Name entspricht
-    den Ziffern 0 bis 9. Mit <Ctrl>+<Shift>+<Ziffer> wird das Lesezeichen in der
-    aktuellen Zeile gesetzt und erscheint als blauer Pfeil links neben der Zeilen-
-    nummer. Wenn nicht, sollte man im Menü "Ansicht" den "Markerrand" aktivieren.
-    Falls unter dieser Ziffer bereits ein anderes Lesezeichen bestand, wurde es
-    soeben hierher bewegt und falls es sich hier befand, wurde es soeben gelöscht.
-    <Ctrl>+<Ziffer> bewegt den Cursor zum Dokument und der Stelle des Lesezeichens.
-    + Das Blockweise navigieren mit dem Cursor hab ich auf <Alt>+<Bildhoch>
-    (<Bildrunter>) verlegt. Textblöcke werden von Leerzeilen getrennt.
-    + Neu ist auch die Klammernavigation die mit <Alt>+Richtungstasten bedient
-    wird. Dabei kann man mit den vertikalen Richtungstasten zwischen den Klammern
-    gleicher Art springen, mit den Horizontalen zwischen Klammern aller Art.
-    + Mit <Alt>+<Shift>+<Richtungstasten> kann man allerdings nicht Text zwischen
-    Klammern markieren sondern eine rechteckige Textauswahl treffen, wie es vorher
-    nur möglich war, wenn man <Alt> gedrückt hält und mit der Maus auswählt.
-    + <shift>+<Rück> Zieht Leerzeichen in Tabulatorbreite ein.
-    + Das Springen zum zuletzt sichtbaren Dokument wurde aus <Ctrl>+<Rück> verlegt.
+    If remembering the position of last change is not enough, use bookmarks. The
+    Editor handles 10, counting from 0 up to 9.
+    + With <Ctrl>+<Shift>+<Number> you set this particular bookmark and a blue
+      arrow appears on the leftmost margin. If not, you should activate the menu
+      item "View > Marker Margin". If this bookmark was already set, it moved to
+      the new position and if it was already on this spot, it is now deleted. 
+    + <Ctrl>+<Nr> jumps to the document and position, if the bookmark is defined.
+    + Moving the cursor block wise you do with <Alt>+<PageUp|PageDown>. Blocks
+      are chunks of text, separated by empty lines.
+    + New is also the brace navigation (<Alt>+<arrow keys>). Vertical translates
+      to a movement between matching braces, braces of the same nesting depth or
+      at least braces of the same kind. Horizontal moves are between any braces.
+    + Rectangular selection is possible with the mouse, holding the <Alt> key or 
+      with <Alt>+<Shift>+<arrow keys>.
+    + <shift>+<Backspace> deletes several spaces, depending on tab width.
+    + Jumping to the last opened document was moved to <Ctrl>+<Shift>+<Backspace>.
 
  - File menu
-    Diese Menü erhielt mit 2 neuen Funktionen und 2 neuen Untermenüs die meisten
-    Erweiterungen.
-    + Das Untermenü Templates zählt selbt definierte Textbausteine auf, die man
-    somit einfügen kann. Die zugehörige Datei wird unter file > templates bestimmt
-    und kann über den Menüeintrag Einstellungen > Templates geöffnet werden.
-    + Damit das Dateimenü nicht zu lang wird, habe ich 3 "Öffnen"-Funktionen in
-    ein Untermenü gegeben. Darin befindet sich auch eine Funktion zum öffnen aller
-    Dateien eines Verzeichnisses, die sicher noch erweitert werden kann.
-    + "Zuletzt Verwendete" zählt die zuletzt geschlossenen Dateien auf, die hier
-    wieder geöffnet werden können. file > history > length bestimmt die Länge
-    dieses Menüs.
-    + In der "Speichern"-Gruppe findet sich jetzt eine Funktionen, die auch mit
-    <Ctrl>+<Alt>+<Shift>+<S> aufrufbar ist, und das Umbenennen der gerade offenen
-    Datei ermöglicht.
-    + Auch das Untermenü für Dateigruppen ist um 2 Funktionen reicher. Es kann 
-    nun eine alternative Dateigruppe (session) unter einem in der Hauptconfig
-    angegebenen Dateinamen (file > session > backup) gespeichert und wieder 
-    hergestellt werden, ohne jedes mal den Dateinamen eingeben zu müssen.
+    This menu got a complete redesign, 8 new functions and 2 new submenus.
+    + The "templates" submenu list chunks of text that can contain recent data
+      like the name of the file the template is inserted. Templates can be added
+      by editing the file you open with the menu item "Config > Templates".
+    + To shorten the file menu, all open related functions gone into a submenu.
+      There is also function to open all files of a directory.
+    + "Recently Closed" helps to reopen last used files. The global config key
+      "file > history > length" does determinate the length of that menu.
+    + In the "Save" group is now a call to rename the recent document that also
+      can be called with <Ctrl>+<Alt>+<Shift>+<S>.
+    + All close and exit calls have now an alternative "without save" sibling.
+    + Even the submenu for file sessions has 2 more functions to save and restore
+      a file session without having to type in a session name. This name lays
+      under the global config key "file > session > backup".
 
  - Drag 'n Drop
-     Sicher konnte man schon in Version 0.3 Dateien und Verzeichnisse öffnen, in
-     dem man sie über die Reiterleiste zog und dort losließ. Da dies aber keine
-     wirklich große Fläche ist, mag dies vielen nicht aufgefallen sein. Jetzt kann
-     man zum Glück dies über der gesamten Fläche des Editors tun, was für mich auch
-     eine große Erleichterung ist.
+    Open files and directories via DnD was possible with 0.3, if you dragged them
+    on the tab bar, but this area is so small that maybe no one noticed it. Now it
+    works like it should (windows only). There is also a global config key named
+    "file > open > dir_recursive" to open files in the directory but not in the
+    subdirectories (not recursive), but recursive is default.
 
  - Formating Text
-    + Im Untermenü "Formatieren" sind 4 neue Einträge die 2 neue Funktionen des
-    Editors verwenden. Das ist zum einen "Zeilen umbrechen". Im Gegensatz zum
-    rein optischen Zeilenumbruch, werden hier Zeilen, die eine bestimmte Länge
-    überschreiten, wirklich in mehrere ausgeteilt. "Blockformat" hingegen "füllt"
-    auch halbleere Zeilen mit der nächsten auf und erzeugt so massive Textblöcke,
-    deren linke Begrenzung sich bei aktivierter autoeinrückung an der Einrückung 
-    der ersten Zeile orientiert. Beide Funktionen gibt es im in den Varianeten:
-    a) Begrenzung am rechten Rand und b) formatiere auf eine frei wählbare Breite.
+    The submenu "Edit > Format" has 4 new entries.
+    + In contrast to the view option "line wrap" changes this line wrap the text
+      permanently. All lines that are longer than the chosen width (or exceed the
+      right margin) are cut at an end of a word.
+    + "Blockformat" does the same with one precondition. The lines will be joined
+      and than wrapped. That way a block of text with a desired maximal width is
+      created.
 
  - Context menus and bars
-    Nicht nur über der neuen Suchzeile findet ihr neue Kontextmenüs wenn ihr die
-    rechte Maustaste drückt:
-    + Das wichtigste ist vielleicht das Menü das sich bei markiertem Text zeigt.
-    Durch sinnvolles Aufteilen der Funktionen in 2 Menüs konnte ich nicht nur
-    mehr Funktionen einbringen, sondern es bieten sich zumeist nur die Funktionen
-    an, die in der Situation auch sinnvoll sind.
-    + In die Reiterleiste können nun die Reiter auch bewegt werden. Voerst nur mit
-    den Tasten <Strg>+<BildHoch>|<BildRunter>.
-    + Neu sind auch die 2 optionalen Icons in der Reiterleiste je ganz links
-    (neues Dokument) und ganz rechts (Dokument schließen). Auch läßt sich mit dem
-    globalen Einstellungsschlüssel app > tabbar > middle_click definieren, welche
-    funktion die mittlere Maustaste über der Reiterleiste bekommt.
-    + Das Menü über der Reiterleiste listet alle offenen Dokumente mit dem vollen
-    Pfad der zugehörigen Dateien auf und man kann hier auch das aktuelle Dokument
-    wechseln.
-    + Die Kontextmenüs über den Zellen der Statuszeile sind jetzt auch alle nur
-    noch mit dem  Rechtsklick sichtbar zu machen. Ein Linksklick schaltet die
-    Funktioen an oder aus oder wechselt zwischen den wichtigsten Einstellungen.
-    + Die zweite Zelle der Statuszeile zeigt übrigens jetzt auch die Anzahl der
-    markierten Zeilen an.
+    Not only over the new searchbar are new context menus to discover:
+    + Maybe the most important new context menu shows above a selected text.
+      Many functions just then make sense or if no text is selected. A useful
+      division into two menus it also made possible to offer more functions.
+    + Tabs in the tab bar can now be moved with <Ctrl>+<PageUp|PageDown>.
+    + The tab bar now has also 2 optional icons. One leftmost to make a new doc,
+      and one rightmost to close the current doc. The same does a middle click,
+      but that can be changed also with the config key "app>tabbar>middle_click".
+    + The context menu of the tab bar lists all opened docs with full paths.
+    + The menus above the status bar cells are now only open with a right click.
+      A left click switches between the most common settings (mostly on and off).
+    + The second cell of the status bar displays now the size (chars and lines)
+      of the selected text or the percental cursor position.
 
  - Configs
     The new menus and bars are useful, but the real change from version 0.3 to
-    0.4 is the replacement of XRC with homegrown, more powerfull technology.
-    + Thatswhy menus can not contain german umlauts.
-    + Also 
-    Auch einzelne Einträge können mit einem Häckchen (ja/nein) oder Kreis
-    (Auswahl) versehen sein werden, oder auch deaktiviert werden. Knöpfen in
-    Werkzeugleisten können einen eingedrückten Zustand haben.
-    + Neu ist auch die in dem Menü Einstellungen > Benutzerschnittstellen 
-    auffindbare Kommandoliste, in der bestimmt wird, welcher interne Befehl, 
-    Tastaturkombination und Symbol zu zu einem Kommando gehört. Auch welche 
-    Ereignisse ihn deaktivieren und welche internen Funktionen seinen Zustand
-    bestimmen, wird hier festgelegt. Welches Etikett und welcher Hilfetext zu ihm
-    gehört steht in den Sprachdateien (auch im Menü Einstellungen), die nun die
-    gesamte Übersetzung des Editors in eine Sprache beinhalten. Wenn ihr ihn in
-    eine übersetzen wollt meldet euch ruhig bei mir für Hilfe.
-    + Unter Einstellungen > Benutzerschnittstellen findet ihr auch die neuen 
-    Dateien in YAML, mit denen ihr ganz leicht die Menüs und Leisten ändern könnt. 
-    Für vorübergehendes kommentieren einzelner Einträge benutzt bitte eine Raute 
-    (#) am Ende der Zeile.
-    + in den Haupteinstellungen könnt ihr unter app > window > title nun auch die
-    Titelleiste verändern. Welche Informationen, die sich aktualisieren werden,
-    ihr auch dazu verwenden könnt, seht ihr in config/global/default/default.conf
-    + Die im Titel angezeigten Pfade sind jetzt auch immer OS-konform.
+    0.4 is the replacement of XRC with homegrown, more powerful technology.
+    + Thats why menus can now contain German umlauts.
+    + Thats why menu entry can now be checked (check or radio button) or disabled.
+      Buttons in tool bars can now have states.
+    + New is also the command list (open via menu item  Config > User Interface).
+      where are defined which internal call, event, icon and key binding belong
+      to every command, the user can call. Labels and hints are stored in the
+      localization files (config menu), that contain everything to translate this
+      program. If you would like to help with translation, please contact us.
+    + The menu: "Config > User Interface" also hold the new YAML files that define
+      every menu and toolbar. A "#" at the end, does comment a line.
+    + Under the global config key "app > window > title" you can now also change
+      the titlebar. Some special variables will insert recent data. More details
+      are listed in the module Kephra::Config::Default::GlobalSettings. 
+    + All displayed file paths are now OS conform.
     
  - First 2 Extensions
     + With <Ctrl>+<F4> or the icon in the tool bar you can open or close the 
