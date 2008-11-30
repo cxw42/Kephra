@@ -5,9 +5,9 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.4';           # version of entire app
-our $PATCHLEVEL = 0;               # has just stable versions
-our $STANDALONE = '';              # starter flag for moveable installations
+our $VERSION    = '0.4.0.1';       # version of entire app
+our $PATCHLEVEL;                   # has just stable versions
+our $STANDALONE;                   # starter flag for moveable installations
 our $BENCHMARK;                    # flag for benchmark loggings
 our @ISA        = 'Wx::App';       # $NAME is a wx application
 

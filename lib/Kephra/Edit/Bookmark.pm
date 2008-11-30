@@ -173,7 +173,7 @@ sub delete_nr {
 	my $nr = shift;
 	if ( _refresh_data_nr( $nr ) ){
 		my $edit_panel = Kephra::App::EditPanel::_ref();
-		my $cur_doc_nr = Kephra::Document::_get_current_nr();
+		my $cur_doc_nr = Kephra::Document::current_nr();
 
 		Kephra::Document::Internal::change_pointer(
 			$Kephra::temp{search}{bookmark}{$nr}{doc_nr}

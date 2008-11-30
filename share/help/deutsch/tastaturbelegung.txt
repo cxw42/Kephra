@@ -1,7 +1,7 @@
 
-  ----------------------------------
+   ---------------------------------
   | Kephra Standardtastaturbelegung |
-  ----------------------------------
+   ---------------------------------
 
 Nach Tasten geordnet :
 
@@ -17,9 +17,9 @@ Nach Tasten geordnet :
      Shift+F5              stoppe Perlprogramm
      Shift+Back            delete to next tabstop
 
-     Strg+Tab              rücke um ein Tab ein
      Strg+Leertaste        rücke um ein Leerzeichen ein
      Strg+Rück             springe zu letztbenutzter Datei
+     Strg+Tab              rücke um ein Tab ein
      Strg+Links            springe ein Wort links
      Strg+Rechts           springe ein Wort rechts
      Strg+Hoch             bewege Text eine Zeile hoch
@@ -32,24 +32,27 @@ Nach Tasten geordnet :
      Strg++                Text vergrößern (zoomen)
      Strg+-                Text verkleinern
      Strg+A                markiere ganzen Text des Dokumentes
-     Strg+B                kommentiere Markierung (stream comment)
      Strg+C                kopiere Markierung
+     Strg+D                dupliziere Markierung/Zeile
      Strg+F                Suchzeile
      Strg+G                Gehe zu Zeile
+     Ctrl+H                stream Kommentar (<!-- HTML -->)
+     Strg+K                kommentiere Zeilen (block comment wie in perl, ruby, python, php)
+     Ctrl+L                lösche Zeile
      Strg+N                neues Dokument
      Strg+O                öffne Datei
-     Strg+P                kommentiere Zeilen (block comment wie in perl, ruby, python, php)
      Strg+Q                schließe Datei
-     Strg+R                ersetzen
+     Strg+R                ersetzen Dialog
      Strg+S                speichere Datei
      Strg+T                schalte Fenster im Vordergrund Modus an und aus
      Strg+V                einfügen (Inhalt der Zwischenablage)
      Strg+W                tausche Markierung mit Zwischenablage
      Strg+X                Markierung ausschneiden
-     Strg+Z                rückgängig
+     Strg+Z                letzte Bearbeitung rückgängig
      Strg+1..9             Gehe zu Lesezeichen 1..9
 
      Strg+Shift+Leertaste  Markierung ein Leerzeichen ausrücken
+     Strg+Shift+Rück       gehe zum letztgeöffneten Dokument
      Strg+Shift+Tab        Markierung einen Tab ausrücken
      Strg+Shift+Entf       lösche Zeile
      Strg+Shift+B          Markierung kommentieren (/* c, c++, c#, java */)
@@ -65,7 +68,7 @@ Nach Tasten geordnet :
      Strg+Shift+S          speichere Datei unter
      Strg+Shift+W          akuelle Zeile mit Zwischenablage austauschen
      Strg+Shift+X          Zeile ausschneiden
-     Strg+Shift+Z          wiederhohlen
+     Strg+Shift+Z          Bearbeitung wiederhohlen
      Strg+Shift+1..9       Lesezeichen 1..9 umschalten
 
      Alt+Links             springe zu voriger Klammer
@@ -98,18 +101,110 @@ Nach Tasten geordnet :
      Strg+Alt+Shift+Z      wiederhohlen bis zum jüngsten Stand
 
 
+
 Inhaltlich geordnet:
+
 
    Datei Operationen
 
+     Strg+N                neues Dokument
+     Strg+O                öffne Datei
+     Strg+Shift+O          lade Datei erneut
+     Strg+S                speichere Datei
+     Strg+Shift+S          speichere Datei unter
+     Alt+Shift+S           Kopie der Datei speichern unter ...
+     Strg+Q                schließe Datei
+     Strg+Shift+Q          alle anderen Dokumente schließen
+     Strg+Alt+Q            schließe alle Dateien
+
+
    Text Navigation
+
+     Pos1                  springe an Zeilenanfang, 1. Buchstaben (2mal drücken)
+     BildHoch              blättere Seite nach oben
+     BildRunter            blättere Seite nach unten
+     Strg+Links            springe ein Wort links
+     Strg+Rechts           springe ein Wort rechts
+     Strg+Pos1             gehe an Textanfang
+     Strg+Ende             gehe an Textende
+
+     Strg+G                Gehe zu Zeile
+     Strg+Shift+G          Gehe zur letzten Bearbeitung
+
+     Strg+1..9             Gehe zu Lesezeichen 1..9
+     Strg+Shift+1..9       Lesezeichen 1..9 umschalten
+
+     Alt+Links             springe zu voriger Klammer
+     Alt+Rechts            springe zu nächster Klammer
+     Alt+Hoch              springe zu voriger Klammer gleicher Art
+     Alt+Runter            springe zu nächster Klammer gleicher Art
+     
+     Alt+BildHoch          springe zum anfang dieses Blocks oder Absatzes
+     Alt+BildRunter        springe zum nächsten Block oder Absatz
+
+
+   Suchen und Ersetzen
+
+     F3                    suche nächsten Fundstelle
+     Shift+F3              suche vorigen Fundstelle
+     Strg+Alt+F3           gehe zur ersten Fundstelle
+     Strg+Alt+Shift+F3     gehe zur letzten Fundstelle
+
+     Ctrl+F3               speichere Markierung als Suchtext
+     Ctrl+Shift+F3         speichere Markierung als Ersatztext
+
+     Alt+F3                resetze und suche nächsten Fundstelle
+     Alt+Shift+F3          resetze und suche vorigen Fundstelle
+     Ctrl+Alt+R            resetze alle, aber frage jedes mal
+     Ctrl+Alt+Shift+R      resetze alle ohne Fragen
+
 
    Text Bearbeiten
 
-   Such Funktionen
+     Strg+Z                letzte Bearbeitung rückgängig
+     Strg+Shift+Z          Bearbeitung wiederhohlen
+     Alt+Z                 mehrere Schritte rückgängig
+     Alt+Shift+Z           mehrere Schritte wiederhohlen
+     Strg+Alt+Z            rückgängig bis zum Anfang
+     Strg+Alt+Shift+Z      wiederhohlen bis zum jüngsten Stand
+
+     Entf                  lösche Markierung oder rechtes Zeichen
+     Strg+Entf             lösche rechtes Wort
+     Strg+D                dupliziere Markierung/Zeile
+     Strg+V                einfügen (Inhalt der Zwischenablage)
+     Strg+W                tausche Markierung mit Zwischenablage
+     Strg+X                Markierung ausschneiden
+
+     Strg+Alt+cursor key   bewege Markierung oder Zeile
+
+
+   Zeile Bearbeiten
+
+     Strg+Shift+Entf       lösche Zeile
+     Strg+Shift+C          kopiere Zeile
+     Strg+Shift+D          Zeile doppeln (füge Kopie unterhalb ein)
+     Ctrl+Shift+L          lösche linken teil der Zeile
+     Ctrl+Shift+R          lösche rechten teil der Zeile
+     Strg+Shift+W          akuelle Zeile mit Zwischenablage austauschen
+     Strg+Shift+X          Zeile ausschneiden
+
+     Strg+Leertaste        Zeile um Leerzeichen einrücken
+     Strg+Shift+Leertaste  Zeile um Leerzeichen ausrücken
+     Strg+Tab              Zeile um Tab einrücken
+     Strg+Shift+Tab        Zeile um Tabausrücken
+
+
+   Werkzeuge
+
+     F4                    spring in den Notitzblock
+     F5                    starte Perlprogramm
+     Shift+F5              stoppe Perlprogramm
+
 
    Dialoge
-     Strg+Shift+F          Suchdialog
-     Strg+R                Ersetzendialog
+
+     Strg+F                Suchzeile
      Strg+G                Gehe zu Zeile
+     Strg+R                Ersetzendialog
+     Strg+Shift+F          Suchdialog
      Alt+Shift+I           Infobox

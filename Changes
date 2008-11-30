@@ -3,6 +3,15 @@ BUGS:
  !!! test suite fails
  ! textchanged event triggers twice
 
+
+0.4.0.1
+  ' updating key layout docs 
+  ! quting doc name in output panel eval
+  ! delete all bookmarks
+
+0.4 stable release
+ ' finished end user docs
+
 0.3.10.24
  ~ background color for brace highlighting
  ' more docs translation

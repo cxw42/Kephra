@@ -126,7 +126,7 @@ sub run {
 		my $dir = Cwd::cwd();
 		chdir $dir;
 		my $proc = _ref()->{process} = Wx::Perl::ProcessStream->OpenProcess
-			(qq~perl $doc~ , 'Output-Extension', $win); # -I$dir 
+			(qq~perl "$doc"~ , 'Output-Extension', $win); # -I$dir 
 		chdir $dir;
 		output();
 		Kephra::API::EventTable::trigger('extension.output.run');
