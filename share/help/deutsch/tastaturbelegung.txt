@@ -4,18 +4,26 @@
    ---------------------------------
 
 Nach Tasten geordnet :
+ + einfache, Shift+, 
+ + Strg+, Strg+Shift+, 
+ + Alt+, Alt+Shift+, 
+ + Strg+Alt+, Strg+Alt+Shift+
 
+     Ins                   wechsle zwischen einfügen- und überschreiben-Modus
      Entf                  lösche Markierung
      Pos1                  springe an Zeilenanfang, 1. Buchstaben (2mal drücken)
+     Ende                  springe an Zeilenende
      BildHoch              blättere Seite nach oben
      BildRunter            blättere Seite nach unten
      F3                    suche nächsten Eintrag
      F4                    spring in den Notitzblock
      F5                    starte Perlprogramm
 
+     Shift+BildHoch        erweitere Markierung um 1 Seite nach oben
+     Shift+BildRunter      erweitere Markierung um 1 Seite nach unten
      Shift+F3              suche vorigen Eintrag
      Shift+F5              stoppe Perlprogramm
-     Shift+Back            delete to next tabstop
+     Shift+Back            lösche leerzeichen bis zum nächsten tabstop
 
      Strg+Leertaste        rücke um ein Leerzeichen ein
      Strg+Rück             springe zu letztbenutzter Datei
@@ -36,9 +44,9 @@ Nach Tasten geordnet :
      Strg+D                dupliziere Markierung/Zeile
      Strg+F                Suchzeile
      Strg+G                Gehe zu Zeile
-     Ctrl+H                stream Kommentar (<!-- HTML -->)
+     Strg+H                stream Kommentar (<!-- HTML -->)
      Strg+K                kommentiere Zeilen (block comment wie in perl, ruby, python, php)
-     Ctrl+L                lösche Zeile
+     Strg+L                lösche Zeile
      Strg+N                neues Dokument
      Strg+O                öffne Datei
      Strg+Q                schließe Datei
@@ -55,11 +63,16 @@ Nach Tasten geordnet :
      Strg+Shift+Rück       gehe zum letztgeöffneten Dokument
      Strg+Shift+Tab        Markierung einen Tab ausrücken
      Strg+Shift+Entf       lösche Zeile
+     Strg+Shift+Links      erweitere Markierung um 1 Wort nach links
+     Strg+Shift+Rechts     erweitere Markierung um 1 Wort nach rechts
+     Strg+Shift+BildHoch   bewege Reiter nach rechts
+     Strg+Shift+BildRunter bewege Reiter nach links
      Strg+Shift+B          Markierung kommentieren (/* c, c++, c#, java */)
      Strg+Shift+C          kopiere Zeile
      Strg+Shift+D          Zeile doppeln (füge Kopie unterhalb ein)
      Strg+Shift+F          Suchdialog
      Strg+Shift+G          Gehe zur letzten Bearbeitung
+     Strg+Shift+J          verbinde Zeilen (join)
      Strg+Shift+L          lösche Zeile links vom Textcursor(caret)
      Strg+Shift+O          lade Datei erneut
      Strg+Shift+P          Zeilen markieren ( #perl, ruby, php, python)
@@ -98,14 +111,24 @@ Nach Tasten geordnet :
      Strg+Alt+S            speichere alle Dateien
      Strg+Alt+Z            rückgängig bis zum Anfang
 
+     Strg+Alt+Shift+R      resetze alle ohne Fragen
+     Strg+Alt+Shift+S      Datei und Dokument umbenennen
      Strg+Alt+Shift+Z      wiederhohlen bis zum jüngsten Stand
 
 
 
 Inhaltlich geordnet:
+ - Datei Operationen
+ - Text Navigation
+ - Suchen und Ersetzen
+ - Text Markieren
+ - Text Bearbeiten
+ - Zeile Bearbeiten
+ - Werkzeuge
+ - Dialoge
 
 
-   Datei Operationen
+ - Datei Operationen
 
      Strg+N                neues Dokument
      Strg+O                öffne Datei
@@ -113,20 +136,22 @@ Inhaltlich geordnet:
      Strg+S                speichere Datei
      Strg+Shift+S          speichere Datei unter
      Alt+Shift+S           Kopie der Datei speichern unter ...
+     Strg+Alt+Shift+S      Datei und Dokument umbenennen
      Strg+Q                schließe Datei
      Strg+Shift+Q          alle anderen Dokumente schließen
      Strg+Alt+Q            schließe alle Dateien
 
 
-   Text Navigation
+ - Text Navigation
 
      Pos1                  springe an Zeilenanfang, 1. Buchstaben (2mal drücken)
+     Ende                  springe zum Zeilenende
      BildHoch              blättere Seite nach oben
      BildRunter            blättere Seite nach unten
      Strg+Links            springe ein Wort links
      Strg+Rechts           springe ein Wort rechts
-     Strg+Pos1             gehe an Textanfang
-     Strg+Ende             gehe an Textende
+     Strg+Pos1             gehe zum Textanfang
+     Strg+Ende             gehe zum Textende
 
      Strg+G                Gehe zu Zeile
      Strg+Shift+G          Gehe zur letzten Bearbeitung
@@ -143,23 +168,34 @@ Inhaltlich geordnet:
      Alt+BildRunter        springe zum nächsten Block oder Absatz
 
 
-   Suchen und Ersetzen
+ - Suchen und Ersetzen
 
      F3                    suche nächsten Fundstelle
      Shift+F3              suche vorigen Fundstelle
      Strg+Alt+F3           gehe zur ersten Fundstelle
      Strg+Alt+Shift+F3     gehe zur letzten Fundstelle
 
-     Ctrl+F3               speichere Markierung als Suchtext
-     Ctrl+Shift+F3         speichere Markierung als Ersatztext
+     Strg+F3               speichere Markierung als Suchtext
+     Strg+Shift+F3         speichere Markierung als Ersatztext
 
      Alt+F3                resetze und suche nächsten Fundstelle
      Alt+Shift+F3          resetze und suche vorigen Fundstelle
-     Ctrl+Alt+R            resetze alle, aber frage jedes mal
-     Ctrl+Alt+Shift+R      resetze alle ohne Fragen
+     Strg+Alt+R            resetze alle, aber frage jedes mal
+     Strg+Alt+Shift+R      resetze alle ohne Fragen
 
 
-   Text Bearbeiten
+ - Text Markieren
+ 
+     Shift+Richtungstaste  erweitere zeilenweise (normale) Markierung
+     Shift+Alt+Richtung    erweitere rechteckige (Spalten) Markierung
+     Strg+Shift+Links      erweitere Markierung um 1 Wort nach links
+     Strg+Shift+Rechts     erweitere Markierung um 1 Wort nach rechts
+     Shift+BildHoch        erweitere Markierung um 1 Seite nach oben
+     Shift+BildRunter      erweitere Markierung um 1 Seite nach unten
+     Strg+A                markiere ganzen Text des Dokumentes
+
+ 
+ - Text Bearbeiten
 
      Strg+Z                letzte Bearbeitung rückgängig
      Strg+Shift+Z          Bearbeitung wiederhohlen
@@ -175,16 +211,17 @@ Inhaltlich geordnet:
      Strg+W                tausche Markierung mit Zwischenablage
      Strg+X                Markierung ausschneiden
 
+     Strg+Shift+J          verbinde Zeilen (join)
      Strg+Alt+cursor key   bewege Markierung oder Zeile
 
 
-   Zeile Bearbeiten
+ - Zeile Bearbeiten
 
      Strg+Shift+Entf       lösche Zeile
      Strg+Shift+C          kopiere Zeile
      Strg+Shift+D          Zeile doppeln (füge Kopie unterhalb ein)
-     Ctrl+Shift+L          lösche linken teil der Zeile
-     Ctrl+Shift+R          lösche rechten teil der Zeile
+     Strg+Shift+L          lösche linken teil der Zeile
+     Strg+Shift+R          lösche rechten teil der Zeile
      Strg+Shift+W          akuelle Zeile mit Zwischenablage austauschen
      Strg+Shift+X          Zeile ausschneiden
 
@@ -194,14 +231,14 @@ Inhaltlich geordnet:
      Strg+Shift+Tab        Zeile um Tabausrücken
 
 
-   Werkzeuge
+ - Werkzeuge
 
      F4                    spring in den Notitzblock
      F5                    starte Perlprogramm
      Shift+F5              stoppe Perlprogramm
 
 
-   Dialoge
+ - Dialoge
 
      Strg+F                Suchzeile
      Strg+G                Gehe zu Zeile

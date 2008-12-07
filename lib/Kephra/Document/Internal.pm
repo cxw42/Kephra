@@ -309,6 +309,7 @@ sub eval_properties {
 	Kephra::Document::set_tab_mode( $doc_attr->{tab_use} );
 	Kephra::Document::set_tab_size( $doc_attr->{tab_size} );
 	Kephra::Document::set_readonly( $doc_attr->{readonly} );
+	$ep->SetCodePage(65001);
 
 	# setting selection and caret position
 	if ($doc_data->{selstart} and $doc_data->{selstart}) {

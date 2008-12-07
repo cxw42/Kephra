@@ -57,12 +57,12 @@ sub create {
 	EVT_WXP_PROCESS_STREAM_STDOUT( $win, sub { 
 		my ($self, $event) = @_;
 		$event->Skip(1);
-		_append($event->GetLine."\n");
+		say( $event->GetLine );
 	} );
 	EVT_WXP_PROCESS_STREAM_STDERR( $win, sub {
 		my ($self, $event) = @_;
 		$event->Skip(1);
-		_append($event->GetLine."\n");
+		say( $event->GetLine );
 	} );
 	EVT_WXP_PROCESS_STREAM_EXIT  ( $win, sub {
 		my ($self, $event) = @_;
@@ -107,14 +107,16 @@ sub save_size {
 }
 
 
+sub clear { _ref()->Clear }
+sub print { _ref()->AppendText( @_ ) if @_ }
+sub say   { &print; _ref()->AppendText( "\n" ) }
 sub output { 
-	my $panel = _ref();
 	_config()->{append}
-		? $panel->AppendText( "\n\n" )
-		: $panel->Clear;
-	_append( @_ );
+		? print( "\n\n" )
+		: clear();
+	print( @_ );
 }
-sub _append { _ref()->AppendText( @_ ) if @_ }
+
 
 sub run {
 	my $win = Kephra::App::Window::_ref();

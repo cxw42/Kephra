@@ -70,7 +70,7 @@ sub apply_settings {
 	$ep->SetScrollWidth($conf->{scroll_width}) 
 		unless $conf->{scroll_width} eq 'auto';
 	#wxSTC_CP_UTF8 Wx::wxUNICODE()
-	$ep->SetCodePage(65001);
+	$ep->SetCodePage(65001);#
 	set_word_chars();
 
 	# internal

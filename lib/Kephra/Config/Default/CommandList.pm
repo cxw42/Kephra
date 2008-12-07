@@ -743,7 +743,7 @@ sub get {
 			#use_file_type' => '1
 		},
 		key => {
-			'app-exit' => 'alt+f4',
+			'app-exit' => 'alt+q',
 			file => {
 				new => 'ctrl+n',
 				open => 'ctrl+o',
@@ -758,7 +758,7 @@ sub get {
 				print => 'ctrl+p',
 				close => {
 					current => 'ctrl+q',
-					all => 'alt+q',
+					all => 'ctrl+alt+q',
 					other => 'ctrl+shift+q',
 				},
 			},

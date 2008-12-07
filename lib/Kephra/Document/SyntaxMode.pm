@@ -85,7 +85,6 @@ sub change_to {
 	Kephra::Document::Internal::set_attribute( 'syntaxmode', $style );
 	_ID($style);
 	$ep->Colourise( 0, $ep->GetTextLength ); # refresh editpanel painting
-	$ep->SetCodePage(65001);
 	# cleanup
 	Kephra::App::EditPanel::Margin::apply_color();
 	Kephra::App::StatusBar::style_info($style);

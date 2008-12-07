@@ -4,9 +4,15 @@
    ----------------------------------
 
 Key Order :
+ + simpel keys, Shift+, 
+ + Ctrl+, Ctrl+Shift+, 
+ + Alt+, Alt+Shift+, 
+ + Ctrl+Alt+, Ctrl+Alt+Shift+
 
+     Ins                   switch between insert and overwrite mode
      Del                   delete selection
      Pos1                  jump to line begin or first wordcharacter(push twice)
+     End                   jump to line end
      PgUp                  move page up
      PgDown                move page down
      F3                    find next
@@ -16,6 +22,8 @@ Key Order :
      Shift+F3              find previous
      Shift+F5              stop Perl program
      Shift+Back            tabweise einrücken
+     Shift+PageUp          expand selection 1 page down
+     Shift+PageDown        expand selection 1 page up
 
      Ctrl+Space            indent selection a space
      Ctrl+Back             jump to last selected file
@@ -33,7 +41,7 @@ Key Order :
      Ctrl+ -               make font smaller (zoom)
      Ctrl+A                select all text of the document
      Ctrl+C                copy selection
-     Strg+D                double selection/line
+     Ctrl+D                double selection/line
      Ctrl+F                search bar
      Ctrl+G                goto line
      Ctrl+H                stream comment (<!-- HTML -->)
@@ -55,11 +63,16 @@ Key Order :
      Ctrl+Shift+Tab        dedent selection a tab
      Ctrl+Shift+Del        delete line
      Ctrl+Shift+Back       goto last opened document
+     Ctrl+Shift+Left       expand selection 1 word left
+     Ctrl+Shift+Right      expand selection 1 word right
+     Ctrl+Shift+BildUp     move tab right
+     Ctrl+Shift+PageDown   move tab left
      Ctrl+Shift+B          stream uncomment
      Ctrl+Shift+C          copy line
      Ctrl+Shift+D          double line
      Ctrl+Shift+F          search dialog
      Ctrl+Shift+G          goto last edit
+     Strg+Shift+J          join lines
      Ctrl+Shift+L          delete line left from cursor
      Ctrl+Shift+O          reopen file
      Ctrl+Shift+P          block uncomment (perl, php, python)
@@ -98,14 +111,24 @@ Key Order :
      Ctrl+Alt+S            save all open files
      Ctrl+Alt+Z            undo history begin
 
+     Ctrl+Alt+Shift+R      replace all without confirm
+     Ctrl+Alt+Shift+S      rename file and document
      Ctrl+Alt+Shift+Z      undo history end
 
 
 
 Thematical Order:
+ - File Operation
+ - Text Navigation
+ - Search and Replace
+ - Select Operation
+ - Edit Operation
+ - Line Editing
+ - Tools
+ - Dialogs
 
 
-   File Operation
+ - File Operation
 
      Ctrl+N                new file
      Ctrl+O                open file
@@ -113,14 +136,16 @@ Thematical Order:
      Ctrl+S                save file
      Ctrl+Shift+S          file save as
      Alt+Shift+S           save file copy under ...
+     Ctrl+Alt+Shift+S      rename file and document
      Ctrl+Q                close file
      Ctrl+Shift+Q          close all other files
      Ctrl+Alt+Q            close all open files
 
 
-   Text Navigation
+ - Text Navigation
 
      Pos1                  jump to line begin or first wordcharacter(push twice)
+     End                   jump to line end
      PgUp                  move page up
      PgDown                move page down
      Ctrl+Left             jump one word left
@@ -143,7 +168,7 @@ Thematical Order:
      Alt+PgDown            jumps to the next block or paragraph
 
 
-   Search and Replace
+ - Search and Replace
 
      F3                    goto next findig
      Shift+F3              goto previous finding
@@ -159,7 +184,18 @@ Thematical Order:
      Ctrl+Alt+Shift+R      replace all without asking
 
 
-   Edit Operation
+ - Select Operation
+ 
+     Shift+direction       expand stream selection
+     Shift+Alt+direction   expand rectangular (column) selection
+     Ctrl+Shift+Left       expand selection 1 word left
+     Ctrl+Shift+Right      expand selection 1 word right
+     Shift+PageUp          expand selection 1 page down
+     Shift+PageDown        expand selection 1 page up
+     Ctrl+A                select all text of the document
+ 
+ 
+ - Edit Operation
 
      Ctrl+Z                undo
      Ctrl+Shift+Z          redo
@@ -175,10 +211,11 @@ Thematical Order:
      Ctrl+W                replace (clipboard & selection)
      Ctrl+X                cut selection
 
+     Strg+Shift+J          join lines
      Ctrl+Alt+cursor key   move selection or line
 
 
-   Line Editing
+ - Line Editing
 
      Ctrl+Shift+Del        delete line
      Ctrl+Shift+C          copy line
@@ -194,14 +231,14 @@ Thematical Order:
      Ctrl+Shift+Tab        dedent line one tab
 
 
-   Tools
+ - Tools
 
      F4                    jump into notepad
      F5                    run Perl program
      Shift+F5              stop Perl program
 
 
-   Dialogs
+ - Dialogs
 
      Ctrl+F                search bar
      Ctrl+Shift+F          search dialog
