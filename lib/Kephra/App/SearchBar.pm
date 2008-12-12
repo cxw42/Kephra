@@ -41,7 +41,6 @@ sub create {
 				$bar , -1, '', [-1,-1], [$item_data->{size},-1], [],
 				wxTE_PROCESS_ENTER
 			);
-			wxTE_PROCESS_ENTER
 			$find_input->SetDropTarget( SearchInputTarget->new($find_input, 'find'));
 			$find_input->SetValue( Kephra::Edit::Search::get_find_item() );
 			$find_input->SetSize($item_data->{size},-1) if $item_data->{size};
@@ -75,8 +74,6 @@ sub create {
 					elsif ($event->ControlDown){Kephra::Edit::Search::find_first()}
 					elsif ($event->ShiftDown)  {Kephra::Edit::Search::find_prev() }
 					else                       {Kephra::Edit::Search::find_next() }
-					refresh_find_input($Kephra::temp{search}{history}{refresh})
-						if $Kephra::config{search}{history}{use};
 				} elsif ($key == WXK_F3){
 					$event->ShiftDown 
 						? Kephra::Edit::Search::find_prev()
@@ -156,7 +153,7 @@ sub create {
 
 sub destroy{ Kephra::App::ToolBar::destroy ('search') }
 
-sub connect_find_input{
+sub connect_find_input {
 	my $find_input = shift;
 	Kephra::API::EventTable::add_call( 'find.item.changed', 'search_bar', sub {
 			my $value = Kephra::Edit::Search::get_find_item();
@@ -166,31 +163,24 @@ sub connect_find_input{
 			$find_input->SetSelection($pos,$pos);
 			colour_find_input( 1 );
 	});
+	Kephra::API::EventTable::add_call( 'find.item.history.changed', 'search_bar', sub {
+			$find_input->Clear();
+			$find_input->Append($_) for @{ Kephra::Edit::Search::get_find_history() };
+			$find_input->SetValue(Kephra::Edit::Search::get_find_item());
+			$find_input->SetInsertionPointEnd;
+	});
 }
 sub disconnect_find_input{
 	Kephra::API::EventTable::del_call('find.item.changed','search_bar');
+	Kephra::API::EventTable::del_call('find.item.history.changed','search_bar');
 }
 
-sub refresh_find_input {
-	my $find_input     = _ref()->{find_input};
-	my $new_find_item  = shift;
-	my $value  = $find_input->GetValue;
-	if ($new_find_item and $find_input->GetString(0) ne $value){
-			my $pos = $find_input->GetInsertionPoint;
-			$find_input->Clear();
-			$find_input->Append($_) for @{ $Kephra::config{search}{history}{find_item} };
-			$find_input->SetValue(Kephra::Edit::Search::get_find_item());
-			$find_input->SetInsertionPoint($pos);
-	}
-	colour_find_input( $new_find_item );
-	Wx::Window::SetFocus( $find_input );
-}
 
 sub colour_find_input{
 	my $find_input      = _ref()->{find_input};
 	my $found_something = shift;
 	if ($found_something){
-		$find_input->SetForegroundColour( Wx::Colour->new( 0x00, 0x00, 0x33 ) );
+		$find_input->SetForegroundColour( Wx::Colour->new( 0x00, 0x00, 0x55 ) );
 		$find_input->SetBackgroundColour( Wx::Colour->new( 0xff, 0xff, 0xff ) );
 	} else {
 		$find_input->SetForegroundColour( Wx::Colour->new( 0xff, 0x33, 0x33 ) );

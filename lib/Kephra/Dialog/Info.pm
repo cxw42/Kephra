@@ -21,7 +21,7 @@ sub combined {
 	Kephra::App::Window::load_icon( $info_win,
 		$Kephra::config{'app'}{'window'}{'icon'} );
 	$info_win->SetBackgroundColour( Wx::Colour->new( 0xed, 0xeb, 0xdb ) );
-
+# Wx::HyperlinkCtrl->new($win,-1,label,url,pos,size,wxHL_CONTEXTMENU)
 	$info_win->Centre(wxBOTH);
 	$info_win->Show(1);
 }

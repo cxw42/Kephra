@@ -121,6 +121,7 @@ sub output {
 sub run {
 	my $win = Kephra::App::Window::_ref();
 	my $doc = Kephra::Document::get_file_path();
+	my $cmd = _config->{interpreter_path};
 	my $dir = $Kephra::config{file}{current}{directory};
 	ensure_visibility();
 	Kephra::File::save_current();
@@ -128,7 +129,7 @@ sub run {
 		my $dir = Cwd::cwd();
 		chdir $dir;
 		my $proc = _ref()->{process} = Wx::Perl::ProcessStream->OpenProcess
-			(qq~perl "$doc"~ , 'Output-Extension', $win); # -I$dir 
+			(qq~"$cmd" "$doc"~ , 'Output-Extension', $win); # -I$dir 
 		chdir $dir;
 		output();
 		Kephra::API::EventTable::trigger('extension.output.run');

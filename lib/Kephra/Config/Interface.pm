@@ -64,6 +64,7 @@ sub change_localisation {
 	Kephra::Config::Global::reload_tree();
 }
 
+sub set_localisation_file { localisation_file(@_) if @_ }
 sub localisation_file {
 	my $file = shift;
 	if (defined $file) { _loc_conf()->{file} = $file }
@@ -79,7 +80,7 @@ sub set_documentation_lang {
 		my $sb = Kephra::Config::Global::_conf_sub_path();
 		my $file = Kephra::Config::filepath
 			( $sb, 'sub/documentation', $lang.'.conf' );
-		Kephra::Config::Global::merge_tree( Kephra::Config::File::load($file) );
+		Kephra::Config::Tree::merge( Kephra::Config::File::load($file) );
 	}
 }
 

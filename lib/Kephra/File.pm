@@ -1,5 +1,5 @@
 package Kephra::File;
-our $VERSION = '0.40';
+our $VERSION = '0.41';
 
 use strict;
 use warnings;
@@ -37,17 +37,23 @@ sub changed_notify_check {
 	my $current_doc = Kephra::Document::current_nr();
 	for my $file_nr ( @{ Kephra::Document::all_nr() } ) {
 		my $path = Kephra::Document::get_file_path($file_nr);
+		my $last_check = Kephra::Document::get_tmp_value('did_notify', $file_nr);
 		next unless $path;
-		my $remembered = Kephra::Document::get_tmp_value('file_changed', $file_nr);
-		# gone files are a problem
-		#next if (not -e $path) and $remembered eq 'gone';
-		my $current_age= _file_age($path);
-		unless ( $remembered == $current_age) {
-			my $last_time = Kephra::Document::get_tmp_value('did_notify', $file_nr);
-			next if defined  $last_time and $last_time == $current_age;
+		if (not -e $path) {
+			next if defined $last_check and $last_check eq 'ignore';
 			Kephra::Document::Change::to_number( $file_nr );
-			_remember_save_moment($path);
-			Kephra::Dialog::notify_file_change( $file_nr, $current_age );
+			Kephra::Dialog::notify_file_deleted( $file_nr );
+			next;
+		}
+		my $last_change = Kephra::Document::get_tmp_value('file_changed', $file_nr);
+		my $current_age= _file_age($path);
+		if ( $last_change != $current_age) {
+			next if defined $last_check
+				and ( $last_check eq 'ignore' or $last_check >= $current_age);
+			Kephra::Document::Change::to_number( $file_nr );
+			Kephra::Document::get_tmp_value
+				('did_notify', _remember_save_moment($path), $file_nr);
+			Kephra::Dialog::notify_file_changed( $file_nr, $current_age );
 		}
 	}
 	Kephra::Document::Change::to_number($current_doc) 
@@ -56,7 +62,10 @@ sub changed_notify_check {
 
 sub _remember_save_moment {
 	my ($path, $doc_nr) = @_;
-	Kephra::Document::set_tmp_value( 'file_changed', _file_age($path), $doc_nr);
+	return unless -e $path;
+	my $age = _file_age($path);
+	Kephra::Document::set_tmp_value( 'file_changed', $age, $doc_nr);
+	return $age;
 }
 
 sub _file_age {
@@ -255,9 +264,11 @@ sub rename {
 sub save_all {
 	my $unsaved = can_save_all();
 	return unless $unsaved;
+	# save surrent if its the only
 	if ($unsaved == 1 and can_save() ) {
 		save_current();
 	}
+	#
 	else {
 		Kephra::Document::do_with_all( sub {
 			save_current() if shift->{modified};
@@ -268,14 +279,21 @@ sub save_all {
 sub save_all_named {
 	my $unsaved = can_save_all();
 	return unless $unsaved;
-	if ($unsaved == 1 and can_save() ) {
-		save_current() if Kephra::Document::get_file_path();
+
+	my $need_save_other;
+	my $cdoc_nr = Kephra::Document::current_nr();
+	for my $doc_nr  ( @{ Kephra::Document::all_nr()} ) {
+		$need_save_other = 1 if $doc_nr != $cdoc_nr
+						and Kephra::Document::Internal::get_tmp_value('name', $doc_nr)
+						and Kephra::Document::Internal::get_tmp_value('modified', $doc_nr);
 	}
-	else {
+	if ($need_save_other) {
 		Kephra::Document::do_with_all( sub {
 			my $file = shift;
 			save_current() if $file->{modified} and $file->{name};
 		} );
+	} elsif (can_save() and Kephra::Document::get_file_path()) {
+		save_current();
 	}
 }
 
@@ -330,7 +348,8 @@ sub close_other {
 
 sub close_all { close_current() for @{ Kephra::Document::all_nr() } }
 
-sub close_unsaved {
+sub close_unsaved         {&close_current_unsaved}
+sub close_current_unsaved {
 	my ( $frame, $event ) = @_;
 	my $ep           = Kephra::App::EditPanel::_ref();
 	my $close_tab_nr = Kephra::Document::current_nr();

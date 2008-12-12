@@ -58,6 +58,7 @@ sub get {
 					back_color => '000022',
 					font_size => 9,
 					fore_color => 'ffffff',
+					interpreter_path => 'perl',
 					size => 100,
 					visible => 0,
 				},

@@ -1,5 +1,5 @@
 package Kephra::Edit::Search;
-our $VERSION = '0.29';
+our $VERSION = '0.30';
 
 use strict;
 use warnings;
@@ -61,6 +61,7 @@ sub refresh_find_history {
 	my $current_find_item = get_find_item();
 	my $history           = _history();
 	my $refresh_needed;
+	return unless $history->{use};
 
 	# check if refresh needed
 	if ( $history->{remember_only_matched} ) {
@@ -68,7 +69,8 @@ sub refresh_find_history {
 	} else { $refresh_needed = 1 }
 
 	# delete dups
-	if ($refresh_needed and _exist_find_item() 
+	if (    $refresh_needed
+		and _exist_find_item() 
 		and ($history->{find_item})[0] ne $current_find_item) {
 		my $item   = $history->{find_item};
 		my $length = $history->{length} - 1;
@@ -79,14 +81,17 @@ sub refresh_find_history {
 			}
 			pop @{$item} if ( $_ == $length );
 		}
-
 		# new history item
 		unshift @{$item}, $current_find_item;
+		Kephra::API::EventTable::trigger('find.item.history.changed');
 		$Kephra::temp{search}{history}{refresh} = 1;
 	} else {
 		$Kephra::temp{search}{history}{refresh} = 0;
 	}
 }
+
+sub get_find_history    { _history()->{find_item}    }
+sub get_replace_history { _history()->{replace_item} }
 
 sub refresh_replace_history {
 	my $current_item = get_replace_item();
@@ -103,6 +108,7 @@ sub refresh_replace_history {
 			pop @{$item} if ( $_ == $length );
 		}
 		unshift @{$item}, $current_item;
+		Kephra::API::EventTable::trigger('replace.item.history.changed');
 	}
 }
 

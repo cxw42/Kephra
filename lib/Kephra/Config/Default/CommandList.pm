@@ -758,7 +758,6 @@ sub get {
 				print => 'ctrl+p',
 				close => {
 					current => 'ctrl+q',
-					all => 'ctrl+alt+q',
 					other => 'ctrl+shift+q',
 				},
 			},

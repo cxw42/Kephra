@@ -388,8 +388,8 @@ sub get {
 			'item view-editpanel-font',
 		],},
 		{'menu config' => [
-			#'item view-dialog-config',
-			#'',
+			'item view-dialog-config',
+			'',
 			{'menu config_global' => [
 				'item config-file-global-open',
 				'item config-file-global-reload',

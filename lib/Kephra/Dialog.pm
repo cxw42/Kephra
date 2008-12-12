@@ -83,10 +83,15 @@ sub info {
 	&Kephra::Dialog::Info::combined;
 }
 
-sub notify_file_change {
+sub notify_file_changed {
 	require Kephra::Dialog::Notify;
 	&Kephra::Dialog::Notify::file_changed;
 }
+sub notify_file_deleted {
+	require Kephra::Dialog::Notify;
+	&Kephra::Dialog::Notify::file_deleted;
+}
+
 sub save_on_exit {
 	require Kephra::Dialog::Exit;
 	&Kephra::Dialog::Exit::save_on_exit;

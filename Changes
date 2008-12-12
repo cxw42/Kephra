@@ -4,16 +4,29 @@ BUGS:
  ! textchanged event triggers twice
 
 
+0.4.0.4
+ + select interpreter with config key app > panel > output > interpreter_path
+ + file missing dialog
+ - remove dangerous <Ctrl>+<Alt>+<Q> keybinding ( triggeres when want create @)
+ [ find item history realtime update now works in search dialog
+ ] rebuild notify dialog
+ ] renewed parts of search module
+ ! comboboxes in search dialog process enter
+ ! crash on moving tabs
+
+0.4.0.3
+ ! keep calm when just a unnamed doc is unsaved
+
 0.4.0.2
-  ' updating key layout docs 
-  ~ close all key binding changed <Alt>+<Q> => <Ctrl>+<Alt>+<Q>
-  ~ close app key binding changed <Alt>+<F4> => <Ctrl>+<Q>
-  ! UTF problems on files with syntaxmode none 
+ ' updating key layout docs 
+ ~ close all key binding changed <Alt>+<Q> => <Ctrl>+<Alt>+<Q>
+ ~ close app key binding changed <Alt>+<F4> => <Ctrl>+<Q>
+ ! UTF problems on files with syntaxmode none 
 
 0.4.0.1
-  ' updating key layout docs 
-  ! quting doc name in output panel eval
-  ! delete all bookmarks
+ ' updating key layout docs 
+ ! quoting doc name in output panel eval
+ ! crash while delete all bookmarks
 
 0.4 stable release
  ' finished end user docs

@@ -1,16 +1,16 @@
 package Kephra::Dialog::Search;
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 
 use strict;
 use warnings;
 
 use Wx qw(  
 	wxVERTICAL wxHORIZONTAL wxLEFT wxRIGHT wxTOP wxGROW 
-	wxALIGN_CENTER_VERTICAL wxALIGN_CENTER_HORIZONTAL
+	wxALIGN_CENTER_VERTICAL wxALIGN_CENTER_HORIZONTAL wxALIGN_RIGHT
 	wxSYSTEM_MENU wxCAPTION wxNO_FULL_REPAINT_ON_RESIZE wxCLOSE_BOX
-	wxMINIMIZE_BOX wxSTAY_ON_TOP
-	wxSIMPLE_BORDER wxRAISED_BORDER
+	wxMINIMIZE_BOX wxSTAY_ON_TOP wxSIMPLE_BORDER wxRAISED_BORDER
 	wxLI_HORIZONTAL
+	wxTE_PROCESS_ENTER
 	wxBITMAP_TYPE_XPM
 	WXK_BACK WXK_TAB WXK_ESCAPE WXK_RETURN WXK_SPACE
 );
@@ -95,9 +95,9 @@ sub ready {
 		# input boxes with labels
 		$d->{find_label}   = Wx::StaticText->new($d, -1, $label->{search_for} );
 		$d->{replace_label}= Wx::StaticText->new($d, -1, $label->{replace_with} );
-		$d->{find_input} = Wx::ComboBox->new($d, -1,'', [-1,-1], [324,22], [@find_history]);
+		$d->{find_input} = Wx::ComboBox->new($d, -1,'', [-1,-1], [324,22], [@find_history], wxTE_PROCESS_ENTER );
 		$d->{find_input}->SetDropTarget( SearchInputTarget->new($d->{find_input}, 'find'));
-		$d->{replace_input} = Wx::ComboBox->new($d, -1, '', [-1,-1], [324,22], [@replace_history],);
+		$d->{replace_input} = Wx::ComboBox->new($d, -1, '', [-1,-1], [324,22], [@replace_history], wxTE_PROCESS_ENTER);
 		$d->{replace_input}->SetDropTarget( SearchInputTarget->new($d->{replace_input}, 'replace'));
 		$d->{sep_line} = Wx::StaticLine->new($d, -1, [0,0], [420,1], wxLI_HORIZONTAL,);
 
@@ -159,8 +159,6 @@ sub ready {
 		}
 
 		# eventhandling
-		#EVT_TEXT_ENTER($d,$d->{find_input},   \&refresh_find_history);
-		#EVT_TEXT_ENTER($d,$d->{replace_input},\&refresh_replace_history);
 		EVT_KEY_DOWN($d->{find_input},       \&find_input_keyfilter );
 		EVT_KEY_DOWN($d->{replace_input},    \&replace_input_keyfilter );
 		EVT_TEXT($d, $d->{find_input},       \&incremental_search );
@@ -238,10 +236,29 @@ sub ready {
 			$d->{find_input}->SetValue(Kephra::Edit::Search::get_find_item());
 			$d->{find_input}->SetInsertionPointEnd;
 		});
-
 		Kephra::API::EventTable::add_call( 'replace.item.changed', 'search_dialog', sub {
 			$d->{replace_input}->SetValue(Kephra::Edit::Search::get_replace_item());
 			$d->{replace_input}->SetInsertionPointEnd;
+		});
+
+		Kephra::API::EventTable::add_call('find.item.history.changed','search_dialog',  sub {
+			Kephra::App::_ref()->Yield();
+			my $cb = $d->{find_input};
+			$Kephra::temp{dialog}{search}{control} = 1;
+			$cb->Clear();
+			$cb->Append($_) for @{ Kephra::Edit::Search::get_find_history() };
+			$cb->SetValue( Kephra::Edit::Search::get_find_item() );
+			$cb->SetInsertionPointEnd;
+			$Kephra::temp{dialog}{search}{control} = 0;
+		});
+		Kephra::API::EventTable::add_call('replace.item.history.changed','search_dialog',  sub {
+			my $cb = $d->{replace_input};
+			$Kephra::temp{dialog}{search}{control} = 1;
+			$cb->Clear();
+			$cb->Append($_) for @{ Kephra::Edit::Search::get_replace_history() };
+			$cb->SetValue( Kephra::Edit::Search::get_replace_item() );
+			$cb->SetInsertionPointEnd;
+			$Kephra::temp{dialog}{search}{control} = 0;
 		});
 
 		# detecting and selecting search range
@@ -284,10 +301,11 @@ sub ready {
 		$pad_grid->Add( $d->{last_button}, Wx::GBPosition->new(3,1), Wx::GBSpan->new(1,1), wxLEFT, 0);
 
 		my $button_sizer = Wx::BoxSizer->new(wxHORIZONTAL);
-		$button_sizer->Add( $d->{search_button},  0, wxLEFT, 10 );
+		$button_sizer->Add( $d->{search_button},  0, wxLEFT, 15 );
 		$button_sizer->Add( $d->{replace_button}, 0, wxLEFT, 10 );
 		$button_sizer->Add( $d->{confirm_button}, 0, wxLEFT, 10 );
-		$button_sizer->Add( $d->{close_button},   0, wxLEFT, 52 );
+		$button_sizer->AddStretchSpacer;
+		$button_sizer->Add( $d->{close_button},   0, wxALIGN_RIGHT|wxRIGHT,15 );
 
 		my $b_grid = Wx::GridBagSizer->new( 12, 10 );
 		$b_grid->Add($d->{find_label}, Wx::GBPosition->new(0,0), Wx::GBSpan->new(1,1), wxLEFT | wxALIGN_CENTER_VERTICAL, 10);
@@ -301,7 +319,7 @@ sub ready {
 		my $d_sizer = Wx::BoxSizer->new(wxVERTICAL);
 		$d_sizer->Add($b_grid,          0, wxTOP                            , 15);
 		$d_sizer->Add($d->{sep_line},   0, wxTOP | wxALIGN_CENTER_HORIZONTAL,  8);
-		$d_sizer->Add($button_sizer,    0, wxTOP                            ,  9);
+		$d_sizer->Add($button_sizer,    0, wxTOP | wxGROW                   ,  9);
 
 		$d->SetSizer($d_sizer);
 		$d->SetAutoLayout(1);
@@ -322,70 +340,38 @@ sub ready {
 # dialog event functions
 
 
-sub refresh_replace_history {
-	return unless $Kephra::config{search}{history}{use};
-	my $dialog = $Kephra::app{dialog}{search};
-	my $cb     = $dialog->{replace_input};
-	my $value  = $cb->GetValue;
-	$Kephra::temp{dialog}{search}{control} = 1;
-	if (Kephra::Edit::Search::get_replace_item() ne $value){
-		Kephra::Edit::Search::set_replace_item($value);
-		$cb->Delete(0) for 0 .. $cb->GetCount;
-		$cb->Append($_) for @{ $Kephra::config{search}{history}{replace_item} };
-		$cb->SetValue($value);
-		$cb->SetInsertionPointEnd;
-	}
-	$Kephra::temp{dialog}{search}{control} = 0;
-}
-
+# switch back from search in text selection to search in document
+# because if once looked in selection the finding is selected and this 
+# settings makes no longer sense
 sub no_sel_range {
 	my $dialog = $Kephra::app{dialog}{search};
 	if ( $dialog->{selection_radio}->GetValue ) {
 		$dialog->{document_radio}->SetValue(1);
 		$Kephra::config{search}{attribute}{in} = 'document';
 	}
-	
-	#$dialog->Refresh;
-	#$dialog->Layout();
+	#$dialog->Refresh; #$dialog->Layout();
 }
 
-#
+
+# find input function
 sub find_input_keyfilter {
 	my ( $input, $event ) = @_;
-	my $dialog   = $input->GetParent;
+	my $dialog = $Kephra::app{dialog}{search};
 	my $wx_frame = $dialog->GetParent;
 	my $key_code = $event->GetKeyCode;
 	if ($key_code == WXK_RETURN) {
 		no_sel_range();
-		if ($event->ControlDown) {
-			&Kephra::Edit::Search::find_first;
-			$dialog->Close;
-		} elsif ( $event->ShiftDown ) {
-			&Kephra::Edit::Search::find_prev;
-		} else {
-			&Kephra::Edit::Search::find_next;
-		}
-		refresh_find_history();
+		if    ($event->ControlDown){Kephra::Edit::Search::find_first(); $dialog->Close; } 
+		elsif ($event->ShiftDown  ){Kephra::Edit::Search::find_prev() }
+		else                       {Kephra::Edit::Search::find_next() }
+		return;
 	}
-	elsif ($key_code == WXK_ESCAPE) { $dialog->Close; }
+	elsif ($key_code == WXK_ESCAPE) { $dialog->Close }
+	elsif ($key_code == WXK_TAB){
+		if ( $event->ShiftDown ) { $dialog->{close_button}->SetFocus } 
+		else                     { $dialog->{replace_input}->SetFocus}
+	}
 	$event->Skip;
-}
-
-sub refresh_find_history {
-	return unless $Kephra::config{search}{history}{use};
-	my $dialog = $Kephra::app{dialog}{search};
-	my $cb     = $dialog->{find_input};
-	my $value  = $cb->GetValue;
-	$Kephra::temp{dialog}{search}{control} = 1;
-	if (Kephra::Edit::Search::get_find_item() ne $value){
-		Kephra::Edit::Search::set_find_item($value);
-		$cb->Delete(0) for 0 .. $cb->GetCount;
-		Kephra::App::_ref()->Yield();
-		$cb->Append($_) for @{ $Kephra::config{search}{history}{find_item} };
-		$cb->SetValue($value);
-		$cb->SetInsertionPointEnd;
-	}
-	$Kephra::temp{dialog}{search}{control} = 0;
 }
 
 my %color = (
@@ -415,21 +401,25 @@ sub incremental_search {
 	}
 }
 
+# replace input function
 sub replace_input_keyfilter {
 	my ($input, $event) = @_;
-	my ($dialog, $key_code) =($input->GetParent, $event->GetKeyCode);
+	my $dialog = $Kephra::app{dialog}{search};
+	my $key_code = $event->GetKeyCode;
 	if ($key_code == WXK_RETURN ) {
 		if ( $event->ControlDown ) {
 			Kephra::Edit::Search::replace_all;
 			$dialog->Close;
 		} elsif ( $event->AltDown ) { replace_confirm($dialog) }
 		else                        { Kephra::Edit::Search::replace_all() }
-		refresh_find_history();
 	}
 	if ( $key_code == WXK_ESCAPE) { $dialog->Close }
+	elsif ($key_code == WXK_TAB){
+		if ( $event->ShiftDown ) { $dialog->{find_input}->SetFocus } 
+		else                     { $dialog->{inc_box}->SetFocus }
+	}
 	$event->Skip;
 }
-
 
 sub replace_all { Kephra::Edit::Search::replace_all() }
 sub replace_confirm { Kephra::Edit::Search::replace_confirm() }
@@ -445,6 +435,8 @@ sub quit_search_dialog {
 
 	Kephra::API::EventTable::del_call('find.item.changed', 'search_dialog');
 	Kephra::API::EventTable::del_call('replace.item.changed', 'search_dialog');
+	Kephra::API::EventTable::del_call('find.item.history.changed','search_dialog');
+	Kephra::API::EventTable::del_call('replace.item.history.changed','search_dialog');
 
 	$win->Destroy();
 }

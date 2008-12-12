@@ -90,7 +90,7 @@ sub move_right {
 		unshift @$attr, $doc_a;
 		my $doc_d = pop @$data;
 		unshift @$data, $doc_d;
-		Kephra::Document::_set_current_nr($new_nr);
+		Kephra::Document::set_current_nr($new_nr);
 		Kephra::App::TabBar::rot_tab_content('left');
 		Kephra::App::TabBar::set_current_page($new_nr);
 		Kephra::App::EditPanel::gets_focus();

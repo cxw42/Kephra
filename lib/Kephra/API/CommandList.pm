@@ -2,7 +2,7 @@ package Kephra::API::CommandList;
 use strict;
 use warnings;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 =head1 NAME
 
@@ -55,7 +55,8 @@ use Wx qw(
 	WXK_DELETE WXK_INSERT WXK_HOME WXK_END WXK_PAGEUP WXK_PAGEDOWN
 	WXK_UP WXK_DOWN WXK_LEFT WXK_RIGHT
 	WXK_F1 WXK_F2 WXK_F3 WXK_F4 WXK_F5 WXK_F6 WXK_F7 WXK_F8 WXK_F9 WXK_F10
-	WXK_F11 WXK_F12
+	WXK_F11 WXK_F12 
+	WXK_NUMPAD_ENTER
 );
 
 sub _config { $Kephra::config{app}{commandlist} }
@@ -124,10 +125,9 @@ sub _create_keymap{
 		del=> WXK_DELETE, ins => WXK_INSERT,
 		pgup => WXK_PAGEUP, pgdn => WXK_PAGEDOWN, home => WXK_HOME, end => WXK_END,
 		left => WXK_LEFT, up => WXK_UP, right => WXK_RIGHT, down => WXK_DOWN,
-		f1 => WXK_F1, f2 => WXK_F2, f3 => WXK_F3, f4 => WXK_F4,  f5 => WXK_F5,
-		f6 => WXK_F6, f7 => WXK_F7, f8 => WXK_F8, f9 => WXK_F9, f10 => WXK_F10,
-		f11 => WXK_F11, f12 => WXK_F12,
-		numpad_enter => 372
+		f1 => WXK_F1, f2 => WXK_F2, f3 => WXK_F3, f4 => WXK_F4,  f5 => WXK_F5,  f6 => WXK_F6,
+        f7 => WXK_F7, f8 => WXK_F8, f9 => WXK_F9,f10 => WXK_F10,f11 => WXK_F11,f12 => WXK_F12,
+		numpad_enter => WXK_NUMPAD_ENTER
 	);
 	for (keys %$list){
 		$item_data = $list->{$_};
