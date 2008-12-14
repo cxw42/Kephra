@@ -5,8 +5,9 @@ use strict;
 use warnings;
 
 use Wx qw(  
-	wxVERTICAL wxHORIZONTAL wxLEFT wxRIGHT wxTOP wxGROW 
-	wxALIGN_CENTER_VERTICAL wxALIGN_CENTER_HORIZONTAL wxALIGN_RIGHT
+	wxVERTICAL wxHORIZONTAL wxLEFT wxRIGHT wxTOP wxBOTTOM wxGROW 
+	wxALIGN_LEFT wxALIGN_CENTER wxALIGN_RIGHT
+	wxALIGN_CENTER_VERTICAL wxALIGN_CENTER_HORIZONTAL 
 	wxSYSTEM_MENU wxCAPTION wxNO_FULL_REPAINT_ON_RESIZE wxCLOSE_BOX
 	wxMINIMIZE_BOX wxSTAY_ON_TOP wxSIMPLE_BORDER wxRAISED_BORDER
 	wxLI_HORIZONTAL
@@ -169,61 +170,53 @@ sub ready {
 			$input->SetInsertionPoint($pos);
 		});
 		EVT_CHECKBOX($d, $d->{case_box}, sub {
-				$$attr{match_case} = $d->{case_box}->GetValue;
-				Kephra::Edit::Search::_refresh_search_flags();
+			$$attr{match_case} = $d->{case_box}->GetValue;
+			Kephra::Edit::Search::_refresh_search_flags();
 		} );
 		EVT_CHECKBOX($d, $d->{begin_box}, sub {
-				$$attr{match_word_begin} = $d->{begin_box}->GetValue;
-				Kephra::Edit::Search::_refresh_search_flags();
+			$$attr{match_word_begin} = $d->{begin_box}->GetValue;
+			Kephra::Edit::Search::_refresh_search_flags();
 		} );
 		EVT_CHECKBOX($d, $d->{word_box}, sub {
-				$$attr{match_whole_word} = $d->{word_box}->GetValue;
-				Kephra::Edit::Search::_refresh_search_flags();
+			$$attr{match_whole_word} = $d->{word_box}->GetValue;
+			Kephra::Edit::Search::_refresh_search_flags();
 		} );
 		EVT_CHECKBOX($d, $d->{regex_box}, sub {
-				$$attr{match_regex} = $d->{regex_box}->GetValue;
-				Kephra::Edit::Search::_refresh_search_flags();
+			$$attr{match_regex} = $d->{regex_box}->GetValue;
+			Kephra::Edit::Search::_refresh_search_flags();
 		} );
 		EVT_CHECKBOX($d, $d->{wrap_box}, sub {
-				$$attr{auto_wrap} = $d->{wrap_box}->GetValue;
+			$$attr{auto_wrap} = $d->{wrap_box}->GetValue;
 		} );
 		EVT_CHECKBOX($d, $d->{inc_box}, sub {
-				$$attr{incremental} = $d->{inc_box}->GetValue;
+			$$attr{incremental} = $d->{inc_box}->GetValue;
 		} );
 		EVT_RADIOBUTTON($d, $d->{selection_radio},sub {$attr->{in} = 'selection'});
 		EVT_RADIOBUTTON($d, $d->{document_radio}, sub {$attr->{in} = 'document'});
 		EVT_RADIOBUTTON($d, $d->{all_open_radio}, sub {$attr->{in} = 'open_docs'});
 		EVT_BUTTON($d, $d->{foreward_button}, sub {
-				&no_sel_range;
-				Kephra::Edit::Search::find_next();
+			&no_sel_range; Kephra::Edit::Search::find_next();
 		} );
 		EVT_BUTTON($d, $d->{backward_button}, sub {
-				&no_sel_range;
-				Kephra::Edit::Search::find_prev();
+			&no_sel_range; Kephra::Edit::Search::find_prev();
 		} );
 		EVT_BUTTON($d, $d->{fast_fore_button}, sub {
-				&no_sel_range;
-				Kephra::Edit::Search::fast_fore();
+			&no_sel_range; Kephra::Edit::Search::fast_fore();
 		} );
 		EVT_BUTTON($d, $d->{fast_back_button}, sub {
-				&no_sel_range;
-				Kephra::Edit::Search::fast_back();
+			&no_sel_range; Kephra::Edit::Search::fast_back();
 		} );
 		EVT_BUTTON($d, $d->{first_button}, sub {
-				&no_sel_range;
-				Kephra::Edit::Search::find_first();
+			&no_sel_range; Kephra::Edit::Search::find_first();
 		} );
 		EVT_BUTTON($d, $d->{last_button}, sub {
-				&no_sel_range;
-				Kephra::Edit::Search::find_last();
+			&no_sel_range; Kephra::Edit::Search::find_last();
 		} );
 		EVT_BUTTON($d, $d->{replace_fore}, sub {
-				&no_sel_range;
-				Kephra::Edit::Search::replace_fore();
+			&no_sel_range; Kephra::Edit::Search::replace_fore();
 		} );
 		EVT_BUTTON($d, $d->{replace_back}, sub {
-				&no_sel_range;
-				Kephra::Edit::Search::replace_back();
+			&no_sel_range; Kephra::Edit::Search::replace_back();
 		} );
 		EVT_BUTTON($d, $d->{search_button},  sub{ &Kephra::Edit::Search::find_first } );
 		EVT_BUTTON($d, $d->{replace_button}, sub{ &Kephra::Edit::Search::replace_all } );
@@ -287,42 +280,47 @@ sub ready {
 		$rbz->Add( $d->{document_radio},  1, wxTOP, 5 );
 		$rbz->Add( $d->{all_open_radio},  1, wxTOP, 5 );
 		my $range_sizer = Wx::BoxSizer->new(wxVERTICAL);
-		$range_sizer->Add( $d->{wrap_box}, 0, wxTOP, 0 );
+		$range_sizer->Add( $d->{wrap_box}, 0, wxTOP|wxALIGN_CENTER_HORIZONTAL, 0 );
 		$range_sizer->Add( $rbz, 0, wxGROW | wxTOP, 10 );
 
-		my $pad_grid = Wx::GridBagSizer->new( 0, 0 );
-		$pad_grid->Add( $d->{replace_back}, Wx::GBPosition->new(0,0), Wx::GBSpan->new(1,1), wxRIGHT, 0);
-		$pad_grid->Add( $d->{replace_fore}, Wx::GBPosition->new(0,1), Wx::GBSpan->new(1,1), wxLEFT, 0);
-		$pad_grid->Add( $d->{backward_button}, Wx::GBPosition->new(1,0), Wx::GBSpan->new(1,1), wxTOP, 5);
-		$pad_grid->Add( $d->{foreward_button}, Wx::GBPosition->new(1,1), Wx::GBSpan->new(1,1), wxTOP, 5);
-		$pad_grid->Add( $d->{fast_back_button}, Wx::GBPosition->new(2,0), Wx::GBSpan->new(1,1), wxRIGHT, 0);
-		$pad_grid->Add( $d->{fast_fore_button}, Wx::GBPosition->new(2,1), Wx::GBSpan->new(1,1), wxLEFT, 0);
-		$pad_grid->Add( $d->{first_button}, Wx::GBPosition->new(3,0), Wx::GBSpan->new(1,1), wxRIGHT, 0);
-		$pad_grid->Add( $d->{last_button}, Wx::GBPosition->new(3,1), Wx::GBSpan->new(1,1), wxLEFT, 0);
+		my $pad_grid = Wx::FlexGridSizer->new( 4, 2, 0 , 1 );
+		$pad_grid->Add( $d->{replace_back}, 0, wxBOTTOM, 5);
+		$pad_grid->Add( $d->{replace_fore}, 0, wxBOTTOM, 5);
+		$pad_grid->Add( $d->{backward_button}, 0, ,0);
+		$pad_grid->Add( $d->{foreward_button}, 0, ,0);
+		$pad_grid->Add( $d->{fast_back_button},0, ,0);
+		$pad_grid->Add( $d->{fast_fore_button},0, ,0);
+		$pad_grid->Add( $d->{first_button},    0, ,0);
+		$pad_grid->Add( $d->{last_button},     0, ,0);
+
+		my $pads_sizer = Wx::BoxSizer->new(wxHORIZONTAL);
+		$pads_sizer->Add( $option_sizer,0,wxALIGN_LEFT  ,0);
+		$pads_sizer->Add( $range_sizer ,1,wxALIGN_CENTER|wxLEFT|wxRIGHT|wxGROW ,20);
+		$pads_sizer->Add( $pad_grid    ,0,wxALIGN_RIGHT ,0);
 
 		my $button_sizer = Wx::BoxSizer->new(wxHORIZONTAL);
 		$button_sizer->Add( $d->{search_button},  0, wxLEFT, 15 );
 		$button_sizer->Add( $d->{replace_button}, 0, wxLEFT, 10 );
 		$button_sizer->Add( $d->{confirm_button}, 0, wxLEFT, 10 );
 		$button_sizer->AddStretchSpacer;
-		$button_sizer->Add( $d->{close_button},   0, wxALIGN_RIGHT|wxRIGHT,15 );
+		$button_sizer->Add( $d->{close_button},   0, wxALIGN_RIGHT|wxRIGHT, 15 );
 
-		my $b_grid = Wx::GridBagSizer->new( 12, 10 );
-		$b_grid->Add($d->{find_label}, Wx::GBPosition->new(0,0), Wx::GBSpan->new(1,1), wxLEFT | wxALIGN_CENTER_VERTICAL, 10);
-		$b_grid->Add($d->{replace_label},Wx::GBPosition->new(1,0), Wx::GBSpan->new(1,1), wxLEFT | wxALIGN_CENTER_VERTICAL, 10);
-		$b_grid->Add($d->{find_input}, Wx::GBPosition->new(0,1), Wx::GBSpan->new(1,3), wxTOP, 0);
-		$b_grid->Add($d->{replace_input}, Wx::GBPosition->new(1,1), Wx::GBSpan->new(1,3), wxTOP, 0);
-		$b_grid->Add($option_sizer, Wx::GBPosition->new(2,1), Wx::GBSpan->new(1,1), wxTOP, 1);
-		$b_grid->Add($range_sizer,Wx::GBPosition->new(2,2),Wx::GBSpan->new(1,1), wxLEFT, 12);
-		$b_grid->Add($pad_grid, Wx::GBPosition->new(2,3), Wx::GBSpan->new(1,1), wxTOP|wxRIGHT, 0);
+		my $b_grid = Wx::FlexGridSizer->new( 3, 2, 10, 0 );
+		$b_grid->Add($d->{find_label}, 0, wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT, 10);
+		$b_grid->Add($d->{find_input}, 0, wxTOP, 0);
+		$b_grid->Add($d->{replace_label}, 0, wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT, 10);
+		$b_grid->Add($d->{replace_input}, 0, wxTOP, 0);
+		$b_grid->AddSpacer(5);
+		$b_grid->Add($pads_sizer, 1, wxTOP|wxGROW, 5);
 
 		my $d_sizer = Wx::BoxSizer->new(wxVERTICAL);
-		$d_sizer->Add($b_grid,          0, wxTOP                            , 15);
-		$d_sizer->Add($d->{sep_line},   0, wxTOP | wxALIGN_CENTER_HORIZONTAL,  8);
-		$d_sizer->Add($button_sizer,    0, wxTOP | wxGROW                   ,  9);
+		$d_sizer->Add($b_grid,          1, wxTOP                            , 15);
+		$d_sizer->Add($d->{sep_line},   0, wxTOP | wxALIGN_CENTER_HORIZONTAL | wxGROW,  8);
+		$d_sizer->Add($button_sizer,    0, wxTOP | wxBOTTOM | wxGROW        ,  9);
 
 		$d->SetSizer($d_sizer);
 		$d->SetAutoLayout(1);
+		#$d->Fit;
 
 		# go
 		$d->Show(1);

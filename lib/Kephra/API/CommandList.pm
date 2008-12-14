@@ -6,7 +6,7 @@ our $VERSION = '0.12';
 
 =head1 NAME
 
-Kephra::API::CommandList - external API for calling functions
+Kephra::API::CommandList - external API for user callable functions
 
 =head1 DESCRIPTION
 

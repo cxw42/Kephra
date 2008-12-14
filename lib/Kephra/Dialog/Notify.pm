@@ -1,5 +1,5 @@
 package Kephra::Dialog::Notify;
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use strict;
 use warnings;
@@ -43,8 +43,8 @@ sub file_changed {
 	} );
 	EVT_BUTTON($dialog, $dialog->{btn}{3},  sub {
 		quit_dialog();
-		#Kephra::Document::set_tmp_value('did_notify', 'ignore', $file_nr);
 	} );
+		#Kephra::Document::set_tmp_value('did_notify', 'ignore', $file_nr);
 	ready_dialog($dialog);
 }
 

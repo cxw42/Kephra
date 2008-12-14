@@ -4,11 +4,16 @@ BUGS:
  ! textchanged event triggers twice
 
 
+0.4.0.5
+ [ cleaner search dialog
+ ! updating in localisation default config
+
 0.4.0.4
  + select interpreter with config key app > panel > output > interpreter_path
  + file missing dialog
  - remove dangerous <Ctrl>+<Alt>+<Q> keybinding ( triggeres when want create @)
  [ find item history realtime update now works in search dialog
+ [ cleaner search dialog
  ] rebuild notify dialog
  ] renewed parts of search module
  ! comboboxes in search dialog process enter
