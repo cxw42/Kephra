@@ -1,5 +1,5 @@
 package Kephra::Config::Default::CommandList;
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use strict;
 use warnings;
@@ -360,14 +360,6 @@ sub get {
 				'window-stay-on-top' => 'Kephra::App::Window::switch_on_top_mode()',
 			},
 			config => {
-				'app-lang' => {
-					'english' => 'Kephra::Config::Interface::set_lang_2_english()',
-					'deutsch' => 'Kephra::Config::Interface::set_lang_2_deutsch()',
-					'deutsch-iso' => 'Kephra::Config::Interface::set_lang_2_deutsch_iso()',
-					'deutsch-utf' => 'Kephra::Config::Interface::set_lang_2_deutsch_utf()',
-					'cesky-iso' => 'Kephra::Config::Interface::set_lang_2_cesky_iso()',
-					'cesky-utf' => 'Kephra::Config::Interface::set_lang_2_cesky_utf()',
-				},
 				file => {
 					global => {
 						'open' => 'Kephra::Config::Global::open_current_file()',
@@ -387,14 +379,6 @@ sub get {
 						maintoolbar => "Kephra::Show::interface_file('maintoolbar')",
 						searchbar => "Kephra::Show::interface_file('searchbar')",
 						statusbar => "Kephra::Show::interface_file('statusbar')",
-					},
-					localisation => {
-						english => "Kephra::Show::localisation_file('english')",
-						deutsch => "Kephra::Show::localisation_file('deutsch')",
-						'deutsch-iso' => "Kephra::Show::localisation_file('deutsch_iso')",
-						'deutsch-utf' => "Kephra::Show::localisation_file('deutsch_utf')",
-						'cesky-iso' => "Kephra::Show::localisation_file('cesky_iso')",
-						'cesky-utf' => "Kephra::Show::localisation_file('cesky_utf')",
 					},
 					syntaxmode => {
 						ada => "Kephra::Show::syntaxmode_file('ada')",
@@ -680,14 +664,6 @@ sub get {
 				'toolbar-main' => 'Kephra::App::MainToolBar::get_visibility()',
 				'window-stay-on-top' => 'Kephra::App::Window::get_on_top_mode()',
 			},
-			'config-app-lang' => {
-				english => "Kephra::Config::Interface::localisation_file() eq 'english.conf';",
-				deutsch => "Kephra::Config::Interface::localisation_file() eq 'deutsch.conf';",
-				'deutsch-iso' => "Kephra::Config::Interface::localisation_file() eq 'deutsch_iso.conf';",
-				'deutsch-utf' => "Kephra::Config::Interface::localisation_file() eq 'deutsch_utf.conf';",
-				'cesky-iso' => "Kephra::Config::Interface::localisation_file() eq 'cesky_iso.conf';",
-				'cesky-utf' => "Kephra::Config::Interface::localisation_file() eq 'cesky_utf.conf';",
-			},
 		},
 		state_event => {
 			view => {
@@ -696,45 +672,47 @@ sub get {
 			},
 		},
 		icon => {
-			'app-exit' => 'file_quit.xpm',
+			'app-exit' => 'app-exit.xpm',
 			file => {
-				new => 'file_new.xpm',
-				'open' => 'file_open.xpm',
-				'save-current' => 'file_save.xpm',
-				'save-all' => 'file_save_all.xpm',
-				print => 'file_print.xpm',
-				'close-current' => 'file_close.xpm',
+				new => 'file-new.xpm',
+				'open' => 'file-open.xpm',
+				'save-current' => 'file-save.xpm',
+				'save-all' => 'file-save-all.xpm',
+				print => 'file-print.xpm',
+				'close-current' => 'file-close.xpm',
 			},
 			edit => {
 				changes => {
-					undo => 'edit_undo.xpm',
-					redo => 'edit_redo.xpm',
+					undo => 'edit-undo.xpm',
+					redo => 'edit-redo.xpm',
 				},
-				cut => 'edit_cut.xpm',
-				copy => 'edit_copy.xpm',
-				paste => 'edit_paste.xpm',
-				replace => 'edit_replace.xpm',
-				delete => 'edit_delete.xpm',
+				cut => 'edit-cut.xpm',
+				copy => 'edit-copy.xpm',
+				paste => 'edit-paste.xpm',
+				replace => 'edit-replace.xpm',
+				delete => 'edit-delete.xpm',
 			},
 			find => {
-				prev => 'find_previous.xpm',
-				next => 'find_next.xpm',
+				prev => 'find-previous.xpm',
+				next => 'find-next.xpm',
 			},
 			goto => {
-				'last-edit' => 'goto_last_edit.xpm',
-				line => 'goto_last_edit.xpm',
+				'last-edit' => 'goto-last-edit.xpm',
+				line => 'goto-last-edit.xpm',
 			},
 			view => {
 				dialog => {
-					config => 'preferences.xpm',
-					find => 'find_start.xpm',
-					info => 'help_info.xpm',
-					keymap => 'help_keyboard.xpm',
-					replace => 'find_start.xpm',
+					config => 'config-preferences.xpm',
+					find => 'find-start.xpm',
+					info => 'help-info.xpm',
+					keymap => 'help-keyboard.xpm',
+					replace => 'find-start.xpm',
 				},
-				'editpanel-line-wrap' => 'line_wrap.xpm',
-				'toolbar-search' => 'edit_delete.xpm',
-				'window-stay-on-top' => 'stay_on_top.xpm',
+				'editpanel-line-wrap' => 'line-wrap.xpm',
+				'panel-notepad' => 'note.xpm',
+				'panel-output' => 'console.xpm',
+				'toolbar-search' => 'edit-delete.xpm',
+				'window-stay-on-top' => 'stay-on-top.xpm',
 			},
 			#has_ending' => '1
 			#path' => 'interface/icon/set/jenne/

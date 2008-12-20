@@ -1,5 +1,5 @@
 package Kephra::Extension::Notepad;
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 use strict;
 use warnings;
@@ -78,7 +78,7 @@ sub create {
 					: $notepad->GetSelectedText;
 				my $result;
 				my $interpreter = _config->{eval_with};
-				if ($interpreter eq 'eval') {
+				if (not defined $interpreter or $interpreter eq 'eval') {
 					$result = eval $code;
 					$result = $@ if $@;
 				} else {

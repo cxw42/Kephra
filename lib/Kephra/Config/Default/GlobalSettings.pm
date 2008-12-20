@@ -1,5 +1,5 @@
 package Kephra::Config::Default::GlobalSettings;
-our $VERSION = '0.05';
+our $VERSION = '0.07';
 
 use strict;
 use warnings;
@@ -11,11 +11,13 @@ sub get {
 			version => $Kephra::VERSION,
 		},
 		app => {
+			app_data_sub_dir = 'interface',
+			cache => {
+				file => 'commands.conf',
+				sub_dir = 'cache',
+				use => 1,
+			}
 			commandlist => {
-				cache => {
-					file => 'interface/cache/commands.conf',
-					'use' => 1,
-				},
 				file => 'interface/commands.conf',
 				node => 'commandlist',
 			},
@@ -34,7 +36,7 @@ sub get {
 					toolbar_search => 'searchbar_contextmenu',
 				},
 			},
-			error_output => 'dialog',                         # (dialog|console|none)
+			error_output => 'panel',                         # (dialog|console|panel|none)
 			iconset_path => 'interface/icon/set/jenne',                # rootpath for all icons
 			localisation => {
 				directory => 'localisation',
@@ -151,6 +153,7 @@ sub get {
 					join => 1,    # deletes closing bracket if there are 2 and 1 has no matching partner
 					make => 1,     # generates closing bracket for ne blocks
 				},
+				focus => 1,
 				indention => 1,    # indents new lines like previous
 			},
 			contextmenu => {
@@ -226,13 +229,13 @@ sub get {
 		},
 		file => {
 			current => {
-				directory => '/kephra/config/global/',
+				directory => '',
 				'open'    => [],
 			},
 			defaultsettings => {
 				EOL_open    => 'auto',    # (auto|cr+lf|cr|lf) EOL settings for new files, -NI auto means take setting of the last touched file
 				EOL_new     => 'cr+lf',   # (auto|cr|lf|cr+lf) EOL of opened files, if not set to auto, the file automaticly will converted
-				codepage    => 0,         # -NI codepage of the used charset, not implemented yet
+				codepage    => 65001,     # UTF codepage, used for charset
 				cursor_pos  => 0,
 				readonly    => 'protect', # (0|1|2|on|off|protect) if =1 it set a write protection on readonly files
 				syntaxmode  => 'auto',    # (auto|none|lang_id) which syntaxstyle on new files
@@ -302,7 +305,7 @@ sub get {
 				into_empty_doc      => 0, # replacing new empty documents while opening a file
 				into_only_empty_doc => 1, # replacing new empty doc if the empty is the only one
 				notify_change       => 30,# (0..n) timer executed check if file has changed in sec
-				only_text           => 1, # to open only text files
+				only_text           => 0, # to open only text files
 				single_doc          => 0, # opens only 1 document at once, enables an single document editor
 			},
 			save => {

@@ -1,5 +1,5 @@
 package Kephra::File::IO;
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 use strict;
 use warnings;
@@ -71,6 +71,13 @@ sub write_buffer {
 		binmode $FILE;
 		print $FILE $text;
 	}
+}
+
+
+sub get_age {
+	my $file = shift;
+	return unless -e $file;
+	return $^T - (-M $file) * 86400;
 }
 
 1;

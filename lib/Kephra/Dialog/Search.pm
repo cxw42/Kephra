@@ -79,6 +79,7 @@ sub ready {
 		Kephra::Edit::Search::_refresh_search_flags();
 		$Kephra::temp{dialog}{search}{active} = 1;
 		$Kephra::temp{dialog}{active}++;
+		$Kephra::temp{dialog}{search}{colored} = 1;
 
 		# make dialog window and main panel
 		my $d = Wx::Dialog->new( 
@@ -127,14 +128,14 @@ sub ready {
 
 		# buttons
 		my $bmp = \&Kephra::Config::icon_bitmap;
-		$d->{replace_back}=Wx::BitmapButton->new($d,-1,&$bmp('replace_previous.xpm'));
-		$d->{replace_fore}=Wx::BitmapButton->new($d,-1,&$bmp('replace_next.xpm'));
-		$d->{backward_button}=Wx::BitmapButton->new($d,-1,&$bmp('go_previous.xpm'));
-		$d->{foreward_button}=Wx::BitmapButton->new($d,-1,&$bmp('go_next.xpm'));
-		$d->{fast_back_button}=Wx::BitmapButton->new($d,-1,&$bmp('go_fast_backward.xpm'));
-		$d->{fast_fore_button}=Wx::BitmapButton->new($d,-1,&$bmp('go_fast_forward.xpm'));
-		$d->{first_button}=Wx::BitmapButton->new($d,-1,&$bmp('go_first.xpm'));
-		$d->{last_button}=Wx::BitmapButton->new($d,-1,&$bmp('go_last.xpm'));
+		$d->{replace_back}=Wx::BitmapButton->new($d,-1,&$bmp('replace-previous.xpm'));
+		$d->{replace_fore}=Wx::BitmapButton->new($d,-1,&$bmp('replace-next.xpm'));
+		$d->{backward_button}=Wx::BitmapButton->new($d,-1,&$bmp('go-previous.xpm'));
+		$d->{foreward_button}=Wx::BitmapButton->new($d,-1,&$bmp('go-next.xpm'));
+		$d->{fast_back_button}=Wx::BitmapButton->new($d,-1,&$bmp('go-fast-backward.xpm'));
+		$d->{fast_fore_button}=Wx::BitmapButton->new($d,-1,&$bmp('go-fast-forward.xpm'));
+		$d->{first_button}=Wx::BitmapButton->new($d,-1,&$bmp('go-first.xpm'));
+		$d->{last_button}=Wx::BitmapButton->new($d,-1,&$bmp('go-last.xpm'));
 		$d->{search_button} = Wx::Button->new($d, -1, $label->{search} );
 		$d->{replace_button}= Wx::Button->new($d, -1, $label->{replace_all} );
 		$d->{confirm_button}= Wx::Button->new($d, -1, $label->{with_confirmation} );
@@ -224,6 +225,9 @@ sub ready {
 		EVT_BUTTON($d, $d->{close_button},   sub{ shift->Close() } );
 
 		EVT_CLOSE( $d, \&quit_search_dialog );
+
+
+		Kephra::API::EventTable::add_call( 'find', 'search_dialog', \&colour_find_input);
 
 		Kephra::API::EventTable::add_call( 'find.item.changed', 'search_dialog', sub {
 			$d->{find_input}->SetValue(Kephra::Edit::Search::get_find_item());
@@ -379,23 +383,30 @@ my %color = (
 	alert_back => Wx::Colour->new( 0xff, 0xff, 0xff ),
 );
 
-sub incremental_search {
-	my $dialog = $Kephra::app{dialog}{search};
-	if ( $Kephra::config{search}{attribute}{incremental}
-		and not $Kephra::temp{dialog}{search}{control} ) {
-		my $input = $dialog->{find_input};
-		my $pos   = $input->GetInsertionPoint;
-		Kephra::Edit::Search::set_find_item($input->GetValue);
-
-		if (Kephra::Edit::Search::first_increment) {
+sub colour_find_input {
+	my $input = $Kephra::app{dialog}{search}{find_input};
+	my $pos   = $input->GetInsertionPoint;
+	my $found_something = $Kephra::temp{search}{item}{foundpos} > -1
+		? 1 : 0;
+	return if $Kephra::temp{dialog}{search}{colored} eq $found_something;
+	$Kephra::temp{dialog}{search}{colored} = $found_something;
+	if ($found_something){
 			$input->SetForegroundColour( $color{norm_fore} );
 			$input->SetBackgroundColour( $color{norm_back} );
 		} else {
 			$input->SetForegroundColour( $color{alert_fore} );
 			$input->SetBackgroundColour( $color{alert_back} );
-		}
-		$input->SetInsertionPoint($pos);
-		$input->Refresh;
+	}
+	$input->SetInsertionPoint($pos);
+	$input->Refresh;
+}
+
+sub incremental_search {
+	if ( $Kephra::config{search}{attribute}{incremental}
+		and not $Kephra::temp{dialog}{search}{control} ) {
+		my $input = $Kephra::app{dialog}{search}{find_input};
+		Kephra::Edit::Search::set_find_item($input->GetValue);
+		Kephra::Edit::Search::first_increment();
 	}
 }
 
@@ -431,6 +442,7 @@ sub quit_search_dialog {
 	$Kephra::temp{dialog}{search}{active} = 0;
 	$Kephra::temp{dialog}{active}--;
 
+	Kephra::API::EventTable::del_call('find','search_bar');
 	Kephra::API::EventTable::del_call('find.item.changed', 'search_dialog');
 	Kephra::API::EventTable::del_call('replace.item.changed', 'search_dialog');
 	Kephra::API::EventTable::del_call('find.item.history.changed','search_dialog');

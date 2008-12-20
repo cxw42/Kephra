@@ -2,7 +2,7 @@ package Kephra::Show;
 use strict;
 use warnings;
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 
 ###################
@@ -16,9 +16,6 @@ sub _open_config{
 }
 
 #
-sub localisation_file{ 
-	_open_config( Kephra::Config::filepath('localisation', "$_[0].conf") )
-}
 sub syntaxmode_file  { 
 	_open_config( Kephra::Config::filepath('syntaxhighlighter', "$_[0].pm") )
 }

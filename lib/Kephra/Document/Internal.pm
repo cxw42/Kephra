@@ -1,5 +1,5 @@
 package Kephra::Document::Internal;
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 use strict;
 use warnings;
@@ -182,8 +182,7 @@ sub add {
 	if ( defined $file_name and -e $file_name ) {
 
 		# open only text files and empty files
-		return if ( !-z $file_name and -B $file_name
-			and $Kephra::config{file}{open}{only_text} == 1 );
+		return if -B $file_name and $Kephra::config{file}{open}{only_text} == 1;
 
 		# check if file is already open and goto this already opened
 		if ( $Kephra::config{file}{open}{each_once} == 1){
@@ -309,7 +308,7 @@ sub eval_properties {
 	Kephra::Document::set_tab_mode( $doc_attr->{tab_use} );
 	Kephra::Document::set_tab_size( $doc_attr->{tab_size} );
 	Kephra::Document::set_readonly( $doc_attr->{readonly} );
-	$ep->SetCodePage(65001);
+	Kephra::Document::set_codepage( $doc_attr->{codepage} );
 
 	# setting selection and caret position
 	if ($doc_data->{selstart} and $doc_data->{selstart}) {

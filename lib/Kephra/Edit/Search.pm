@@ -53,7 +53,7 @@ sub _init_history {
 		@{ $history->{replace_item} } = ();
 	}
 	# search item is findable
-	$Kephra::temp{search}{item}{found} = 1;
+	$Kephra::temp{search}{item}{foundpos} = 0;
 }
 
 sub refresh_find_history {
@@ -123,10 +123,7 @@ sub _caret_2_sel_end {
 	}
 }
 
-sub item_findable       { _exist_find_item();
-#print "findable:".$Kephra::temp{search}{item}{found}."\n";
-#return $Kephra::temp{search}{item}{found} > 0;
-}
+sub item_findable       { _exist_find_item() }
 sub _exist_find_item    { length( get_find_item() ) }
 sub _exist_replace_item { length( get_replace_item() ) }
 #
@@ -173,7 +170,7 @@ sub set_find_item {
 	my $new = shift;
 	if (defined $new and $new ne $old){
 		_history()->{current_find_item} = $new;
-		$Kephra::temp{search}{item}{found} = 1;
+		$Kephra::temp{search}{item}{foundpos} = -1;
 		Kephra::API::EventTable::trigger('find.item.changed');
 	}
 }
@@ -207,19 +204,23 @@ sub replace_selection  {
 sub _find_next  {
 	my $ep = Kephra::App::EditPanel::_ref();
 	$ep->SearchAnchor;
-	return $Kephra::temp{search}{item}{found} = $ep->SearchNext(
+	$Kephra::temp{search}{item}{foundpos} = $ep->SearchNext(
 		$Kephra::temp{search}{flags},
 		get_find_item()
 	);
+	Kephra::API::EventTable::trigger('find');
+	return $Kephra::temp{search}{item}{foundpos};
 }
 
 sub _find_prev {
 	my $ep = Kephra::App::EditPanel::_ref();
 	$ep->SearchAnchor;
-	return $Kephra::temp{search}{item}{found} = $ep->SearchPrev(
+	$Kephra::temp{search}{item}{foundpos} = $ep->SearchPrev(
 		$Kephra::temp{search}{flags},
 		get_find_item()
 	);
+	Kephra::API::EventTable::trigger('find');
+	return $Kephra::temp{search}{item}{foundpos};
 }
 
 sub _find_first {

@@ -25,7 +25,7 @@ sub _config { $Kephra::config{app}{toolbar}{search} }
 
 sub create {
 	# load searchbar definition
-	my $bar_def = Kephra::Config::File::load_from_config_node_data( _config() );
+	my $bar_def = Kephra::Config::File::load_from_node_data( _config() );
 	unless ($bar_def) {
 		$bar_def = Kephra::Config::Tree::get_subtree
 			( Kephra::Config::Default::toolbars(), 'searchbar');
@@ -56,7 +56,7 @@ sub create {
 				my $new = $find_input->GetValue;
 				if ($new ne $old){
 					Kephra::Edit::Search::set_find_item( $new );
-					colour_find_input( Kephra::Edit::Search::first_increment() )
+					Kephra::Edit::Search::first_increment()
 						if $Kephra::config{search}{attribute}{incremental}
 						and Wx::Window::FindFocus() eq $find_input;
 				}
@@ -143,6 +143,7 @@ sub create {
 			});
 			EVT_LEAVE_WINDOW( $find_input, sub{ connect_find_input($find_input) });
 			connect_find_input($find_input);
+			$Kephra::temp{bar}{search}{colored} = 1;
 		}
 	}
 	EVT_LEAVE_WINDOW($bar, \&leave_focus);
@@ -161,7 +162,6 @@ sub connect_find_input {
 			$find_input->SetValue( $value );
 			my $pos = $find_input->GetLastPosition;
 			$find_input->SetSelection($pos,$pos);
-			colour_find_input( 1 );
 	});
 	Kephra::API::EventTable::add_call( 'find.item.history.changed', 'search_bar', sub {
 			$find_input->Clear();
@@ -169,16 +169,21 @@ sub connect_find_input {
 			$find_input->SetValue(Kephra::Edit::Search::get_find_item());
 			$find_input->SetInsertionPointEnd;
 	});
+	Kephra::API::EventTable::add_call( 'find', 'search_bar', \&colour_find_input);
 }
 sub disconnect_find_input{
+	Kephra::API::EventTable::del_call('find','search_bar');
 	Kephra::API::EventTable::del_call('find.item.changed','search_bar');
 	Kephra::API::EventTable::del_call('find.item.history.changed','search_bar');
 }
 
 
-sub colour_find_input{
+sub colour_find_input {
 	my $find_input      = _ref()->{find_input};
-	my $found_something = shift;
+	my $found_something = $Kephra::temp{search}{item}{foundpos} > -1
+		? 1 : 0;
+	return if $Kephra::temp{bar}{search}{colored} eq $found_something;
+	$Kephra::temp{bar}{search}{colored} = $found_something;
 	if ($found_something){
 		$find_input->SetForegroundColour( Wx::Colour->new( 0x00, 0x00, 0x55 ) );
 		$find_input->SetBackgroundColour( Wx::Colour->new( 0xff, 0xff, 0xff ) );

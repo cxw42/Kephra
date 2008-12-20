@@ -14,7 +14,7 @@ sub create {
 	my $bar = $frame->GetToolBar;
 	$bar->Destroy if $bar;          # destroy old toolbar if there any
 	_ref( $frame->CreateToolBar );
-	my $bar_def = Kephra::Config::File::load_from_config_node_data( _config() );
+	my $bar_def = Kephra::Config::File::load_from_node_data( _config() );
 	unless ($bar_def) {
 		$bar_def = Kephra::Config::Tree::get_subtree
 			( Kephra::Config::Default::toolbars(), 'main_toolbar');

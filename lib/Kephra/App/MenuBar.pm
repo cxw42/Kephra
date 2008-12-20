@@ -10,7 +10,7 @@ sub _ref {
 }
 
 sub create {
-	my $menubar_def = Kephra::Config::File::load_from_config_node_data
+	my $menubar_def = Kephra::Config::File::load_from_node_data
 		( $Kephra::config{app}{menubar} );
 	unless ($menubar_def) {
 		$menubar_def = Kephra::Config::Default::mainmenu();

@@ -2,7 +2,7 @@ package Kephra::API::CommandList;
 use strict;
 use warnings;
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 =head1 NAME
 
@@ -62,6 +62,8 @@ use Wx qw(
 sub _config { $Kephra::config{app}{commandlist} }
 sub _data   { $Kephra::app{commandlist} }
 
+sub clear_list{ delete $Kephra::app{commandlist} }
+
 sub load_cache {}
 sub store_cache {
 	return unless _config()->{cache}{use};
@@ -113,7 +115,7 @@ sub _parse_node{
 	}
 }
 
-sub _create_keymap{
+sub _create_keymap {
 	my $list = _data();
 	my ($item_data, $raw, $kcode, $kname, $i, $char); #rawdata, keycode
 	my $shift = $Kephra::localisation{key}{meta}{shift} . '+';
@@ -155,6 +157,13 @@ sub _create_keymap{
 	}
 }
 
+sub numify_key_code {
+	
+}
+
+sub _add_keys {
+}
+
 sub eval_data {
 	my $list = _data();
 	my $keymap = \@{$Kephra::app{editpanel}{keymap}};
@@ -185,9 +194,31 @@ sub eval_data {
 # external API
 #
 
-sub add_cmd {}
+sub new_cmd { replace_cmd(@_) unless exists _data()->{ $_[0] } }
+sub new_cmd_list {}
+sub replace_cmd {
+	my ($cmd_id, $properties) = @_;
+	return unless ref $properties eq 'HASH';
+	my $list = _data();
+	if ($list->{$cmd_id}) {
+		$list->{$cmd_id}{$_} = $properties->{$_} for keys %$properties
+	} else {
+		$list->{$cmd_id} = $properties;
+	}
+
+	my $cmd = _data()->{$cmd_id};
+	for my $node_type (qw(call state enable)) {
+		if (exists $cmd->{$node_type} and ref $cmd->{$node_type} ne 'CODE'){
+			$cmd->{$node_type} = eval 'sub {'.$cmd->{$node_type}.'}'
+		}
+	}
+	$cmd->{icon} = Kephra::Config::icon_bitmap( $cmd->{icon} ) if $cmd->{icon};
+}
+
 sub add_cmd_list {}
-sub del_cmd {}
+sub del_cmd {
+	my $ID = shift;
+}
 
 sub cmd_ID_free {}
 

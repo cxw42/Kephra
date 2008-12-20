@@ -73,12 +73,11 @@ sub connect_all {
 	# events for whole window
 	EVT_CLOSE      ($win,  sub { trigger('app.close'); Kephra::quit() });
 	EVT_DROP_FILES ($win,  \&Kephra::File::add_dropped);
-	EVT_MENU_OPEN  ($win,  sub {
+	EVT_MENU_OPEN  ($win,  sub { trigger('menu.open') 
 #print"menu ",$_[1]->GetMenuId, ' ', $_[1]->GetMenu, "\n";
-		trigger('menu.open') 
 	});
 	#EVT_IDLE       ($win,  sub { } );
-
+	start_timer();
 
 
 	# scintilla and editpanel events
@@ -92,10 +91,7 @@ sub connect_all {
 	#EVT_MOTION();
 	#EVT_LEFT_DOWN();
 
-	EVT_ENTER_WINDOW ($ep,   sub {
-		Wx::Window::SetFocus( $ep ) unless $Kephra::temp{dialog}{active};
-		trigger('editpanel.focus');
-	});
+	EVT_ENTER_WINDOW        ($ep,     sub { trigger('editpanel.focus') });
 	#EVT_SET_FOCUS		   ($stc,	sub {});
 
 	EVT_STC_SAVEPOINTREACHED($ep, -1, \&Kephra::File::savepoint_reached);
@@ -103,8 +99,6 @@ sub connect_all {
 	EVT_STC_MARGINCLICK     ($ep, -1, sub {
 		#Kephra::Dialog::msg_box(undef, "a", 'b')
 	});
-
-	start_timer();
 }
 
 

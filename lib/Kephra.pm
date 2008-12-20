@@ -5,7 +5,7 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.4.0.5';       # version of entire app
+our $VERSION    = '0.4.0.8';       # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $BENCHMARK;                    # flag for benchmark loggings
@@ -61,8 +61,9 @@ use Kephra::Config::Default;       # build in emergency settings
 #use Kephra::Config::Default::ToolBars;
 use Kephra::Config::File;          # API 2 ConfigParser: Config::General, YAML
 use Kephra::Config::Global;        # API 4 config, general content level
-use Kephra::Config::Interface;     #
-use Kephra::Config::Tree;          #
+use Kephra::Config::Localisation;  # load store change localisation
+use Kephra::Config::Interface;     # loading Interface data menus, bars etc
+use Kephra::Config::Tree;          # data tree manipulation
 use Kephra::Dialog;                # API 2 dialogs, fileselectors, msgboxes
 #use Kephra::Dialog::Config;       # config dialog
 #use Kephra::Dialog::Exit;         # select files to be saved while exit program
@@ -252,22 +253,32 @@ and some help texts to be opened as normal files
 
 =head1 ROADMAP
 
+=head2 Stable 0.4
+
+main features: 
+
+GUI abstraction layer, searchbar, output panel, brace navigation, notepad,
+    file history menu, templates, some more context menus
+
+This release is about getting the editor liquid or highly configurable.
+Its also about improvements in the user interface and of course the little
+things we missed, but config dialog was delayed.
+
 =head2 TODO
 
 fix config install under linux and mac
 
 fix test suite
 
-=head2 Stable 0.4
 
-main features: 
+=head2 Stable 0.4.1
 
-GUI abstraction layer, searchbar, output panel, config dialog, syntaxmodes
+folding, printing, test suite, and new hotpluggable localisation system that also
+does UTF semi-automatically, initian czech and norwegian translation
 
-This release is about getting the editor liquid or highly configurable.
-Its also about improvements in the user interface and of course the little
-things we missed. And its about time that it will released so that can we 
-can concentrate more on features for coding support.
+=head2 Stable 0.4.2
+
+snippet lib, outlining?
 
 =head2 Stable 0.5
 

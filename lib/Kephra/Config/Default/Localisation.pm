@@ -1,5 +1,5 @@
 package Kephra::Config::Default::Localisation;
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use strict;
 use warnings;
@@ -9,8 +9,9 @@ sub get {
 		about => {
 			language => 'english',
 			iso_code => 'en',
-			coding  => '8bit',
+			coding  => 'ASCII',
 			purpose => 'embedded emergency localisation',
+			version => $VERSION,
 		},
 		app => {
 			general => {
@@ -427,12 +428,10 @@ sub get {
 				},
 				config => {
 					'app-lang' => {
-						english => 'English',
-						'deutsch-iso' => 'Deutsch (ISO)',
-						'deutsch-utf' => 'Deutsch (UTF)',
-						deutsch => 'Deutsch',
-						'cesky-iso' => 'Cesky (ISO)',
-						'cesky-utf' => 'Cesky (UTF)',
+						en => 'English',
+						de => 'Deutsch',
+						cs => 'Cesky',
+						nb => 'Norsk',
 					},
 					file => {
 						global => {
@@ -455,12 +454,10 @@ sub get {
 							toolbar => 'Toolbar',
 						},
 						localisation => {
-							english => 'English',
-							deutsch => 'Deutsch',
-							'deutsch-iso' => 'Deutsch (ISO)',
-							'deutsch-utf' => 'Deutsch (UTF)',
-							'cesky-iso' => 'Cesky (ISO)',
-							'cesky-utf' => 'Cesky (UTF)',
+							en => 'English',
+							de => 'Deutsch',
+							cs => 'Cesky',
+							nb => 'Norsk',
 						},
 						syntaxmode => {
 							ada => 'Ada',
@@ -853,11 +850,10 @@ sub get {
 				},
 				config => {
 					'app-lang' => {
-						english => 'change user interface language to english',
-						'deutsch-iso' => 'change user interface language to german (ISO)',
-						'deutsch-utf' => 'change user interface language to german (UTF)',
-						deutsch => 'change user interface language to german',
-						'cesky-utf' => 'change user interface language to czech',
+						cs => 'change user interface language to czech',
+						de => 'change user interface language to german',
+						en => 'change user interface language to english',
+						nb => 'change user interface language to norwegian',
 					},
 					file => {
 						global => {
@@ -880,12 +876,10 @@ sub get {
 							toolbar => 'open default definition file for toolbars',
 						},
 						localisation => {
-							english => 'open english translation of application label texts',
-							deutsch => 'open german translation of the application texts',
-							'deutsch-iso' => 'open german translation with ISO charset',
-							'deutsch-utf' => 'open german translation with UTF16 charset',
-							'cesky-iso' => 'open czech translation with ISO charset',
-							'cesky-utf' => 'open czech translation with UTF16 charset',
+							en => 'open english translation of application label texts',
+							de => 'open german translation of the application texts',
+							cs => 'open czech translation file',
+							nb => 'open norwegian translation file',
 						},
 						syntaxmode => {
 							ada => 'open file with settings for the Ada language',

@@ -25,8 +25,8 @@ sub set_absolete { $Kephra::app{menu}{$_[0]}{absolete} = 1 }
 sub not_absolete { $Kephra::app{menu}{$_[0]}{absolete} = 0 }
 sub is_absolete  { $Kephra::app{menu}{$_[0]}{absolete}     }
 
-sub set_update   { 
-	$Kephra::app{menu}{$_[0]}{update} =  $_[1] if ref $_[1] eq 'CODE'
+sub set_update   {
+    $Kephra::app{menu}{$_[0]}{update} =  $_[1] if ref $_[1] eq 'CODE'
 }
 sub no_update  {
 	delete $Kephra::app{menu}{$_[0]}{update} if exists $Kephra::app{menu}{$_[0]}
@@ -155,7 +155,7 @@ sub create_dynamic {
 }
 
 # create colid, not on runtime changeable menus
-sub create_static{
+sub create_static {
 	my ($menu_id, $menu_def) = @_;
 	return unless ref $menu_def eq 'ARRAY';
 	not_absolete($menu_id);

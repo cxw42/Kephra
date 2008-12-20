@@ -79,14 +79,16 @@ sub apply_settings {
 
 	apply_bracelight_settings();
 	Kephra::Edit::eval_newline_sub();
+	Kephra::API::EventTable::add_call ( 'editpanel.focus', 'editpanel', sub { 
+		Wx::Window::SetFocus( $ep ) unless $Kephra::temp{dialog}{active};
+	} ) if $conf->{auto}{focus};
 }
 
 sub set_word_chars { 
 	my $ep   = _ref();
 	my $conf = _config();
 	if ( $conf->{word_chars} ) {
-		$ep->SetWordChars( '$%&-@_abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ0123456789' );
-		#$ep->SetWordChars( $conf->{word_chars} );
+		$ep->SetWordChars( $conf->{word_chars} );
 	} else {
 		$ep->SetWordChars( '$%&-@_abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ0123456789' );
 	}

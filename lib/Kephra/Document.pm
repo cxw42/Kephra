@@ -1,14 +1,11 @@
 package Kephra::Document;
-our $VERSION = '0.46';
+our $VERSION = '0.47';
 
 use strict qw/vars subs/;;
 use warnings;
 
 =pod
- This module is in rewrite mode the purpose 
- was     : getter/setter for curent document properties
- will be : internal helper funktions for all and current document 
-           and join it with Kephra::Document::Internal
+ external doc API for properties except syntaxmode
 =cut
 
 my $this   = __PACKAGE__ . '::';
@@ -79,16 +76,18 @@ sub _edit{
 	1;
 }
 
-sub set_codepage {
-	my $ep = Kephra::App::EditPanel::_get();
-	# my $app_win = shift;
-	#$ep->SetCodePage(65001); wxSTC_CP_UTF8 Wx::wxUNICODE()
-	#Kephra::Dialog::msg_box(undef, Wx::wxUNICODE(), '');
-	#use Wx::STC qw(wxSTC_CP_UTF8);
-}
 ##################################################################
 # Properties
 ##################################################################
+
+sub get_codepage { $Kephra::document{current}{codepage} }
+sub set_codepage {
+	my $new_value = $Kephra::document{current}{codepage} = shift;
+	Kephra::App::EditPanel::_ref()->SetCodePage( $new_value );
+}
+	#Kephra::Dialog::msg_box(undef, Wx::wxUNICODE(), '');
+	#use Wx::STC qw(wxSTC_CP_UTF8); Wx::wxUNICODE()
+
 
 sub get_tab_size { $Kephra::document{current}{tab_size} }
 sub set_tab_size {
@@ -115,6 +114,7 @@ sub set_tab_mode {
 sub set_tabs_hard  { set_tab_mode(1) }
 sub set_tabs_soft  { set_tab_mode(0) }
 sub switch_tab_mode{ get_tab_mode() ? set_tab_mode(0) : set_tab_mode(1) }
+
 
 #
 sub get_EOL_mode { $Kephra::document{current}{EOL} }

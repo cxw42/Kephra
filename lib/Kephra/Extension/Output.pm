@@ -1,5 +1,5 @@
 package Kephra::Extension::Output;
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use strict;
 use warnings;
@@ -114,7 +114,7 @@ sub output {
 	_config()->{append}
 		? print( "\n\n" )
 		: clear();
-	print( @_ );
+	&print( @_ );
 }
 
 

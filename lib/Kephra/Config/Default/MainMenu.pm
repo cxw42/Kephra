@@ -390,6 +390,8 @@ sub get {
 		{'menu config' => [
 			'item view-dialog-config',
 			'',
+			'menu config_app_lang',
+			'',
 			{'menu config_global' => [
 				'item config-file-global-open',
 				'item config-file-global-reload',
@@ -411,14 +413,7 @@ sub get {
 				#'item config-file-interface-searchbar',
 				#'item config-file-interface-statusbar',
 			],},
-			{'menu config_localisation' => [
-				'item config-file-localisation-english',
-				'item config-file-localisation-deutsch-iso',
-				'item config-file-localisation-deutsch',
-				#'item config-file-localisation-deutsch-utf',
-				'item config-file-localisation-cesky-iso',
-				#'item config-file-localisation-cesky-utf',
-			],},
+			'menu config_localisation',
 			{'menu config_syntaxmode_A-M' => [
 				'item config-file-syntaxmode-ada',
 				'item config-file-syntaxmode-as',

@@ -6,9 +6,9 @@ use warnings;
 
 # handling main config files under /config/global/
 
-sub _conf_sub_path {'global'}
-sub _current_file  {Kephra::Config::filepath( $Kephra::temp{file}{config}{auto});
-}
+sub _sub_dir {'global'}
+sub _current_file  {Kephra::Config::filepath( $Kephra::temp{file}{config}{auto})}
+
 sub load_autosaved {
 	my $autosave = _current_file();
 	my $backup = $autosave . '~';
@@ -55,7 +55,7 @@ sub load_from {
 	my $filename = Kephra::Dialog::get_file_open(
 		Kephra::App::Window::_ref(),
 		$Kephra::localisation{dialog}{config_file}{load},
-		Kephra::Config::dirpath( _conf_sub_path() ),
+		Kephra::Config::dirpath( _sub_dir() ),
 		$Kephra::temp{file}{filterstring}{config}
 	);
 	reload($filename) if -e $filename;
@@ -94,6 +94,7 @@ print "  prep. data:", Benchmark::timestr( Benchmark::timediff( $t2, $t1 ) ), "\
 
 	# main window components
 	Kephra::App::Window::apply_settings();
+	Kephra::Config::Localisation::create_menus();
 	Kephra::App::ContextMenu::create_all();
 	Kephra::App::MenuBar::create();
 	Kephra::App::MainToolBar::create();
@@ -109,6 +110,7 @@ print "  prep. data:", Benchmark::timestr( Benchmark::timediff( $t2, $t1 ) ), "\
 	my $t3 = new Benchmark;
 print "  create gui:", Benchmark::timestr( Benchmark::timediff( $t3, $t2 ) ), "\n"
 	if $Kephra::BENCHMARK;
+
 
 	Kephra::App::ContextMenu::connect_all();
 	Kephra::App::EditPanel::apply_settings();
@@ -201,7 +203,7 @@ sub save_as {
 	my $file_name = Kephra::Dialog::get_file_save(
 		Kephra::App::Window::_ref(),
 		$Kephra::localisation{dialog}{config_file}{save},
-		Kephra::Config::dirpath(  _conf_sub_path() ),
+		Kephra::Config::dirpath( _sub_dir() ),
 		$Kephra::temp{file}{filterstring}{config}
 	);
 	save($file_name) if ( length($file_name) > 0 );
@@ -214,7 +216,7 @@ sub merge_with {
 	my $filename = Kephra::Dialog::get_file_open( 
 		Kephra::App::Window::_ref(),
 		$Kephra::localisation{dialog}{config_file}{load},
-		Kephra::Config::dirpath( _conf_sub_path(), 'sub'),
+		Kephra::Config::dirpath( _sub_dir(), 'sub'),
 		$Kephra::temp{file}{filterstring}{config}
 	);
 	load_subconfig($filename);

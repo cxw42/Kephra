@@ -1,5 +1,5 @@
 package Kephra::File;
-our $VERSION = '0.41';
+our $VERSION = '0.42';
 
 use strict;
 use warnings;
@@ -46,7 +46,7 @@ sub changed_notify_check {
 			next;
 		}
 		my $last_change = Kephra::Document::get_tmp_value('file_changed', $file_nr);
-		my $current_age= _file_age($path);
+		my $current_age= Kephra::File::IO::get_age($path);
 		if ( $last_change != $current_age) {
 			next if defined $last_check
 				and ( $last_check eq 'ignore' or $last_check >= $current_age);
@@ -63,16 +63,11 @@ sub changed_notify_check {
 sub _remember_save_moment {
 	my ($path, $doc_nr) = @_;
 	return unless -e $path;
-	my $age = _file_age($path);
+	my $age = Kephra::File::IO::get_age($path);
 	Kephra::Document::set_tmp_value( 'file_changed', $age, $doc_nr);
 	return $age;
 }
 
-sub _file_age {
-	my $file = shift;
-	return unless -e $file;
-	return $^T - (-M $file) * 86400;
-}
 ###############
 # drag n drop #
 ###############

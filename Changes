@@ -4,6 +4,27 @@ BUGS:
  ! textchanged event triggers twice
 
 
+0.4.0.8
+ + autoplugging localisation system
+ + added key editpanel > auto > focus
+ ~ changed name convention for icons no more underscore => new-names.xpm
+ ' updated roadmap in kephra.pm POD
+ " panel icons were missing in default commandlist
+
+0.4.0.7
+ + intial norsk localisation
+ + new submodule Kephra::Config::Localisation, refactoring
+ - removed stupid restrictions not to open emty files
+ ~ open binary files (only_text = 0)is now default, problems with utf files
+ ~ activate UTF8 for Config::General when locale file requires
+ ] open localisation files function moved into Config::Localisation
+ ! typo in localisation column, not cloumn
+
+0.4.0.6
+ ] moving codepage setting from hard wired to config set
+ ~ moving File::_age into File::IO
+ ! output panel didn't worked
+ 
 0.4.0.5
  [ cleaner search dialog
  ! updating in localisation default config
@@ -1191,5 +1212,6 @@ Legend:
  ! bugfix
  [ interface
  ] internals
+ " configs
  ' help/docu
  / comment

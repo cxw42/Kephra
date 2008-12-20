@@ -29,7 +29,7 @@ sub _get_type {
 #
 # API 2 App
 #
-sub load_from_config_node_data {
+sub load_from_node_data {
 	my $node = shift;
 	return unless defined $node->{file} and $node->{node};
 	load_node( Kephra::Config::filepath( $node->{file} ), $node->{node} );
@@ -85,7 +85,9 @@ sub store_yaml { &YAML::Tiny::DumpFile }
 #
 
 sub load_conf {
-	my ( $configfilename, %config ) = shift;
+	my $configfilename = shift;
+	my $utf = shift || 0;
+	my %config;
 	my $error_msg = $Kephra::localisation{dialog}{error};
 	$Kephra::app{config}{parser}{conf} = Config::General->new(
 		-AutoTrue              => 1,
@@ -98,6 +100,7 @@ sub load_conf {
 		-ConfigFile            => $configfilename,
 		-SplitPolicy           => 'equalsign',
 		-SaveSorted            => 1,
+		-UTF8                  => $utf,
 	);
 	if ( -e $configfilename ) {
 		eval { %config = $Kephra::app{config}{parser}{conf}->getall };
