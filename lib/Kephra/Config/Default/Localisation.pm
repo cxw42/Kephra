@@ -976,7 +976,7 @@ sub get {
 				file_changed => 'File Changed',
 				file_changed_msg => 'The following file has changed :',
 				file_deleted => 'File Deleted',
-				file_deleted_msg = 'The following file can not be found anymore :',
+				file_deleted_msg => 'The following file can not be found anymore :',
 			},
 			general => {
 				apply => 'Apply',

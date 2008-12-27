@@ -4,7 +4,6 @@ our $VERSION = '0.04';
 use strict;
 use warnings;
 
-
 use Wx qw(
 	wxSTC_STYLE_LINENUMBER
 	wxSTC_MARGIN_SYMBOL wxSTC_MARGIN_NUMBER
@@ -14,10 +13,11 @@ use Wx qw(
 #wxSTC_MARKNUM_FOLDEREND wxSTC_MARK_SHORTARROW
 #wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED
 
-sub _ep_ref        {  Kephra::App::EditPanel::_ref() }
-sub _config        { $Kephra::config{editpanel}{margin} }
-sub _line_config   { _config()->{linenumber} }
-sub _marker_config { _config()->{marker} }
+sub _ep_ref        {  Kephra::App::EditPanel::_ref()   }
+sub _config        { $Kephra::config{editpanel}{margin}}
+sub _line_config   { _config()->{linenumber}}
+sub _fold_config   { _config()->{fold}      }
+sub _marker_config { _config()->{marker}    }
 
 sub apply_settings{
 	my $ep = _ep_ref();
@@ -39,7 +39,6 @@ sub apply_settings{
 	show_fold();
 	apply_text_width();
 }
-
 
 # line number margin
 sub line_number_visible{ _line_config->{visible} }
@@ -126,13 +125,13 @@ sub switch_marker {
 
 
 # fold margin
-sub fold_visible{ _config->{fold} }
+sub fold_visible{ _fold_config->{visible} }
 sub show_fold {
 	my $width = fold_visible() ? 16 : 0;
 	_ep_ref->SetMarginWidth( 2, $width );
 }
 sub switch_fold {
-	_config->{fold} ^= 1;
+	_fold_config->{visible} ^= 1;
 	show_fold();
 }
 
@@ -146,7 +145,6 @@ sub apply_text_width {
 	my $width = get_text_width();
 	_ep_ref()->SetMargins( $width, $width );
 }
-
 
 
 1;

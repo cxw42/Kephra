@@ -67,7 +67,7 @@ sub create_dynamic {
 			my @menu_data;
 			if (exists $tmp->{template}){
 				$tmp = Kephra::Config::Tree::_convert_node_2_AoH(\$tmp->{template});
-				my $untitled = $Kephra::localisation{app}{general}{untitled};
+				my $untitled = Kephra::Config::Localisation::strings()->{app}{general}{untitled};
 				for my $template ( @{$tmp} ) {
 					my %item;
 					$item{type} = 'item';
@@ -128,7 +128,7 @@ sub create_dynamic {
 			return unless exists $Kephra::temp{document}{buffer};
 			my $filenames = Kephra::Document::all_file_names();
 			my $pathes = Kephra::Document::all_file_pathes();
-			my $untitled = $Kephra::localisation{app}{general}{untitled};
+			my $untitled = Kephra::Config::Localisation::strings()->{app}{general}{untitled};
 			my $space = ' ';
 			my @menu_data;
 			for my $nr (0 .. @$filenames-1){
@@ -167,7 +167,7 @@ sub assemble_data_from_def {
 	my $menu_def = shift;
 	return unless ref $menu_def eq 'ARRAY';
 
-	my $menu_label = $Kephra::localisation{app}{menu};
+	my $menu_label = Kephra::Config::Localisation::strings()->{app}{menu};
 	my ($cmd_name, $cmd_data, $type_name, $pos, $sub_id);
 	my @mds = (); # menu data structure
 	for my $item_def (@$menu_def){
@@ -209,14 +209,15 @@ sub assemble_data_from_def {
 			$cmd_name = substr $item_def, $pos+1;
 			if ($item{type} eq 'menu'){
 				$item{id} = $cmd_name;
-				$item{label}= $Kephra::localisation{app}{menu}{$cmd_name};
+				$item{label}= $menu_label->{$cmd_name};
 			} else {
 				$cmd_data = Kephra::API::CommandList::get_cmd_properties( $cmd_name );
 				# skipping when command call is missing
 				next unless ref $cmd_data and exists $cmd_data->{call};
 				for ('call','enable','state','label','help','icon'){
-					$item{$_} = $cmd_data->{$_} if $cmd_data->{$_}
+					$item{$_} = $cmd_data->{$_} if $cmd_data->{$_};
 				}
+				$item{label} .= "\t  '" . $cmd_data->{key} . "'" if $cmd_data->{key};
 			}
 		}
 		push @mds, \%item;

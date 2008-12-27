@@ -23,7 +23,7 @@ sub _create_empty {
 			-1, [-1,-1], [-1,-1], wxTB_HORIZONTAL|wxTB_DOCKABLE );
 }
 
-sub create_new{
+sub create_new {
 	my $bar_id  = shift;
 	my $bar_def = shift;
 	my $bar = _ref($bar_id);
@@ -113,9 +113,9 @@ sub eval_data {
 				$tool->Enable( $item_data->{enable}() );
 				for my $event (split /,/, $item_data->{enable_event}){
 					Kephra::API::EventTable::add_call ( 
-						$event, 'tool_enable_'.$item_id, sub{
+						$event, $bar_id.'_tool_enable_'.$item_id, sub{
 							$bar->EnableTool( $item_id, $item_data->{enable}() )
-					} );
+					}, $bar_id);
 				}
 			}
 			if (ref $item_data->{state} eq 'CODE'
@@ -123,9 +123,9 @@ sub eval_data {
 				$bar->ToggleTool( $item_id, $item_data->{state}() );
 				for my $event (split /,/, $item_data->{state_event}){
 					Kephra::API::EventTable::add_call (
-						$event, 'tool_state_'.$item_id, sub{
+						$event, , $bar_id.'_tool_state_'.$item_id, sub{
 							$bar->ToggleTool( $item_id, $item_data->{state}() )
-					} );
+					}, $bar_id );
 				}
 			}
 		} else {
@@ -141,9 +141,11 @@ sub eval_data {
 }
 
 sub destroy {
-	my $bar = _ref( shift );
+	my $barID = shift;
+	my $bar = _ref( $barID );
 	return unless $bar;
 	$bar->Destroy;
+	Kephra::API::EventTable::del_own_calls( $barID );
 }
 
 1;

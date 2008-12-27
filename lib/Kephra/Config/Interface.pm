@@ -6,43 +6,62 @@ use warnings;
  
 # handling config files under config/interface
 
-sub _sub_dir   { $Kephra::config{app}{app_data_sub_dir} }
-sub _cache_sub_dir { 
-	File::Spec->catdir( _sub_dir(), $Kephra::config{app}{cache}{sub_dir} )
-}
+sub _config        { $Kephra::config{app} }
+sub _sub_dir       { _config()->{app_data_sub_dir} }
+sub _cache_sub_dir { File::Spec->catdir(_sub_dir(), _config()->{cache}{sub_dir}) }
 
 sub load {
-	#my $gui_store = $Kephra::temp{configfile};
-	#my $gui_ref   = $Kephra::temp{config};
-	#my $conf_path = $Kephra::temp{path}{config};
-	Kephra::API::CommandList::clear_list();
-
-	# localisation
-	my $l = Kephra::Config::Localisation::load();
-	$l = Kephra::Config::Default::localisation() unless $l and %$l;
-	%Kephra::localisation = %$l;
-
-	# commandlist
-		# try du load from cache first
-		# Kephra::CommandList::load_cache() if $conf->{commandlist}{cache}{use};
-	my $cmd_list_def = Kephra::Config::File::load_from_node_data
-		( Kephra::API::CommandList::_config() );
-	unless ($cmd_list_def) {
-		$cmd_list_def = Kephra::Config::Default::commandlist();
+	Kephra::API::CommandList::clear();
+	my $use_cache = _config()->{cache}{use}; # config allow to use the cache
+	my $load_cache = 0;                      # cache is successful loaded
+	my %file;
+	if ($use_cache) {
+		my $read = \&YAML::Tiny::LoadFile;
+		my $path = \&Kephra::Config::filepath;
+		my $get_age = \&Kephra::File::IO::get_age;
+		my $cache_dir = _cache_sub_dir();
+		$file{index}     = &$path( $cache_dir, 'index_cmd.yml');
+		$file{cmd_cache} = &$path( $cache_dir, 'cmd_main.yml' );
+		$file{l18n_cache}= &$path( $cache_dir, 'l18n_main.yml');
+		$file{cmd}       = Kephra::API::CommandList::file;
+		$file{l18n}      = Kephra::Config::Localisation::file;
+		my %old_index = %{ &$read($file{index}) } if -e $file{index};
+		my %new_index = (
+			'l18n' => {'file' => $file{cmd}, 'age' => &$get_age($file{cmd})},
+			'cmd' => {'file' => $file{l18n}, 'age' => &$get_age($file{l18n})},
+		);
+		if (-e $file{cmd} and -e $file{l18n}) {
+			YAML::Tiny::DumpFile( $file{index}, \%new_index );
+			if (scalar keys %new_index == scalar keys %old_index) {
+				for (keys %new_index) {
+					$load_cache = $new_index{$_}{file} eq $old_index{$_}{file} and
+					              $new_index{$_}{age} == $old_index{$_}{age}
+					              ? 1 : 0;
+				}
+			}
+			$load_cache = 0 unless -e $file{cmd_cache} and -e $file{l18n_cache};
+			if ($load_cache) {
+				Kephra::API::CommandList::data( &$read( $file{cmd_cache} ) );
+				Kephra::Config::Localisation::strings( &$read($file{l18n_cache}) );
+			}
+		} else {
+			unlink $file{index} if -e $file{index};
+		}
 	}
-	Kephra::API::CommandList::assemble_data($cmd_list_def);
+	unless ($load_cache) {
+		Kephra::Config::Localisation::load();
+		Kephra::API::CommandList::load();
+		del_temp_data();
+		if ($use_cache) {
+			my $write = \&YAML::Tiny::DumpFile;
+			&$write( $file{cmd_cache}, Kephra::API::CommandList::data() );
+			&$write( $file{l18n_cache}, Kephra::Config::Localisation::strings() );
+		}
+	}
 	Kephra::API::CommandList::eval_data();
-	undef $cmd_list_def;
+	Kephra::Config::Localisation::create_menus();
 }
 
-sub del_temp_data {
-	delete $Kephra::localisation{commandlist};
-	delete $Kephra::localisation{key};
-
-}
-
-sub load_cache {}
-sub store_cache {}
-
+sub del_temp_data { Kephra::API::CommandList::del_temp_data() }
 
 1;

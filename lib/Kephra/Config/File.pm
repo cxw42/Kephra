@@ -88,7 +88,7 @@ sub load_conf {
 	my $configfilename = shift;
 	my $utf = shift || 0;
 	my %config;
-	my $error_msg = $Kephra::localisation{dialog}{error};
+	my $error_msg = Kephra::Config::Localisation::strings()->{dialog}{error};
 	$Kephra::app{config}{parser}{conf} = Config::General->new(
 		-AutoTrue              => 1,
 		-UseApacheInclude      => 1,

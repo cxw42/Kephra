@@ -1,5 +1,5 @@
 package Kephra::Config::Default::GlobalSettings;
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use strict;
 use warnings;
@@ -11,12 +11,12 @@ sub get {
 			version => $Kephra::VERSION,
 		},
 		app => {
-			app_data_sub_dir = 'interface',
+			app_data_sub_dir => 'interface',
 			cache => {
-				file => 'commands.conf',
-				sub_dir = 'cache',
+				file => 'commands.yaml',
+				sub_dir => 'cache',
 				use => 1,
-			}
+			},
 			commandlist => {
 				file => 'interface/commands.conf',
 				node => 'commandlist',
@@ -184,7 +184,7 @@ sub get {
 					width  => 2
 				},
 				caret_line => {
-					color   => 'f2f2df',
+					color   => 'f5f5a5',
 					visible => 1,
 				},
 				end_of_line_marker => 0,
@@ -208,7 +208,11 @@ sub get {
 			},
 			line_wrap => 0,
 			margin => {
-				fold => 0,
+				fold => {
+					back_color => 'dddddd',
+					fore_color => '111144',
+					visible => 1,
+				},
 				linenumber => {
 					autosize   => 1,
 					back_color => 'dddddd',

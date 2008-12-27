@@ -11,14 +11,15 @@ use warnings;
 ############################################################################
 
 sub _config { $Kephra::config{file}{session} }
+sub _dialog_l18n { Kephra::Config::Localisation::strings()->{dialog} }
 
 # extern
 sub open_file {
 	my $file_name = Kephra::Dialog::get_file_open(
-		Kephra::App::Window::_ref(),
-		$Kephra::localisation{dialog}{file}{open_session},
-		Kephra::Config::filepath( _config->{directory} ),
-		$Kephra::temp{file}{filterstring}{config}
+			Kephra::App::Window::_ref(),
+			_dialog_l18n->{file}{open_session},
+			Kephra::Config::filepath( _config->{directory}
+		), $Kephra::temp{file}{filterstring}{config}
 	);
 	load($file_name);
 }
@@ -53,8 +54,8 @@ sub load {
 			Kephra::Document::Change::to_number($start_nr);
 			Kephra::Document::Internal::set_previous_nr($start_nr);
 		} else {
-			Kephra::Dialog::warning_box(undef, $file_name,
-			    $Kephra::localisation{dialog}{error}{config_parse});
+			Kephra::Dialog::warning_box
+				(undef, $file_name, _dialog_l18n->{error}{config_parse});
 		}
 	}
 }
@@ -62,7 +63,7 @@ sub load {
 sub add {
 	my $file_name = Kephra::Dialog::get_file_open(
 		Kephra::App::Window::_ref(),
-		$Kephra::localisation{dialog}{file}{add_session},
+		_dialog_l18n->{file}{add_session},
 		Kephra::Config::filepath( _config->{directory} ),
 		$Kephra::temp{file}{filterstring}{config}
 	);
@@ -87,8 +88,8 @@ sub add {
 			Kephra::Document::Internal::eval_properties($current_doc_nr);
 			_remember_directory($file_name);
 		} else {
-			Kephra::Dialog::warning_box(undef, $file_name,
-			    $Kephra::localisation{dialog}{error}{config_parse});
+			Kephra::Dialog::warning_box
+				(undef, $file_name, _dialog_l18n->{error}{config_parse});
 		}
 	}
 }
@@ -111,7 +112,7 @@ sub save {
 
 sub save_as {
 	my $file_name = Kephra::Dialog::get_file_save( Kephra::App::Window::_ref(),
-		$Kephra::localisation{dialog}{file}{save_session},
+		_dialog_l18n->{file}{save_session},
 		Kephra::Config::filepath( _config->{directory} ),
 		$Kephra::temp{file}{filterstring}{config}
 	);
@@ -210,8 +211,9 @@ sub delete {
 
 sub import_scite {
 	my $win = Kephra::App::Window::_ref();
+	my $err_msg = _dialog_l18n->{error};
 	my $file_name = Kephra::Dialog::get_file_open( $win,
-		$Kephra::localisation{dialog}{file}{open_session},
+		_dialog_l18n->{file}{open_session},
 		$Kephra::temp{path}{config},
 		$Kephra::temp{file}{filterstring}{scite}
 	);
@@ -236,11 +238,10 @@ sub import_scite {
 				Kephra::Document::Change::to_number($start_file_nr);
 				$Kephra::document{previous_nr} = $start_file_nr;
 			} else {
-				Kephra::Dialog::warning_box( $win, $file_name,
-					$Kephra::localisation{dialog}{error}{config_parse} );
+				Kephra::Dialog::warning_box
+					($win, $file_name, $err_msg->{config_parse});
 			}
 		} else {
-			my $err_msg = $Kephra::localisation{dialog}{error};
 			Kephra::Dialog::warning_box 
 				($win, $err_msg->{file_read}." $file_name", $err_msg->{file});
 		}
@@ -250,7 +251,7 @@ sub import_scite {
 sub export_scite {
 	my $win = Kephra::App::Window::_ref();
 	my $file_name = Kephra::Dialog::get_file_save( $win,
-		$Kephra::localisation{dialog}{file}{save_session},
+		_dialog_l18n->{file}{save_session},
 		$Kephra::temp{path}{config},
 		$Kephra::temp{file}{filterstring}{scite}
 	);
@@ -267,7 +268,7 @@ sub export_scite {
 			}
 			print $FILE $output;
 		} else {
-			my $err_msg = $Kephra::localisation{dialog}{error};
+			my $err_msg = _dialog_l18n->{error};
 			Kephra::Dialog::warning_box
 				($win, $err_msg->{file_write}." $file_name", $err_msg->{file} );
 		}

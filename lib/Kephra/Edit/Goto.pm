@@ -33,7 +33,7 @@ sub position {
 
 sub line_nr {
 	my $ep = _get_panel();
-	my $l18n = $Kephra::localisation{dialog}{edit};
+	my $l18n = Kephra::Config::Localisation::strings()->{dialog}{edit};
 	my $line = Kephra::Dialog::get_number( 
 		Kephra::App::Window::_ref(),
 		$l18n->{goto_line_input}, $l18n->{goto_line_headline},

@@ -56,7 +56,7 @@ sub set_title {
 sub refresh_title {
 	my $appname = $Kephra::NAME;
 	my $version = $Kephra::VERSION;
-	my $untitled = $Kephra::localisation{app}{general}{untitled};
+	my $untitled = Kephra::Config::Localisation::strings()->{app}{general}{untitled};
 	my $filepath = Kephra::Document::get_file_path() || "<$untitled>";
 	my $filename = Kephra::Document::file_name() || "<$untitled>";
 	my $docnr = Kephra::Document::current_nr() + 1;

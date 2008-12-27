@@ -2,7 +2,7 @@ package Kephra::App::TabBar;    # notebook file selector
 use strict;
 use warnings;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 =pod
 Tabbar is the visual element in top area of the main window which displays
@@ -53,7 +53,7 @@ sub create {
 	if (ref $cmd_new_data->{icon} eq 'Wx::Bitmap'){
 		my $new_btn = $tabbar->{button}{new} = Wx::BitmapButton->new
 			($tb_panel, -1, $cmd_new_data->{icon}, [-1,-1], [-1,-1], wxNO_BORDER );
-		$new_btn->SetToolTip( (split /\t/, $cmd_new_data->{label})[0] );
+		$new_btn->SetToolTip( $cmd_new_data->{label} );
 		$new_btn->SetBackgroundColour( $bg_colour );
 		$tabbar_h_sizer->Prepend($new_btn, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 2);
 		EVT_BUTTON($tb_panel, $new_btn, $cmd_new_data->{call} );
@@ -67,7 +67,7 @@ sub create {
 	if (ref $cmd_close_data->{icon} eq 'Wx::Bitmap'){
 		my $close_btn = $tabbar->{button}{close} = Wx::BitmapButton->new
 			($tb_panel, -1, $cmd_close_data->{icon}, [-1,-1], [-1,-1], wxNO_BORDER );
-		$close_btn->SetToolTip( (split /\t/, $cmd_close_data->{label})[0] );
+		$close_btn->SetToolTip( $cmd_close_data->{label} );
 		$close_btn->SetBackgroundColour( $bg_colour );
 		$tabbar_h_sizer->Add($close_btn, 0, wxRIGHT|wxALIGN_CENTER_VERTICAL, 2);
 		EVT_BUTTON($tb_panel, $close_btn, $cmd_close_data->{call});
@@ -166,8 +166,8 @@ sub refresh_label {
 
 	my $config   = _config();
 	my $doc_info = $Kephra::temp{document}{open}[$doc_nr];
-	my $label    = $doc_info->{ $config->{file_info} } ||
-		"<$Kephra::localisation{app}{general}{untitled}>";
+	my $untitled = Kephra::Config::Localisation::strings()->{app}{general}{untitled};
+	my $label    = $doc_info->{ $config->{file_info} } || "<$untitled>";
 
 	# shorten too long filenames
 	my $max_width = $config->{max_tab_width};

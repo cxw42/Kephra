@@ -648,7 +648,7 @@ sub replace_confirm {
 
 	sub sniff_selection {
 		my ( $ep, $sel_begin, $sel_end, $len, $line ) = @_;
-		my $l10n = $Kephra::localisation{dialog}{search}{confirm};
+		my $l10n = Kephra::Config::Localisation::strings()->{dialog}{search}{confirm};
 		my $answer;
 		Kephra::Edit::Goto::pos($sel_begin);
 		$ep->BeginUndoAction();

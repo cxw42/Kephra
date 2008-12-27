@@ -9,7 +9,7 @@ use warnings;
 sub open_pipe {
 	my $file_name  = shift;
 	my $edit_panel = Kephra::App::EditPanel::_ref();
-	my $err_txt    = $Kephra::localisation{dialog}{error};
+	my $err_txt    = Kephra::Config::Localisation::strings->{dialog}{error};
 	my $input;
 	unless ($file_name) {
 		Kephra::Dialog::warning_box( undef,
@@ -35,7 +35,7 @@ sub open_pipe {
 # reading file into buffer variable
 sub open_buffer {
 	my ($file_name) = (@_);
-	my $err_txt = $Kephra::localisation{dialog}{error};
+	my $err_txt = Kephra::Config::Localisation::strings->{dialog}{error};
 	my ( $buffer, $input );
 	unless ($file_name) {
 		Kephra::Dialog::warning_box( undef,
@@ -59,7 +59,7 @@ sub open_buffer {
 # wite into file from buffer variable
 sub write_buffer {
 	my ( $file_name, $text ) = @_;
-	my $err_txt = $Kephra::localisation{dialog}{error};
+	my $err_txt = Kephra::Config::Localisation::strings->{dialog}{error};
 	# check if there is a name or if file that you overwrite is locked
 	if ( not $file_name or (-e $file_name and not -w $file_name) ) {
 		Kephra::Dialog::warning_box( undef,

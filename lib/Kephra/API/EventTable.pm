@@ -2,7 +2,7 @@ package Kephra::API::EventTable;
 use strict;
 use warnings;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 =head1 NAME
 
@@ -11,14 +11,31 @@ Kephra::API::EventTable - API to internal events
 =head1 DESCRIPTION
 
 Every routine can subscribe a callback to any event that will than triggered
-when that event takes place. Also extentions could do that. Events can also
-be triggered to simulate events. Some function freeze events to speed up 
-certain repeating actions (don't forget to thaw after that). Callbacks can
-also sanely removed if no longer needed.
+when that event takes place. Also extentions (plugins) can do that. 
+Event ID can also be triggered to simulate application events. 
+Some function do freeze events to speed up certain repeating actions 
+(don't forget to thaw after that). Callbacks can also sanely removed,
+if no longer needed.
 
 Names of Events contain dots as separator of of namespaces.
 
 =head1 SPECIFICATION
+
+=head2 add_call
+
+=item * EvenID
+
+=item * CallbackID
+
+for removing that callback. Must be unique in for this event.
+
+=item * Callback
+
+a Coderef.
+
+=item * Owner
+
+for removing all callbacks of that owner.
 
 =head1 List of all Events
 
@@ -27,7 +44,7 @@ Names of Events contain dots as separator of of namespaces.
 =item * menu.open
 
 =item * editpanel.focus
-
+   
 =item * document.text.select
 
 =item * document.text.change
@@ -58,7 +75,7 @@ use Wx::Event qw(
 # EVT_STC_CHARADDED EVT_STC_MODIFIED
 
 # get pointer to the event list
-sub _ref { $Kephra::app{eventtable} }
+sub _data { $Kephra::app{eventtable} }
 my  $timer;
 
 sub init { $Kephra::app{eventtable}{active}{init} = 1 }
@@ -192,18 +209,20 @@ sub init_key_events {
 
 sub add_call {
 	return until ref $_[2] eq 'CODE';
-	my $list = _ref();
+	my $list = _data();
 	$list->{active}{ $_[0] }{ $_[1] } = $_[2];
+	$list->{owner}{ $_[3] }{ $_[0] }{ $_[1] } = 1 if $_[3];
 }
 
 sub add_frozen_call {
 	return until ref $_[2] eq 'CODE';
-	my $list = _ref();
+	my $list = _data();
 	$list->{frozen}{ $_[0] }{ $_[1] } = $_[2];
+	$list->{owner}{ $_[3] }{ $_[0] }{ $_[1] } = 1 if $_[3];
 }
 
 sub trigger {
-	my $active = _ref()->{active};
+	my $active = _data()->{active};
 	for my $event (@_){
 		if (ref $active->{$event} eq 'HASH'){
 			$_->() for values %{ $active->{$event} }
@@ -212,7 +231,7 @@ sub trigger {
 }
 
 sub freeze {
-	my $list = _ref();
+	my $list = _data();
 	for my $event (@_){
 		if (ref $list->{active}{$event} eq 'HASH'){
 			$list->{frozen}{$event} = $list->{active}{$event};
@@ -220,9 +239,8 @@ sub freeze {
 		}
 	}
 }
-
 sub freeze_all {
-	my $list = _ref();
+	my $list = _data();
 	my $active = $list->{active};
 	for my $event (keys %$active) {
 		if (ref $active->{$event} eq 'HASH'){
@@ -232,8 +250,9 @@ sub freeze_all {
 	}
 }
 
+
 sub thaw {
-	my $list = _ref();
+	my $list = _data();
 	for my $event (@_){
 		if (ref $list->{frozen}{$event} eq 'HASH'){
 			$list->{active}{$event} = $list->{frozen}{$event};
@@ -241,10 +260,9 @@ sub thaw {
 		}
 	}
 }
-
 sub thaw_all {
-	my $list = _ref();
-	my $frozen = _ref()->{frozen};
+	my $list = _data();
+	my $frozen = _data()->{frozen};
 	for my $event (keys %$frozen ){
 		if (ref $frozen->{$event} eq 'HASH'){
 			$list->{active}{$event} = $frozen->{$event};
@@ -253,25 +271,50 @@ sub thaw_all {
 	}
 }
 
-sub del_call{
+sub del_call {
 	return until $_[1];
-	my $list = _ref()->{active};
+	my $list = _data()->{active};
+	delete $list->{ $_[0] }{ $_[1] } if exists $list->{ $_[0] }{ $_[1] };
+	$list = _data()->{frozen};
 	delete $list->{ $_[0] }{ $_[1] } if exists $list->{ $_[0] }{ $_[1] };
 }
-
-sub delete_active{
-	my $list = _ref()->{active};
+sub del_call_subscriber {
+	my $subID = shift;
+	my $list = _data()->{active};
+	for my $event (keys %$list){
+		delete $list->{$event}->{$subID} if exists $list->{$event}->{$subID};
+	}
+	$list = _data()->{frozen};
+	for my $event (keys %$list){
+		delete $list->{$event}->{$subID} if exists $list->{$event}->{$subID};
+	}
+}
+sub del_own_calls {
+	my $owner = shift;
+	my $list = _data();
+	return unless ref $list->{owner}{ $owner } eq 'HASH';
+	my $lista = $list->{active};
+	my $listf = $list->{frozen};
+	my $own_ev = $list->{owner}{ $owner };
+	for my $ev (keys %$own_ev) {
+		for (keys %{$own_ev->{$ev}}) {
+			delete $lista->{ $ev  }{ $_ } if exists $lista->{ $ev  }{ $_ };
+			delete $listf->{ $ev  }{ $_ } if exists $listf->{ $ev  }{ $_ };
+		}
+	}
+	delete $list->{owner}{ $owner };
+}
+sub delete_all_active {
+	my $list = _data()->{active};
 	delete $list->{ $_ } for keys %$list;
 }
-
-sub delete_frozen{
-	my $frozen = _ref()->{frozen};
+sub delete_all_frozen {
+	my $frozen = _data()->{frozen};
 	delete $frozen->{ $_ } for keys %$frozen;
 }
-
 sub delete_all {
-	delete_active();
-	delete_frozen();
+	delete_all_active();
+	delete_all_frozen();
 }
 
 1;

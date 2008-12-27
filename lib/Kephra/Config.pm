@@ -158,27 +158,25 @@ sub build_fileendings2syntaxstyle_map {
 }
 
 sub build_fileendings_filterstring {
-	my $files = $Kephra::localisation{dialog}{file}{files};
-	my $all   = "$Kephra::localisation{dialog}{general}{all} $files (*.*)|*.*";
-	$Kephra::temp{file}{filterstring}{all} = $all;
-	foreach ( keys %{ $Kephra::config{file}{group} } ) {
+	my $l18n  = Kephra::Config::Localisation::strings()->{dialog};
+	my $files = $l18n->{file}{files};
+	my $all   = $l18n->{general}{all} . " $files (*.*)|*.*";
+	my $tfile = $Kephra::temp{file};
+	$tfile->{filterstring}{all} = $all;
+	my $conf = $Kephra::config{file};
+	foreach ( keys %{$conf->{group}} ) {
 		my ( $filter_id, $file_filter ) = ( $_, '' );
 		my $filter_name = ucfirst($filter_id);
-		my @language_ids
-			= split( /\s+/, $Kephra::config{file}{group}{$filter_id} );
+		my @language_ids = split( /\s+/, $conf->{group}{$filter_id} );
 		foreach ( @language_ids ) {
-			my @fileendings
-				= split( /\s+/, $Kephra::config{file}{endings}{$_} );
+			my @fileendings = split( /\s+/, $conf->{endings}{$_} );
 			foreach (@fileendings) { $file_filter .= "*.$_;"; }
 		}
 		chop($file_filter);
-		$Kephra::temp{file}{filterstring}{all}
-			.= "|$filter_name $files ($file_filter)|$file_filter";
+		$tfile->{filterstring}{all} .= "|$filter_name $files ($file_filter)|$file_filter";
 	}
-	$Kephra::temp{file}{filterstring}{config}
-		= "Config $files (*.conf;*.yaml)|*.conf;*.yaml|$all";
-	$Kephra::temp{file}{filterstring}{scite}
-		= "Scite $files (*.ses)|*.ses|$all";
+	$tfile->{filterstring}{config} = "Config $files (*.conf;*.yaml)|*.conf;*.yaml|$all";
+	$tfile->{filterstring}{scite}  = "Scite $files (*.ses)|*.ses|$all";
 }
 
 sub _map2hash {

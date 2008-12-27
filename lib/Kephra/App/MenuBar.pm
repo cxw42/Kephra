@@ -16,6 +16,7 @@ sub create {
 		$menubar_def = Kephra::Config::Default::mainmenu();
 	}
 	my $menubar    = Wx::MenuBar->new();
+	my $m18n = Kephra::Config::Localisation::strings()->{app}{menu};
 	my ($pos, $menu_name);
 	for my $menu_def ( @$menubar_def ){
 		for my $menu_id (keys %$menu_def){
@@ -31,7 +32,7 @@ sub create {
 			}
 			$menubar->Append(
 				Kephra::App::Menu::create_static( $menu_name, $menu_def->{$menu_id}),
-				$Kephra::localisation{app}{menu}{$menu_name}
+				$m18n->{$menu_name}
 			);
 		}
 	}

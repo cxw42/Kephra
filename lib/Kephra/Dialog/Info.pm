@@ -19,7 +19,7 @@ sub combined {
 		wxSYSTEM_MENU | wxCAPTION | wxMINIMIZE_BOX | wxCLOSE_BOX,
 	);
 	Kephra::App::Window::load_icon( $info_win,
-		$Kephra::config{'app'}{'window'}{'icon'} );
+		$Kephra::config{app}{window}{icon} );
 	$info_win->SetBackgroundColour( Wx::Colour->new( 0xed, 0xeb, 0xdb ) );
 # Wx::HyperlinkCtrl->new($win,-1,label,url,pos,size,wxHL_CONTEXTMENU)
 	$info_win->Centre(wxBOTH);
@@ -27,7 +27,7 @@ sub combined {
 }
 
 sub simple {
-	my $info = $Kephra::localisation{'dialog'}{'info'};
+	my $info = Kephra::Config::Localisation::strings()->{dialog}{info};
 	my $sciv = 'Scintilla ';
 	my $v = substr(wxVERSION_STRING ,-5);
 	if    ($v eq '2.4.2'){$sciv .= '1.54'}
@@ -35,7 +35,7 @@ sub simple {
 	elsif ($v eq '2.6.3'){$sciv .= '1.62'}
 	elsif ($v eq '2.8.4'){$sciv .= '1.70'}
 	elsif ($v eq '2.8.7'){$sciv .= '1.70'}
-	my $content = "Kephra, Nether of software creation\n"
+	my $content = "Kephra, Neter of software creation\n"
 		. "$info->{mady_by}  Herbert Breunung\n\n"
 		. "$info->{licensed} GPL (GNU Public License) \n"
 		. " ( $info->{detail} \n   $info->{more} ) \n"

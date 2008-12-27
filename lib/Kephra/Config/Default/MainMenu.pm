@@ -349,12 +349,6 @@ sub get {
 		{'menu view' => [
 			'checkitem view-window-stay-on-top',
 			'',
-			{'menu view_bars' => [
-				'checkitem view-toolbar-main',
-				'checkitem view-tabbar',
-				'checkitem view-toolbar-search',
-				'checkitem view-statusbar',
-			],},
 			{'menu view_contextmenu' => [
 				'checkitem view-tabbar-contexmenu',
 				{'menu view_editpanel_contexmenu' => [
@@ -364,10 +358,16 @@ sub get {
 				],},
 				'checkitem view-statusbar-contexmenu',
 			],},
+			{'menu view_bars' => [
+				'checkitem view-toolbar-main',
+				'checkitem view-tabbar',
+				'checkitem view-toolbar-search',
+				'checkitem view-statusbar',
+			],},            
 			'',
 			'checkitem view-editpanel-margin-marker',
 			'checkitem view-editpanel-margin-line-number',
-			#'checkitem view-editpanel-margin-text-fold',
+			'checkitem view-editpanel-margin-text-fold',
 			{'menu view_textmargin' => [
 				'radioitem view-editpanel-margin-text-0',
 				'radioitem view-editpanel-margin-text-1',

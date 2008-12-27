@@ -1,5 +1,6 @@
 bin/kephra
 Changes
+dev.pl
 doc/current-fixes.txt
 doc/draft.txt
 doc/interna/manifest.txt
@@ -84,6 +85,7 @@ MANIFEST			This list of files
 META.yml
 README
 share/config/extension/installed.conf
+share/config/extension/notepad/content.txt
 share/config/global/sub/documentation/cesky.conf
 share/config/global/sub/documentation/deutsch.conf
 share/config/global/sub/documentation/english.conf

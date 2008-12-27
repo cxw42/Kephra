@@ -63,10 +63,9 @@ sub drop_xp_style_file{
 	 </dependency>
  </assembly>
 EOD
-
-	open my $FILE, '>', $file or Kephra::Dialog::warning_box(undef,
-			$Kephra::localisation{dialogs}{error}{file_write}." $file",
-			$Kephra::localisation{dialogs}{error}{file});
+	my $l18n = Kephra::Config::Localisation::strings()->{dialogs}{error};
+	open my $FILE, '>', $file or Kephra::Dialog::warning_box
+			(undef, $l18n->{file_write}." $file", $l18n->{file});
 	print $FILE $content;
 }
 

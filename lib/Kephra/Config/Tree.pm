@@ -18,6 +18,10 @@ sub subtree {
 	return $config;
 }
 
+#############################
+# tree operations
+#############################
+
 my %copy = (
 	''     => sub {          $_[0]    },
 	SCALAR => sub {       \${$_[0]}   },
@@ -99,6 +103,12 @@ sub diff {
 		: $copy{ $lref }( $_[0] ) # undef
 	;
 }
+
+#############################
+# single node manipulation
+#############################
+
+
 
 #############################
 # single node manipulation

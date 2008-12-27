@@ -21,13 +21,13 @@ sub file_changed {
 	my $file_nr = shift;#Kephra::Document::current_nr();
 	my $file_path = Kephra::Document::get_attribute('file_path', $file_nr);
 	my $file_name = Kephra::Document::get_tmp_value('name', $file_nr);
-	my $l10n = $Kephra::localisation{dialog};
-	my $g10n = $l10n->{general};
+	my $d10n = Kephra::Config::Localisation::strings()->{dialog};
+	my $g10n = $d10n->{general};
 
 	#$Kephra::app{dialog}{notify}{changed}
 	$dialog = create_raw_dialog(3);
 	$dialog->SetTitle($file_name . ' ' . $g10n->{changed});
-	$dialog->{msg}->SetLabel( $l10n->{file}{file_changed_msg} );
+	$dialog->{msg}->SetLabel( $d10n->{file}{file_changed_msg} );
 	$dialog->{filename}->SetValue($file_path);
 	$dialog->{btn}{1}->SetLabel( $g10n->{reload});
 	$dialog->{btn}{2}->SetLabel( $g10n->{save_reload} );
@@ -52,14 +52,14 @@ sub file_deleted {
 	my $file_nr = shift;#Kephra::Document::current_nr();
 	my $file_path = Kephra::Document::get_attribute('file_path', $file_nr);
 	my $file_name = Kephra::Document::get_tmp_value('name', $file_nr);
-	my $l10n = $Kephra::localisation{dialog};
-	my $g10n = $l10n->{general};
+	my $d10n = Kephra::Localisation::strings()->{dialog};
+	my $g10n = $d10n->{general};
 
 	# $Kephra::app{dialog}{notify}{deleted} 
 	$dialog = create_raw_dialog(4);
-	$dialog->{msg}->SetLabel( $l10n->{file}{file_deleted_msg} );
+	$dialog->{msg}->SetLabel( $d10n->{file}{file_deleted_msg} );
 	$dialog->{btn}{1}->SetLabel( $g10n->{close});
-	$dialog->{btn}{2}->SetLabel( $l10n->{file}{save_as} );
+	$dialog->{btn}{2}->SetLabel( $d10n->{file}{save_as} );
 	$dialog->{btn}{3}->SetLabel( $g10n->{save} );
 	$dialog->{btn}{4}->SetLabel( $g10n->{ignore} );
 	EVT_BUTTON($dialog, $dialog->{btn}{1},  sub {

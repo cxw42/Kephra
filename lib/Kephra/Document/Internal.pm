@@ -25,6 +25,8 @@ sub current_nr {
 		$Kephra::temp{current_doc}    = temp_data()->[$nr];
 	} else { $Kephra::document{current_nr} }
 }
+sub get_previous_nr { previous_nr() }
+sub set_previous_nr { previous_nr(@_) if @_ }
 sub get_current_nr { current_nr() }
 sub set_current_nr { current_nr(@_) if @_ }
 sub all_nr         { [ 0 .. last_nr() ]   }

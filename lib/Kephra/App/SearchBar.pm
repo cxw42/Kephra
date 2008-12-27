@@ -19,9 +19,9 @@ use Wx::Event qw(
 );
 
 
-sub _ref{ Kephra::App::ToolBar::_ref('search', $_[0]) }
+sub _ref    { Kephra::App::ToolBar::_ref('search', $_[0]) }
 sub _config { $Kephra::config{app}{toolbar}{search} }
-
+sub _ID     { 'search_bar' }
 
 sub create {
 	# load searchbar definition
@@ -156,26 +156,24 @@ sub destroy{ Kephra::App::ToolBar::destroy ('search') }
 
 sub connect_find_input {
 	my $find_input = shift;
-	Kephra::API::EventTable::add_call( 'find.item.changed', 'search_bar', sub {
+	my $ID = _ID();
+	my $add_call = \&Kephra::API::EventTable::add_call;
+	&$add_call( 'find.item.changed', $ID.'_input_refresh', sub {
 			my $value = Kephra::Edit::Search::get_find_item();
 			return if $value eq $find_input->GetValue;
 			$find_input->SetValue( $value );
 			my $pos = $find_input->GetLastPosition;
 			$find_input->SetSelection($pos,$pos);
-	});
-	Kephra::API::EventTable::add_call( 'find.item.history.changed', 'search_bar', sub {
+	}, $ID);
+	&$add_call( 'find.item.history.changed', $ID.'_popupmenu', sub {
 			$find_input->Clear();
 			$find_input->Append($_) for @{ Kephra::Edit::Search::get_find_history() };
 			$find_input->SetValue(Kephra::Edit::Search::get_find_item());
 			$find_input->SetInsertionPointEnd;
-	});
-	Kephra::API::EventTable::add_call( 'find', 'search_bar', \&colour_find_input);
+	}, $ID);
+	&$add_call( 'find', $ID.'_color_refresh', \&colour_find_input, $ID);
 }
-sub disconnect_find_input{
-	Kephra::API::EventTable::del_call('find','search_bar');
-	Kephra::API::EventTable::del_call('find.item.changed','search_bar');
-	Kephra::API::EventTable::del_call('find.item.history.changed','search_bar');
-}
+sub disconnect_find_input { Kephra::API::EventTable::del_own_calls( _ID() ) }
 
 
 sub colour_find_input {
@@ -215,7 +213,6 @@ sub show {
 	my $sizer = $bar->GetParent->GetSizer;#$Kephra::app{sizer}{main}
 	$sizer->Show( $bar, $visible );
 	$sizer->Layout();
-	#Kephra::App::Window::_ref()->Layout();
 	_config()->{visible} = $visible;
 }
 sub get_visibility    { _config()->{visible} }

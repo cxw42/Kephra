@@ -187,10 +187,12 @@ sub blockformat_LLI{
 	blockformat( $Kephra::config{editpanel}{indicator}{right_margin}{position} );
 }
 
-sub blockformat_custom{
-	my $width = Kephra::Dialog::get_text( Kephra::App::Window::_ref(),
-			$Kephra::localisation{dialog}{edit}{wrap_width_input},
-			$Kephra::localisation{dialog}{edit}{wrap_custom_headline}
+sub blockformat_custom {
+	my $l18n = Kephra::Config::Localisation::strings()->{dialog}{edit};
+	my $width = Kephra::Dialog::get_text(
+		Kephra::App::Window::_ref(),
+		$l18n->{wrap_width_input}, 
+		$l18n->{wrap_custom_headline}
 	);
 	blockformat( $width ) if defined $width;
 }
@@ -217,7 +219,7 @@ sub line_break {
 }
 
 sub linebreak_custom {
-	my $l10n = $Kephra::localisation{dialog}{edit};
+	my $l10n = Kephra::Config::Localisation::strings()->{dialog}{edit};
 	my $width = Kephra::Dialog::get_text( Kephra::App::Window::_ref(),
 			$l10n->{wrap_width_input}, $l10n->{wrap_custom_headline} );
 	line_break( $width ) if defined $width;

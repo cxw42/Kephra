@@ -5,7 +5,7 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.4.0.8';       # version of entire app
+our $VERSION    = '0.4.0.10';       # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $BENCHMARK;                    # flag for benchmark loggings
@@ -94,10 +94,7 @@ use Kephra::Show;                  # -DEP display content: files
 our %app;           # ref to app parts and app data for GUI, Events, Parser
 our %config;        # global settings, saved in /config/global/autosaved.conf
 our %document;      # data of current documents, to be stored in session file
-our %help;          # -NI locations of documentation files in current language
 our %temp;          # global internal temp data
-our %localisation;  # all localisation strings in your currently selected lang
-our %syntaxmode;    # -NI
 
 sub user_config {
 	$_[0] and $_[0] eq $NAME and shift;

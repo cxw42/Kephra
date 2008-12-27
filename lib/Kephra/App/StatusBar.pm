@@ -166,7 +166,8 @@ sub caret_pos_info {
 sub style_info {
 	my $style = shift;
 	$style = Kephra::Document::SyntaxMode::_ID() unless defined $style;
-	$style = $Kephra::localisation{dialog}{general}{none} unless defined $style;
+	$style = Kephra::Config::Localisation::strings()->{dialog}{general}{none}
+		unless defined $style;
 	Kephra::App::Window::_ref()->SetStatusText
 		( ' ' . $style, $Kephra::temp{app}{status}{style}{index} );
 }
@@ -184,7 +185,7 @@ sub EOL_info {
 	my ( $mode, $msg ) = shift;
 	$mode = Kephra::Document::get_attribute('EOL') if !$mode;
 	if ( !$mode or $mode eq 'none' or $mode eq 'no' )  {
-		$msg = $Kephra::localisation{dialog}{general}{none};
+		$msg = Kephra::Config::Localisation::strings()->{dialog}{general}{none};
 	}
 	elsif ( $mode eq 'cr'    or $mode eq 'mac' ) { $msg = " Mac" }
 	elsif ( $mode eq 'lf'    or $mode eq 'lin' ) { $msg = "Linux" }
@@ -229,7 +230,7 @@ sub refresh_file_info {
 sub _get_file_info {
 	my $selector = shift;
 	return '' unless $selector;
-	my $l10 = $Kephra::localisation{app}{status};
+	my $l10 = Kephra::Config::Localisation::strings()->{app}{status};
 
 	# show how big file is
 	if ( $selector == 1 ) {

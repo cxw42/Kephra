@@ -21,6 +21,7 @@ use Wx::Event qw(
 	EVT_CHAR EVT_TEXT_ENTER EVT_ENTER_WINDOW
 );
 
+sub _ID     { 'search_dialog' }
 sub _ref {
 	if (ref $_[0] eq 'Wx::Dialog'){ $Kephra::app{dialog}{search} = $_[0] }
 	else                          { $Kephra::app{dialog}{search} }
@@ -61,8 +62,9 @@ sub ready {
 		my $edit_panel      = Kephra::App::EditPanel::_ref();
 		my $attr            = $Kephra::config{search}{attribute};
 		my $dsettings       = $Kephra::config{dialog}{search};
-		my $label           = $Kephra::localisation{dialog}{search}{label};
-		my $hint            = $Kephra::localisation{dialog}{search}{hint};
+		my $l18n            = Kephra::Config::Localisation::strings();
+		my $label           = $l18n->{dialog}{search}{label};
+		my $hint            = $l18n->{dialog}{search}{hint};
 		my @find_history    = ();
 		my @replace_history = ();
 		my $d_style = wxNO_FULL_REPAINT_ON_RESIZE | wxSYSTEM_MENU | wxCAPTION
@@ -84,7 +86,7 @@ sub ready {
 		# make dialog window and main panel
 		my $d = Wx::Dialog->new( 
 			Kephra::App::Window::_ref(), -1, 
-			$Kephra::localisation{dialog}{search}{title},
+			$l18n->{dialog}{search}{title},
 			[ $dsettings->{position_x}, $dsettings->{position_y} ],
 			[ 436                       , 268                   ], $d_style );
 		my $icon = Wx::Icon->new;
@@ -139,8 +141,7 @@ sub ready {
 		$d->{search_button} = Wx::Button->new($d, -1, $label->{search} );
 		$d->{replace_button}= Wx::Button->new($d, -1, $label->{replace_all} );
 		$d->{confirm_button}= Wx::Button->new($d, -1, $label->{with_confirmation} );
-		$d->{close_button}  = Wx::Button->new($d, -1,
-			$Kephra::localisation{dialog}{general}{close} );
+		$d->{close_button}  = Wx::Button->new($d, -1, $l18n->{dialog}{general}{close} );
 
 		#tooltips / hints
 		if ( $dsettings->{tooltips} ) {
@@ -227,18 +228,21 @@ sub ready {
 		EVT_CLOSE( $d, \&quit_search_dialog );
 
 
-		Kephra::API::EventTable::add_call( 'find', 'search_dialog', \&colour_find_input);
+		my $ID = _ID();
+		my $add_call = \&Kephra::API::EventTable::add_call;
 
-		Kephra::API::EventTable::add_call( 'find.item.changed', 'search_dialog', sub {
+		&$add_call( 'find', $ID.'_color_refresh', \&colour_find_input, $ID);
+
+		&$add_call( 'find.item.changed', $ID, sub {
 			$d->{find_input}->SetValue(Kephra::Edit::Search::get_find_item());
 			$d->{find_input}->SetInsertionPointEnd;
-		});
-		Kephra::API::EventTable::add_call( 'replace.item.changed', 'search_dialog', sub {
+		}, $ID);
+		&$add_call( 'replace.item.changed', $ID, sub {
 			$d->{replace_input}->SetValue(Kephra::Edit::Search::get_replace_item());
 			$d->{replace_input}->SetInsertionPointEnd;
-		});
+		}, $ID);
 
-		Kephra::API::EventTable::add_call('find.item.history.changed','search_dialog',  sub {
+		Kephra::API::EventTable::add_call('find.item.history.changed', $ID, sub {
 			Kephra::App::_ref()->Yield();
 			my $cb = $d->{find_input};
 			$Kephra::temp{dialog}{search}{control} = 1;
@@ -247,8 +251,8 @@ sub ready {
 			$cb->SetValue( Kephra::Edit::Search::get_find_item() );
 			$cb->SetInsertionPointEnd;
 			$Kephra::temp{dialog}{search}{control} = 0;
-		});
-		Kephra::API::EventTable::add_call('replace.item.history.changed','search_dialog',  sub {
+		}, $ID);
+		Kephra::API::EventTable::add_call('replace.item.history.changed', $ID, sub {
 			my $cb = $d->{replace_input};
 			$Kephra::temp{dialog}{search}{control} = 1;
 			$cb->Clear();
@@ -256,7 +260,7 @@ sub ready {
 			$cb->SetValue( Kephra::Edit::Search::get_replace_item() );
 			$cb->SetInsertionPointEnd;
 			$Kephra::temp{dialog}{search}{control} = 0;
-		});
+		}, $ID);
 
 		# detecting and selecting search range
 		# if selection is just on one line
@@ -442,11 +446,7 @@ sub quit_search_dialog {
 	$Kephra::temp{dialog}{search}{active} = 0;
 	$Kephra::temp{dialog}{active}--;
 
-	Kephra::API::EventTable::del_call('find','search_bar');
-	Kephra::API::EventTable::del_call('find.item.changed', 'search_dialog');
-	Kephra::API::EventTable::del_call('replace.item.changed', 'search_dialog');
-	Kephra::API::EventTable::del_call('find.item.history.changed','search_dialog');
-	Kephra::API::EventTable::del_call('replace.item.history.changed','search_dialog');
+	Kephra::API::EventTable::del_own_calls( _ID() );
 
 	$win->Destroy();
 }

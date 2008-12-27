@@ -3,6 +3,21 @@ BUGS:
  !!! test suite fails
  ! textchanged event triggers twice
 
+0.4.0.10
+ + commandlist cache
+ [ moved menu view_bars one position down
+ ] commandlist and localisation modules nor hold their data internal (was global)
+ " editpanel > margin > fold  is now a node that holds forecolor, back and visible
+ ! typo in Config::Default::GlobalSettings
+ ! crash: typo in event resigning of Dialog::Search
+ ! crash: old api call in file::session
+ ! crash if hide main toolbar by next event
+
+0.4.0.9
+ [ uncomment foldmargin view option 
+ [ darker (yellow) caret line (was nearly unvisible)
+ ] new commandlist leaf: keycode
+ ] rehashed parts of Kephra::API::CommandList
 
 0.4.0.8
  + autoplugging localisation system

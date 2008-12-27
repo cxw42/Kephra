@@ -1,5 +1,5 @@
 package Kephra::Dialog::Exit;
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 use strict;
 use warnings;
@@ -26,10 +26,10 @@ sub save_on_exit {
 
 	# if so...
 	if ($unsaved_docs) {
+		my $d18n = Kephra::Config::Localisation::strings()->{dialog};
 		my $dialog = $Kephra::app{dialog}{exit} = Wx::Dialog->new(
 			Kephra::App::Window::_ref(), -1,
-			$Kephra::localisation{dialog}{file}{quit_unsaved},
-			[-1,-1], [-1,-1],
+			$d18n->{file}{quit_unsaved}, [-1,-1], [-1,-1],
 			wxNO_FULL_REPAINT_ON_RESIZE | wxCAPTION | wxSTAY_ON_TOP,
 		);
 
@@ -42,14 +42,14 @@ sub save_on_exit {
 		my ( $x_size,     $y_size );
 		my ( $file_name,  $check_label );
 		my $align_lc = wxLEFT | wxALIGN_CENTER_VERTICAL;
-		my $l10n = $Kephra::localisation{dialog}{general};
+		my $l10n = Kephra::Config::Localisation::strings->{dialog}{general};
 
 		# generating checkbox list of unsaved files
 		for ( @{ Kephra::Document::all_nr() } ) {
 			if ( Kephra::Document::get_tmp_value('modified', $_) ) {
 				$file_name = 
 					Kephra::Document::get_file_path($_) || 
-					$Kephra::localisation{app}{general}{untitled};
+					Kephra::Localisation::strings()->{app}{general}{untitled};
 				$check_label = 1 + $_ . ' ' . $file_name;
 				$check_boxes[$_] = Wx::CheckBox->new($dialog, -1, $check_label);
 				$check_boxes[$_]->SetValue(1);

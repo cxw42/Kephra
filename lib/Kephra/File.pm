@@ -10,6 +10,7 @@ use warnings;
 
 use Wx qw(wxYES wxNO wxCANCEL);
 
+sub _dialog_l18n { Kephra::Config::Localisation::strings()->{dialog} }
 ###############
 # file events #
 ###############
@@ -115,7 +116,7 @@ sub open {
 
 	# file selector dialog
 	my $files = Kephra::Dialog::get_files_open( Kephra::App::Window::_ref(),
-		$Kephra::localisation{dialog}{file}{open},
+		_dialog_l18n()->{file}{open},
 		$Kephra::config{file}{current}{directory},
 		$Kephra::temp{file}{filterstring}{all}
 	);
@@ -125,8 +126,7 @@ sub open {
 
 sub open_all_of_dir{
 	my $dir = Kephra::Dialog::get_dir(
-		$Kephra::localisation{dialog}{file}{open_dir}, 
-		$Kephra::config{file}{current}{directory}
+		_dialog_l18n()->{file}{open_dir}, $Kephra::config{file}{current}{directory}
 	);
 	add_dir( $dir );
 }
@@ -158,8 +158,9 @@ sub reload_all {
 
 
 sub insert {
-	my $insertfilename = Kephra::Dialog::get_file_open( Kephra::App::Window::_ref(),
-		$Kephra::localisation{dialog}{file}{insert},
+	my $insertfilename = Kephra::Dialog::get_file_open( 
+		Kephra::App::Window::_ref(),
+		_dialog_l18n()->{file}{insert},
 		$Kephra::config{file}{current}{directory},
 		$Kephra::temp{file}{filterstring}{all}
 	);
@@ -179,7 +180,7 @@ sub save_current {
 	if ( $ep->GetModify == 1 or $save_config->{unchanged} ) {
 		if ( $file_name and -e $file_name ) {
 			if (not -w $file_name ) {
-				my $err_msg = $Kephra::localisation{dialog}{error};
+				my $err_msg = _dialog_l18n()->{error};
 				Kephra::Dialog::warning_box( Kephra::App::Window::_ref(),
 					$err_msg->{write_protected}."\n".$err_msg->{write_protected2},
 					$err_msg->{file} );
@@ -203,7 +204,7 @@ sub save_current {
 sub save_as {
 	my $file_name = Kephra::Dialog::get_file_save(
 		Kephra::App::Window::_ref(),
-		$Kephra::localisation{dialog}{file}{save_as},
+		_dialog_l18n()->{file}{save_as},
 		$Kephra::config{file}{current}{directory},
 		$Kephra::temp{file}{filterstring}{all}
 	);
@@ -228,8 +229,9 @@ sub save_as {
 
 
 sub save_copy_as {
-	my $file_name = Kephra::Dialog::get_file_save( Kephra::App::Window::_ref(),
-		$Kephra::localisation{dialog}{file}{save_copy_as},
+	my $file_name = Kephra::Dialog::get_file_save(
+		Kephra::App::Window::_ref(),
+		_dialog_l18n()->{file}{save_copy_as},
 		$Kephra::config{file}{current}{directory},
 		$Kephra::temp{file}{filterstring}{all} );
 	Kephra::File::IO::write_buffer
@@ -239,8 +241,9 @@ sub save_copy_as {
 
 
 sub rename {
-	my $new_path_name = Kephra::Dialog::get_file_save( Kephra::App::Window::_ref(),
-		$Kephra::localisation{dialog}{file}{rename},
+	my $new_path_name = Kephra::Dialog::get_file_save(
+		Kephra::App::Window::_ref(),
+		_dialog_l18n()->{file}{rename},
 		$Kephra::config{file}{current}{directory},
 		$Kephra::temp{file}{filterstring}{all} );
 	if ($new_path_name){
@@ -317,7 +320,7 @@ sub close_current {
 	if ($ep->GetModify == 1 or $config->{unchanged} eq 1) {
 		if ($ep->GetTextLength > 0 or $config->{empty} eq 1) {
 			if ($config->{b4_close} eq 'ask' or $config->{b4_close} eq '2'){
-				my $l10n = $Kephra::localisation{dialog}{file};
+				my $l10n = _dialog_l18n()->{file};
 				$save_answer = Kephra::Dialog::get_confirm_3( 
 					Kephra::App::Window::_ref(),
 					$l10n->{save_current}, $l10n->{close_unsaved} );
