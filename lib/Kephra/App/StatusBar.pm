@@ -196,6 +196,7 @@ sub EOL_info {
 
 # info messages
 
+sub status_msg { info_msg(@_) }
 sub info_msg {
 	return unless $_[0];
 	Kephra::App::Window::_ref()->SetStatusText

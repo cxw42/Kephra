@@ -132,7 +132,6 @@ sub start {
 	#setup_logging();
 	Wx::InitAllImageHandlers();
 	splashscreen();             # 2'nd splashscreen can close when app is ready
-	Kephra::API::EventTable::init();
 	my $frame = Kephra::App::Window::create();
 	my $ep = Kephra::App::EditPanel::create();
 	$Kephra::temp{document}{open}[0]{pointer} = $ep->GetDocPointer();

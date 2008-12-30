@@ -70,9 +70,9 @@ lib/Kephra/Edit/History.pm
 lib/Kephra/Edit/Search.pm
 lib/Kephra/Edit/Select.pm
 lib/Kephra/Extension/Demo.pm
+lib/Kephra/Extension/Library.pm
 lib/Kephra/Extension/Notepad.pm
 lib/Kephra/Extension/Output.pm
-lib/Kephra/Extension/SnippetLib.pm
 lib/Kephra/File.pm
 lib/Kephra/File/History.pm
 lib/Kephra/File/IO.pm
@@ -85,7 +85,6 @@ MANIFEST			This list of files
 META.yml
 README
 share/config/extension/installed.conf
-share/config/extension/notepad/content.txt
 share/config/global/sub/documentation/cesky.conf
 share/config/global/sub/documentation/deutsch.conf
 share/config/global/sub/documentation/english.conf

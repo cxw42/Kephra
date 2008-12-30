@@ -1,3 +1,37 @@
+0.4.1
+ * code folding support
+ + fold sibling nodes
+ + intial norsk localisation
+ + intial czech localisation
+ + select interpreter with config key app > panel > output > interpreter_path
+ + file missing dialog
+ + commandlist cache
+ + autopluggable localisation system
+ + added config key editpanel > auto > focus
+ [ editpanel context menus don't open over margin anymore
+ [ cleaner search dialog
+ [ darker (yellow) caret line (was nearly unvisible)
+ [ less intrusive default color for folding markers
+ [ less intrusive default color for line number
+ [ find item history realtime update now works in search dialog
+ ] new commandlist leaf: keycode
+ ] reworked parts of Kephra::API::CommandList
+ ] reworked parts of Kephra::API::EventTable
+ ] renewed parts of search module
+ ] rebuild notify dialog
+ ] moving codepage setting from hard wired to config set
+ " editpanel > margin > fold  is now a node that holds forecolor, back and visible
+ ' updating key layout docs 
+ ' updated roadmap in kephra.pm POD
+ ~ close app key binding changed <Alt>+<F4> => <Ctrl>+<Q>
+ ~ changed name convention for icons no more underscore => new-names.xpm
+ ~ open binary files (only_text = 0)is now default, problems with utf files
+ ~ activate UTF8 for Config::General when locale file requires
+ - close all key binding changed <Alt>+<Q> 
+ - removed stupid restrictions not to open emty files
+ ! 14 bugfixes
+ 
+
 0.4
  * Searchbar
  * notepad panel extension

@@ -65,7 +65,7 @@ use Wx qw( wxSTC_CMD_NEWLINE WXK_RETURN );
 use Wx::Event qw(
 	EVT_TIMER EVT_IDLE
 	EVT_KEY_UP EVT_KEY_DOWN
-	EVT_LEFT_UP EVT_LEFT_DOWN EVT_MOTION
+	EVT_LEFT_UP EVT_LEFT_DOWN EVT_MIDDLE_DOWN EVT_MOTION
 	EVT_ENTER_WINDOW EVT_LEAVE_WINDOW EVT_CLOSE 
 	EVT_DROP_FILES EVT_MENU_OPEN
 	EVT_STC_CHANGE EVT_STC_UPDATEUI EVT_STC_MARGINCLICK
@@ -75,47 +75,42 @@ use Wx::Event qw(
 # EVT_STC_CHARADDED EVT_STC_MODIFIED
 
 # get pointer to the event list
-sub _data { $Kephra::app{eventtable} }
-my  $timer;
-
-sub init { $Kephra::app{eventtable}{active}{init} = 1 }
+my $timer;
+my %table;
+sub _data { \%table }
 
 sub connect_all {
 	my $win = Kephra::App::Window::_ref();
 	my $ep  = Kephra::App::EditPanel::_ref();
 	my $tb  = Kephra::App::TabBar::_ref();
-	#$Kephra::app{eventtable}{test} = 1;
-	#$Kephra::temp{eventtable}{test} = 1;
 
 	# events for whole window
 	EVT_CLOSE      ($win,  sub { trigger('app.close'); Kephra::quit() });
 	EVT_DROP_FILES ($win,  \&Kephra::File::add_dropped);
-	EVT_MENU_OPEN  ($win,  sub { trigger('menu.open') 
-#print"menu ",$_[1]->GetMenuId, ' ', $_[1]->GetMenu, "\n";
-	});
+	EVT_MENU_OPEN  ($win,  sub { trigger('menu.open') });
 	#EVT_IDLE       ($win,  sub { } );
 	start_timer();
-
-
-	# scintilla and editpanel events
-	return unless $ep;
-	connect_editpanel();
-	init_key_events();
-	EVT_DROP_FILES ($ep,   \&Kephra::File::add_dropped); # override sci presets
 
 	# TabBar
 	#EVT_LEFT_UP();
 	#EVT_MOTION();
 	#EVT_LEFT_DOWN();
 
+	# scintilla and editpanel events
+	return unless $ep;
+	connect_editpanel();
+	init_key_events();
+	EVT_DROP_FILES ($ep,   \&Kephra::File::add_dropped); # override sci presets
 	EVT_ENTER_WINDOW        ($ep,     sub { trigger('editpanel.focus') });
-	#EVT_SET_FOCUS		   ($stc,	sub {});
-
+	EVT_MIDDLE_DOWN         ($ep,     sub {
+		my ($ep, $event ) = @_;
+		my $nr = Kephra::App::EditPanel::Margin::in_nr($event->GetX);
+		Kephra::App::EditPanel::Margin::toggle_siblings($ep, $event ) if $nr == 2;
+});
+	#EVT_SET_FOCUS		    ($ep, sub {});
 	EVT_STC_SAVEPOINTREACHED($ep, -1, \&Kephra::File::savepoint_reached);
 	EVT_STC_SAVEPOINTLEFT   ($ep, -1, \&Kephra::File::savepoint_left);
-	EVT_STC_MARGINCLICK     ($ep, -1, sub {
-		#Kephra::Dialog::msg_box(undef, "a", 'b')
-	});
+	EVT_STC_MARGINCLICK     ($ep, -1, \&Kephra::App::EditPanel::Margin::on_click);
 }
 
 
@@ -201,8 +196,7 @@ sub init_key_events {
 		}
 		# scintilla handles the rest of the shortkeys
 		else { $event->Skip }
-		#Kephra::App::Visual::status_msg();
-		#SCI_SETSELECTIONMODE
+		#SCI_SETSELECTIONMODE Kephra::App::StatusBar::status_msg($event->GetKeyCode);
 		#($key == 350){use Kephra::Ext::Perl::Syntax; Kephra::Ext::Perl::Syntax::check()};
 	});
 }
@@ -278,7 +272,7 @@ sub del_call {
 	$list = _data()->{frozen};
 	delete $list->{ $_[0] }{ $_[1] } if exists $list->{ $_[0] }{ $_[1] };
 }
-sub del_call_subscriber {
+sub del_subscription {
 	my $subID = shift;
 	my $list = _data()->{active};
 	for my $event (keys %$list){
@@ -289,7 +283,7 @@ sub del_call_subscriber {
 		delete $list->{$event}->{$subID} if exists $list->{$event}->{$subID};
 	}
 }
-sub del_own_calls {
+sub del_own_subscription {
 	my $owner = shift;
 	my $list = _data();
 	return unless ref $list->{owner}{ $owner } eq 'HASH';
@@ -304,17 +298,8 @@ sub del_own_calls {
 	}
 	delete $list->{owner}{ $owner };
 }
-sub delete_all_active {
-	my $list = _data()->{active};
-	delete $list->{ $_ } for keys %$list;
-}
-sub delete_all_frozen {
-	my $frozen = _data()->{frozen};
-	delete $frozen->{ $_ } for keys %$frozen;
-}
-sub delete_all {
-	delete_all_active();
-	delete_all_frozen();
-}
+sub del_all_active { $table{active} = () }
+sub del_all_frozen { $table{frozen} = () }
+sub del_all        { %table         = () }
 
 1;

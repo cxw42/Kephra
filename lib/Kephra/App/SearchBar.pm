@@ -173,7 +173,7 @@ sub connect_find_input {
 	}, $ID);
 	&$add_call( 'find', $ID.'_color_refresh', \&colour_find_input, $ID);
 }
-sub disconnect_find_input { Kephra::API::EventTable::del_own_calls( _ID() ) }
+sub disconnect_find_input{ Kephra::API::EventTable::del_own_subscription(_ID()) }
 
 
 sub colour_find_input {

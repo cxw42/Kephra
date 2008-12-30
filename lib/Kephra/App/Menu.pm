@@ -2,7 +2,7 @@ package Kephra::App::Menu;
 use strict;
 use warnings;
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 =item1 Name
 
@@ -308,6 +308,14 @@ sub eval_data {
 		('menu.open', 'menu_'.$menu, sub {ready($menu_id)} );
 	_ref($menu_id, $menu);
 	return $menu;
+}
+
+sub destroy {
+	my $menu_ID = shift;
+	my $menu = _ref( $menu_ID );
+	return unless $menu;
+	$menu->Destroy;
+	Kephra::API::EventTable::del_own_subscription( $menu_ID );
 }
 
 1;

@@ -3,6 +3,27 @@ BUGS:
  !!! test suite fails
  ! textchanged event triggers twice
 
+0.4.1.2 testing release
+ + optional flagline showes where text is folded
+ + option for keeping caret visible while folding
+ ! fold siblings works now also in the first line
+
+0.4.1.1 testing release
+ + key binding for fold ops: fold => alt+plus, fold siblings => alt+shift+plus
+ ! fixed CommandList cache logic, refreshes now if needed
+
+0.4.1 testing release
+
+0.4.0.12
+ [ unfolds all if hides folding margin
+ [ less intrusive default color for folding markers
+ [ less intrusive default color for line number
+
+0.4.0.11
+ * code folding support
+ + fold sibling nodes
+ [ editpanel context menus don't open over margin anymore
+
 0.4.0.10
  + commandlist cache
  [ moved menu view_bars one position down

@@ -5,7 +5,7 @@ use 5.006;
 use strict;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.4.0.10';       # version of entire app
+our $VERSION    = '0.4.1.2';       # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $BENCHMARK;                    # flag for benchmark loggings
@@ -108,8 +108,7 @@ sub configdir {
 
 # Wx App Events
 sub OnInit { &Kephra::App::start }   # boot app: init core and load config files
-sub quit   { &Kephra::App::exit  
-}   # save files & settings as configured
+sub quit   { &Kephra::App::exit  }   # save files & settings as configured
 
 1;
 
@@ -117,7 +116,7 @@ __END__
 
 =head1 NAME
 
-Kephra - crossplatform, GUI-Texteditor along perllike Paradigms 
+Kephra - crossplatform, GUI-Texteditor along Perl alike Paradigms 
 
 =head1 SYNOPSIS
 
@@ -261,26 +260,30 @@ This release is about getting the editor liquid or highly configurable.
 Its also about improvements in the user interface and of course the little
 things we missed, but config dialog was delayed.
 
+=head2 Testing 0.4.1
+
+folding, test suite, and new hotpluggable localisation system that also
+does UTF semi-automatically, initian czech and norwegian translation
+
 =head2 TODO
 
 fix config install under linux and mac
 
 fix test suite
 
+=head2 Testing 0.4.2
 
-=head2 Stable 0.4.1
+printing, library extension, config dialog
 
-folding, printing, test suite, and new hotpluggable localisation system that also
-does UTF semi-automatically, initian czech and norwegian translation
+=head2 Testing 0.4.3
 
-=head2 Stable 0.4.2
-
-snippet lib, outlining?
+syntax modes, demo extension, outlining?
 
 =head2 Stable 0.5
 
-Things like code folding, snippet lib, help integration, autocompletition 
-and so on. wish that by the end of 0.4.n series will be the extention API stable.
+Coding support like mentioned for 0.4.n + tidy support, help integration, 
+autocompletition and so on. 
+wish that by the end of 0.4.n series will be the extention API stable.
 
 =head1 SUPPORT
 

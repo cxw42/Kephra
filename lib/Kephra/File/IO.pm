@@ -76,8 +76,7 @@ sub write_buffer {
 
 sub get_age {
 	my $file = shift;
-	return unless -e $file;
-	return $^T - (-M $file) * 86400;
+	return (stat $file)[9] if -e $file;
 }
 
 1;

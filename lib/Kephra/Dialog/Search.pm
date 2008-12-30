@@ -446,7 +446,7 @@ sub quit_search_dialog {
 	$Kephra::temp{dialog}{search}{active} = 0;
 	$Kephra::temp{dialog}{active}--;
 
-	Kephra::API::EventTable::del_own_calls( _ID() );
+	Kephra::API::EventTable::del_own_subscription( _ID() );
 
 	$win->Destroy();
 }

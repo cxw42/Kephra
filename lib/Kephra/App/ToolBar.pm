@@ -2,7 +2,7 @@ package Kephra::App::ToolBar;
 use strict;
 use warnings;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 # central lib for gui toolbars
 # storing, fetching, assemble data, creating regular button items
@@ -141,11 +141,11 @@ sub eval_data {
 }
 
 sub destroy {
-	my $barID = shift;
-	my $bar = _ref( $barID );
+	my $bar_ID = shift;
+	my $bar = _ref( $bar_ID );
 	return unless $bar;
 	$bar->Destroy;
-	Kephra::API::EventTable::del_own_calls( $barID );
+	Kephra::API::EventTable::del_own_subscription( $bar_ID );
 }
 
 1;

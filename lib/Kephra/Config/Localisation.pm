@@ -24,7 +24,6 @@ sub file_name {
 }
 
 sub load {
-	my $index = _index();
 	my $file = file();
 	my $l = Kephra::Config::File::load( $file ) if defined $file;
 	$l = Kephra::Config::Default::localisation() unless $l and %$l;

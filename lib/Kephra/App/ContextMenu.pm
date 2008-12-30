@@ -5,7 +5,9 @@ use warnings;
 our $VERSION = '0.08';
 
 use Wx::Event qw(EVT_RIGHT_DOWN);
- 
+
+
+
 sub get{ &Kephra::App::Menu::ready or Wx::Menu->new() }
 #
 sub create_all {
@@ -60,6 +62,7 @@ sub connect_editpanel {
 		my $id_select = $config->{ID_selection};
 		EVT_RIGHT_DOWN($edit_panel, sub {
 			my ($ep, $event) = @_;
+			return if Kephra::App::EditPanel::Margin::in_nr($event->GetX) != -1;
 			my $menu_id = $Kephra::temp{current_doc}{text_selected}
 				? $id_select : $id_normal;
 			my $menu = get($menu_id);

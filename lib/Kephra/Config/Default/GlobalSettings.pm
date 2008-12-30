@@ -1,5 +1,5 @@
 package Kephra::Config::Default::GlobalSettings;
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 use strict;
 use warnings;
@@ -209,17 +209,19 @@ sub get {
 			line_wrap => 0,
 			margin => {
 				fold => {
-					back_color => 'dddddd',
-					fore_color => '111144',
+					back_color => 'fff5f5',
+					fore_color => 'aa9977',
+					flag_line => 0,
+					keep_caret_visible => 1,
 					visible => 1,
 				},
 				linenumber => {
 					autosize   => 1,
-					back_color => 'dddddd',
-					fore_color => '111144',
+					back_color => 'd8d8d4',
+					fore_color => '777788',
 					min_width  => 4,
-					width      => 4,
 					visible    => 1,
+					width      => 4,
 				},
 				marker => {
 					back_color => '0022ff',

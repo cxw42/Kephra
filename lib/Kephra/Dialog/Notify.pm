@@ -52,7 +52,7 @@ sub file_deleted {
 	my $file_nr = shift;#Kephra::Document::current_nr();
 	my $file_path = Kephra::Document::get_attribute('file_path', $file_nr);
 	my $file_name = Kephra::Document::get_tmp_value('name', $file_nr);
-	my $d10n = Kephra::Localisation::strings()->{dialog};
+	my $d10n = Kephra::Config::Localisation::strings()->{dialog};
 	my $g10n = $d10n->{general};
 
 	# $Kephra::app{dialog}{notify}{deleted} 

@@ -30,6 +30,13 @@ sub position {
 	$ep->EnsureCaretVisible;
 	#_keep_focus();
 }
+sub next_visible_pos {
+	my $ep  = _get_panel();
+	my $line = $ep->GetCurrentLine();
+	return if $ep->GetLineVisible($line);
+	$line = $ep->GetFoldParent($line) until $ep->GetLineVisible($line);
+	$ep->GotoLine($line);
+}
 
 sub line_nr {
 	my $ep = _get_panel();
@@ -47,15 +54,14 @@ sub last_edit {
 		if defined $Kephra::document{current}{edit_pos};
 }
 
-#########################
+#
 # block navigation
-#########################
+#
 sub prev_block{ _get_panel()->CmdKeyExecute(wxSTC_CMD_PARAUP)   }
 sub next_block{ _get_panel()->CmdKeyExecute(wxSTC_CMD_PARADOWN) }
-
-#########################
+#
 # brace navigation
-#########################
+#
 sub prev_brace{
 	my $ep  = _get_panel();
 	my $pos = $ep->GetCurrentPos;

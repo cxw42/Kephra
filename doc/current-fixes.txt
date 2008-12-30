@@ -3,81 +3,12 @@ as possible. If you want to find the width of the widest line, ensure
 the document is all styled (SCI_COLOURISE) then call
 SCI_POINTXFROMPOSITION on the last position of each line. 
 
+Ã
+
 use Encode;
 sub AppendText {
     my ($self, $text) = @_;
     my $string = decode("utf8", $text);
     $self->SUPER::AppendText($string);
 }
-
-sub on_toggle_code_folding {
-        my ($self, $event) = @_;
-
-        my $config = Padre->ide->config;
-        $config->{editor_codefolding} = $event->IsChecked ? 1 : 0;
-
-        foreach my $editor ( $self->pages ) {
-                $editor->show_folding( $config->{editor_codefolding} );
-        }
-}
-
-sub show_folding {
-        my ( $self, $on ) = @_;
-
-        if ( $on ) {
-                # Setup a margin to hold fold markers
-                $self->SetMarginType(2, Wx::wxSTC_MARGIN_SYMBOL); # margin number 2 for symbols
-                $self->SetMarginMask(2, Wx::wxSTC_MASK_FOLDERS);  # set up mask for folding symbols
-                $self->SetMarginSensitive(2, 1);                  # this one needs to be mouse-aware
-                $self->SetMarginWidth(2, 16);                     # set margin 2 16 px wide
-
-                # define folding markers
-                my $w = Wx::Colour->new("white");
-                my $b = Wx::Colour->new("black");
-                $self->MarkerDefine(Wx::wxSTC_MARKNUM_FOLDEREND,     Wx::wxSTC_MARK_BOXPLUSCONNECTED,  $w, $b);
-                $self->MarkerDefine(Wx::wxSTC_MARKNUM_FOLDEROPENMID, Wx::wxSTC_MARK_BOXMINUSCONNECTED, $w, $b);
-                $self->MarkerDefine(Wx::wxSTC_MARKNUM_FOLDERMIDTAIL, Wx::wxSTC_MARK_TCORNER,  $w, $b);
-                $self->MarkerDefine(Wx::wxSTC_MARKNUM_FOLDERTAIL,    Wx::wxSTC_MARK_LCORNER,  $w, $b);
-                $self->MarkerDefine(Wx::wxSTC_MARKNUM_FOLDERSUB,     Wx::wxSTC_MARK_VLINE,    $w, $b);
-                $self->MarkerDefine(Wx::wxSTC_MARKNUM_FOLDER,        Wx::wxSTC_MARK_BOXPLUS,  $w, $b);
-                $self->MarkerDefine(Wx::wxSTC_MARKNUM_FOLDEROPEN,    Wx::wxSTC_MARK_BOXMINUS, $w, $b);
-
-                # This would be nice but the color used for drawing the lines is
-                # Wx::wxSTC_STYLE_DEFAULT, i.e. usually black and therefore quite
-                # obtrusive...
-                # $self->SetFoldFlags( Wx::wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | Wx::wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED );
-
-                # activate
-                $self->SetProperty('fold' => 1);
-
-                Wx::Event::EVT_STC_MARGINCLICK(
-                        $self,
-                        Wx::wxID_ANY,
-                        sub {
-                                my ( $editor, $event ) = @_;
-                                if ( $event->GetMargin() == 2 ) {
-                                        my $line_clicked = $editor->LineFromPosition( $event->GetPosition() );
-                                        my $level_clicked = $editor->GetFoldLevel($line_clicked);
-                                        # TODO check this (cf. ~/contrib/samples/stc/edit.cpp from wxWidgets)
-                                        #if ( $level_clicked && wxSTC_FOLDLEVELHEADERFLAG) > 0) {
-                                        $editor->ToggleFold($line_clicked);
-                                        #}
-                                }
-                        }
-                );
-        }
-        else {
-                $self->SetMarginSensitive(2, 0);
-                $self->SetMarginWidth(2, 0);
-                # deactivate
-                $self->SetProperty('fold' => 1);
-        }
-
-        return;
-}
-
-sub set_preferences {
-        my ($self) = @_;
-        my $config = Padre->ide->config;
-        $self->show_folding(         $config->{editor_codefolding}       );
-}
+  my $string = utf8::is_utf8($text) ? $text : decode('utf8', $text); 

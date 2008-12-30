@@ -70,6 +70,7 @@ sub _config{ $Kephra::config{app}{commandlist} }
 
 #sub load_cache  { %list = %{ YAML::Tiny::LoadFile( $_[0] ) }}
 #sub store_cache { YAML::Tiny::DumpFile( \%list ) }
+# @hash1{keys %hash2} = values %hash2;
 
 
 # refactor commandlist definition & localisation data into a format that can be
@@ -132,7 +133,7 @@ sub numify_key_code {
 	my $ctrl  = $k18n->{meta}{ctrl} . '+';
 	my %keycode_map = (
 		back => WXK_BACK, tab => WXK_TAB, enter => WXK_RETURN, esc => WXK_ESCAPE,
-		space => WXK_SPACE, '#' => 47, tilde => 92,
+		space => WXK_SPACE, plus => 43, '#' => 47, tilde => 92, 
 		del=> WXK_DELETE, ins => WXK_INSERT,
 		pgup => WXK_PAGEUP, pgdn => WXK_PAGEDOWN, home => WXK_HOME, end => WXK_END,
 		left => WXK_LEFT, up => WXK_UP, right => WXK_RIGHT, down => WXK_DOWN,
@@ -260,7 +261,5 @@ sub del_temp_data{
 	#delete $Kephra::localisation{key}
 	#	if exists $l18n->{key};
 }
-
-#(stat $dateiname)[9]
 
 1;

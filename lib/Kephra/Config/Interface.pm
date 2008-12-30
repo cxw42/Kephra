@@ -32,14 +32,15 @@ sub load {
 		);
 		if (-e $file{cmd} and -e $file{l18n}) {
 			YAML::Tiny::DumpFile( $file{index}, \%new_index );
-			if (scalar keys %new_index == scalar keys %old_index) {
+			if (-e $file{cmd_cache} and -e $file{l18n_cache} and
+			    scalar keys %new_index == scalar keys %old_index) {
+				$load_cache = 1;
 				for (keys %new_index) {
-					$load_cache = $new_index{$_}{file} eq $old_index{$_}{file} and
-					              $new_index{$_}{age} == $old_index{$_}{age}
-					              ? 1 : 0;
+					$load_cache = 0 
+						unless $new_index{$_}{age} == $old_index{$_}{age}
+					       and $new_index{$_}{file}eq $old_index{$_}{file};
 				}
 			}
-			$load_cache = 0 unless -e $file{cmd_cache} and -e $file{l18n_cache};
 			if ($load_cache) {
 				Kephra::API::CommandList::data( &$read( $file{cmd_cache} ) );
 				Kephra::Config::Localisation::strings( &$read($file{l18n_cache}) );

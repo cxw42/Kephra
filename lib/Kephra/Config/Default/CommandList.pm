@@ -338,6 +338,10 @@ sub get {
 							12 => 'Kephra::App::EditPanel::Margin::set_text_width(12)',
 						},
 					},
+					'fold-toggle' => {
+						here => 'Kephra::App::EditPanel::Margin::toggle_here()',
+						siblings => 'Kephra::App::EditPanel::Margin::toggle_siblings()',
+					},
 				},
 				panel => {
 					notepad => 'Kephra::Extension::Notepad::switch_visibility()',
@@ -880,6 +884,10 @@ sub get {
 					info => 'alt+shift+i',
 					keymap => 'alt+shift+k',
 				},
+				'editpanel-fold-toggle' => {
+					'here' => 'alt+plus',
+					'siblings' => 'alt+shift+plus',
+				}
 				'panel-notepad' => 'ctrl+f4',
 				'panel-output' => 'ctrl+f5',
 				'window-stay-on-top' => 'ctrl+t',

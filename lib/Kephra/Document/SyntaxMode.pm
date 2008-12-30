@@ -86,7 +86,7 @@ sub change_to {
 	_ID($style);
 	$ep->Colourise( 0, $ep->GetTextLength ); # refresh editpanel painting
 	# cleanup
-	Kephra::App::EditPanel::Margin::apply_color();
+	Kephra::App::EditPanel::Margin::refresh_changeable_settings();
 	Kephra::App::StatusBar::style_info($style);
 	return $style;
 }

@@ -73,7 +73,7 @@ sub update {
 sub evaluate {
 	my $t0 = new Benchmark;
 
-	Kephra::API::EventTable::delete_all();
+	Kephra::API::EventTable::del_all();
 	Kephra::API::EventTable::stop_timer();
 
 	my $t1 = new Benchmark;
