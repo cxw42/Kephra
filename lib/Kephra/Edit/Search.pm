@@ -224,16 +224,16 @@ sub _find_prev {
 }
 
 sub _find_first {
-	Kephra::Edit::Goto::pos(0);
+	Kephra::Edit::Goto::_pos(0);
 	_find_next();
 }
 
 sub _find_last  {
-	Kephra::Edit::Goto::pos(-1);
+	Kephra::Edit::Goto::_pos(-1);
 	_find_prev();
 }
 
-# find related menu calls
+
 sub first_increment {
 	my $ep = Kephra::App::EditPanel::_ref();
 	if ( _exist_find_item() ) {
@@ -244,13 +244,13 @@ sub first_increment {
 			return 1;
 		}
 	}
-	$ep->GotoPos( $Kephra::temp{search}{old_pos} )
+	Kephra::Edit::Goto::_pos( $Kephra::temp{search}{old_pos} )
 		if defined $Kephra::temp{search}{old_pos};
 	return 0;
 }
 
 #sub next_increment {}
-
+# find related menu calls
 sub find_all{
 #Kephra::Dialog::msg_box(undef, Wx::wxUNICODE(), '');
 	my $ep = Kephra::App::EditPanel::_ref();
@@ -269,16 +269,16 @@ sub find_all{
 		return 0 if $search_result == -1;
 		while ($search_result > -1){
 			($sel_start, $sel_end) = $ep->GetSelection;
-			Kephra::Edit::Goto::pos( $sel_end );
+			Kephra::Edit::Goto::_pos( $sel_end );
 			$ep->StartStyling($sel_start, 224);#224
 			$ep->SetStyleBytes($sel_end - $sel_start, 128);
 			$search_result = _find_next();
 		}
-		Kephra::Edit::Goto::pos( $sel_end );
+		Kephra::Edit::Goto::_pos( $sel_end );
 		$ep->Colourise( 0, $sel_end);
 		return 1;
 	} else {
-		$ep->GotoPos( $Kephra::temp{search}{old_pos} )
+		Kephra::Edit::Goto::_pos( $Kephra::temp{search}{old_pos} )
 			if defined $Kephra::temp{search}{old_pos};
 		return 1;
 	}
@@ -290,24 +290,23 @@ sub find_prev {
 	my $return = -1;
 	if ( _exist_find_item() ) {
 		Kephra::Edit::_save_positions;
-		Kephra::Edit::Goto::pos( $ep->GetSelectionStart - 1 );
+		Kephra::Edit::Goto::_pos( $ep->GetSelectionStart - 1 );
 		$return = _find_prev();
 		if ( $return == -1 ) {
 			if ( get_range() eq 'document' ) {
 				$return = _find_last() if $attr->{auto_wrap};
 			} elsif ( get_range() eq 'open_docs' ) {
 				$Kephra::temp{dialog}{control} = 1;
-				my $begin_doc = Kephra::Document::current_nr();
+				my $begin_doc = Kephra::Document::Data::current_nr();
 				while ( $return == -1 ) {
 					Kephra::Edit::_restore_positions;
-					last
-						if ( ( Kephra::Document::current_nr() == 0 )
-						and !$attr->{auto_wrap} );
+					last if ( ( Kephra::Document::Data::current_nr() == 0 )
+						 and !$attr->{auto_wrap} );
 					Kephra::Document::Change::tab_left();
 					Kephra::Edit::_save_positions();
 					$return = _find_last();
 					last
-						if ( Kephra::Document::current_nr() == $begin_doc );
+						if ( Kephra::Document::Data::current_nr() == $begin_doc );
 				}
 				$Kephra::temp{dialog}{control} = 0;
 				Kephra::Dialog::Search::_ref()->Raise
@@ -328,23 +327,23 @@ sub find_next {
 
 	if ( _exist_find_item() ) {
 		Kephra::Edit::_save_positions();
-		Kephra::Edit::Goto::pos( $ep->GetSelectionEnd );
+		Kephra::Edit::Goto::_pos( $ep->GetSelectionEnd );
 		$return = _find_next();
 		if ( $return == -1 ) {
 			if ( get_range() eq 'document' ) {
 				$return = _find_first() if $attr->{auto_wrap};
 			} elsif ( get_range() eq 'open_docs' ) {
 				$Kephra::temp{dialog}{control} = 1;
-				my $begin_doc = Kephra::Document::current_nr();
+				my $begin_doc = Kephra::Document::Data::current_nr();
 				while ( $return == -1 ) {
 					Kephra::Edit::_restore_positions();
-					last if Kephra::Document::current_nr()
-							== Kephra::Document::last_nr()
+					last if Kephra::Document::Data::current_nr()
+							== Kephra::Document::Data::last_nr()
 						 and not $attr->{auto_wrap};
 					Kephra::Document::Change::tab_right();
 					Kephra::Edit::_save_positions();
 					$return = _find_first();
-					last if ( Kephra::Document::current_nr() == $begin_doc );
+					last if ( Kephra::Document::Data::current_nr() == $begin_doc );
 				}
 				$Kephra::temp{dialog}{control} = 0;
 				Kephra::Dialog::Search::_ref()->Raise
@@ -365,22 +364,22 @@ sub fast_back {
 	if (_exist_find_item()) {
 		for ( 1 .. $attr->{fast_steps} ) {
 			Kephra::Edit::_save_positions();
-			Kephra::Edit::Goto::pos( $ep->GetSelectionStart - 1 );
+			Kephra::Edit::Goto::_pos( $ep->GetSelectionStart - 1 );
 			$return = _find_prev();
 			if ( $return == -1 ) {
 				if ( get_range() eq 'document' ) {
 					$return = _find_last() if $attr->{auto_wrap};
 				} elsif ( get_range() eq 'open_docs' ) {
 					$Kephra::temp{dialog}{control} = 1;
-					my $begin_doc = Kephra::Document::current_nr();
+					my $begin_doc = Kephra::Document::Data::current_nr();
 					while ( $return == -1 ) {
 						Kephra::Edit::_restore_positions();
-						last if Kephra::Document::current_nr() == 0
+						last if Kephra::Document::Data::current_nr() == 0
 							and not $attr->{auto_wrap};
 						Kephra::Document::Change::tab_left();
 						Kephra::Edit::_save_positions();
 						$return = _find_last();
-						last if Kephra::Document::current_nr() == $begin_doc;
+						last if Kephra::Document::Data::current_nr() == $begin_doc;
 					}
 					$Kephra::temp{dialog}{control} = 0;
 					Kephra::Dialog::Search::_ref()->Raise
@@ -401,23 +400,23 @@ sub fast_fore {
 	if (_exist_find_item()) {
 		for ( 1 .. $attr->{fast_steps} ) {
 			Kephra::Edit::_save_positions();
-			Kephra::Edit::Goto::pos( $ep->GetSelectionEnd );
+			Kephra::Edit::Goto::_pos( $ep->GetSelectionEnd );
 			$return = _find_next();
 			if ( $return == -1 ) {
 				if ( get_range() eq 'document' ) {
 					$return = _find_first() if $attr->{auto_wrap};
 				} elsif ( get_range() eq 'open_docs' ) {
 					$Kephra::temp{dialog}{control} = 1;
-					my $begin_doc = Kephra::Document::current_nr();
+					my $begin_doc = Kephra::Document::Data::current_nr();
 					while ( $return == -1 ) {
 						Kephra::Edit::_restore_positions();
-						last if Kephra::Document::current_nr()
-								== Kephra::Document::last_nr()
+						last if Kephra::Document::Data::current_nr()
+								== Kephra::Document::Data::last_nr()
 							and not $attr->{auto_wrap};
 						Kephra::Document::Change::tab_right();
 						Kephra::Edit::_save_positions();
 						$return = _find_first();
-						last if Kephra::Document::current_nr() == $begin_doc;
+						last if Kephra::Document::Data::current_nr() == $begin_doc;
 					}
 					$Kephra::temp{dialog}{control} = 0;
 					Kephra::Dialog::Search::_ref()->Raise
@@ -447,7 +446,7 @@ sub find_first {
 			set_range('selection') 
 		}
 		if ( get_range() eq 'selection' ) {
-			Kephra::Edit::Goto::pos($sel_begin);
+			Kephra::Edit::Goto::_pos($sel_begin);
 			$return = _find_next();
 			if ($return > -1 and $ep->GetCurrentPos + $len <= $sel_end) {
 				Kephra::Edit::_center_caret();
@@ -461,15 +460,15 @@ sub find_first {
 			and ($sel_begin == $ep->GetSelectionStart or $return == -1 ) ){
 				$Kephra::temp{dialog}{control} = 1;
 				$return = -1;
-				my $begin_doc = Kephra::Document::current_nr();
+				my $begin_doc = Kephra::Document::Data::current_nr();
 				while ( $return == -1 ) {
 					Kephra::Edit::_restore_positions();
-					last if Kephra::Document::current_nr() == 0
+					last if Kephra::Document::Data::current_nr() == 0
 						and not $attr->{auto_wrap};
 					Kephra::Document::Change::tab_left();
 					Kephra::Edit::_save_positions();
 					$return = _find_first();
-					last if ( Kephra::Document::current_nr() == $begin_doc );
+					last if ( Kephra::Document::Data::current_nr() == $begin_doc );
 				}
 				$Kephra::temp{dialog}{control} = 0;
 				Kephra::Dialog::Search::_ref()->Raise
@@ -503,7 +502,7 @@ sub find_last {
 			set_range('selection');
 		}
 		if ( get_range() eq 'selection' ) {
-			Kephra::Edit::Goto::pos($sel_end);
+			Kephra::Edit::Goto::_pos($sel_end);
 			$return = _find_prev();
 			if ($return > -1 and $ep->GetCurrentPos >= $sel_begin) {
 				Kephra::Edit::_center_caret();
@@ -517,16 +516,16 @@ sub find_last {
 				and ($sel_begin == $ep->GetSelectionStart or $return == -1) ){
 				$Kephra::temp{dialog}{control} = 1;
 				$return = -1;
-				my $begin_doc = Kephra::Document::current_nr();
+				my $begin_doc = Kephra::Document::Data::current_nr();
 				while ( $return == -1 ) {
 					Kephra::Edit::_restore_positions();
-					last if Kephra::Document::current_nr()
-							== Kephra::Document::last_nr()
+					last if Kephra::Document::Data::current_nr()
+							== Kephra::Document::Data::last_nr()
 						and not $attr->{auto_wrap};
 					Kephra::Document::Change::tab_right();
 					Kephra::Edit::_save_positions();
 					$return = _find_last();
-					last if ( Kephra::Document::current_nr() == $begin_doc );
+					last if ( Kephra::Document::Data::current_nr() == $begin_doc );
 				}
 				$Kephra::temp{dialog}{control} = 0;
 				Kephra::Dialog::Search::_ref()->Raise
@@ -578,7 +577,7 @@ sub replace_all {
 		}
 		if ( get_range() eq 'selection' ) {
 			$ep->BeginUndoAction;
-			$ep->GotoPos($sel_begin);
+			Kephra::Edit::Goto::_pos($sel_begin);
 			while ( _find_next() > -1 ) {
 				last if ( $ep->GetCurrentPos + $len >= $sel_end );
 				$ep->ReplaceSelection($replace_string);
@@ -586,18 +585,18 @@ sub replace_all {
 			$ep->EndUndoAction;
 		} elsif ( get_range() eq 'document' ) {
 			$ep->BeginUndoAction;
-			$ep->GotoPos(0);
+			Kephra::Edit::Goto::_pos(0);
 			while ( _find_next() > -1 ) {
 				$ep->ReplaceSelection($replace_string);
 			}
 			$ep->EndUndoAction;
 		} elsif ( get_range() eq 'open_docs' ) {
-			my $begin_doc = Kephra::Document::current_nr();
+			my $begin_doc = Kephra::Document::Data::current_nr();
 			do {
 				{
 					Kephra::Edit::_save_positions();
 					$ep->BeginUndoAction;
-					$ep->GotoPos(0);
+					Kephra::Edit::Goto::_pos(0);
 					while ( _find_next() > -1 ) {
 						$ep->ReplaceSelection($replace_string);
 					}
@@ -633,7 +632,7 @@ sub replace_confirm {
 		} elsif (get_range() eq 'document') {
 			sniff_selection( $ep, 0, $ep->GetTextLength, $len, $line );
 		} elsif (get_range() eq 'open_docs') {
-			my $begin_doc = Kephra::Document::current_nr();
+			my $begin_doc = Kephra::Document::Data::current_nr();
 			do {
 				{
 					next if $answer == wxCANCEL;
@@ -650,7 +649,7 @@ sub replace_confirm {
 		my ( $ep, $sel_begin, $sel_end, $len, $line ) = @_;
 		my $l10n = Kephra::Config::Localisation::strings()->{dialog}{search}{confirm};
 		my $answer;
-		Kephra::Edit::Goto::pos($sel_begin);
+		Kephra::Edit::Goto::_pos($sel_begin);
 		$ep->BeginUndoAction();
 		while ( _find_next() > -1 ) {
 			last if $ep->GetCurrentPos + $len >= $sel_end;
@@ -662,7 +661,7 @@ sub replace_confirm {
 			else                  {$ep->SetCurrentPos( $ep->GetCurrentPos + 1 )}
 		}
 		$ep->EndUndoAction;
-		Kephra::Edit::Goto::pos( $ep->PositionFromLine($line) );
+		Kephra::Edit::Goto::_pos( $ep->PositionFromLine($line) );
 		Kephra::Edit::_center_caret();
 		$answer;
 	}

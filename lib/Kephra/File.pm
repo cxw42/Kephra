@@ -1,82 +1,104 @@
 package Kephra::File;
-our $VERSION = '0.42';
+our $VERSION = '0.43';
 
 use strict;
 use warnings;
 
-########################################################
-# file save events, drag n drop files, file menu calls #
-########################################################
+=pod
+ file save events, drag n drop files, file menu calls #
+=cut
 
-use Wx qw(wxYES wxNO wxCANCEL);
 
 sub _dialog_l18n { Kephra::Config::Localisation::strings()->{dialog} }
 ###############
 # file events #
 ###############
-
 sub savepoint_left {
-	$Kephra::temp{document}{modified}++
-		unless $Kephra::temp{current_doc}{modified};
-	$Kephra::temp{current_doc}{modified} = 1;
+	Kephra::Document::Data::inc_value('modified')
+		unless Kephra::Document::Data::attr('modified');
+	Kephra::Document::Data::set_attribute('modified', 1);
 	Kephra::App::TabBar::refresh_current_label()
 		if $Kephra::config{app}{tabbar}{info_symbol};
 	Kephra::API::EventTable::trigger('document.savepoint');
 }
 sub savepoint_reached {
-	$Kephra::temp{document}{modified}-- 
-		if $Kephra::temp{current_doc}{modified};
-	$Kephra::temp{current_doc}{modified} = 0;
+	Kephra::Document::Data::dec_value('modified')
+		if Kephra::Document::Data::attr('modified');
+	Kephra::Document::Data::set_attribute('modified', 0);
 	Kephra::App::TabBar::refresh_current_label();
 	Kephra::API::EventTable::trigger('document.savepoint');
 }
 
-sub can_save     { $Kephra::temp{current_doc}{modified} }
-sub can_save_all { $Kephra::temp{document}{modified} }
+sub can_save     { Kephra::Document::Data::attr('modified') }
+sub can_save_all { Kephra::Document::Data::get_value('modified') }
 
 sub changed_notify_check {
-	my $current_doc = Kephra::Document::current_nr();
-	for my $file_nr ( @{ Kephra::Document::all_nr() } ) {
-		my $path = Kephra::Document::get_file_path($file_nr);
-		my $last_check = Kephra::Document::get_tmp_value('did_notify', $file_nr);
-		next unless $path;
-		if (not -e $path) {
+	my $current_doc = Kephra::Document::Data::current_nr();
+	for my $file_nr ( @{ Kephra::Document::Data::all_nr() } ) {
+		my $file = Kephra::Document::Data::get_file_path($file_nr);
+		my $last_check = Kephra::Document::Data::get_attribute
+			('did_notify', $file_nr);
+		next unless $file;
+		if (not -e $file) {
 			next if defined $last_check and $last_check eq 'ignore';
 			Kephra::Document::Change::to_number( $file_nr );
 			Kephra::Dialog::notify_file_deleted( $file_nr );
 			next;
 		}
-		my $last_change = Kephra::Document::get_tmp_value('file_changed', $file_nr);
-		my $current_age= Kephra::File::IO::get_age($path);
+		my $last_change = Kephra::Document::Data::get_attribute('file_changed', $file_nr);
+		my $current_age= Kephra::File::IO::get_age($file);
 		if ( $last_change != $current_age) {
 			next if defined $last_check
 				and ( $last_check eq 'ignore' or $last_check >= $current_age);
 			Kephra::Document::Change::to_number( $file_nr );
-			Kephra::Document::get_tmp_value
-				('did_notify', _remember_save_moment($path), $file_nr);
+			Kephra::Document::Data::set_attribute
+				('did_notify', _remember_save_moment($file), $file_nr);
 			Kephra::Dialog::notify_file_changed( $file_nr, $current_age );
 		}
 	}
 	Kephra::Document::Change::to_number($current_doc) 
-		unless $current_doc == Kephra::Document::current_nr();
+		unless $current_doc == Kephra::Document::Data::current_nr();
 }
 
 sub _remember_save_moment {
 	my ($path, $doc_nr) = @_;
 	return unless -e $path;
 	my $age = Kephra::File::IO::get_age($path);
-	Kephra::Document::set_tmp_value( 'file_changed', $age, $doc_nr);
+	Kephra::Document::Data::set_attribute('file_changed', $age, $doc_nr);
 	return $age;
 }
 
+sub check_b4_overwite {
+	my $file = shift;
+	$file = Kephra::Document::Data::get_file_path() unless $file;
+	my $allow = $Kephra::config{file}{save}{overwrite};
+	if ( -e $file ) {
+		my $frame = Kephra::App::Window::_ref();
+		my $label = Kephra::Config::Localisation::strings->{dialog};
+		if ( $allow eq 'ask' ) {
+			my $answer = Kephra::Dialog::get_confirm_2( $frame,
+				"$label->{general}{overwrite} $file ?",
+				$label->{file}{overwrite},
+				-1, -1
+			);
+			return 1 if $answer == Wx::wxYES;
+			return 0 if $answer == Wx::wxNO;
+		} else {
+			Kephra::Dialog::info_box( $frame,
+				$label->{general}{dont_allow},
+				$label->{file}{overwrite}
+			) unless $allow;
+			return $allow;
+		}
+	} else { return -1 }
+}
 ###############
 # drag n drop #
 ###############
-
 # add all currently dnd-held files
 sub add_dropped {
 	my ($ep, $event) = @_;
-	-d $_ ? add_dir($_) : Kephra::Document::Internal::add($_) for $event->GetFiles;
+	-d $_ ? add_dir($_) : Kephra::Document::add($_) for $event->GetFiles;
 }
 
 # add all files of an dnd-held dir
@@ -94,22 +116,14 @@ sub add_dir{
 		if (-d $path) {
 			next if not $recursive or $_ eq '.' or $_ eq '..';
 			add_dir($path);
-		} else { Kephra::Document::Internal::add($path) }
+		} else { Kephra::Document::add($path) }
 	}
 }
 
 ###################
 # file menu calls #
 ###################
-
-sub new {
-	my $doc_nr = Kephra::Document::Internal::new_if_allowed('new');
-	Kephra::Document::Internal::reset();
-	Kephra::Document::set_current_nr( $doc_nr );
-}
-
-sub add { &Kephra::Document::Internal::add }
-
+sub new  { Kephra::Document::new() }
 sub open {
 	# buttons dont freeze while computing
 	Kephra::App::_ref()->Yield();
@@ -121,38 +135,37 @@ sub open {
 		$Kephra::temp{file}{filterstring}{all}
 	);
 	# opening selected files
-	if (ref $files eq 'ARRAY') { Kephra::Document::Internal::add($_) for @$files }
+	if (ref $files eq 'ARRAY') { Kephra::Document::add($_) for @$files }
 }
 
-sub open_all_of_dir{
+sub open_all_of_dir {
 	my $dir = Kephra::Dialog::get_dir(
 		_dialog_l18n()->{file}{open_dir}, $Kephra::config{file}{current}{directory}
 	);
 	add_dir( $dir );
 }
 
-sub reload { reload_current(@_) } # alias
-sub reload_current {
-	my $file_path = Kephra::Document::get_file_path();
-	my $nr = Kephra::Document::current_nr();
+sub reload          { reload_current(@_) } # alias
+sub reload_current  {
+	my $file_path = Kephra::Document::Data::get_file_path();
+	my $nr = Kephra::Document::Data::current_nr();
 	if ($file_path and -e $file_path){
 		my $ep = Kephra::App::EditPanel::_ref();
-		Kephra::Document::Internal::save_properties();
+		Kephra::Document::Data::update_attributes();
 		$ep->BeginUndoAction;
 		$ep->SetText("");
 		Kephra::File::IO::open_pipe( $file_path );
 		$ep->EndUndoAction;
 		$ep->SetSavePoint;
-		Kephra::Document::Internal::eval_properties();
+		_remember_save_moment($file_path);
+		Kephra::Document::Data::evaluate_attributes();
 		Kephra::App::EditPanel::Margin::autosize_line_number()
 			if ($Kephra::config{editpanel}{margin}{linenumber}{autosize}
 			and $Kephra::config{editpanel}{margin}{linenumber}{width} );
-		_remember_save_moment($file_path);
+		Kephra::App::EditPanel::gets_focus();
 	} else {}
 }
-
-
-sub reload_all { 
+sub reload_all      { 
 	Kephra::Document::do_with_all( sub { reload_current() } )
 }
 
@@ -170,89 +183,95 @@ sub insert {
 		$ep->InsertText( $ep->GetCurrentPos, $text );
 	}
 }
-
+#
+sub _save_nr {
+	my $nr = shift;
+	$nr = Kephra::Document::Data::current_nr() unless defined $nr;
+	my $ep = Kephra::Document::Data::_ep( shift );
+	my $file = Kephra::Document::Data::get_file_path($nr);
+	return until defined $nr and $ep and -e $file;
+	my $save_config = $Kephra::config{file}{save};
+	return unless $ep->GetModify == 1 or $save_config->{unchanged};
+	rename $file, $file . '~' if $save_config->{tilde_backup} == 1;
+	Kephra::File::IO::write_buffer( $file, $ep->GetText );
+	$ep->SetSavePoint;
+	_remember_save_moment($file, $nr);
+}
 sub save         { save_current(@_) }
 sub save_current {
 	my ($ctrl, $event) = @_;
 	my $ep = Kephra::App::EditPanel::_ref();
-	my $file_name   = Kephra::Document::get_file_path();
+	my $file = Kephra::Document::Data::get_file_path();
 	my $save_config = $Kephra::config{file}{save};
 	if ( $ep->GetModify == 1 or $save_config->{unchanged} ) {
-		if ( $file_name and -e $file_name ) {
-			if (not -w $file_name ) {
+		if ( $file and -e $file ) {
+			if (not -w $file ) {
 				my $err_msg = _dialog_l18n()->{error};
 				Kephra::Dialog::warning_box( Kephra::App::Window::_ref(),
 					$err_msg->{write_protected}."\n".$err_msg->{write_protected2},
 					$err_msg->{file} );
 				save_as();
 			} else {
-				rename $file_name, $file_name . '~'
-					if $Kephra::config{file}{save}{tilde_backup} == 1;
-				Kephra::File::IO::write_buffer( $file_name, $ep->GetText );
-				# reloads the needed configs if the file was a config file
-				Kephra::Config::Global::eval_config_file($file_name)
+				_save_nr();
+				Kephra::Config::Global::eval_config_file($file)
 					if $save_config->{reload_config} == 1
-					and Kephra::Document::_get_attribute('config_file');
-				_remember_save_moment($file_name);
-				$ep->SetSavePoint;
+					and Kephra::Document::Data::get_attribute('config_file');
 			}
 		} else { save_as() }
 	}
 }
 
-
 sub save_as {
-	my $file_name = Kephra::Dialog::get_file_save(
+	my $file = Kephra::Dialog::get_file_save(
 		Kephra::App::Window::_ref(),
 		_dialog_l18n()->{file}{save_as},
 		$Kephra::config{file}{current}{directory},
 		$Kephra::temp{file}{filterstring}{all}
 	);
-	if (    $file_name
-	    and Kephra::Document::Internal::check_b4_overwite($file_name) ) {
-
+	if ( $file and check_b4_overwite($file) ) {
 		my $ep = Kephra::App::EditPanel::_ref();
-		my $oldname = Kephra::Document::get_file_path();
-		$Kephra::temp{document}{loaded}++ if defined $oldname and $oldname;
+		my $oldname = Kephra::Document::Data::get_file_path();
+		Kephra::Document::Data::inc_value('loaded') unless $oldname;
 
-		Kephra::Document::set_file_path($file_name);
-		Kephra::File::IO::write_buffer($file_name, $ep->GetText );
+		Kephra::Document::Data::set_file_path($file);
+		Kephra::File::IO::write_buffer($file, $ep->GetText );
 		$ep->SetSavePoint();
-		Kephra::Document::SyntaxMode::change_to('auto');
-		Kephra::Document::Internal::save_properties();
+		Kephra::Document::SyntaxMode::set('auto');
+		Kephra::Document::Data::update_attributes();
 		$Kephra::config{file}{current}{directory} = 
-			$Kephra::temp{current_do}{directory};
-		_remember_save_moment($file_name);
+			Kephra::Document::Data::get_attribute('directory');
+		_remember_save_moment($file);
 		Kephra::API::EventTable::trigger('document.list');
 	}
 }
 
 
 sub save_copy_as {
-	my $file_name = Kephra::Dialog::get_file_save(
+	my $file = Kephra::Dialog::get_file_save(
 		Kephra::App::Window::_ref(),
 		_dialog_l18n()->{file}{save_copy_as},
 		$Kephra::config{file}{current}{directory},
-		$Kephra::temp{file}{filterstring}{all} );
+		$Kephra::temp{file}{filterstring}{all}
+	);
 	Kephra::File::IO::write_buffer
-		( $file_name, Kephra::App::EditPanel::_ref()->GetText )
-		if $file_name and Kephra::Document::Internal::check_b4_overwite($file_name);
+		( $file, Kephra::App::EditPanel::_ref()->GetText )
+		if $file and check_b4_overwite($file);
 }
 
 
-sub rename {
+sub rename   {
 	my $new_path_name = Kephra::Dialog::get_file_save(
 		Kephra::App::Window::_ref(),
 		_dialog_l18n()->{file}{rename},
 		$Kephra::config{file}{current}{directory},
 		$Kephra::temp{file}{filterstring}{all} );
 	if ($new_path_name){
-		my $old_path_name = Kephra::Document::get_file_path();
+		my $old_path_name = Kephra::Document::Data::get_file_path();
 		rename $old_path_name, $new_path_name if $old_path_name;
-		Kephra::Document::set_file_path($new_path_name);
-		Kephra::Document::SyntaxMode::change_to('auto');
+		Kephra::Document::Data::set_file_path($new_path_name);
+		Kephra::Document::SyntaxMode::set('auto');
 		$Kephra::config{file}{current}{directory} = 
-			$Kephra::temp{current_doc}{directory};
+			Kephra::Document::Data::get_attribute('directory');
 		Kephra::API::EventTable::trigger('document.list');
 		_remember_save_moment($new_path_name);
 	}
@@ -279,18 +298,17 @@ sub save_all_named {
 	return unless $unsaved;
 
 	my $need_save_other;
-	my $cdoc_nr = Kephra::Document::current_nr();
-	for my $doc_nr  ( @{ Kephra::Document::all_nr()} ) {
-		$need_save_other = 1 if $doc_nr != $cdoc_nr
-						and Kephra::Document::Internal::get_tmp_value('name', $doc_nr)
-						and Kephra::Document::Internal::get_tmp_value('modified', $doc_nr);
+	my $cdoc_nr = Kephra::Document::Data::current_nr();
+	for my $doc_nr  ( @{ Kephra::Document::Data::all_nr()} ) {
+		my ($name, $mod) = Kephra::Document::Data::attributes(['name', 'modified'], $doc_nr);
+		$need_save_other = 1 if $doc_nr != $cdoc_nr and $name and $mod;
 	}
 	if ($need_save_other) {
 		Kephra::Document::do_with_all( sub {
 			my $file = shift;
 			save_current() if $file->{modified} and $file->{name};
 		} );
-	} elsif (can_save() and Kephra::Document::get_file_path()) {
+	} elsif (can_save() and Kephra::Document::Data::get_file_path()) {
 		save_current();
 	}
 }
@@ -301,7 +319,7 @@ sub print {
 	my $ep       = Kephra::App::EditPanel::_ref();
 	my $printer  = Wx::Printer->new;
 	my $printout = Wx::Printout->new(
-		"$Kephra::NAME $Kephra::VERSION : " . Kephra::Document::file_name()
+		"$Kephra::NAME $Kephra::VERSION : " . Kephra::Document::Data::file_name()
 	);
 	#$ep->FormatRange(doDraw,startPos,endPos,draw,target,renderRect,pageRect);
 	#$printer->Print( $frame, $printout, 1 );
@@ -314,7 +332,7 @@ sub close_current {
 	my ( $frame, $event ) = @_;
 	my $ep           = Kephra::App::EditPanel::_ref();
 	my $config       = $Kephra::config{file}{save};
-	my $save_answer  = wxNO;
+	my $save_answer  = Wx::wxNO;
 
 	# save text if options demand it
 	if ($ep->GetModify == 1 or $config->{unchanged} eq 1) {
@@ -325,8 +343,8 @@ sub close_current {
 					Kephra::App::Window::_ref(),
 					$l10n->{save_current}, $l10n->{close_unsaved} );
 			}
-			return if $save_answer == wxCANCEL;
-			if ($save_answer == wxYES or $config->{b4_close} eq '1')
+			return if $save_answer == Wx::wxCANCEL;
+			if ($save_answer == Wx::wxYES or $config->{b4_close} eq '1')
 				{ save_current() }
 			else{ savepoint_reached() if $ep->GetModify }
 		}
@@ -337,68 +355,55 @@ sub close_current {
 }
 
 
-sub close_other {
-	my $doc_nr = Kephra::Document::current_nr();
+sub close_other   {
+	my $doc_nr = Kephra::Document::Data::current_nr();
 	Kephra::Document::Change::to_number(0);
 	$_ != $doc_nr ? close_current() : Kephra::Document::Change::to_number(1)
-		for @{ Kephra::Document::all_nr() };
+		for @{ Kephra::Document::Data::all_nr() };
 }
 
-sub close_all { close_current() for @{ Kephra::Document::all_nr() } }
-
-sub close_unsaved         {&close_current_unsaved}
+sub close_all     { close_current() for @{ Kephra::Document::Data::all_nr() } }
+sub close_unsaved { close_current_unsaved(@_) }
 sub close_current_unsaved {
 	my ( $frame, $event ) = @_;
-	my $ep           = Kephra::App::EditPanel::_ref();
-	my $close_tab_nr = Kephra::Document::current_nr();
-	my $path         = Kephra::Document::get_file_path();
+	my $ep       = Kephra::App::EditPanel::_ref();
+	my $close_nr = Kephra::Document::Data::current_nr();
+	my $file     = Kephra::Document::Data::get_file_path();
+	my $buffer   = Kephra::Document::Data::get_value('buffer');
 
 	# empty last document
-	if ( $Kephra::temp{document}{buffer} == 1 ) {
-		$Kephra::temp{file}{current}{loaded} = 0;
-		Kephra::Document::Internal::reset();
+	if ( $buffer == 1 ) {
+		Kephra::Document::Data::set_value('loaded', 0);
+		Kephra::Document::reset();
 	}
-
 	# close document
-	elsif ( $Kephra::temp{document}{buffer} > 1 ) {
+	elsif ( $buffer > 1 ) {
 		# select to which file nr to jump
-		my $new_tab_nr = $close_tab_nr + 1;
-		if ( defined $Kephra::document{open}[$new_tab_nr] ) {
-			Kephra::Document::Change::to_number($new_tab_nr);
-			$Kephra::document{current_nr}--;
-		} else {
-			$new_tab_nr -= 2;
-			Kephra::Document::Change::to_number($new_tab_nr);
-		}
-		$Kephra::temp{document}{buffer}--;
-		$Kephra::temp{document}{loaded}--
-			if ( $Kephra::document{open}[$close_tab_nr]{file_path} );
-		Kephra::App::TabBar::delete_tab($close_tab_nr);
-
-		# release file data of closed file
-		if (ref $Kephra::document{open} eq 'ARRAY' ) {
-			splice @{$Kephra::document{open}}, $close_tab_nr, 1;
-			splice @{$Kephra::temp{document}{open}}, $close_tab_nr, 1;
-		}
-
-		#set correct internal pointer to new current file
-		Kephra::Document::set_current_nr( Kephra::Document::current_nr() );
-		Kephra::App::TabBar::refresh_all_label();
+		my $close_last = $close_nr == Kephra::Document::Data::last_nr();
+		Kephra::Document::Data::dec_value('buffer');
+		Kephra::Document::Data::dec_value('loaded')
+			if Kephra::Document::Data::get_file_path( $close_nr );
+		$close_last
+			? Kephra::Document::Change::to_number( $close_nr - 1 )
+			: Kephra::Document::Change::to_number( $close_nr + 1 );
+		Kephra::Document::Data::delete_slot( $close_nr );
+		Kephra::App::TabBar::delete_tab( $close_nr );
+#print "del $close_nr, $close_last when $buffer\n";
+		Kephra::Document::Data::set_current_nr( $close_nr ) unless $close_last;
 	}
-	#
 	Kephra::App::EditPanel::Margin::reset_line_number_width();
 	Kephra::API::EventTable::trigger('document.list');
-	#remember filepath in history
-	Kephra::File::History::add( $path );
+	# remember filepath in history
+	Kephra::File::History::add( $file );
+#print "add $file\n";
 }
 
-sub close_all_unsaved { close_unsaved() for @{ Kephra::Document::all_nr() } }
-
+sub close_all_unsaved { close_unsaved() for @{ Kephra::Document::Data::all_nr() } }
 sub close_other_unsaved {
-	my $doc_nr = Kephra::Document::current_nr();
+	my $doc_nr = Kephra::Document::Data::current_nr();
 	Kephra::Document::Change::to_number(0);
 	$_ != $doc_nr ? close_unsaved() : Kephra::Document::Change::to_number(1)
-		for @{ Kephra::Document::all_nr() };
+		for @{ Kephra::Document::Data::all_nr() };
 }
 
 1;

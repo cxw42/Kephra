@@ -1,0 +1,61 @@
+1.0:
+ - plugins: tree, commandline, projects, filesystem
+ - tools: outline, tidy, debugger
+
+
+0.6 Toolintegration
+ + tidy
+ + error highlighting/simple debugger
+ + App::Ack
+
+0.5 Plugin API
+ + code folding
+ + new nicer tabbar with moveable tabs
+ + UTF save, real logging
+ + more converter
+ 
+0.4.4 config dialog
+0.4.3 Plugin API
+0.4.2 new tabbar, better folding
+0.4.1 Folding, more converter
+
+0.4 fully configurable
+ + Searchbar, 10 doc spanning bookmarks, goto last edit, brace navigation
+ + notepad panel and one for the interpreter output
+ + menus for templates, closed files
+ + new contextmenus: (on selected text, on searchbar, on tabbar, on statusbar)
+ + autosave, autonotify (when file changed elsewhere), more formater
+ + all internal calls, events, menus and bars are compiled from text files
+ + checkable and disable menu items, starts even without configs with inline defaults
+
+ + menu item switch view of tabbar contextmenu
+ + position searchbar in the middle between tabbar and edit panel
+ + marking config files in tabs optionally with straight lines
+ + take autoautoindtion in statusbar tab-cell contextmenu
+ + blockformat  line break, 
+ + tabbar filename optional without ending: app > tabbar > file_info = [first]name
+ + firstname: new document property holds filname without ending
+ + can use [$$firstname] as template variable too
+ + reload templates on save
+ + move document line and page wise from searchbar input
+ + opens whole dir when dragged onto
+
+0.3 more comfort
+ + autoindent, bracelight, braceindent, block navigation
+ + search and replace in files, search item history
+ + file sessions, info symbols in ths tabbar, drag'n'drop of files
+ + enhanced statusbar is now interactive and has contextmenus
+ + on quit dialog for selecting files to save
+
+0.2 multi document handling
+ + find and replace dialog
+ + opens with same docs and settings as on close, otional ask before close
+ + autodetect EOL mode and write protection, faster IO
+ + more customizable Syntaxstyles with autoselect by fileending
+ + more visual helper, win XP look
+
+0.1 first public stable release
+ + edit only one document
+ + syntaxhighlighting
+ + basic file IO
+ + some graphic marker

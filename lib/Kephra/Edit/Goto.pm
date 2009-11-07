@@ -1,45 +1,55 @@
 package Kephra::Edit::Goto;
-our $VERSION = '0.06';
+our $VERSION = '0.09';
 
 use strict;
 use warnings;
-
-# editpanel navigation
-
 use Wx qw( wxCANCEL wxSTC_CMD_PARAUP wxSTC_CMD_PARADOWN wxSTC_FIND_REGEXP);
-
-sub _get_panel { Kephra::App::EditPanel::_ref() }
+#
+# internal calls
+#
+sub _ep_ref       { Kephra::App::EditPanel::_ref() }
 sub _center_caret { Kephra::Edit::_center_caret() }
-
-
+sub _pos {
+	my $ep  = _ep_ref();
+	my $pos = shift;
+	$pos += $ep->GetLength if $pos < 0;
+	$ep->GotoPos($pos);
+}
+#
+# simple jump calls
+#
 sub pos { position(@_) }
 sub position {
 	my $pos = shift;
-	my $ep  = _get_panel();
+	return unless $pos;
+	my $ep  = _ep_ref();
 	my $max = $ep->GetLength;
 	my $fvl = $ep->GetFirstVisibleLine;
 	my $visible = $ep->GetLineVisible( $ep->LineFromPosition($pos) );
 
-	$pos = 0 unless $pos or $pos < 0;
+	$pos += $max if $pos < 0;
+	$pos = 0 if $pos < 0;
 	$pos = $max if $pos > $max;
 	$ep->SetCurrentPos($pos);
 	$ep->SetSelection ($pos, $pos);
 	$ep->SearchAnchor;
-	_center_caret();
 	#$visible ? $ep->ScrollToLine($fvl) : _center_caret();
 	$ep->EnsureCaretVisible;
-	#_keep_focus();
+	$ep->EnsureVisible($ep->LineFromPosition($pos));
+	_center_caret();
 }
 sub next_visible_pos {
-	my $ep  = _get_panel();
+	my $ep  = _ep_ref();
 	my $line = $ep->GetCurrentLine();
 	return if $ep->GetLineVisible($line);
 	$line = $ep->GetFoldParent($line) until $ep->GetLineVisible($line);
 	$ep->GotoLine($line);
+	_center_caret();
 }
 
+sub line    { line_nr(@_) }
 sub line_nr {
-	my $ep = _get_panel();
+	my $ep = _ep_ref();
 	my $l18n = Kephra::Config::Localisation::strings()->{dialog}{edit};
 	my $line = Kephra::Dialog::get_number( 
 		Kephra::App::Window::_ref(),
@@ -50,20 +60,20 @@ sub line_nr {
 }
 
 sub last_edit {
-	position( $Kephra::document{current}{edit_pos} )
-		if defined $Kephra::document{current}{edit_pos};
+	my $pos = Kephra::Document::Data::attr('edit_pos');
+	position( $pos ) if defined $pos;
 }
 
 #
 # block navigation
 #
-sub prev_block{ _get_panel()->CmdKeyExecute(wxSTC_CMD_PARAUP)   }
-sub next_block{ _get_panel()->CmdKeyExecute(wxSTC_CMD_PARADOWN) }
+sub prev_block{ _ep_ref()->CmdKeyExecute(wxSTC_CMD_PARAUP)   }
+sub next_block{ _ep_ref()->CmdKeyExecute(wxSTC_CMD_PARADOWN) }
 #
 # brace navigation
 #
 sub prev_brace{
-	my $ep  = _get_panel();
+	my $ep  = _ep_ref();
 	my $pos = $ep->GetCurrentPos;
 	$ep->GotoPos($pos - 1) if $ep->BraceMatch($pos) > -1;
 	$ep->GotoPos($pos - 2) if $ep->BraceMatch($pos - 1) > -1;
@@ -74,7 +84,7 @@ sub prev_brace{
 }
 
 sub next_brace{
-	my $ep  = _get_panel();
+	my $ep  = _ep_ref();
 	my $pos = $ep->GetCurrentPos;
 	$ep->GotoPos($pos + 1);
 	$ep->SearchAnchor();
@@ -84,7 +94,7 @@ sub next_brace{
 }
 
 sub prev_related_brace{
-	my $ep  = _get_panel();
+	my $ep  = _ep_ref();
 	my $pos = $ep->GetCurrentPos;
 	my $matchpos = $ep->BraceMatch(--$pos);
 	$matchpos = $ep->BraceMatch(++$pos) if $matchpos == -1;
@@ -101,13 +111,13 @@ sub prev_related_brace{
 			$ep->SearchAnchor();
 			my $next_close = $ep->SearchPrev(0, $close_char);
 			if ($next_open < $next_close) { $ep->GotoPos( $next_open + 1 ) }
-			else                          { $ep->GotoPos( $next_close    ) }
+			else						  { $ep->GotoPos( $next_close	) }
 		}
 	}
 }
 
 sub next_related_brace{
-	my $ep  = _get_panel();
+	my $ep  = _ep_ref();
 	my $pos = $ep->GetCurrentPos;
 	my $matchpos = $ep->BraceMatch($pos);
 	$matchpos = $ep->BraceMatch(--$pos) if $matchpos == -1;
@@ -124,7 +134,7 @@ sub next_related_brace{
 			$ep->SearchAnchor();
 			my $next_close = $ep->SearchNext(0, $close_char);
 			if ($next_open < $next_close) { $ep->GotoPos( $next_open + 1 ) }
-			else                          { $ep->GotoPos( $next_close    ) }
+			else						  { $ep->GotoPos( $next_close	) }
 		}
 	}
 }

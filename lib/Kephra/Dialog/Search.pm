@@ -4,7 +4,7 @@ our $VERSION = '0.24';
 use strict;
 use warnings;
 
-use Wx qw(  
+use Wx qw(
 	wxVERTICAL wxHORIZONTAL wxLEFT wxRIGHT wxTOP wxBOTTOM wxGROW 
 	wxALIGN_LEFT wxALIGN_CENTER wxALIGN_RIGHT
 	wxALIGN_CENTER_VERTICAL wxALIGN_CENTER_HORIZONTAL 
@@ -72,6 +72,7 @@ sub ready {
 		$d_style |= wxSTAY_ON_TOP if $Kephra::config{app}{window}{stay_on_top};
 		$dsettings->{position_x} = 10 if $dsettings->{position_x} < 0;
 		$dsettings->{position_y} = 10 if $dsettings->{position_y} < 0;
+		$dsettings->{width} = Wx::wxMSW() ? 436 : 466;
 		if ( $Kephra::config{search}{history}{use} ) {
 			@find_history = @{ $Kephra::config{search}{history}{find_item} };
 			@replace_history = @{ $Kephra::config{search}{history}{replace_item} };
@@ -88,7 +89,7 @@ sub ready {
 			Kephra::App::Window::_ref(), -1, 
 			$l18n->{dialog}{search}{title},
 			[ $dsettings->{position_x}, $dsettings->{position_y} ],
-			[ 436                       , 268                   ], $d_style );
+			[ $dsettings->{width}     , 268                      ], $d_style );
 		my $icon = Wx::Icon->new;
 		my $icon_bmp = Kephra::API::CommandList::get_cmd_property
 			('view-dialog-find', 'icon');
@@ -446,7 +447,7 @@ sub quit_search_dialog {
 	$Kephra::temp{dialog}{search}{active} = 0;
 	$Kephra::temp{dialog}{active}--;
 
-	Kephra::API::EventTable::del_own_subscription( _ID() );
+	Kephra::API::EventTable::del_own_subscriptions( _ID() );
 
 	$win->Destroy();
 }

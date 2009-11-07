@@ -1,5 +1,5 @@
 package Kephra::Config::Default::Localisation;
-our $VERSION = '0.03';
+our $VERSION = '0.05';
 
 use strict;
 use warnings;
@@ -21,7 +21,8 @@ sub get {
 				file => 'File',
 				file_open => 'Open',
 				file_close => 'Close',
-				file_history => 'Recent',
+				file_history => 'Recently Closed',
+				file_save => 'Save',
 				file_session => 'Session',
 				file_insert_templates => 'Templates',
 				edit => 'Edit',
@@ -40,7 +41,7 @@ sub get {
 				tools => 'Tools',
 				document => 'Document',
 				document_change => 'Change',
-				'&document_list' => 'Select',
+				document_convert => 'Convert',
 				document_syntaxmode => 'Syntaxmode',
 				'document_syntaxmode_A-M' => 'A - M',
 				'document_syntaxmode_N-Z' => 'N - Z',
@@ -59,6 +60,7 @@ sub get {
 				view_contextmenu => 'Context Menus',
 				view_editpanel_contexmenu => 'Edit Panel',
 				view_textmargin => 'Text Margin',
+                view_text_fold => 'Folding',
 				config => 'Config',
 				config_app_lang => 'Language',
 				config_global => 'Global Config File',
@@ -70,7 +72,7 @@ sub get {
 			},
 			status => {
 				chars => 'Chars',
-				cloumn => 'Column',
+				column => 'Column',
 				line => 'Line',
 				lines => 'Lines',
 				selection => 'Selection',
@@ -85,7 +87,7 @@ sub get {
 		commandlist => {
 			label => {
 				app => {
-					'exit' => 'Exit',
+					exit => 'Exit',
 					'exit-unsaved' => 'Exit Without Save',
 				},
 				file => {
@@ -95,7 +97,7 @@ sub get {
 					reload => 'Reload',
 					'reload-all' => 'Reload All',
 					rename => 'Rename ...',
-					insert => 'Insert ...',
+					insert => 'Insert From ...',
 					close => {
 						current => 'Close',
 						all => 'Close All',
@@ -121,23 +123,23 @@ sub get {
 						'backup-save' => 'Save Backup',
 					},
 				},
-				'edit' => {
-					'changes' => {
-						'undo' => 'Undo',
-						'redo' => 'Redo',
+				edit => {
+					changes => {
+						undo => 'Undo',
+						redo => 'Redo',
 						'undo-several' => 'Fast Undo',
 						'redo-several' => 'Fast Redo',
 						'goto-begin' => 'Jump To Begin',
 						'goto-end' => 'Jump To End',
-						'delete' => 'Clear Records',
+						delete => 'Clear Records',
 					},
-					'cut' => 'Cut',
-					'copy' => 'Copy',
-					'paste' => 'Paste',
-					'replace' => 'Replace',
-					'delete' => 'Delete',
+					cut => 'Cut',
+					copy => 'Copy',
+					paste => 'Paste',
+					replace => 'Replace',
+					delete => 'Delete',
 					'delete-tab' => 'Del Tab',
-					'line' => {
+					line => {
 						'cut' => 'Cut',
 						'copy' => 'Copy',
 						duplicate => 'Duplicate',
@@ -152,14 +154,18 @@ sub get {
 							'page-down' => 'Move Page Down',
 						},
 					},
-					'selection' => {
-						'convert' => {
+					selection => {
+						convert => {
 							uppercase => 'Uppercase',
 							lowercase => 'Lowercase',
 							titlecase => 'Titlecase',
 							sentencecase => 'Sentencecase',
 							spaces2tabs => 'Spaces To Tabs',
 							tabs2spaces => 'Tabs To Spaces',
+							spaces2entities => 'Spaces To Entities',
+							entities2spaces => 'Entities To Spaces',
+							chars2entities => 'Chars To Entities',
+							entities2chars => 'Entities To Chars', 
 						},
 						comment => {
 							'add-perl' => 'Add Perl Style Comment',
@@ -170,12 +176,12 @@ sub get {
 							'add-xml' => 'Add XML Style Comment',
 							'del-xml' => 'Remove XML Style Comment',
 						},
-						'format' => {
+						format => {
 							'align-on-begin' => 'Align On Begin',
 							'block-on-right-margin' => 'Blockformat On Right Margin',
 							'block-on-width' => 'Blockformat On Width ...',
-							'linewrap-on-right-margin' => 'Linebreaks On Right Margin',
-							'linewrap-on-width' => 'Linebreaks On Width ...',
+							'linewrap-on-right-margin' => 'Linebreaks Before Right Margin',
+							'linewrap-on-width' => 'Linebreaks Before Width ...',
 							'indent-char' => 'Indent Space',
 							'dedent-char' => 'Dedent Space',
 							'indent-tab' => 'Indent Tab',
@@ -183,7 +189,7 @@ sub get {
 							'del-trailing-whitespace' => 'Delete Trailing Space',
 							'join-lines' => 'Join Lines',
 						},
-						'move' => {
+						move => {
 							'char-left' => 'Move Left',
 							'char-right' => 'Move Right',
 							'line-up' => 'Move Up',
@@ -192,35 +198,35 @@ sub get {
 							'page-down' => 'Move Page Down',
 						},
 					},
-					'document' => {
+					document => {
 						convert => {
 							indent2spaces => 'Indention 2 Whitespace',
 							indent2tabs => 'Indention 2 Tab',
 							spaces2tabs => 'Spaces 2 Tabs',
 							tabs2spaces => 'Tabs 2 Whitespace',
 						},
-						'format' => {
+						format => {
 							'del-trailing-whitespace' => 'Delete Trailing',
 						},
 					},
 				},
-				'select' => {
-					'document' => 'Select All',
+				select => {
+					document => 'Select All',
 					'to-block-begin' => '',
 					'to-block-end' => '',
 				},
-				'search' => {
+				search => {
 					'attribute' => {
 						'autowrap-switch' => 'Auto Wrap',
 						'incremental-switch' => 'Incremental Search',
 						'regex-switch' => 'Regular Expression',
-						'match' => {
+						match => {
 							'case-switch' => 'Match Case',
 							'whole-word-switch' => 'Whole Word only',
 							'word-begin-switch' => 'Word Begin',
 						},
 					},
-					'range' => {
+					range => {
 						selection => 'Selection',
 						document => 'Document',
 						'open-docs' => 'Open Documents'
@@ -228,9 +234,9 @@ sub get {
 				},
 				find => {
 					prev => 'Find Previous',
-					'next' => 'Find Next',
+					next => 'Find Next',
 					first => 'Find First',
-					'last' => 'Find Last',
+					last => 'Find Last',
 					selection => 'Find Selection',
 					'mark-all' => 'Mark all Matches',
 				},
@@ -239,14 +245,14 @@ sub get {
 					'next' => 'Replace Forward',
 					all => 'Replace All',
 					'with-confirm' => 'Replace With Confirm',
-					selection => 'Replace Selection',
+					selection => 'Replace Into Selection',
 				},
-				'goto' => {
+				goto => {
 					'last-edit' => 'Goto Last Edit',
 					line => 'Goto Line Number  ...',
 				},
 				bookmark => {
-					'goto' => {
+					goto => {
 						1 => 1,
 						2 => 2,
 						3 => 3,
@@ -274,13 +280,14 @@ sub get {
 				},
 				tool => {
 					note => 'Note',
-					'run-document' => 'Run',
-					'stop-document' => 'Stop',
+					'note-selection' => 'Note Selection',
+					'interpreter-run-document' => 'Run',
+					'interpreter-stop-document' => 'Stop',
+					'output-inc' => '@INC',
 				},
 				document => {
 					'auto-indention' => 'Autoindention',
 					'brace-indention' => 'Braceindention',
-					'brace-light' => 'Bracelight',
 					EOL => {
 						auto => 'Align',
 						'cr+lf' => 'CR+LF (Windows)',
@@ -298,8 +305,8 @@ sub get {
 					},
 					readonly => {
 						'as-attr' => 'As Attribute',
-						'on' => 'Always On',
-						'off' => 'Always Off',
+						on => 'Always On',
+						off => 'Always Off',
 					},
 					syntaxmode => {
 						auto => 'Autoselect',
@@ -319,7 +326,7 @@ sub get {
 						eiffel => 'Eiffel',
 						err => 'Errorlist',
 						forth => 'Forth',
-						fortran => 'FORTRAN',
+						fortran => 'FORTRAN 90',
 						html => 'HTML',
 						idl => 'IDL',
 						java => 'Java',
@@ -348,9 +355,9 @@ sub get {
 						yaml => 'YAML',
 					},
 					tabs => {
-						hard => 'Tabs (HT => "hard tabs")',
-						soft => 'Spaces (ST => "soft tabs")',
-						'use' => 'Use Tabs',
+						hard => 'Tabs (HT = hard tabs)',
+						soft => 'Spaces (ST = soft tabs)',
+						use => 'Use Tabs',
 						width => {
 							1 => 1,
 							2 => 2,
@@ -364,7 +371,7 @@ sub get {
 				},
 				view => {
 					dialog => {
-						config => 'Config Dialog',
+						config => 'Config Dialog ...',
 						find => 'Search Dialog',
 						replace => 'Replace Dialog',
 						info => 'About ...',
@@ -381,6 +388,13 @@ sub get {
 					editpanel => {
 						EOL => 'Lineend Marker',
 						'caret-line' => 'Caret Line',
+						'brace-light' => 'Bracelight',
+						'fold-toggle' => {
+							all => 'All',
+							'here' => 'Here',
+							'recursively' => 'Recursively',
+							'siblings' => 'Siblings',
+						},
 						font => 'Font',
 						'indention-guide' => 'Indention Guide',
 						'line-wrap' => 'Line Wrap',
@@ -389,15 +403,17 @@ sub get {
 						contextmenu => {
 							custom => 'Custom',
 							default => 'Default',
-							'no' => 'No Menu',
+							no => 'No Menu',
 						},
 						margin => {
 							marker => 'Marker Margin',
 							'line-number' => 'Line Number',
+							'text-fold' => 'Fold Margin',
 							text => {
 								0 => '0 px',
 								1 => 1,
 								2 => 2,
+								3 => 3,
 								4 => 4,
 								6 => 6,
 								8 => 8,
@@ -414,7 +430,7 @@ sub get {
 					'statusbar-contexmenu' => 'Statuscontext',
 					'statusbar-info' => {
 						date => 'File Date',
-						'length' => 'File Size',
+						length => 'File Size',
 						none => 'Nothing',
 					},
 					tabbar => 'Tabbar',
@@ -424,15 +440,13 @@ sub get {
 						search => 'Searchbar',
 						'search-goto' => 'Searchbar',
 					},
+					webpage => {
+						documentation => 'Online Docs',
+						forum => 'Perl Forum',
+					},
 					'window-stay-on-top' => 'Stay On Top',
 				},
 				config => {
-					'app-lang' => {
-						en => 'English',
-						de => 'Deutsch',
-						cs => 'Cesky',
-						nb => 'Norsk',
-					},
 					file => {
 						global => {
 							'open' => 'Open',
@@ -453,12 +467,6 @@ sub get {
 							statusbar => 'Statusbar',
 							toolbar => 'Toolbar',
 						},
-						localisation => {
-							en => 'English',
-							de => 'Deutsch',
-							cs => 'Cesky',
-							nb => 'Norsk',
-						},
 						syntaxmode => {
 							ada => 'Ada',
 							as => 'Actionscript',
@@ -475,7 +483,7 @@ sub get {
 							eiffel => 'Eiffel',
 							err => 'Errorlist',
 							forth => 'Forth',
-							fortran => 'FORTRAN',
+							fortran => 'FORTRAN 90',
 							html => 'HTML',
 							idl => 'IDL',
 							java => 'Java',
@@ -509,16 +517,16 @@ sub get {
 			},
 			help => {
 				app => {
-					'exit' => 'shut down the application and save settings and files',
+					exit => 'shut down the application and save settings and files',
 					'exit-unsaved' => 'shut down app without saving the open files',
 				},
 				file => {
 					new => 'opens a new empty text',
-					'open' => 'display an existing textfile as a new document',
+					open => 'display an existing textfile as a new document',
 					'open-dir' => 'open all files of this directory',
 					reload => 'read file from hard drive and replace content with displayed',
 					'reload-all' => 'reload all opened files',
-					'rename' => 'change current files name',
+					rename => 'change current files name',
 					insert => 'insert file content at caret position',
 					close => {
 						current => 'close current document, if preset the file will be saved',
@@ -534,9 +542,9 @@ sub get {
 						as => 'save current document under different file name',
 						'copy-as' => 'save doc with different name, keep current version open',
 					},
-					'print' => 'print the current document',
+					print => 'print the current document',
 					session => {
-						'open' => 'restore an once saved file session',
+						open => 'restore an once saved file session',
 						add => 'add files of a saved file session',
 						save => 'save order and properties of this file session',
 						import => 'open files session from another editors format',
@@ -547,25 +555,25 @@ sub get {
 				},
 				edit => {
 					changes => {
-						undo => 'mache letzte Änderung im Dokument rückgängig',
-						'redo' => 'zuletzt rückgängig gemachte Änderung wiederholen',
-						'undo-several' => 'mache mehrere Änderungen rückgängig',
-						'redo-several' => 'bringe mehrere Änderungen wieder',
-						'goto-begin' => 'bringe Zustand vor allen Änderungen zurück',
-						'goto-end' => 'hole alle gemachte Änderungen wieder',
-						'delete' => 'lösche alle Aufzeichnungen über Änderungen',
+						undo => 'undo the last change in the current document',
+						redo => 'redo the last change made undone',
+						'undo-several' => 'go several steps back in edit history',
+						'redo-several' => 'go several steps forward in edit history',
+						'goto-begin' => 'go back to the state before the first edit',
+						'goto-end' => 'go forward to the state after the last edit',
+						delete => 'deleting history of all editing changes',
 					},
 					cut => 'cut selected text and store it in the clipboard',
 					copy => 'copy selected text to the clipboard',
 					paste => 'insert text from the clipboard',
 					replace => 'replace selected text with the clipboard',
-					'delete' => 'delete and forget selected text',
-					'line' => {
+					delete => 'delete and forget selected text',
+					line => {
 						cut => 'cut current line and store it in the clipboard',
 						copy => 'copy current line to the clipboard',
 						duplicate => 'insert below a copy of the current line',
 						replace => 'replace current line with the clipboard',
-						'delete' => 'delete and forget current line',
+						delete => 'delete and forget current line',
 						'delete-left' => 'delete left side from textcursor of current line',
 						'delete-right' => 'delete right side from textcursor of current line',
 						move => {
@@ -583,22 +591,26 @@ sub get {
 							sentencecase => 'turn first char of every sentence uppercase',
 							spaces2tabs => 'convert groups of whitespace to tabs',
 							tabs2spaces => 'depends on current tab width',
+							spaces2entities => 'convert all whitespace to &npsp;',
+							entities2spaces => 'convert &npsp; to whitespace',
+							chars2entities => 'convert ISO 8859-1 character to HTML entities',
+							entities2chars => 'convert HTML entities to ISO 8859-1 characters',
 						},
 						comment => {
-							'add-perl' => 'insert \# after every indention',
-							'del-perl' => 'remove all \# following the indention',
+							'add-perl' => 'insert # after every indention',
+							'del-perl' => 'remove all # following the indention',
 							'toggle-perl' => 'comment all uncommented lines and vici versa',
-							'add-c' => 'surround selection with /* and */',
-							'del-c' => 'remove all /* and */ in the selection',
+							'add-c' => 'surround selection with / * and * /',
+							'del-c' => 'remove all / * and * / in the selection',
 							'add-xml' => 'surround selection with  <!-- and -->',
 							'del-xml' => 'remove all <!-- and --> in the selection',
 						},
-						'format' => {
+						format => {
 							'align-on-begin' => 'align line indentions on first line',
 							'block-on-right-margin' => 'format to textblock, that not cross right margin',
 							'block-on-width' => 'format to textblock with chosen width ...',
-							'linewrap-on-right-margin' => 'split lines before right margin',
-							'linewrap-on-width' => 'split lines before chosen width ...',
+							'linewrap-on-right-margin' => 'split lines before they reach the right margin',
+							'linewrap-on-width' => 'split lines to a chosen width ...',
 							'indent-char' => 'increase indention of the selected lines by 1',
 							'dedent-char' => 'decrease indention of the selected lines by 1',
 							'indent-tab' => 'increase indention by current tab size',
@@ -622,12 +634,12 @@ sub get {
 							spaces2tabs => 'convert all spaces to tabs in the current doc',
 							tabs2spaces => 'convert all tabs to spaces in the current doc',
 						},
-						'format' => {
+						format => {
 							'del-trailing-whitespace' => 'delete all trailing whitespace',
 						},
 					},
 				},
-				'select' => {
+				select => {
 					document => 'select entire document',
 					'to-block-begin' => '',
 					'to-block-end' => '',
@@ -643,7 +655,7 @@ sub get {
 							'word-begin-switch' => 'Word Begin',
 						},
 					},
-					'range' => {
+					range => {
 						selection => 'search and replace only within selected text',
 						document => 'search and replace in whole current document',
 						'open-docs' => 'search and replace in all open documents',
@@ -651,24 +663,24 @@ sub get {
 				},
 				find => {
 					prev => 'find the previous match of the textsearch',
-					'next' => 'find the next match of the textsearch',
+					next => 'find the next match of the textsearch',
 					first => 'find first textsearch match in document',
-					'last' => 'find last textsearch match in document',
+					last => 'find last textsearch match in document',
 					selection => 'remember selected text as current search item',
 				},
 				replace => {
 					prev => 'replace selection and find previous match',
-					'next' => 'replace selection and find next match',
+					next => 'replace selection and find next match',
 					all => 'replace all matches in current search range',
 					'with-confirm' => 'confirm or reject to replace every particular match',
 					selection => 'remember selected text as current replace item',
 				},
-				'goto' => {
+				goto => {
 					'last-edit' => 'jump to position of last change in this document',
 					line => 'jump to line with chosen number',
 				},
 				bookmark => {
-					'goto' => {
+					goto => {
 						1 => 'go to bookmark number 1',
 						2 => 'go to bookmark number 2',
 						3 => 'go to bookmark number 3',
@@ -696,17 +708,18 @@ sub get {
 				},
 				tool => {
 					note => 'jump to the notepad',
-					'run-document' => 'run current programm and show result in output panel',
-					'stop-document' => 'stop the current running output panel process',
+					'note-selection' => 'paste selected text into the notepad',
+					'interpreter-run-document' => 'run current programm and show result in output panel',
+					'interpreter-stop-document' => 'stop the current running output panel process',
+					'output-inc' => 'display the include pathes in the ouput panel',
 				},
 				document => {
-					'auto-indention' => 'indents new line like previous when Enter pressed ',
+					'auto-indention' => 'indents new line like previous when Enter pressed',
 					'brace-indention' => 'obey right indention after curly braces when press enter',
-					'brace-light' => 'highlights associated pairs of braices',
 					EOL => {
 						auto => 'make all line endings like in first line',
 						'cr+lf' => 'line endings for Windows or Dos',
-						cr => ' convert line endings to the Mac standart',
+						cr => 'convert line endings to the Mac standart',
 						lf => 'convert line endings to the UNIX standart',
 					},
 					change => {
@@ -720,7 +733,7 @@ sub get {
 					},
 					readonly => {
 						'as-attr' => 'turns write protection on if file is readonly',
-						'on' => 'disables every modification of this document',
+						on => 'disables every modification of this document',
 						off => 'makes document always editable even if it can\'t be saved',
 					},
 					syntaxmode => {
@@ -729,7 +742,7 @@ sub get {
 						ada => 'activate language settings for Ada',
 						as => 'activate settings for Macromedia Actionscript',
 						asm => 'language settings for Assembler',
-						ave => 'highlighting and settings for the Avennue language',
+						ave => 'open settings for the Avennue language',
 						baan => 'language of the Baan ERP systems',
 						batch => 'Microsofts classic commandline batch control language',
 						c => 'settings for the C / C++ language family',
@@ -755,7 +768,7 @@ sub get {
 						pascal => 'Niklaus Wirth\'s structured language Pascal',
 						perl => 'syntaxmode for Larry Walls Perl',
 						php => 'Rasmus Lehrdorf PHP Hypertext Prozessors',
-						property => 'highlighting for simple config files',
+						property => 'Highlighting for simple config files',
 						ps => 'Adobe\'s document desciption language Postscript',
 						python => 'Guido van Rossums dynamic language Python',
 						ruby => 'Yukihiro "Matz" Matsumoto\'s full objectoriented language',
@@ -772,7 +785,7 @@ sub get {
 					tabs => {
 						hard => 'insert a tab while hitting the tab key',
 						soft => 'insert several whitespaces while hitting tab key',
-						'use' => 'use tabs (hard tabs) or whitespaces (soft tabs)',
+						use => 'use tabs (hard tabs) or whitespaces (soft tabs)',
 						width => {
 							1 => 'set width of tabs to an equal of 1 character',
 							2 => 'set width of tabs to an equal of 2 characters',
@@ -803,6 +816,13 @@ sub get {
 					editpanel => {
 						EOL => 'switch visibility of the end of line marker',
 						'caret-line' => 'highlights row where caret(textcursor) is located',
+						'brace-light' => 'highlights associated pairs of braices',
+						'fold-toggle' => {
+							all => 'fold or unfold all visible and not visible nodes',
+							here => 'fold or unfold only the node on selected position',
+							recursively => 'fold or unfold this and all nodes below in hierarchy',
+							siblings => 'fold or unfold all nodes with same parent',
+						},
 						font => 'change font family, size, style etc.',
 						'indention-guide' => 'vertical dotted lines in intervals of tab width',
 						'line-wrap' => 'breaks long lines on window edge only visually',
@@ -811,7 +831,7 @@ sub get {
 						contextmenu => {
 							custom => 'aktivate customizable editpanel context menu',
 							default => 'aktivate default scintilla context menu',
-							'no' => 'deaktivate all editpanel context menu',
+							no => 'deaktivate all editpanel context menu',
 						},
 						margin => {
 							marker => 'margin for bookmarks, marker, debug steps ...',
@@ -820,12 +840,14 @@ sub get {
 								0 => 'set extra margin on both sides of textfield to 0 pixel',
 								1 => 'set extra margin on both sides of textfield to 1 pixel',
 								2 => 'set extra margin on both sides of textfield to 2 pixel',
+								3 => 'set extra margin on both sides of textfield to 3 pixel',
 								4 => 'set extra margin on both sides of textfield to 4 pixel',
 								6 => 'set extra margin on both sides of textfield to 6 pixel',
 								8 => 'set extra margin on both sides of textfield to 8 pixel',
 								10 => 'set extra margin on both sides of textfield to 10 pixel',
 								12 => 'set extra margin on both sides of textfield to 12 pixel',
 							},
+							'text-fold' => 'switch Margin for the text folding icons',
 						},
 					},
 					panel => {
@@ -836,7 +858,7 @@ sub get {
 					'statusbar-contexmenu' => 'enable or disable context menus on statusbar',
 					'statusbar-info' => {
 						date => 'display change date of the current file in statusbar info field',
-						'length' => 'display size info of the current file in statusbar info field',
+						length => 'display size info of the current file in statusbar info field',
 						none => 'display nothing in statusbar info field',
 					},
 					tabbar => 'switch visibility of the tabbar, toolbar for doc selection',
@@ -846,18 +868,18 @@ sub get {
 						search => 'toolbar with text seach and navigation functions',
 						'search-goto' => 'goto searchbar and use find function',
 					},
+					webpage => {
+						documentation => 'open online documentation with your default browser',
+						forum => 'go to a perl web forum based on current language setting',
+					},
+
 					'window-stay-on-top' => 'application window remains always visible',
 				},
 				config => {
-					'app-lang' => {
-						cs => 'change user interface language to czech',
-						de => 'change user interface language to german',
-						en => 'change user interface language to english',
-						nb => 'change user interface language to norwegian',
-					},
+					'app-lang' => 'change user interface language to',
 					file => {
 						global => {
-							'open' => 'open file with current global configurations',
+							open => 'open file with current global configurations',
 							reload => 'reload current global configuration file',
 							'load-from' => 'load global configs from chosen file',
 							'load-backup' => 'load global configs from backup',
@@ -875,12 +897,7 @@ sub get {
 							statusbar => 'open definition file for the statusbar',
 							toolbar => 'open default definition file for toolbars',
 						},
-						localisation => {
-							en => 'open english translation of application label texts',
-							de => 'open german translation of the application texts',
-							cs => 'open czech translation file',
-							nb => 'open norwegian translation file',
-						},
+						localisation => 'open translation file for language',
 						syntaxmode => {
 							ada => 'open file with settings for the Ada language',
 							as => 'open file with Macromedia Actionscript settings',
@@ -905,7 +922,7 @@ sub get {
 							latex => 'open syntaxmode for the Tex macros named LaTeX',
 							lisp => 'open settings for the almighty LISt Prozessor',
 							lua => 'settings for the extension language Lua',
-							nsis => ' language of the Nullsoft Scriptable Install System',
+							nsis => 'language of the Nullsoft Scriptable Install System',
 							make => 'highlighting for make tool scripts',
 							matlab => 'MATLAB scripting language',
 							pascal => 'settings for Niklaus Wirth\'s procedural language Pascal',
@@ -931,8 +948,17 @@ sub get {
 			},
 		},
 		dialog => {
+			config => {
+				title => 'Configuration Dialog',
+				panel => {
+					general => 'General',
+                    main_window => 'Main Window',
+					edit => 'Edit Panel',
+					files => 'Files',
+				},
+			},
 			config_file => {
-				load =>'load configuration from the file :',
+				load => 'load overall configuration from the file :',
 				save => 'store current program configuration into the file :',
 			},
 			edit => {
@@ -979,17 +1005,23 @@ sub get {
 				file_deleted_msg => 'The following file can not be found anymore :',
 			},
 			general => {
-				apply => 'Apply',
-				save => 'Save',
-				overwrite => 'Overwrite',
-				restore => 'Restore',
-				cancel => 'Cancel',
-				close => 'Close',
 				all => 'All',
+				apply => 'Apply',
+				cancel => 'Cancel',
+				changed => 'Changed',
+				close => 'Close',
+				deleted => 'Deleted',
+				dont_allow => 'Your settings dont allow this.',
+				ignore => 'Ignore',
+				none => 'None',
+				overwrite => 'Overwrite',
+				reload => 'Reload',
+				restore => 'Restore',
+				select => 'Select',
+				save => 'Save',
+				save_reload => 'Save as ... and Reload',
 				select => 'Select',
 				selected => 'Selected',
-				none => 'None',
-				dont_allow => 'Your settings dont allow this.',
 			},
 			help => {},
 			info => {
@@ -1046,14 +1078,6 @@ sub get {
 					document_end => 'find last In document',
 					replace_forward => 'replace and find next',
 					replace_backward => 'replace and find previous',
-				},
-			},
-			settings => {
-				title => 'Configuration Dialog',
-				panel => {
-					general => 'General',
-					edit => 'Edit Panel',
-					files => 'Files',
 				},
 			},
 		},

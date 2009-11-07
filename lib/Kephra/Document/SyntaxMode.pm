@@ -19,7 +19,7 @@ sub _ID {
 
 sub _get_auto{ &_get_by_fileending }
 sub _get_by_fileending {
-	my $file_ending = Kephra::Document::Internal::get_tmp_value('ending', shift );
+	my $file_ending = Kephra::Document::Data::get_attribute('ending', shift );
 	chop $file_ending if $file_ending and (substr ($file_ending, -1) eq '~');
 	my $language_id;
 	if ($file_ending) {
@@ -33,21 +33,20 @@ sub _get_by_fileending {
 
 sub switch_auto {
 	my $auto_style = _get_auto();
-	if (_ID() ne $auto_style) {change_to($auto_style)}
-	else                      {change_to('none')     }
+	if (_ID() ne $auto_style) { set($auto_style) }
+	else                      { set('none')      }
 }
 
-sub reload { change_to( _ID() ) }
+sub reload { set( _ID() ) }
 
-sub change_to {
+sub set {
+	my $style   = shift;
 	my $ep      = Kephra::App::EditPanel::_ref();
 	my $color   = \&Kephra::Config::color;
-	my $style   = shift;
 	$style = _get_by_fileending() if $style eq 'auto';
 	$style = 'none' unless $style;
 	# do nothing when syntaxmode of next doc is the same
-	return if _ID() eq $style;
-
+	#return if _ID() eq $style;
 	# prevent clash between big lexer & indicator
 	if ( $style =~ /asp|html|php|xml/ ) { $ep->SetStyleBits(7) }
 	else                                { $ep->SetStyleBits(5) }
@@ -82,7 +81,7 @@ sub change_to {
 			(wxSTC_STYLE_INDENTGUIDE,&$color($indicator->{indent_guide}{color}));
 	}
 
-	Kephra::Document::Internal::set_attribute( 'syntaxmode', $style );
+	Kephra::Document::Data::set_attribute( 'syntaxmode', $style );
 	_ID($style);
 	$ep->Colourise( 0, $ep->GetTextLength ); # refresh editpanel painting
 	# cleanup
@@ -93,5 +92,7 @@ sub change_to {
 
 sub compile {}
 sub apply_color {}
+
+sub open_file  { Kephra::Config::open_file( 'syntaxhighlighter', "$_[0].pm") }
 
 1;

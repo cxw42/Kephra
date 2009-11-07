@@ -1,5 +1,5 @@
 package Kephra::Config::Default::GlobalSettings;
-our $VERSION = '0.09';
+our $VERSION = '0.12';
 
 use strict;
 use warnings;
@@ -8,7 +8,7 @@ sub get {
 	return {
 		about => {
 			purpose => 'build in global settings',
-			version => $Kephra::VERSION,
+			version => $Kephra::VERSION || 'no',
 		},
 		app => {
 			app_data_sub_dir => 'interface',
@@ -49,8 +49,9 @@ sub get {
 			},
 			panel => {
 				notepad => {
-					content => 'extension/notepad/content.txt',
+					content_file => 'plugin/notepad/content.txt',
 					eval_with => 'eval',
+					font_family => 'Courier New',
 					font_size => 10,
 					size => 180,
 					visible => 0,
@@ -58,7 +59,8 @@ sub get {
 				output => {
 					append => 0,
 					back_color => '000022',
-					font_size => 9,
+					font_family => 'Terminal',
+					font_size => 10,
 					fore_color => 'ffffff',
 					interpreter_path => 'perl',
 					size => 100,
@@ -71,27 +73,24 @@ sub get {
 				visible => 1,
 			},
 			tabbar => {
-				button => {
-					close => 1,
-					new => 0,
-				},
+				close_button => 'current'     ,# (all|current|no)
 				contextmenu => 'document_list',# id of connected context menu
 				contextmenu_use => 1,          # (0|1) enable conextmenu ovr tabbar
-				file_info => 'name',           # -NI (name|firstname) which part of filename to show
+				file_info => 'file_name',      # (file_name|firstname) which part of filename to show
 				info_symbol => 1,              # (0|1) show *(unsaved) and #(write protected) symbols on end of tabs
-				insert => 'rightmost',         # -NI tab position of opened file
+				insert => 'rightmost',         # -NI (left|right) tab position of opened file
 				mark_configs => 1,             # (0|1) set configfile names in square brackets
 				max_tab_width => 25,           # max tab width in chars, longer filenames will be cut and ... added
 				middle_click => 'file-close-current',  # command that is performed when middle click over tabbar
+				movable_tabs => 1,             # (0|1) 
 				number_tabs => 0,              # (0|1) display a number before the file name in the tabs
-				seperator_line => 1,           # (0|1) visibility of seperator line above
 				switch_back => 1,              # (0|1) switch back if you klick on current tab
-				visible => 1,                  # (0|1) in tabbar you can see which files are open
+				tablist_button => 1,
 			},
 			toolbar => {
 				all => {
-					responsive => 1,
 					defaultfile => 'interface/appbars.yml',
+					responsive => 1,
 				},
 				main => {
 					contextmenu => 0,
@@ -106,7 +105,7 @@ sub get {
 					contextmenu => 'toolbar_search',
 					file => 'interface/appbars.conf',
 					node => 'searchbar',
-					position => 'bottom',     # (top|middle|bottom)
+					position => 'below',        # (above|below|bottom)
 					visible => 1,
 				},
 			},
@@ -145,15 +144,15 @@ sub get {
 			},
 		},
 		editpanel => {
-			DND_mode       => 'copy',
+			DND_mode => 'copy',
 			auto => {
 				brace => {
 					glue_tangent => 0,
 					indention => 1,# indet after opening braces 1 tab more
-					join => 1,    # deletes closing bracket if there are 2 and 1 has no matching partner
+					join => 1,     # deletes closing bracket if there are 2 and 1 has no matching partner
 					make => 1,     # generates closing bracket for ne blocks
 				},
-				focus => 1,
+				focus => 0,        # set focus on editpanel while onmouseover
 				indention => 1,    # indents new lines like previous
 			},
 			contextmenu => {
@@ -211,8 +210,9 @@ sub get {
 				fold => {
 					back_color => 'fff5f5',
 					fore_color => 'aa9977',
-					flag_line => 0,
+					flag_line => 1,
 					keep_caret_visible => 1,
+					style => 'boxes',          # (boxes|arrows) apearance of the fold marker
 					visible => 1,
 				},
 				linenumber => {
@@ -228,7 +228,7 @@ sub get {
 					fore_color => '000055',
 					visible    => 1
 				},
-				text => 4
+				text => 2
 			},
 			scroll_width => '640',
 			word_chars => '$%-@_abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ0123456789',
@@ -239,14 +239,16 @@ sub get {
 				'open'    => [],
 			},
 			defaultsettings => {
-				EOL_open    => 'auto',    # (auto|cr+lf|cr|lf) EOL settings for new files, -NI auto means take setting of the last touched file
-				EOL_new     => 'cr+lf',   # (auto|cr|lf|cr+lf) EOL of opened files, if not set to auto, the file automaticly will converted
+				EOL_new     => 'OS',      # (OS|auto|cr|lf|cr+lf)  EOL settings for new files, OS means current OS standart -NI auto means take setting of the last touched file
+				EOL_open    => 'auto',    # (auto|cr+lf|cr|lf) EOL of opened files, if not set to auto, 
+				                          # the file automaticly will converted to set value
 				codepage    => 65001,     # UTF codepage, used for charset
 				cursor_pos  => 0,
 				readonly    => 'protect', # (0|1|2|on|off|protect) if =1 it set a write protection on readonly files
 				syntaxmode  => 'auto',    # (auto|none|lang_id) which syntaxstyle on new files
 				tab_size    => '4',       # (0..n) how much (white)spaces equals one tab?
-				tab_use     => 0,         # use tab chars
+				tab_use_new => '1',       # (0|1) use of tab chars
+				tab_use_open=> 'auto',    # (auto|0|1) use of tab chars
 			},
 			endings => {
 				ada     => 'ada ads adb',
@@ -301,10 +303,11 @@ sub get {
 				web    => 'css html php perl js',
 			},
 			history => {
-				'length' => 10,
+				file => 'session/history.yml',
+				length => 10,
 				path => [],
 			},
-			'open' => {
+			open => {
 				dir_recursive       => 1, # opens dirs recursive
 				each_once           => 1, # opens each file only once
 				in_current_dir      => 1, # opens dialog with the directory of current file
@@ -349,7 +352,10 @@ sub get {
 				match_whole_word => 0,
 				match_word_begin => 0,
 			},
+			bookmark => {},
 			history => {
+				current_find_item => 'patch',
+				current_replace_item => '--',
 				'length' => 12,
 				remember_only_matched => 1,
 				save => 1,

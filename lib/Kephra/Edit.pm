@@ -15,16 +15,17 @@ use Wx qw(
 	wxSTC_CMD_WORDRIGHT wxSTC_FIND_WORDSTART wxSTC_CMD_LINEEND
 	wxSTC_CMD_DELETEBACK wxSTC_CMD_PASTE
 	wxSTC_MARK_CIRCLE wxSTC_MARK_ARROW wxSTC_MARK_MINUS
-	wxCANCEL);
+	wxCANCEL
+);
 
 #
 # internal helper function
 #
-sub _get_panel { Kephra::App::EditPanel::_ref() }
-sub _keep_focus{ Wx::Window::SetFocus( _get_panel() ) }
+sub _ep_ref { Kephra::App::EditPanel::_ref() }
+sub _keep_focus{ Wx::Window::SetFocus( _ep_ref() ) }
 
 sub _let_caret_visible {
-	my $ep = _get_panel();
+	my $ep = _ep_ref();
 	my ($selstart, $selend) = $ep->GetSelection;
 	my $los = $ep->LinesOnScreen;
 	if ( $selstart == $selend ) {
@@ -41,29 +42,30 @@ sub _let_caret_visible {
 }
 
 sub _center_caret {
-	my $ep = _get_panel();
+	my $ep = _ep_ref();
 	$ep->ScrollToLine($ep->GetCurrentLine - ( $ep->LinesOnScreen / 2 ));
 	$ep->EnsureCaretVisible;
 }
 
+my @pos_stack;
 sub _save_positions {
-	my $ep = _get_panel();
+	my $ep = _ep_ref();
 	my %pos;
-	$pos{document}  = Kephra::Document::current_nr();
+	$pos{document}  = Kephra::Document::Data::current_nr();
 	$pos{pos}       = $ep->GetCurrentPos;
 	$pos{line}      = $ep->GetCurrentLine;
 	$pos{col}       = $ep->GetColumn( $pos{pos} );
 	$pos{sel_begin} = $ep->GetSelectionStart;
 	$pos{sel_end}   = $ep->GetSelectionEnd;
-	push @{ $Kephra::temp{edit}{caret}{positions} }, \%pos;
+	push @pos_stack, \%pos;
 }
 
 sub _restore_positions {
-	my $ep = _get_panel();
-	my %pos      = %{ pop @{ $Kephra::temp{edit}{caret}{positions} } };
+	my $ep = _ep_ref();
+	my %pos = %{ pop @pos_stack };
 	if (%pos) {
 		Kephra::Document::Change::to_number( $pos{document} )
-			if $pos{document} != Kephra::Document::current_nr();
+			if $pos{document} != Kephra::Document::Data::current_nr();
 		$ep->SetCurrentPos( $pos{pos} );
 		$ep->GotoLine( $pos{line} ) if $ep->GetCurrentLine != $pos{line};
 		if ( $ep->GetColumn( $ep->GetCurrentPos ) == $pos{col} ) {
@@ -80,26 +82,25 @@ sub _restore_positions {
 }
 
 sub _select_all_if_none {
-	my $ep = _get_panel();
-	my ($start, $end) = $ep->GetSelection;
-	if ( $start == $end ) {
-		$ep->SelectAll;
-		$start = $ep->GetSelectionStart;
-		$end   = $ep->GetSelectionEnd;
-	}
-	return $ep->GetTextRange( $start, $end );
+    my $ep = _ep_ref();
+    my ($start, $end) = $ep->GetSelection;
+    if ( $start == $end ) {
+        $ep->SelectAll;
+        ($start, $end) = $ep->GetSelection;
+    }
+    return $ep->GetTextRange( $start, $end );
 }
 
-sub can_paste { _get_panel()->CanPaste }
-sub can_copy  { $Kephra::temp{current_doc}{text_selected} }
+sub can_paste { _ep_ref()->CanPaste }
+sub can_copy  { Kephra::Document::Data::get_value('text_selected') }
 
 # simple textedit
-sub cut       { _get_panel()->Cut }
-sub copy      { _get_panel()->Copy }
-sub paste     { _get_panel()->Paste }
+sub cut       { _ep_ref()->Cut }
+sub copy      { _ep_ref()->Copy }
+sub paste     { _ep_ref()->Paste }
 
 sub replace {
-	my $ep = _get_panel();
+	my $ep = _ep_ref();
 	my $length = ( $ep->GetSelectionEnd - $ep->GetSelectionStart );
 	$ep->BeginUndoAction;
 	$ep->SetSelectionEnd( $ep->GetSelectionStart );
@@ -109,12 +110,12 @@ sub replace {
 	$ep->EndUndoAction;
 }
 
-sub clear { _get_panel()->Clear; }
+sub clear { _ep_ref()->Clear; }
 
 sub del_back_tab{
-	my $ep = _get_panel();
+	my $ep = _ep_ref();
 	my $pos = $ep->GetCurrentPos();
-	my $tab_size = $Kephra::document{current}{tab_size};
+	my $tab_size = Kephra::Document::Data::attr('tab_size');
 	my $deltaspace = $ep->GetColumn($pos--) % $tab_size;
 	$deltaspace = $tab_size unless $deltaspace;
 	do { $ep->CmdKeyExecute(wxSTC_CMD_DELETEBACK) }
@@ -152,10 +153,10 @@ sub selection_move {
 }
 
 sub selection_move_left {
-	my $ep = _get_panel();
+	my $ep = _ep_ref();
 	if ( $ep->GetSelectionStart > 0 ) {
 		my $text = $ep->GetSelectedText();
-		my $eoll = $Kephra::temp{current_doc}{EOL_length};
+		my $eoll = Kephra::Document::Data::attr('EOL_length');;
 		$ep->BeginUndoAction;
 		$ep->ReplaceSelection("");
 		my $pos = $ep->GetCurrentPos;
@@ -169,10 +170,10 @@ sub selection_move_left {
 }
 
 sub selection_move_right {
-	my $ep = _get_panel();
+	my $ep = _ep_ref();
 	if ( $ep->GetSelectionEnd < $ep->GetTextLength ) {
 		my $text = $ep->GetSelectedText;
-		my $eoll = $Kephra::temp{current_doc}{EOL_length};
+		my $eoll = Kephra::Document::Data::attr('EOL_length');
 		$ep->BeginUndoAction;
 		$ep->ReplaceSelection("");
 		my $pos  = $ep->GetCurrentPos;
@@ -186,7 +187,7 @@ sub selection_move_right {
 }
 
 sub selection_move_up {
-	my $ep = _get_panel();
+	my $ep = _ep_ref();
 	if ( $ep->LineFromPosition( $ep->GetSelectionStart ) > 0 ) {
 		if ( $ep->GetSelectionStart == $ep->GetSelectionEnd ) {
 			$ep->BeginUndoAction;
@@ -200,7 +201,7 @@ sub selection_move_up {
 }
 
 sub selection_move_down {
-	my $ep = _get_panel();
+	my $ep = _ep_ref();
 	if ($ep->LineFromPosition( $ep->GetSelectionEnd ) < $ep->GetLineCount - 1) {
 		if ( $ep->GetSelectionStart == $ep->GetSelectionEnd ) {
 			$ep->BeginUndoAction;
@@ -214,7 +215,7 @@ sub selection_move_down {
 }
 
 sub selection_move_page_up {
-	my $ep  = _get_panel();
+	my $ep = _ep_ref();
 	my $linedelta = $ep->LinesOnScreen;
 	if ( $ep->LineFromPosition( $ep->GetSelectionStart ) > 0 ) {
 		if ( $ep->GetSelectionStart == $ep->GetSelectionEnd ) {
@@ -234,7 +235,7 @@ sub selection_move_page_up {
 }
 
 sub selection_move_page_down {
-	my $ep  = _get_panel();
+	my $ep = _ep_ref();
 	my $linedelta = $ep->LinesOnScreen;
 	if ($ep->LineFromPosition( $ep->GetSelectionEnd ) < $ep->GetLineCount - 1) {
 		if ( $ep->GetSelectionStart == $ep->GetSelectionEnd ) {
@@ -259,24 +260,24 @@ sub selection_move_page_down {
 sub insert_text {
 	my ($text, $pos) = @_;
 	return unless $text;
-	my $ep = _get_panel();
+	my $ep = _ep_ref();
 	if (defined $pos) { $ep->InsertText( $pos, $text) }
 	else              { $ep->AddText( $text ) }
 }
 
 sub insert_at_pos {
 	my ($text, $pos) = @_;
-	_get_panel()->InsertText( $pos, $text);
+	_ep_ref()->InsertText( $pos, $text);
 }
 
 ######################
 # Edit Line
 ######################
 
-sub cut_current_line { _get_panel()->CmdKeyExecute(wxSTC_CMD_LINECUT) }
-sub copy_current_line{ _get_panel()->CmdKeyExecute(wxSTC_CMD_LINECOPY)}
+sub cut_current_line { _ep_ref()->CmdKeyExecute(wxSTC_CMD_LINECUT) }
+sub copy_current_line{ _ep_ref()->CmdKeyExecute(wxSTC_CMD_LINECOPY)}
 sub double_current_line {
-	my $ep = _get_panel();
+	my $ep = _ep_ref();
 	my $pos = $ep->GetCurrentPos;
 	$ep->BeginUndoAction;
 	$ep->CmdKeyExecute(wxSTC_CMD_LINECOPY);
@@ -286,7 +287,7 @@ sub double_current_line {
 }
 
 sub replace_current_line {
-	my $ep   = _get_panel();
+	my $ep = _ep_ref();
 	my $line = $ep->GetCurrentLine;
 	$ep->BeginUndoAction;
 	$ep->GotoLine($line);
@@ -298,9 +299,9 @@ sub replace_current_line {
 	$ep->EndUndoAction;
 }
 
-sub del_current_line{_get_panel()->CmdKeyExecute(wxSTC_CMD_LINEDELETE)}
-sub del_line_left {_get_panel()->CmdKeyExecute(wxSTC_CMD_DELLINELEFT) }
-sub del_line_right{_get_panel()->CmdKeyExecute(wxSTC_CMD_DELLINERIGHT)}
+sub del_current_line{_ep_ref()->CmdKeyExecute(wxSTC_CMD_LINEDELETE)}
+sub del_line_left {_ep_ref()->CmdKeyExecute(wxSTC_CMD_DELLINELEFT) }
+sub del_line_right{_ep_ref()->CmdKeyExecute(wxSTC_CMD_DELLINERIGHT)}
 
 #
 sub eval_newline_sub{

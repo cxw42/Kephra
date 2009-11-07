@@ -113,7 +113,7 @@ TODO: {
     my $ref = Kephra::Config::File::load_node($file_name, 'full_menubar');
     is( ref($ref), 'ARRAY', 'full_menubar is ARRAY' );
     $Kephra::temp{path}{config} = 'share/config';
-    my $menubar_def = Kephra::Config::File::load_from_config_node_data ( {
+    my $menubar_def = Kephra::Config::File::load_from_node_data ( {
           'responsive' => 1,
           'file' => 'interface/mainmenu.yml',
           'node' => 'full_menubar'

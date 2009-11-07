@@ -1,53 +1,6 @@
 package Kephra::API::CommandList;
 our $VERSION = '0.15';
 
-=head1 NAME
-
-Kephra::API::CommandList - external API for user callable functions
-
-=head1 DESCRIPTION
-
-The CommandList is a dynamically changeable list, that contains all the 
-function calls for every menu item, toolbar button and most other widget items.
-It holds also label, help text, key binding, icon and more for each command.
-All these properties have to be changed globally here in a clean way.
-These commands where used by different gui elements, that allows menu and
-toolbar definitions to be very compact, readable and and easy changeable.
-
-Names of commands contain dashes as separator of namespaces.
-
-=head1 SPECIFICATION 
-
-CommandlistItem
-
-=over 4
-
-=item * ID - unique identifier, hashkey, following hash is its value
-
-=item * call - CODEREF : actual action, performed when this command is called
-
-=item * enable - CODEREF : returns enable status (0 for disable)
-
-=item * enable_event - string : API::EventTable ID when to check to en/disable
-
-=item * state - CODEREF : that returns state value (for switches)
-
-=item * state_event - string : API::EventTable ID when to check is state changed 
-
-=item * label - string : descriptive name
-
-=item * help - string : short help sentence
-
-=item * key - string : label of key binding
-
-=item * keycode - numeric keycode
-
-=item * icon - Wx::Bitmap
-
-=back
-
-=cut
-
 use strict;
 use warnings;
 
@@ -62,7 +15,8 @@ use Wx qw(
 use YAML::Tiny();
 
 
-my %list;  # the real commandlist 
+my %list;   # the real commandlist
+my @keymap; # maps numerical key code to cmd call ref
 sub data  { if (ref $_[0] eq 'HASH') { %list = %{$_[0]}  } else { \%list } }
 sub clear  { %list = () }
 sub file   { Kephra::Config::filepath( _config()->{file}) }
@@ -133,7 +87,7 @@ sub numify_key_code {
 	my $ctrl  = $k18n->{meta}{ctrl} . '+';
 	my %keycode_map = (
 		back => WXK_BACK, tab => WXK_TAB, enter => WXK_RETURN, esc => WXK_ESCAPE,
-		space => WXK_SPACE, plus => 43, '#' => 47, tilde => 92, 
+		space => WXK_SPACE, plus => 43, minus => 45, '#' => 47, tilde => 92, 
 		del=> WXK_DELETE, ins => WXK_INSERT,
 		pgup => WXK_PAGEUP, pgdn => WXK_PAGEDOWN, home => WXK_HOME, end => WXK_END,
 		left => WXK_LEFT, up => WXK_UP, right => WXK_RIGHT, down => WXK_DOWN,
@@ -169,7 +123,6 @@ sub numify_key_code {
 
 sub eval_cmd_data {
 	my @cmd = @_;
-	my $keymap = \@{$Kephra::app{editpanel}{keymap}};
 	#Kephra::Config::existing_dirpath( $Kephra::config{app}{iconset_path} );
 	my ($item_data, $ico_path);
 	for (@cmd){
@@ -179,7 +132,7 @@ sub eval_cmd_data {
 				if $item_data->{$node_type};
 		}
 		if ($item_data->{call} and $item_data->{key}){
-			$keymap->[$item_data->{keycode}] = $item_data->{call};
+			$keymap[$item_data->{keycode}] = $item_data->{call};
 		}
 		next unless $item_data->{icon};
 		$item_data->{icon} = Kephra::Config::icon_bitmap($item_data->{icon});
@@ -190,7 +143,6 @@ sub eval_cmd_data {
 ########################################
 # external API - getting cmd date, manipulating content
 ########################################
-
 sub new_cmd { replace_cmd(@_) unless exists $list{ $_[0] } }
 sub new_cmd_list {
 	for (@_) {
@@ -210,28 +162,24 @@ sub replace_cmd {
 }
 
 sub del_cmd { delete @list{$_[0]} }
-
-sub rename_ID {
+sub rename_cmd {
 	my ($old_ID, $new_ID) = @_;
 	return unless $new_ID and ref $list{$old_ID} eq 'HASH';
 	$list{$new_ID} = $list{$old_ID};
 	del_cmd($old_ID);
 }
-# explicit value of one command
-sub get_cmd_property {
+sub get_cmd_property {   # explicit value of one command
 	my $cmd_id = shift;
 	my $leafe = shift;
 	$list{$cmd_id}{$leafe}
 		if ref $list{$cmd_id} eq 'HASH'
 		and exists $list{$cmd_id}{$leafe};
 }
-# all values of one command
-sub get_cmd_properties {
+sub get_cmd_properties { # all values of one command
 	my $cmd_id = shift;
 	$list{$cmd_id} if ref $list{$cmd_id} eq 'HASH';
 }
-# values of same type from different commands
-sub get_property_list {
+sub get_property_list {  # values of same type from different commands
 	my $property = shift;
 	my @result;
 	for (@_) {
@@ -247,9 +195,8 @@ sub run_cmd_by_id {
 
 sub run_cmd_by_keycode {
 	my $keycode = shift;
-	my $keymap = $Kephra::app{editpanel}{keymap};
-	if (ref $keymap->[$keycode] eq 'CODE'){
-		$keymap->[$keycode]();
+	if (ref $keymap[$keycode] eq 'CODE'){
+		$keymap[$keycode]();
 		return 1;
 	}
 	return 0;
@@ -261,5 +208,52 @@ sub del_temp_data{
 	#delete $Kephra::localisation{key}
 	#	if exists $l18n->{key};
 }
+
+=head1 NAME
+
+Kephra::API::CommandList - external API for user callable functions
+
+=head1 DESCRIPTION
+
+The CommandList is a dynamically changeable list, that contains all the 
+function calls for every menu item, toolbar button and most other widget items.
+It holds also label, help text, key binding, icon and more for each command.
+All these properties have to be changed globally here in a clean way.
+These commands where used by different gui elements, that allows menu and
+toolbar definitions to be very compact, readable and and easy changeable.
+
+Names of commands contain dashes as separator of namespaces.
+
+=head1 SPECIFICATION 
+
+CommandlistItem
+
+=over 4
+
+=item * ID - unique identifier, hashkey, following hash is its value
+
+=item * call - CODEREF : actual action, performed when this command is called
+
+=item * enable - CODEREF : returns enable status (0 for disable)
+
+=item * enable_event - string : API::EventTable ID when to check to en/disable
+
+=item * state - CODEREF : that returns state value (for switches)
+
+=item * state_event - string : API::EventTable ID when to check is state changed 
+
+=item * label - string : descriptive name
+
+=item * help - string : short help sentence
+
+=item * key - string : label of key binding
+
+=item * keycode - numeric keycode
+
+=item * icon - Wx::Bitmap
+
+=back
+
+=cut
 
 1;

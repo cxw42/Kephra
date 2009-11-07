@@ -1,4 +1,4 @@
-package Kephra::API::Extension;
+package Kephra::API::Plugin;
 use strict;
 use warnings;
 
@@ -21,9 +21,12 @@ menus, menu items even whole modules.
 sub install {}
 sub uninstall {}
 
-sub load_all {}
+sub is_loaded {}
+sub all_loaded {}
+sub load_all {
+	#require Kephra::Extention::Demo;
+}
 sub load {}
 sub unload {}
-sub is_loaded {}
 
 1;

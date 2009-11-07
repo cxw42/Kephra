@@ -1,25 +1,26 @@
 package Kephra::App::ToolBar;
+our $VERSION = '0.07';
+
 use strict;
 use warnings;
-
-our $VERSION = '0.06';
+use Wx qw (
+	wxTB_HORIZONTAL wxTB_DOCKABLE
+	wxITEM_CHECK wxITEM_NORMAL
+	wxNullBitmap
+);
 
 # central lib for gui toolbars
 # storing, fetching, assemble data, creating regular button items
 
-use Wx qw(
-	wxITEM_NORMAL wxITEM_CHECK
-	wxTB_HORIZONTAL wxTB_DOCKABLE
-	wxNullBitmap 
-	);
-use Wx::Event qw( EVT_TOOL );
-
+my %toolbar;
 sub _ref {
-	if (ref $_[1] eq 'Wx::ToolBar') {$Kephra::app{toolbar}{$_[0]}{ref} = $_[1]}
-	else                            {$Kephra::app{toolbar}{$_[0]}{ref}}
+	if   (ref $_[1] eq 'Wx::ToolBar')  {$toolbar{$_[0]}{ref} = $_[1]}
+	elsif(exists $toolbar{$_[0]}{ref}) {$toolbar{$_[0]}{ref}}
 }
+sub _data         { $toolbar{$_[0]} if stored($_[0]) }
+sub stored        { 1 if ref $toolbar{$_[0]} eq 'HASH'}
 sub _create_empty {
-	return Wx::ToolBar->new( Kephra::App::Window::_ref(),
+	Wx::ToolBar->new( Kephra::App::Window::_ref(),
 			-1, [-1,-1], [-1,-1], wxTB_HORIZONTAL|wxTB_DOCKABLE );
 }
 
@@ -28,7 +29,7 @@ sub create_new {
 	my $bar_def = shift;
 	my $bar = _ref($bar_id);
 	# destroy old safely when overwrite
-	$bar->Destroy if defined $bar;
+	$bar->Destroy if defined $bar and $bar;
 	_ref ($bar_id, _create_empty());
 	create($bar_id, $bar_def);
 }
@@ -88,10 +89,11 @@ sub eval_data {
 	my $win = Kephra::App::Window::_ref();
 	my $item_kind;
 	my @rest_items = ();
-	my $bar_item_id = exists $Kephra::app{toolbar}{$bar_id}{item_id}
-		? $Kephra::app{toolbar}{$bar_id}{item_id}
+
+	my $bar_item_id = defined $toolbar{$bar_id}{item_id}
+		? $toolbar{$bar_id}{item_id}
 		: $Kephra::app{GUI}{masterID}++ * 100;
-	$Kephra::app{toolbar}{$bar_id}{item_id} = $bar_item_id;
+	$toolbar{$bar_id}{item_id} = $bar_item_id;
 	my $respond = $Kephra::config{app}{toolbar}{all}{responsive};
 
 	for my $item_data (@$bar_data){
@@ -101,14 +103,14 @@ sub eval_data {
 			if ($item_data->{type} eq 'checkitem'){
 				$item_kind = wxITEM_CHECK
 			} elsif ($item_data->{type} eq 'item'){
-				$item_kind = wxITEM_NORMAL 
+				$item_kind = wxITEM_NORMAL
 			} else { next }
 			my $item_id = $bar_item_id++;
 			my $tool = $bar->AddTool(
-				$item_id, '', $item_data->{icon}, wxNullBitmap, 
+				$item_id, '', $item_data->{icon}, wxNullBitmap,
 				$item_kind, $item_data->{label}, $item_data->{help}
 			);
-			EVT_TOOL ($win, $item_id, $item_data->{call});
+			Wx::Event::EVT_TOOL ($win, $item_id, $item_data->{call});
 			if (ref $item_data->{enable} eq 'CODE' and $respond){
 				$tool->Enable( $item_data->{enable}() );
 				for my $event (split /,/, $item_data->{enable_event}){
@@ -145,7 +147,7 @@ sub destroy {
 	my $bar = _ref( $bar_ID );
 	return unless $bar;
 	$bar->Destroy;
-	Kephra::API::EventTable::del_own_subscription( $bar_ID );
+	Kephra::API::EventTable::del_own_subscriptions( $bar_ID );
 }
 
 1;

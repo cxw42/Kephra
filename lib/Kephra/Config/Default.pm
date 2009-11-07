@@ -9,7 +9,32 @@ use warnings;
 
 sub global_settings {
 	require Kephra::Config::Default::GlobalSettings;
-	Kephra::Config::Default::GlobalSettings::get();
+	my $config=Kephra::Config::Default::GlobalSettings::get();
+	if ($^O=~/linux/i) {
+		$config->{editpanel}{font}{family} = 'DejaVu Sans Mono';
+		$config->{editpanel}{font}{size} = 10;
+		$config->{app}{panel}{output}{font_family} = 'DejaVu Sans Mono';
+		$config->{app}{panel}{output}{font_size} = 9;
+		$config->{app}{panel}{notepad}{font_family} = 'Nimbus Sans L';
+		$config->{app}{panel}{notepad}{font_size} = 10;
+		$config->{app}{window}{position_x} = 10;
+		$config->{app}{window}{position_y} = 10;
+		$config->{app}{window}{size_x} = 770;
+		$config->{app}{window}{size_y} = 525;
+	}
+	elsif ($^O=~/darwin/i) {
+		$config->{editpanel}{font}{family} = 'Monaco';
+		$config->{editpanel}{font}{size} = 12;
+		$config->{app}{panel}{output}{font_family} = 'Monaco';
+		$config->{app}{panel}{output}{font_size} = 11;
+		$config->{app}{panel}{notepad}{font_family} = 'Arial';
+		$config->{app}{panel}{notepad}{font_size} = 12;
+		$config->{app}{window}{position_x} = 10;
+		$config->{app}{window}{position_y} = 25;
+		$config->{app}{window}{size_x} = 780;
+		$config->{app}{window}{size_y} = 565;
+	}
+	return $config;
 }
 
 sub commandlist {

@@ -18,9 +18,9 @@ use Wx::Event qw( EVT_BUTTON EVT_CLOSE );
 our $dialog;
 
 sub file_changed {
-	my $file_nr = shift;#Kephra::Document::current_nr();
-	my $file_path = Kephra::Document::get_attribute('file_path', $file_nr);
-	my $file_name = Kephra::Document::get_tmp_value('name', $file_nr);
+	my $file_nr = shift;#Kephra::Document::Data::current_nr();
+	my $file_path = Kephra::Document::Data::get_attribute('file_path', $file_nr);
+	my $file_name = Kephra::Document::Data::get_attribute('name', $file_nr);
 	my $d10n = Kephra::Config::Localisation::strings()->{dialog};
 	my $g10n = $d10n->{general};
 
@@ -44,14 +44,14 @@ sub file_changed {
 	EVT_BUTTON($dialog, $dialog->{btn}{3},  sub {
 		quit_dialog();
 	} );
-		#Kephra::Document::set_tmp_value('did_notify', 'ignore', $file_nr);
+	#Kephra::Document::Data::get_attribute('did_notify', 'ignore', $file_nr);
 	ready_dialog($dialog);
 }
 
 sub file_deleted {
 	my $file_nr = shift;#Kephra::Document::current_nr();
-	my $file_path = Kephra::Document::get_attribute('file_path', $file_nr);
-	my $file_name = Kephra::Document::get_tmp_value('name', $file_nr);
+	my $file_path = Kephra::Document::Data::get_attribute('file_path', $file_nr);
+	my $file_name = Kephra::Document::Data::get_attribute('name', $file_nr);
 	my $d10n = Kephra::Config::Localisation::strings()->{dialog};
 	my $g10n = $d10n->{general};
 
@@ -75,7 +75,7 @@ sub file_deleted {
 	$dialog->{filename}->SetValue($file_path);
 	EVT_BUTTON($dialog, $dialog->{btn}{4},  sub {
 		quit_dialog();
-		Kephra::Document::set_tmp_value('did_notify', 'ignore', $file_nr);
+		Kephra::Document::Data::set_attribute('did_notify', 'ignore', $file_nr);
 	} );
 	ready_dialog($dialog);
 }

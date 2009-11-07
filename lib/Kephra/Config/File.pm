@@ -1,9 +1,8 @@
 package Kephra::Config::File;
-our $VERSION = '0.09';
+our $VERSION = '0.11';
 
 use strict;
 use warnings;
-
 #
 # internal
 #
@@ -18,7 +17,7 @@ sub _get_type {
 	return 'conf' if $name =~ /\.cfg$/;
 	return 'yaml' if $name =~ /\.yaml$/;
 	return 'yaml' if $name =~ /\.yml$/;
-	
+
 	return;
 	# TODO: log or throw exception if no or invalid file given
 
@@ -71,15 +70,16 @@ sub store {
 	elsif ($type eq 'yaml') { store_yaml($file_name, $config) }
 	Kephra::File::_remember_save_moment($file_name);
 }
-
-
 #
 # API 2 YAML
 #
-
-sub load_yaml  { &YAML::Tiny::LoadFile }
+sub load_yaml  {
+	if ($^O=~/(?:linux|darwin)/i) {
+		YAML::Tiny::Load( Kephra::File::IO::lin_load_file($_[0]) )
+	} 
+	else { &YAML::Tiny::LoadFile }
+}
 sub store_yaml { &YAML::Tiny::DumpFile }
-
 #
 # API 2 General::Config 
 #
@@ -89,7 +89,7 @@ sub load_conf {
 	my $utf = shift || 0;
 	my %config;
 	my $error_msg = Kephra::Config::Localisation::strings()->{dialog}{error};
-	$Kephra::app{config}{parser}{conf} = Config::General->new(
+	my %opt = (
 		-AutoTrue              => 1,
 		-UseApacheInclude      => 1,
 		-IncludeRelative       => 1,
@@ -97,11 +97,17 @@ sub load_conf {
 		-AllowMultiOptions     => 1,
 		-MergeDuplicateOptions => 0,
 		-MergeDuplicateBlocks  => 0,
-		-ConfigFile            => $configfilename,
 		-SplitPolicy           => 'equalsign',
 		-SaveSorted            => 1,
 		-UTF8                  => $utf,
 	);
+	if ($^O=~/(?:linux|darwin)/i) {
+		$opt{'-String'} = Kephra::File::IO::lin_load_file($configfilename);
+	}
+	else {
+		$opt{'-ConfigFile'} = $configfilename;
+	}
+	$Kephra::app{config}{parser}{conf} = Config::General->new(%opt);
 	if ( -e $configfilename ) {
 		eval { %config = $Kephra::app{config}{parser}{conf}->getall };
 		Kephra::Dialog::warning_box (undef,

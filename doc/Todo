@@ -1,0 +1,37 @@
+
+0.4.2 wishlist
+ - file open clutter
+ - to many attr acess
+ - insert pos
+ - read sesseion
+ - write session
+ - history
+ - bookmarks
+ - open dir dialog
+ - utf bug
+
+
+
+long time:
+
+plugins:
+- filebrowser
+- project manager
+- outlining
+- commandline
+- command tree aka snippet lib
+
+internal:
+ - Panel API 
+ - split output extension in output panel and interpreter tool
+ ? nested menu prepare event
+ + no global vars
+ + all event trigger are local
+ - every event handeled by eventtable
+
+---
+Legend:
+  
+ ? dunno how to do 
+ + almost done 
+ - waitens

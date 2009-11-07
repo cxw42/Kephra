@@ -1,7 +1,4 @@
 package Kephra::API::Panel;
-use strict;
-use warnings;
-
 our $VERSION = '0.00';
 
 =head1 NAME
@@ -16,6 +13,12 @@ modules-menu like e.g. a file manager.
 
 =cut
 
+use strict;
+use warnings;
+
+
+sub new {}
+sub get {}
 
 
 1;

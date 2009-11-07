@@ -4,7 +4,6 @@ our $VERSION = '0.08';
 use strict;
 use warnings;
 
-
 sub _ref    { Kephra::App::ToolBar::_ref( _name(), $_[0]) }
 sub _name   { 'main' }
 sub _ID     { _name().'_toolbar' }

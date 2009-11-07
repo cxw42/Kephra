@@ -3,14 +3,97 @@ BUGS:
  !!! test suite fails
  ! textchanged event triggers twice
 
-0.4.1.2 testing release
+0.4.1.14
+ ' added doc/Roadmap file
+ ~ doubleclick on panel splitter now reacts properly
+ ! Bookmarks work again
+
+0.4.1.13
+ + tabs are moveable by mouse now and still change in right order
+ " english l18n synced with defaults
+ ] extended/reformed Kephra::Document::Data a bit
+ ! new tabbar works suddenly, ahm finally
+ ! file save works again
+ ! toolbar icon respond properly
+
+0.4.1.12
+ " default l18n nsync again 
+ ! folding works again
+
+0.4.1.11
+ ~ note-selection gets key binding: shift+f4
+ " new key     : app > tabbar > movable_tabs
+ " new key     : app > tabbar > close_button
+ " new key     : app > tabbar > tablist_button
+ " removed key : app > tabbar > visible
+ ] shwitched Wx::NoteBook > Wx::AuiNoteBook
+ ] win distro updates to Wx 0.93
+ ] displays Scintilla version correct for newest Wx
+
+0.4.1.10
+ ! bug with output panel
+
+0.4.1.9
+ ] new stc ref handling
+ ] rewrite of whole Kephra::Document namespace
+ ! new docs ain't readonly
+
+0.4.1.8
+ + display @INC pathes
+ + open online doc and native lang forum URL in default browser
+ + recognizes now tab mode of opened file
+ + conf_key tab_use_new and tab_use_open (default auto)
+ ~ renamed fold margin label
+ ~ doc property bracelight is now view option
+ ~ tool-run-doc => tool-interpreter-run-doc (stop also)
+
+0.4.1.7
+ + file > defaultsettings > EOL_new can now be 'OS' => 
+   new files have lineendings according the OS you currently run
+ - no menu icons under mac
+ ~ rearrange main app layout (right panel goes from toolbar to statusbar)
+ ] define event groups
+ ] new module Kephra::Document::Property for by user changeable doc property
+ ! fixed autwrap on text search: finding next
+
+0.4.1.6
+ + rearranged context menu of tab status bar cell, can change tab width there now
+ ] patches from Andreas Kaschner++:
+ ! fixes in 02_config.t, Notepad.pm, StatusBar.pm, Default/CommandList.pm
+
+0.4.1.5
+ + convert spaces to its HTML entity
+ [ moving folding menu to fold margin in view menu
+ ] convert all ISO 8859-1 enteties except whitespace
+
+0.4.1.4
+ + fold all (alt+shift+plus)
+ + fold recursively (alt+shift+minus)
+ + these calls now on right click on fold margin
+ ~ changed key binding for fold: fold => alt+minus, fold siblings => alt+plus
+ ~ fold mouse binding: left => here, midd => recursive, right => siblings, l+f => all
+ ~ editpanel autofocus is now off per default
+ [ unfolding when goto a hidden line
+ ] convert more entities
+ " some locale strings were translated to wrong language
+
+0.4.1.3
+ + 2 new converter HTML entities to char and back
+ + second fold marker style set editpanel > margin > fold > style to arrows or boxes
+ + can set text margin to width of 3 px
+ + note selection
+ ~ config key app > panel > notepad > content renamed to content_file
+ [ folding functions now in menu visible
+ ! when text margin set 0 menu shows it now
+
+0.4.1.2
  + optional flagline showes where text is folded
  + option for keeping caret visible while folding
  ! fold siblings works now also in the first line
 
-0.4.1.1 testing release
+0.4.1.1
  + key binding for fold ops: fold => alt+plus, fold siblings => alt+shift+plus
- ! fixed CommandList cache logic, refreshes now if needed
+ ! fixed commandlist cache logic, refreshes now if needed
 
 0.4.1 testing release
 
@@ -465,7 +548,7 @@ BUGS:
  ! false autonotify on config files
 
 0.3.6.9
- + small fixes
+ ! small fixes
 
 0.3.6.8
  + autosave, define it under config key file > save > auto_save
@@ -569,7 +652,7 @@ BUGS:
 
 0.3.4.13
  - auto brace join
- ] beginnings of Modules and its Handeling
+ ] beginnings of Modules and its handling
  ! cursor in searchbar's edit field now holds its position whilse writing
 
 0.3.4.12
@@ -789,7 +872,7 @@ BUGS:
 
 0.3.2.6
  [ better goto line dialog
- ]+ can_save_all Event which is set whenn there is an unsaved doc
+ ] + can_save_all Event which is set whenn there is an unsaved doc
  ! correct checkings and disabling on all menu items
  ! tab change event echo
  ! del mismatch in searchbar combobox
@@ -904,7 +987,7 @@ BUGS:
  ! fixed blockindent
 
 0.3.0.25
- + Bookmarks workin now
+ + Bookmarks are working now
 
 0.3.0.24
  ! fixed tab converter
@@ -920,7 +1003,7 @@ BUGS:
  ! no label for unnamed files
 
 0.3.0.20
- + chow selected lines in statusbar
+ + show selected lines in statusbar
  ~ shorter format::join_lines algorithm
  ! typo in searchflag refresh
 

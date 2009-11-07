@@ -1,106 +1,96 @@
 package Kephra::Edit::Convert;
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 use strict;
 use warnings;
 
 use Wx qw(wxSTC_CMD_UPPERCASE wxSTC_CMD_LOWERCASE wxSTC_CMD_WORDRIGHT);
 
-# Convert
-sub upper_case {
+# wrapper method for the always same preparation and afterwork
+sub _default {
+	my $action = shift;
+	return until ref $action eq 'CODE';
 	my $ep = Kephra::App::EditPanel::_ref();
-	&Kephra::Edit::_save_positions;
-	&Kephra::Edit::_select_all_if_none;
-	$ep->CmdKeyExecute(wxSTC_CMD_UPPERCASE);
-	&Kephra::Edit::_restore_positions;
-}
-
-sub lower_case {
-	my $ep = Kephra::App::EditPanel::_ref();
-	&Kephra::Edit::_save_positions;
-	&Kephra::Edit::_select_all_if_none;
-	$ep->CmdKeyExecute(wxSTC_CMD_LOWERCASE);
-	&Kephra::Edit::_restore_positions;
-}
-
-sub title_case {
-	my $ep = Kephra::App::EditPanel::_ref();
-	&Kephra::Edit::_save_positions;
-	&Kephra::Edit::_select_all_if_none;
-	my ($sel_end, $pos) = ($ep->GetSelectionEnd, 0);
+	Kephra::API::EventTable::freeze_group('edit');
+	my ($begin, $end) = $ep->GetSelection;
+	Kephra::Edit::_save_positions();
 	$ep->BeginUndoAction;
-	$ep->SetCurrentPos( $ep->GetSelectionStart - 1 );
-	while () {
-		$ep->CmdKeyExecute(wxSTC_CMD_WORDRIGHT);
-		$pos = $ep->GetCurrentPos;
-		last if $sel_end <= $pos;
-		$ep->SetSelection( $pos, $pos + 1 );
-		$ep->CmdKeyExecute(wxSTC_CMD_UPPERCASE);
-	}
-	&Kephra::Edit::_restore_positions;
+	$ep->SelectAll if $begin == $end;
+	&$action( $ep );
 	$ep->EndUndoAction;
+	Kephra::Edit::_restore_positions();
+	Kephra::API::EventTable::thaw_group('edit');
 }
 
-sub sentence_case {
-	my $ep = Kephra::App::EditPanel::_ref();
-	my $line;
-	&Kephra::Edit::_save_positions;
-	&Kephra::Edit::_select_all_if_none;
-	my ($sel_end, $pos) = ($ep->GetSelectionEnd, 0);
-	$ep->BeginUndoAction;
-	$ep->SetCurrentPos( $ep->GetSelectionStart() - 1 );
-	while () {
-		$ep->CmdKeyExecute(wxSTC_CMD_WORDRIGHT);
-		$pos  = $ep->GetCurrentPos;
-		$line = $ep->LineFromPosition($pos);
-		if ($pos == $ep->GetLineEndPosition( $ep->LineFromPosition($pos) )) {
+# perform regexes on selection
+sub _tr {
+	my ($dir, @arg) = @_;
+	my ($fi, $ti);
+	($fi, $ti) = $dir eq 'fore' ? (0,1) : (1,0);
+	_default( sub {
+		my $ep = shift;
+		my $text = $ep->GetSelectedText();
+		$text =~ s/$_->[$fi]/$_->[$ti]/g for @arg;
+		$ep->ReplaceSelection($text);
+	} );
+}
+#
+# external calls
+#
+sub upper_case {_default( sub{ shift->CmdKeyExecute(wxSTC_CMD_UPPERCASE) } )}
+sub lower_case {_default( sub{ shift->CmdKeyExecute(wxSTC_CMD_LOWERCASE) } )}
+sub title_case {_default( sub{
+		my $ep = shift;
+		my ($sel_end, $pos) = ($ep->GetSelectionEnd, 0);
+		$ep->SetCurrentPos( $ep->GetSelectionStart - 1 );
+		while () {
 			$ep->CmdKeyExecute(wxSTC_CMD_WORDRIGHT);
 			$pos = $ep->GetCurrentPos;
+			last if $sel_end <= $pos;
+			$ep->SetSelection( $pos, $pos + 1 );
+			$ep->CmdKeyExecute(wxSTC_CMD_UPPERCASE);
 		}
-		last if $sel_end <= $pos;
-		$ep->SetSelection( $pos, $pos + 1 );
-		$ep->CmdKeyExecute(wxSTC_CMD_UPPERCASE);
-		$ep->SetCurrentPos( $pos + 1 );
-		$ep->SearchAnchor;
-		last if $ep->SearchNext( 0, "." ) == -1 ;
-	}
-	&Kephra::Edit::_restore_positions;
-	$ep->EndUndoAction;
-}
+} )}
 
-sub spaces2tabs {
-	Kephra::Edit::_save_positions();
-	my $ep = Kephra::App::EditPanel::_ref();
-	my $space = " " x $Kephra::document{current}{tab_size};
-	my $text = Kephra::Edit::_select_all_if_none();
-	$text =~ s/$space/\t/g;
-	$ep->BeginUndoAction();
-	$ep->ReplaceSelection($text);
-	$ep->EndUndoAction();
-	Kephra::Edit::_restore_positions();
-}
-
-sub tabs2spaces {
-	Kephra::Edit::_save_positions();
-	my $ep = &Kephra::App::EditPanel::_ref;
-	my $space = " " x $Kephra::document{current}{tab_size};
-	my $text = Kephra::Edit::_select_all_if_none();
-	$text =~ s/\t/$space/g;
-	$ep->BeginUndoAction;
-	$ep->ReplaceSelection($text);
-	$ep->EndUndoAction;
-	Kephra::Edit::_restore_positions();
-}
-
+sub sentence_case { _default( sub{
+		my $ep = shift;
+		my $line;
+		my ($sel_end, $pos) = ($ep->GetSelectionEnd, 0);
+		$ep->SetCurrentPos( $ep->GetSelectionStart() - 1 );
+		while () {
+			$ep->CmdKeyExecute(wxSTC_CMD_WORDRIGHT);
+			$pos  = $ep->GetCurrentPos;
+			$line = $ep->LineFromPosition($pos);
+			if ($pos == $ep->GetLineEndPosition( $ep->LineFromPosition($pos) )) {
+				$ep->CmdKeyExecute(wxSTC_CMD_WORDRIGHT);
+				$pos = $ep->GetCurrentPos;
+			}
+			last if $sel_end <= $pos;
+			$ep->SetSelection( $pos, $pos + 1 );
+			$ep->CmdKeyExecute(wxSTC_CMD_UPPERCASE);
+			$ep->SetCurrentPos( $pos + 1 );
+			$ep->SearchAnchor;
+			last if $ep->SearchNext( 0, "." ) == -1 ;
+		}
+} )}
+#
+#
+#
+sub _tabs2spaces { [' ' x Kephra::App::EditPanel::_ref()->GetTabWidth, "\t"] }
+sub spaces2tabs { _tr('fore', _tabs2spaces()) }
+sub tabs2spaces { _tr('back', _tabs2spaces()) }
+#
+#
+#
 sub indent2tabs   { _indention(1) }
 sub indent2spaces { _indention(0) }
 sub _indention {
-	my $use_tab = shift;
+	my $indention = shift;
 	my $ep = Kephra::App::EditPanel::_ref();
 	my ($begin, $end) = $ep->GetSelection;
-	my $indention = $ep->GetUseTabs;
+	my $use_tabs = $ep->GetUseTabs;
 	my $i;
-	$ep->SetUseTabs($use_tab);
+	$ep->SetUseTabs($indention);
 	$ep->BeginUndoAction();
 	for ($ep->LineFromPosition($begin) .. $ep->LineFromPosition($end)) {
 		$i = $ep->GetLineIndentation($_);
@@ -108,7 +98,43 @@ sub _indention {
 		$ep->SetLineIndentation( $_, $i );
 	}
 	$ep->EndUndoAction;
-	$ep->SetUseTabs($indention);
+	$ep->SetUseTabs($use_tabs);
 }
+#
+# HTML enteties
+#
+my $space2entety = [' ','&nbsp;'];
+my @char2entity = (
+	['à','&agrave;'],['á','&aacute;'],['â','&acirc;'],['ä','&auml;'],
+	['À','&Agrave;'],['Á','&Aacute;'],['Â','&Acirc;'],['Ä','&Auml;'],
+	['ã','&atilde;'],['å','&aring;'],['Ã','&Atilde;'],['Å','&Aring;'],
+	['æ','&aelig;'], ['Æ','&AElig;'],['ç','&ccedil;'],['Ç','&Ccedil;'],
+	['è','&egrave;'],['é','&eacute;'],['ê','&ecirc;'],['ë','&euml;'],
+	['È','&Egrave;'],['É','&Eacute;'],['Ê','&Ecirc;'],['Ë','&Euml;'],
+	['ð','&eth;'],   ['Ð','&ETH;'],  
+	['ì','&igrave;'],['í','&iacute;'],['î','&icirc;'],['ï','&iuml;'], 
+	['Ì','&Igrave;'],['Í','&Iacute;'],['Î','&Icirc;'],['Ï','&Iuml;'], 
+	['µ','&micro;'], ['ñ','&ntilde;'],['Ñ','&ntilde;'],
+	['ò','&ograve;'],['ó','&oacute;'],['ô','&ocirc;'],['ö','&ouml;'],
+	['Ò','&Ograve;'],['Ó','&Oacute;'],['Ô','&Ocirc;'],['Ö','&Ouml;'],
+	['õ','&otilde;'],['ø','&oslash;'],['Õ','&Otilde;'],['Ø','&Oslash;'],
+	['ù','&ugrave;'],['ú','&uacute;'],['û','&ucirc;'],['ü','&uuml;'],
+	['Ù','&Ugrave;'],['Ú','&Uacute;'],['Û','&Ucirc;'],['Ü','&Uuml;'],
+	['ý','&yacute;'],['Ý','&Yacute;'],['ÿ','&yuml;'], 
+	['þ','&thorn;'], ['Þ','&THORN;'], ['ß','&szlig;'],
+	['¦','&brvbar;'],['´','&acute;'], ['¸','&cedil;'],['¨','&uml;'],
+	['·','&middot;'],['¯','&macr;'],
+	['«','&laquo;'], ['»','&raquo;'], ['¡','&iexcl;'],['¿','&iquest;'],
+	['±','&plusmn;'],['×','&times;'], ['÷','&divide;'],
+	['¬','&not;'],   ['°','&deg;'],   ['º','&ordm;'], ['ª','&ordf;'],
+	['¹','&sup1;'],  ['²','&sup2;'],  ['³','&sup3;'],
+	['¼','&frac14;'],['½','&frac12;'],['¾','&frac34;'],
+	['¤','&curren;'],['¢','&cent;'],  ['£','&pound;'],['¥','&yen;'],
+	['§','&sect;'],  ['¶','&para;'],  ['©','&copy;'], ['®','&reg;'],
+);
+sub spaces2entities { _tr('fore', $space2entety) }
+sub entities2spaces { _tr('back', $space2entety) }
+sub chars2entities  { _tr('fore', @char2entity) }
+sub entities2chars  { _tr('back', @char2entity) }
 
 1;

@@ -1,3 +1,37 @@
+
+
+
+0.4.2 (0.4.1.11)
+ * folding changes
+   + fold all (alt+shift+plus)
+   + fold recursively (alt+shift+minus)
+   + key binding for fold ops: fold => alt+minus, fold siblings => alt+shift+minus
+   ~ fold mouse binding: left => here, midd => recursive, right => siblings, l+f => all
+   + optional flagline showes where text is folded
+   + option for keeping caret visible while folding
+ + second fold marker style set editpanel > margin > fold > style to arrows or boxes
+ + open online doc and native lang forum URL in default browser
+ + convert spaces to its HTML entity
+ + convert all ISO 8859-1 enteties except whitespace
+ + display @INC pathes
+ + recognizes now tab mode of opened file
+ + file > defaultsettings > EOL_new can now be 'OS' => 
+    new files have lineendings according the OS you currently run
+ + note selection on shift+f4
+ - no menu icons under mac
+ ~ doc property bracelight is now view option
+ ~ editpanel autofocus is now off per default
+ ~ rearranged main app layout (no more icons on tabbar)
+ ~ rearranged context menu of tab status bar cell, now with more items
+ ~ config key app > panel > notepad > content renamed to content_file
+ [ moving folding menu to fold margin in view menu
+ [ unfolding when goto a hidden line
+ [ can set text margin to width of 3 px
+ ] define event groups
+ ] new module Kephra::Document::Property for by user changeable doc property
+ " some locale strings were translated to wrong language
+ ! 8 fixes, many from Andreas Kaschner++:
+
 0.4.1
  * code folding support
  + fold sibling nodes
@@ -177,7 +211,7 @@
  ' some beginnings of czech localisation
  ! reload all docs switched to last doc
  ! move document line and page wise from searchbar input
- ! seach dialog icon shows again
+ ! search dialog icon shows again
  ! optimizing speed and undef value handling of menu data generation
  ! file first names now correct when it has no file ending
 
@@ -423,7 +457,7 @@
 0.1.64: german localisation, much faster reading of large files
         file menu: insert file, edit menu: format functions, convert functions
         document menu: eol mode, styles, spaces, write protection
-        Statusbar: cursorpos, eol, spaaces, style
+        Statusbar: cursorpos, eol, spaces, style
         save and load external configs, handling close window event
         config: many new styles, contextmenu, color and caret settings
 0.1.24: SECOND COMPLETE RELEASE (incl. PRE 0.2pre1)!
@@ -449,7 +483,8 @@ no matter which part, a bigger number comes always after a smaller, pce 0.2
 comes after pre 0.1.23
 
 PRE
-0.3. 2: Perl 5.8.8, wxPerl 0.26
+0.4.2 : Perl 5.10.0 wxperl 0.93
+0.3.2 : Perl 5.8.8, wxPerl 0.26
 0.3   : Perl 5.8.7, General::Config 0.30
 0.2.00: Perl 5.8.6, libs added, General::Config patched, better starter
 0.1.80: wxPerl 0.21, cpan: Hash::Merge, Clone.pm added

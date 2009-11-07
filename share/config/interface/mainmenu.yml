@@ -91,7 +91,7 @@ full_menubar:
           - item edit-line-move-page-up
           - item edit-line-move-page-down
       - menu navigation:#
-      - 
+      -
       -
         menu selection_format:
           - item edit-selection-format-indent-char
@@ -128,6 +128,11 @@ full_menubar:
           -
           - item edit-selection-convert-spaces2tabs
           - item edit-selection-convert-tabs2spaces
+          -
+          - item edit-selection-convert-spaces2entities
+          - item edit-selection-convert-entities2spaces
+          - item edit-selection-convert-chars2entities
+          - item edit-selection-convert-entities2chars
   -
     menu search:
       - item view-toolbar-search-goto
@@ -192,9 +197,12 @@ full_menubar:
   -
     menu tools:
       - item tool-note
+      - item tool-note-selection
       -
-      - item tool-run-document
-      - item tool-stop-document
+      - item tool-interpreter-run-document
+      - item tool-interpreter-stop-document
+      -
+      - item tool-output-inc
   -
     menu document:
       -
@@ -317,7 +325,6 @@ full_menubar:
               - checkitem document-syntaxmode-idl
               - checkitem document-syntaxmode-make
               - checkitem document-syntaxmode-matlab
-      - checkitem document-brace-light
       - checkitem document-brace-indention
       - checkitem document-auto-indention
       - checkitem document-tabs-use
@@ -360,7 +367,6 @@ full_menubar:
       -
         menu view_bars:
           - checkitem view-toolbar-main
-          - checkitem view-tabbar
           - checkitem view-toolbar-search
           - checkitem view-statusbar
       -
@@ -368,10 +374,17 @@ full_menubar:
       - checkitem view-editpanel-margin-line-number
       - checkitem view-editpanel-margin-text-fold
       -
+        menu view_text_fold:
+          - item view-editpanel-fold-toggle-here
+          - item view-editpanel-fold-toggle-recursively
+          - item view-editpanel-fold-toggle-siblings
+          - item view-editpanel-fold-toggle-all
+      -
         menu view_textmargin:
           - radioitem view-editpanel-margin-text-0
           - radioitem view-editpanel-margin-text-1
           - radioitem view-editpanel-margin-text-2
+          - radioitem view-editpanel-margin-text-3
           - radioitem view-editpanel-margin-text-4
           - radioitem view-editpanel-margin-text-6
           - radioitem view-editpanel-margin-text-8
@@ -380,6 +393,7 @@ full_menubar:
       -
       - checkitem view-editpanel-right-margin
       - checkitem view-editpanel-indention-guide
+      - checkitem view-editpanel-brace-light
       - checkitem view-editpanel-caret-line
       - checkitem view-editpanel-line-wrap
       - checkitem view-editpanel-EOL
@@ -396,11 +410,11 @@ full_menubar:
           - item config-file-global-open
           - item config-file-global-reload
           - item config-file-global-save
-          - 
+          -
           - item config-file-global-load-from
           - item config-file-global-merge
           - item config-file-global-save-as
-          - 
+          -
           - item config-file-global-load-backup
           - item config-file-global-load-defaults
       -
@@ -468,6 +482,9 @@ full_menubar:
       - item view-documentation-feature-list
       - item view-documentation-advanced-tour
       - item view-documentation-credits
+      -
+      - item view-webpage-documentation
+      - item view-webpage-forum
       -
       - item view-dialog-keymap
       - item view-dialog-info

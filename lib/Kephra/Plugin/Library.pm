@@ -1,4 +1,4 @@
-package Kephra::Extention::Library;
+package Kephra::Plugin::Library;
 use strict;
 use warnings;
 

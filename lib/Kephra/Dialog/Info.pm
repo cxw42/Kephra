@@ -1,5 +1,5 @@
 package Kephra::Dialog::Info;
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use strict;
 use warnings;
@@ -35,6 +35,7 @@ sub simple {
 	elsif ($v eq '2.6.3'){$sciv .= '1.62'}
 	elsif ($v eq '2.8.4'){$sciv .= '1.70'}
 	elsif ($v eq '2.8.7'){$sciv .= '1.70'}
+	elsif ($v eq '.8.10'){$sciv .= '1.70'}
 	my $content = "Kephra, Neter of software creation\n"
 		. "$info->{mady_by}  Herbert Breunung\n\n"
 		. "$info->{licensed} GPL (GNU Public License) \n"

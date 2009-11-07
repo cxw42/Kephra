@@ -1,33 +1,41 @@
 package Kephra::App::Window;    # Main application window
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use strict;
 use warnings;
-
-
 use base qw(Wx::Frame);
-use Wx qw(
-	wxDefaultPosition wxDefaultSize
-	wxDEFAULT_FRAME_STYLE wxNO_FULL_REPAINT_ON_RESIZE wxSTAY_ON_TOP 
+use Wx qw (
+	wxDEFAULT_FRAME_STYLE wxWINDOW_VARIANT_SMALL wxSTAY_ON_TOP
 	wxBITMAP_TYPE_ICO wxBITMAP_TYPE_XPM
 );
 
-sub _ref {
-	if (ref $_[0] eq 'Wx::Frame'){ $Kephra::app{window} = $_[0] }
-	else                         { $Kephra::app{window} }
-}
+my $frame;
+sub _ref { if (ref $_[0] eq 'Wx::Frame'){ $frame = $_[0] } else { $frame } }
 sub _config { $Kephra::config{app}{window} }
 
 sub create {
-	#shift->SUPER::new
 	my $win = Wx::Frame->new
-		(undef, -1, '', wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE);
+		(undef, -1, '', [-1,-1], [-1,-1], wxDEFAULT_FRAME_STYLE);
+	Wx::Window::SetWindowVariant($win, wxWINDOW_VARIANT_SMALL) if Wx::wxMAC;
 	_ref($win);
+	connect_events($win);
 	$win;
 }
 
-sub apply_settings{
-	my $win = _ref();
+sub connect_events {
+	my $win = shift || _ref();
+	my $trigger = \&Kephra::API::EventTable::trigger;
+	Wx::Event::EVT_MENU_OPEN ($win,  sub {&$trigger('menu.open')});
+	Wx::Event::EVT_DROP_FILES($win, \&Kephra::File::add_dropped);
+	Wx::Event::EVT_CLOSE     ($win,  sub {
+		&$trigger('app.close');
+		Kephra::App::exit() 
+	});
+	#EVT_IDLE       ($win,  sub { } );
+}
+
+sub apply_settings {
+	my $win = shift || _ref();
 	$win->DragAcceptFiles(1) if Wx::wxMSW();
 	my $icon_file = Kephra::Config::existing_filepath( _config()->{icon} );
 	load_icon( $win, $icon_file );
@@ -47,20 +55,20 @@ sub load_icon {
 	$frame->SetIcon( $icon ) if defined $icon;
 }
 
-
 sub set_title {
 	my $title = shift;
 	_ref()->SetTitle($title);
 
 }
+
 sub refresh_title {
 	my $appname = $Kephra::NAME;
 	my $version = $Kephra::VERSION;
 	my $untitled = Kephra::Config::Localisation::strings()->{app}{general}{untitled};
-	my $filepath = Kephra::Document::get_file_path() || "<$untitled>";
-	my $filename = Kephra::Document::file_name() || "<$untitled>";
-	my $docnr = Kephra::Document::current_nr() + 1;
-	my $doccount = Kephra::Document::last_nr();
+	my $filepath = Kephra::Document::Data::get_file_path() || "<$untitled>";
+	my $filename = Kephra::Document::Data::file_name() || "<$untitled>";
+	my $docnr = Kephra::Document::Data::current_nr() + 1;
+	my $doccount = Kephra::Document::Data::last_nr();
 	set_title( eval qq/"$Kephra::config{app}{window}{title}"/ );
 }
 
@@ -106,6 +114,7 @@ sub restore_positions{
 				{ $config->{size_y} = $screen_y - 55}
 			else{ $config->{size_y} = $default->{size_y} }
 		}
+		if (Wx::wxMAC) {$config->{size_y}-=23; if ($config->{position_y}<21) {$config->{position_y}=21;}}
 		$config->{position_x} = 0 if $screen_x < $config->{position_x};
 		$config->{position_y} = 0 if $screen_y < $config->{position_y};
 	} else {

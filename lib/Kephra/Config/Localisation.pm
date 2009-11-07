@@ -9,37 +9,43 @@ use YAML::Tiny();
 
 # handling config files under config/localisation
 my %strings;
-sub strings  { if (ref $_[0] eq 'HASH') {%strings = %{$_[0]}} else {\%strings} }
-sub _config  { $Kephra::config{app}{localisation} }
-sub _sub_dir { _config->{directory} if _config->{directory} }
-sub dir      { Kephra::Config::dirpath( _sub_dir() )        }
-sub file     { File::Spec->catfile( dir(), _config()->{file} ) if _config()->{file} }
+sub _set_strings { %strings = %{$_[0]} if ref $_[0] eq 'HASH' }
+sub strings   { \%strings }
+sub _config   { $Kephra::config{app}{localisation} }
+sub _sub_dir  { _config->{directory} if _config->{directory} }
 
 my %index;
-sub _index { if (ref $_[0] eq 'HASH') {%index = %{$_[0]}} else { \%index } }
+sub _index    { if (ref $_[0] eq 'HASH') {%index = %{$_[0]}} else { \%index } }
+my $language;
+sub language  { $language }
 
-sub set_file_name { file_name(@_) if @_ }
+sub file     { Kephra::Config::filepath(  _sub_dir(), _config()->{file} ) }
+sub set_file_name { file_name($_[0]) if defined $_[0]}
 sub file_name {
 	if (defined $_[0]) { _config()->{file} = $_[0] } else { _config()->{file} }
 }
+sub set_lang_by_file { $language = $index{ _config()->{file} }{ language } }
 
+#
 sub load {
 	my $file = file();
 	my $l = Kephra::Config::File::load( $file ) if defined $file;
 	$l = Kephra::Config::Default::localisation() unless $l and %$l;
-	%strings = %Kephra::localisation = %$l;
+	%strings = %$l;
+	set_lang_by_file();
 }
 
+
 sub change_to {
-	my ($lang) = shift;
-	return unless $lang;
-	set_documentation_lang( $lang );
-	set_file_name( _index()->{$lang}{file_name} );
+	my ($lang_file) = shift;
+	return unless $lang_file;
+	set_documentation_lang( _index()->{$lang_file}{iso_code} );
+	set_file_name( $lang_file );
 	Kephra::Config::Global::reload_tree();
 }
 
 # open localisation file in the editor
-sub open_file { Kephra::Show::_open_config( File::Spec->catfile(dir(), $_[0]) ) }
+sub open_file { Kephra::Config::open_file( _sub_dir(), $_[0]) }
 
 sub set_documentation_lang {
 	my $lang = shift;
@@ -48,34 +54,34 @@ sub set_documentation_lang {
 	$lang = 'english' unless $lang eq 'deutsch';
 	my $sb = Kephra::Config::Global::_sub_dir();
 	my $file = Kephra::Config::filepath( $sb, 'sub/documentation', $lang.'.conf' );
-	Kephra::Config::Tree::merge( Kephra::Config::File::load($file) );
+	%Kephra::config = %{ Kephra::Config::Tree::merge
+			(Kephra::Config::File::load($file), \%Kephra::config) };
 }
 
-#my %lang_map = (); config_localisation config_app_lang
+# create menus for l18n selection nd opening l18n files
 sub create_menus {
-	my $l18n_index = refresh_index();
+	my $l18n_index = _index();
 	return unless ref $l18n_index eq 'HASH';
 
-	my $l18n = strings->{commandlist}{help}{config};
+	my $l18n = strings()->{commandlist}{help}{config};
 	my ($al_cmd,  $fl_cmd) = ('config-app-lang', 'config-file-localisation');
 	my ($al_help, $fl_help) = Kephra::API::CommandList::get_property_list
 			('help', $al_cmd, $fl_cmd);
-#print("--$al_help  $fl_help\n");
 	my (@config_app_lang, @config_localisation);
-	for my $lang_code (sort keys %$l18n_index) {
-		my $lang_data = $l18n_index->{$lang_code};
+	for my $lang_file (sort keys %$l18n_index) {
+		my $lang_data = $l18n_index->{$lang_file};
 		my $lang = ucfirst $lang_data->{language};
-		my $file = $lang_data->{file_name};
+		my $lang_code = $lang_data->{iso_code};
 		my $al_lang_cmd = "$al_cmd-$lang_code";
 		my $fl_lang_cmd = "$fl_cmd-$lang_code";
 		Kephra::API::CommandList::new_cmd( $al_lang_cmd, {
-			call  => 'Kephra::Config::Localisation::change_to('."'".$lang_code."')",
-			state => 'Kephra::Config::Localisation::file_name() eq '."'".$file."'",
+			call  => 'Kephra::Config::Localisation::change_to('."'".$lang_file."')",
+			state => 'Kephra::Config::Localisation::file_name() eq '."'".$lang_file."'",
 			label => $lang, 
 			help  => "$al_help $lang",
 		});
 		Kephra::API::CommandList::new_cmd( $fl_lang_cmd, {
-			call  => 'Kephra::Config::Localisation::open_file('."'".$file."')",
+			call  => 'Kephra::Config::Localisation::open_file('."'".$lang_file."')",
 			label => $lang,
 			help  => "$fl_help $lang",
 		});
@@ -90,7 +96,7 @@ sub refresh_index {
 	my $use_cache = Kephra::Config::Interface::_config()->{cache}{use};
 	my $index_file = Kephra::Config::filepath
 		(Kephra::Config::Interface::_cache_sub_dir(), 'index_l18n.yml');
-	my $l18n_dir = dir();
+	my $l18n_dir = Kephra::Config::dirpath( _sub_dir() );
 
 	my %old_index = %{ YAML::Tiny::LoadFile( $index_file ) } if -e $index_file;
 	my %new_index;
@@ -98,7 +104,7 @@ sub refresh_index {
 	my ($FH, $file_name, $age, $line, $k, $v);
 	$File::Find::prune = 1;
 	File::Find::find( sub {
-		#dont check directories
+		# don't check directories
 		return if -d $_; 
 		$file_name = $_;
 		$age = Kephra::File::IO::get_age($file_name);
@@ -108,12 +114,13 @@ sub refresh_index {
 			return;
 		}
 		open $FH, '<', $_ ;
+		binmode($FH, ":raw:crlf");
 		$line = <$FH>;
 		chomp $line;
-		if ($line =~ m|.*<about>$|){
+		if ($line =~ m|<about>|){
 			while (<$FH>){
 				chomp;
-				last if $_ =~ m|\s*</about>|;
+				last if $_ =~ m|</about>|;
 				($k, $v) = split /=/;
 				$k =~ tr/ \t//d;
 				$v =~ /\s*(.+)\s*/;
@@ -126,13 +133,6 @@ sub refresh_index {
 	$File::Find::prune = 0;
 
 	YAML::Tiny::DumpFile($index_file, \%new_index);
-
-	# taking iso codes as indices
-	for my $file (keys %new_index) {
-		$new_index{$file}{file_name} = $file;
-		$new_index{ $new_index{$file}{iso_code} } = $new_index{$file};
-		delete $new_index{$file};
-	}
 	_index(\%new_index);
 	\%new_index;
 }

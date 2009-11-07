@@ -16,7 +16,7 @@ use Kephra;
 #$Kephra::temp{path}{config} = './share/config';
 #$Kephra::temp{path}{help} = './share/help';
 
-$Kephra::STANDALONE = 1;
+$Kephra::STANDALONE = 'dev';
 
 unlink 'share/config/global/autosaved.conf';
 unlink 'share/config/global/autosaved.conf~';

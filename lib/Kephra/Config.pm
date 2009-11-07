@@ -13,48 +13,11 @@ use Wx qw( wxBITMAP_TYPE_ANY );
 ##################################
 # Files and Dirs
 ##################################
-
-sub init {
-	my $basedir;
-	#$Kephra::temp{path}{user} = $ENV{HOME};
-	# set locations of boot files
-	$Kephra::temp{file}{config}{auto}      = 'global/autosaved.conf';
-	$Kephra::temp{file}{img}{splashscreen} = 'interface/icon/splash/start_kephra.jpg';
-
-	if ($Kephra::STANDALONE) {
-		$basedir = Cwd::cwd();
-		$basedir = File::Spec->catdir($basedir, 'share')
-			if $Kephra::STANDALONE eq 'dev';
-	} else {
-		my $copy_defaults;
-		$basedir = Kephra::configdir();
-		if (not -d $basedir) {$copy_defaults = 1 }
-		else {
-			my $bootfile = File::Spec->catfile
-				( $basedir, 'config', $Kephra::temp{file}{config}{auto} );
-			if (-r $bootfile) {
-				my $config_tree = Kephra::Config::File::load($bootfile);
-				$copy_defaults = 1 if not defined $config_tree->{about}{version}
-				                   or $config_tree->{about}{version} ne $Kephra::VERSION;
-			}
-		}
-		Kephra::user_config() if $copy_defaults;
-		my $testfile = File::Spec->catfile( $basedir, 'config', 'syntaxmode', 'perl.conf');
-		if (-e $testfile and not -w $testfile) {
-			File::Find::find( sub {chmod(0700, $_)  if -f $_}, ($basedir));
-		}
-	}
-	$Kephra::temp{path}{config} = File::Spec->catdir($basedir, 'config');
-	$Kephra::temp{path}{help} = File::Spec->catdir($basedir, 'help');
-	$Kephra::temp{path}{logger} = File::Spec->catdir($basedir, 'log');
-
-	# make config files acessable
-	# absolete when real syntax modes work
-	push @INC, $Kephra::temp{path}{config};
-}
+my $dir;
+sub _dir { if (defined $_[0]) {$dir = $_[0]} else {$dir} }
 
 # Generate a path to a configuration file
-sub filepath { File::Spec->catfile( $Kephra::temp{path}{config}, @_ ) if $_[0] }
+sub filepath { File::Spec->catfile( $dir, @_ ) if $_[0] }
 
 sub existing_filepath {
 	my $path = filepath( @_ );
@@ -64,7 +27,7 @@ sub existing_filepath {
 	return $path;
 }
 
-sub dirpath { File::Spec->catdir( $Kephra::temp{path}{config}, @_ ) }
+sub dirpath { File::Spec->catdir( $dir, @_ ) }
 
 sub existing_dirpath {
 	my $path = dirpath( @_ );
@@ -80,6 +43,12 @@ sub path_matches {
 	my $given = shift;
 	for my $path (@_) { return 1 if $given eq standartize_path_slashes($path) }
 	return 0;
+}
+
+sub open_file {
+	Kephra::Document::add( filepath(@_) );
+	Kephra::Document::Data::set_attribute('config_file',1);
+	Kephra::App::TabBar::refresh_current_label();
 }
 ##################################
 # Wx GUI Stuff

@@ -3,10 +3,10 @@ our $VERSION = '0.02';
 
 use strict;
 use warnings;
-
+=pod
 # verbose config hash ops
 
-
+=cut
 sub get_subtree { &subtree }
 sub subtree {
 	my $config = shift;

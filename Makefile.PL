@@ -7,6 +7,7 @@ use 5.006;
 name           'Kephra';
 all_from       'lib/Kephra.pm';
 requires       'Cwd';
+requires       'Encode::Guess'         => 0;
 requires       'File::UserConfig';
 requires       'Config::General'       => 2.40;
 requires       'YAML::Tiny'            => 0.31;

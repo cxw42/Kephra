@@ -20,8 +20,8 @@ sub save_on_exit {
 
 	# count unsaved dacuments?
 	my $unsaved_docs = 0;
-	for ( @{ Kephra::Document::all_nr() } ) {
-		$unsaved_docs++ if Kephra::Document::get_tmp_value('modified', $_)
+	for ( @{ Kephra::Document::Data::all_nr() } ) {
+		$unsaved_docs++ if Kephra::Document::Data::get_attribute('modified', $_)
 	}
 
 	# if so...
@@ -45,11 +45,11 @@ sub save_on_exit {
 		my $l10n = Kephra::Config::Localisation::strings->{dialog}{general};
 
 		# generating checkbox list of unsaved files
-		for ( @{ Kephra::Document::all_nr() } ) {
-			if ( Kephra::Document::get_tmp_value('modified', $_) ) {
+		for ( @{ Kephra::Document::Data::all_nr() } ) {
+			if ( Kephra::Document::Data::get_attribute('modified', $_) ) {
 				$file_name = 
-					Kephra::Document::get_file_path($_) || 
-					Kephra::Localisation::strings()->{app}{general}{untitled};
+					Kephra::Document::Data::get_file_path($_) || 
+					Kephra::Config::Localisation::strings()->{app}{general}{untitled};
 				$check_label = 1 + $_ . ' ' . $file_name;
 				$check_boxes[$_] = Wx::CheckBox->new($dialog, -1, $check_label);
 				$check_boxes[$_]->SetValue(1);
@@ -108,16 +108,10 @@ sub save_on_exit {
 ################
 sub save_selected {
 	my @check_boxes = @{ shift; };
-	my $doc_nr = &Kephra::Document::current_nr;
 	for ( 0 .. $#check_boxes ) {
-		if ( ref $check_boxes[$_] ne '' ) {
-			if ( $check_boxes[$_]->GetValue ) {
-				Kephra::Document::Internal::change_pointer($_);
-				&Kephra::File::save_current;
-			}
-		}
+		Kephra::File::_save_nr($_)
+			if ref $check_boxes[$_] ne '' and $check_boxes[$_]->GetValue;
 	}
-	Kephra::Document::Change::to_number($doc_nr);
 }
 
 sub quit_dialog {

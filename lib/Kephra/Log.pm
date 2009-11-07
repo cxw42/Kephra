@@ -59,8 +59,18 @@ sub _logger {
 
 sub msg { message(@_) }
 sub message {
-	
+	#Wx::LogMessage( "Hello from MyTimer::Notify!" );
+#  Wx::Log::SetActiveTarget( delete $this->{OLDLOG} );
+    #$this->{OLDLOG} =
+      #Wx::Log::SetActiveTarget( Wx::LogTextCtrl->new( $this->{TEXT} ) );
+#
+    #Wx::LogTraceMask( 'test', "You can't see this!" );
+    #Wx::Log::AddTraceMask( 'test' );
+    #Wx::LogTraceMask( "Wx::LogTraceMask" );
+    #Wx::Log::SetActiveTarget( $this->{PANEL}->{OLDLOG} );
 }
+
+sub warn { Kephra::App::StatusBar::info_msg(@_) }
 
 
 1;

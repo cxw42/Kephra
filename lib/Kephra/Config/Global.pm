@@ -1,17 +1,21 @@
 package Kephra::Config::Global;
-our $VERSION = '0.25';
+our $VERSION = '0.26';
 
 use strict;
 use warnings;
 
 # handling main config files under /config/global/
 
-sub _sub_dir       {'global'}
-sub file  {Kephra::Config::filepath( $Kephra::temp{file}{config}{auto})}
 my %settings;
+sub settings { \%settings }
+
+my $file;
+sub _sub_dir {'global'}
+sub _file    { if (defined $_[0]) { $file = $_[0]} else { $file } }
+sub auto_file{ $file }
 
 sub load_autosaved {
-	my $autosave = file();
+	my $autosave = auto_file();
 	my $backup = $autosave . '~';
 	#$main::logger->debug("load_autosaved");
 
@@ -31,7 +35,7 @@ sub load_autosaved {
 
 sub save_autosaved {
 	#$main::logger->debug("save_autosaved");
-	my $file_name = file();
+	my $file_name = auto_file();
 	rename $file_name, $file_name . '~';
 	Kephra::Config::File::store( $file_name, \%Kephra::config );
 }
@@ -39,13 +43,12 @@ sub save_autosaved {
 
 sub open_current_file {
 	save_current();
-	Kephra::Document::Internal::add( file() );
+print auto_file(),"\n";
+	Kephra::Config::open_file( auto_file() );
 	#Kephra::File::reload_current();
-	Kephra::Document::set_attribute('config_file',1);
-	Kephra::App::TabBar::refresh_current_label();
 }
 
-sub load_backup_file { reload( file() . '~' ) }
+sub load_backup_file { reload( auto_file() . '~' ) }
 
 sub load_defaults {
 	%Kephra::config = %{ Kephra::Config::Default::global_settings() };
@@ -64,17 +67,17 @@ sub load_from {
 
 sub update {
 	Kephra::App::Window::save_positions();
-	Kephra::Document::Internal::save_properties();
+	Kephra::Document::Data::update_attributes();
 	Kephra::Edit::Bookmark::save_all();
-	Kephra::Extension::Notepad::save();
-	Kephra::Extension::Output::save();
+	Kephra::Plugin::Notepad::save();
+	Kephra::Plugin::Output::save();
 }
 
 sub evaluate {
 	my $t0 = new Benchmark;
-
 	Kephra::API::EventTable::del_all();
 	Kephra::API::EventTable::stop_timer();
+
 
 	my $t1 = new Benchmark;
 print "  iface cnfg:", Benchmark::timestr( Benchmark::timediff( $t1, $t0 ) ), "\n"
@@ -86,7 +89,6 @@ print "  iface cnfg:", Benchmark::timestr( Benchmark::timediff( $t1, $t0 ) ), "\
 	Kephra::Document::SyntaxMode::_ID('none');
 	Kephra::Edit::Search::_init_history();
 	Kephra::Edit::Search::_refresh_search_flags();
-
 	my $t2 = new Benchmark;
 print "  prep. data:", Benchmark::timestr( Benchmark::timediff( $t2, $t1 ) ), "\n"
 	if $Kephra::BENCHMARK;
@@ -103,11 +105,11 @@ print "  create gui:", Benchmark::timestr( Benchmark::timediff( $t3, $t2 ) ), "\
 	Kephra::App::MenuBar::create();
 	Kephra::App::MainToolBar::create();
 	Kephra::App::SearchBar::create();
-	Kephra::App::TabBar::create();
+	Kephra::App::TabBar::apply_settings();
 	Kephra::App::StatusBar::create();
 
-	Kephra::Extension::Notepad::create();
-	Kephra::Extension::Output::create();
+	Kephra::Plugin::Notepad::create();
+	Kephra::Plugin::Output::create();
 
 	Kephra::App::assemble_layout();
 	Kephra::Config::Interface::del_temp_data();
@@ -118,11 +120,11 @@ print "  apply sets:", Benchmark::timestr( Benchmark::timediff( $t4, $t3 ) ), "\
 
 	Kephra::App::ContextMenu::connect_all();
 	Kephra::App::EditPanel::apply_settings();
-	Kephra::Edit::Bookmark::define_marker();
 
 	Kephra::Config::build_fileendings2syntaxstyle_map();
 	Kephra::Config::build_fileendings_filterstring();
 
+	#Kephra::API::EventTable::start_timer();
 	#thats o todo list:
 	#Kephra::API::EventTable::thaw_all();
 	#Kephra::App::clean_acc_table();
@@ -132,9 +134,9 @@ print "  apply sets:", Benchmark::timestr( Benchmark::timediff( $t4, $t3 ) ), "\
 
 
 sub reload {
-	my $configfile = shift || file();
+	my $configfile = shift || auto_file();
 	if ( -e $configfile ) {
-		Kephra::Document::Internal::save_properties();
+		Kephra::Document::Data::update_attributes();
 		my %test_hash = %{ Kephra::Config::File::load($configfile) };
 		if (%test_hash) {
 			%Kephra::config = %test_hash;
@@ -154,7 +156,7 @@ sub reload_tree {
 	update();
 	evaluate();
 	Kephra::App::TabBar::refresh_all_label();
-	Kephra::Document::Internal::eval_properties();
+	Kephra::Document::Data::evaluate_attributes();
 }
 
 sub reload_current { reload( file() ) }
@@ -170,7 +172,7 @@ sub eval_config_file {
 	my $match = \&Kephra::Config::path_matches;
 
 	if ( &$match( $file_path, 
-		$Kephra::temp{file}{config}{auto},
+		auto_file(),
 		$conf->{localisation_file},
 		$conf->{commandlist}{file}        )) {
 		return reload();
@@ -212,7 +214,7 @@ sub save_as {
 	save($file_name) if ( length($file_name) > 0 );
 }
 
-sub save_current { save( file() ) }
+sub save_current { save( auto_file() ) }
 
 #
 sub merge_with {
@@ -235,5 +237,9 @@ sub load_subconfig {
 	}
 }
 
+sub open_templates_file {
+	my $config = $Kephra::config{file}{templates}; 
+	Kephra::Config::open_file( $config->{directory}, $config->{file} );
+}
 
 1;

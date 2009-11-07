@@ -18,6 +18,7 @@ requires:
   Cwd: 0
   POSIX: 0
   Text-Wrap: 0
+  Encode-Guess: 0
   File-Find: 0
   File-UserConfig: 0
   Config-General: 0.30

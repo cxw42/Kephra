@@ -21,13 +21,10 @@ for main Docs please go to the main Module named L<Kephra>.
 
 use strict;
 use vars qw{ $ALLINC $DEV_START};
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 our $STANDALONE = '';
 
 
-
-use Benchmark ();
-my $t0;
 
 BEGIN {
 	# set it true if you like to have a relocatable (by simple copy) editor
@@ -37,21 +34,11 @@ BEGIN {
 
 	push @INC, 'kre/lib', 'kre/site' if $ALLINC;
 	push @INC, 'src' if $STANDALONE;
-
-	$t0 = Benchmark->new; 
 }
 
 use Kephra;
 
 $Kephra::STANDALONE = $STANDALONE;
-$Kephra::BENCHMARK = 0;           # switch for benchmark output
+$Kephra::LOGLEVEL = 0;            # switch for benchmark output
 
-print "src loaded in:",
-	Benchmark::timestr( Benchmark::timediff( Benchmark->new, $t0 ) ), "\n"
-	if $Kephra::BENCHMARK;
-
-
-# first splashscreen without caution to app but fast
-#use Wx::Perl::SplashFast ($pathes{config}.$Kephra::temp{file}{img}{splashscreen}, 150) ;
-
-Kephra->new->MainLoop;            # starter for the main app
+Kephra::start();                  # starter for the main app

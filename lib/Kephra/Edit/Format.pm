@@ -1,5 +1,5 @@
 package Kephra::Edit::Format;
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 
 use strict;
 use warnings;
@@ -9,21 +9,23 @@ use Wx qw(
 	wxSTC_CMD_WORDLEFT wxSTC_CMD_WORDRIGHT
 );
 
-sub _edit_panel { Kephra::App::EditPanel::_ref() }
+sub _ep_ref { Kephra::App::EditPanel::_ref() }
 
 # change indention width of selected text
 sub _indent_selection {
 	my $width = shift || 0;
-	my $ep    = _edit_panel();
+	my $ep    = _ep_ref();
 	$ep->BeginUndoAction;
-	$ep->SetLineIndentation( $_, $ep->GetLineIndentation($_) + $width ) 
-		for $ep->LineFromPosition($ep->GetSelectionStart)
-		 .. $ep->LineFromPosition($ep->GetSelectionEnd);
+	for (    $ep->LineFromPosition($ep->GetSelectionStart)
+	      .. $ep->LineFromPosition($ep->GetSelectionEnd)   ) {
+		$ep->SetLineIndentation( $_, $ep->GetLineIndentation($_) + $width )
+			unless $ep->PositionFromLine($_) == $ep->GetLineEndPosition($_);
+	}
 	$ep->EndUndoAction;
 }
 
 sub autoindent {
-	my $ep   = _edit_panel();
+	my $ep  = _ep_ref();
 	my $line = $ep->GetCurrentLine;
 
 	$ep->BeginUndoAction;
@@ -35,7 +37,7 @@ sub autoindent {
 }
 
 sub blockindent_open {
-	my $ep         = _edit_panel();
+	my $ep         = _ep_ref();
 	my $tabsize    = $Kephra::document{current}{tab_size};
 	my $line       = $ep->GetCurrentLine;
 	my $first_cpos = $ep->PositionFromLine($line)
@@ -72,7 +74,7 @@ sub blockindent_open {
 }
 
 sub blockindent_close {
-	my $ep = _edit_panel();
+	my $ep = _ep_ref();
 	my $bracepos = shift;
 	unless ($bracepos) {
 		$bracepos = $ep->GetCurrentPos - 1;
@@ -128,7 +130,7 @@ sub dedent_tab   { _indent_selection(-$Kephra::document{current}{tab_size}) }
 
 #
 sub align_indent {
-	my $ep = _edit_panel();
+	my $ep = _ep_ref();
 	my $firstline = $ep->LineFromPosition( $ep->GetSelectionStart );
 	my $align = $ep->GetLineIndentation($firstline);
 	$ep->BeginUndoAction();
@@ -140,7 +142,7 @@ sub align_indent {
 # deleting trailing spaces on line ends
 sub del_trailing_spaces {
 	&Kephra::Edit::_save_positions;
-	my $ep = _edit_panel();
+	my $ep = _ep_ref();
 	my $text = Kephra::Edit::_select_all_if_none();
 	$text =~ s/[ \t]+(\r|\n|\Z)/$1/g;
 	$ep->BeginUndoAction;
@@ -151,7 +153,7 @@ sub del_trailing_spaces {
 
 #
 sub join_lines {
- my $ep = _edit_panel();
+ my $ep = _ep_ref();
  my $text = $ep->GetSelectedText();
 	$text =~ s/[\r|\n]+/ /g; # delete end of line marker
 	$ep->BeginUndoAction;
@@ -162,7 +164,7 @@ sub join_lines {
 sub blockformat{
 	return unless Scalar::Util::looks_like_number($_[0]);
 	my $width     = (int shift) + 1;
-	my $ep        = _edit_panel();
+	my $ep        = _ep_ref();
 	my ($begin, $end) = $ep->GetSelection;
 	my $bline     = $ep->LineFromPosition($begin);
 	my $tmp_begin = $ep->PositionFromLine($bline);
@@ -203,7 +205,7 @@ sub blockformat_custom {
 sub line_break {
 	return unless Scalar::Util::looks_like_number($_[0]);
 	my $width        = (int shift) + 1;
-	my $ep           = _edit_panel();
+	my $ep           = _ep_ref();
 	my ($begin, $end)= $ep->GetSelection;
 	my $tmp_begin    = $ep->LineFromPosition( $ep->PositionFromLine($begin) );
 
@@ -231,7 +233,7 @@ sub linebreak_LLI {
 
 sub linebreak_window {
 	my $app = Kephra::App::Window::_ref();
-	my $ep  = _edit_panel();
+	my $ep  = _ep_ref();
 	my ($width) = $app->GetSizeWH();
 	my $pos = $ep->GetColumn($ep->PositionFromPointClose(100, 67));
 	Kephra::Dialog::msg_box( $app, $pos, '' );

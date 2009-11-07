@@ -1,61 +1,136 @@
 package Kephra::Document;
-our $VERSION = '0.47';
-
-use strict qw/vars subs/;;
-use warnings;
+our $VERSION = '0.53';
 
 =pod
- external doc API for properties except syntaxmode
+ creating and closing a doc, internals,
+ converter that take whole doc into account
 =cut
 
-my $this   = __PACKAGE__ . '::';
-my $intern = 'Kephra::Document::Internal::';
-
-*{$this . '_' . $_} = \*{$intern . $_} 
-	for qw( attributes temp_data get_attribute set_attribute );
-
-*{$this . $_} = \*{$intern . $_} 
-	for qw( get_attribute set_attribute get_tmp_value set_tmp_value
-			count current_nr last_nr previous_nr all_nr validate_nr 
-			file_path get_file_path set_file_path do_with_all      );
-
 use strict;
-use Wx qw( wxSTC_EOL_CR wxSTC_EOL_LF wxSTC_EOL_CRLF );
+use warnings;
 
-sub get_count      { count()       }
-sub get_current_nr { current_nr()  }
-sub set_current_nr { current_nr(@_)}
-sub get_last_nr    { last_nr()     }
+sub new   {   # make document empty and reset all document properties to default
+	my $old_nr = Kephra::Document::Data::current_nr();
+	my $doc_nr = new_if_allowed('new');
+	Kephra::Document::Data::set_previous_nr( $old_nr );
+	Kephra::Document::Data::set_current_nr( $doc_nr );
+	Kephra::App::TabBar::raise_tab_by_doc_nr($doc_nr);
+	&reset($doc_nr);
+}
 
-sub nr_from_file_path {
-	my $given_path = shift;
-	my @files = @{ all_file_pathes() };
-	for ( 0 .. $#files ) {
-		return $_ if $files[$_] eq $given_path
+sub reset {   # restore once opened file from its settings
+	my $doc_nr = Kephra::Document::Data::validate_doc_nr(shift);
+	my $ep = Kephra::Document::Data::_ep( $doc_nr );
+	Kephra::Document::Property::set_readonly(0, $doc_nr);
+	$ep->ClearAll;
+	$ep->EmptyUndoBuffer;
+	$ep->SetSavePoint;
+	Kephra::Document::Data::default_attributes($doc_nr, '');
+	Kephra::Document::Data::evaluate_attributes($doc_nr);
+	Kephra::App::StatusBar::refresh_all_cells();
+}
+
+
+sub restore { # add newly opened file from known settings
+	my %file_settings = %{ shift; };
+	my $file = $file_settings{file_path};
+	my $config = $Kephra::config{file};
+	if ( -e $file ) {
+		# open only text files and empty files
+		return if $config->{open}{only_text} == 1 and -B $file;
+		# check if file is already open and goto this already opened
+		return if $config->{open}{each_once} == 1 
+		      and Kephra::Document::Data::file_already_open($file);
+		my $doc_nr = new_if_allowed('restore');
+		load_file_in_buffer($file);
+		Kephra::Document::Data::set_all_attributes(\%file_settings, $doc_nr);
+		Kephra::Document::Data::set_file_path($file, $doc_nr);
 	}
 }
-sub all_file_pathes {
-	my @pathes;
-	my $attr = _attributes();
-	$pathes[$_] = $attr->[$_]{file_path} for @{ all_nr() };
-	return \@pathes;
+
+
+sub add {     # create a new document if settings allow it
+	my $file = shift;
+	my $config = $Kephra::config{file};
+	my $old_nr = Kephra::Document::Data::current_nr();
+	if ( defined $file and -e $file ) {
+		$file = Kephra::Config::standartize_path_slashes( $file );
+		# open only text files and empty files
+		return if -B $file and $Kephra::config{file}{open}{only_text} == 1;
+		# check if file is already open and goto this already opened
+		my $other_nr = Kephra::Document::Data::nr_from_file_path($file);
+		return Kephra::Document::Change::to_nr( $other_nr )
+			if $config->{open}{each_once} == 1 and $other_nr > -1;
+
+		# save constantly changing settings
+		Kephra::Document::Data::update_attributes();
+		# create new edit panel
+		my $doc_nr = new_if_allowed('add') || 0;
+		# was a new doc allowed ?
+		return if $doc_nr > 0 and $doc_nr == $old_nr;
+
+		Kephra::Document::Data::set_current_nr($doc_nr);
+		Kephra::Document::Data::set_previous_nr($old_nr);
+		load_file_in_buffer($file, Kephra::Document::Data::_ep($doc_nr));
+		# load default settings for doc attributes
+		Kephra::Document::Data::default_attributes($doc_nr, $file);
+#print Kephra::Document::Data::_attributes()->[$doc_nr]->{file_name}," = open\n";
+		Kephra::Document::Data::evaluate_attributes($doc_nr);
+		Kephra::Document::Property::convert_EOL()
+			unless $config->{defaultsettings}{EOL_open} eq 'auto';
+
+		Kephra::App::Window::refresh_title();
+		#Kephra::App::TabBar::refresh_label($doc_nr);
+		Kephra::App::TabBar::raise_tab_by_doc_nr($doc_nr);
+		Kephra::App::EditPanel::Margin::autosize_line_number();
+		Kephra::API::EventTable::trigger('document.list');
+	}
 }
 
-sub file_name { Kephra::Document::Internal::get_tmp_value('name', $_[0]) }
-sub all_file_names {
-	my @names;
-	$names[$_] = file_name($_) for @{ all_nr() };
-	return \@names;
-}
-sub first_name { Kephra::Document::Internal::get_tmp_value('firstname', $_[0]) }
+sub new_if_allowed {
+	# new(empty), add(open) restore(open session)
+	my $mode = shift;
+	my $ep   = Kephra::App::EditPanel::_ref();
+	my $file = Kephra::Document::Data::get_file_path();
+	my $old_doc_nr= Kephra::Document::Data::current_nr();
+	my $new_doc_nr= Kephra::Document::Data::get_value('buffer');
+	my $config    = $Kephra::config{file}{open};
 
-sub cursor_pos {
-	return $Kephra::document{current}{cursor_pos}
-		unless $Kephra::temp{document}{loaded};
+	# check settings
+	# in single doc mode close previous doc first
+	if ( $config->{single_doc} == 1 ) {
+		Kephra::File::close_current();
+		return 0;
+	}
+	unless ( $mode eq 'new' ) {
+		if ($ep->GetText eq '' and $ep->GetModify == 0 and (!$file or !-e $file)){
+			return $old_doc_nr
+				if ($config->{into_empty_doc} == 1)
+				or ($config->{into_only_empty_doc} == 1 and $new_doc_nr == 1 );
+		}
+	}
+	# still there? good, now we make a new document
+	Kephra::Document::Data::create_slot($new_doc_nr);
+	Kephra::App::TabBar::add_edit_tab($new_doc_nr);
+	Kephra::App::EditPanel::apply_settings
+		( Kephra::Document::Data::_ep($new_doc_nr) );
+	Kephra::Document::Data::inc_value('buffer');
+	return $new_doc_nr;
 }
 
+sub load_file_in_buffer {
+	my $file = shift || '';
+	#$doc_nr = shift;
+	my $ep = shift || Kephra::App::EditPanel::_ref();
+	return unless Kephra::App::EditPanel::is( $ep );
+	$ep->ClearAll();
+	Kephra::File::IO::open_pipe($file, $ep);
+	$ep->EmptyUndoBuffer;
+	$ep->SetSavePoint;
+	Kephra::File::_remember_save_moment($file);
+	Kephra::Document::Data::inc_value('loaded');
+}
 ############################################################################
-
 sub convert_indent2tabs   { _edit( \&Kephra::Edit::Convert::indent2tabs  )}
 sub convert_indent2spaces { _edit( \&Kephra::Edit::Convert::indent2spaces)}
 sub convert_spaces2tabs   { _edit( \&Kephra::Edit::Convert::spaces2tabs  )}
@@ -65,191 +140,25 @@ sub del_trailing_spaces   { _edit( \&Kephra::Edit::Format::del_trailing_spaces)}
 sub _edit{
 	my $coderef = shift;
 	return unless ref $coderef eq 'CODE';
-	my @txt_events = ('document.text.change','document.text.select','caret.move');
-	Kephra::API::EventTable::freeze(@txt_events);
 	Kephra::Edit::_save_positions();
-	Kephra::Edit::Select::document();
+	Kephra::Edit::Select::all();
 	&$coderef();
 	Kephra::Edit::_restore_positions();
-	Kephra::API::EventTable::thaw(@txt_events);
-	Kephra::API::EventTable::trigger(@txt_events);
 	1;
 }
 
-##################################################################
-# Properties
-##################################################################
-
-sub get_codepage { $Kephra::document{current}{codepage} }
-sub set_codepage {
-	my $new_value = $Kephra::document{current}{codepage} = shift;
-	Kephra::App::EditPanel::_ref()->SetCodePage( $new_value );
-}
-	#Kephra::Dialog::msg_box(undef, Wx::wxUNICODE(), '');
-	#use Wx::STC qw(wxSTC_CP_UTF8); Wx::wxUNICODE()
-
-
-sub get_tab_size { $Kephra::document{current}{tab_size} }
-sub set_tab_size {
-	my $size = shift;
-	return unless $size;
-	$Kephra::document{current}{tab_size} = $size;
-	Kephra::App::EditPanel::set_tab_size($size);
-}
-sub set_tab_size_2 { set_tab_size(2) }
-sub set_tab_size_3 { set_tab_size(3) }
-sub set_tab_size_4 { set_tab_size(4) }
-sub set_tab_size_5 { set_tab_size(5) }
-sub set_tab_size_6 { set_tab_size(6) }
-sub set_tab_size_8 { set_tab_size(8) }
-
-#
-sub get_tab_mode { $Kephra::document{current}{tab_use} }
-sub set_tab_mode {
-	my $mode = shift || 0;
-	$Kephra::document{current}{tab_use} = $mode;
-	Kephra::App::EditPanel::_ref()->SetUseTabs($mode);
-	Kephra::App::StatusBar::tab_info();
-}
-sub set_tabs_hard  { set_tab_mode(1) }
-sub set_tabs_soft  { set_tab_mode(0) }
-sub switch_tab_mode{ get_tab_mode() ? set_tab_mode(0) : set_tab_mode(1) }
-
-
-#
-sub get_EOL_mode { $Kephra::document{current}{EOL} }
-sub set_EOL_mode {
-	my $ep = Kephra::App::EditPanel::_ref();
-	my $mode      = shift;
-	$mode = $Kephra::config{file}{defaultsettings}{EOL_new} if ( !$mode );
-	my $eoll = \$Kephra::temp{current_doc}{EOL_length};
-	$$eoll = 1;
-	$mode = detect_EOL_mode() if $mode eq 'auto';
-	if    ( $mode eq 'lf'   or $mode eq 'lin') {$ep->SetEOLMode(wxSTC_EOL_LF) } 
-	elsif ( $mode eq 'cr'   or $mode eq 'mac') {$ep->SetEOLMode(wxSTC_EOL_CR) }
-	elsif ( $mode eq 'cr+lf'or $mode eq 'win') {$ep->SetEOLMode(wxSTC_EOL_CRLF);
-		$$eoll = 2;
+sub do_with_all {
+	my $code = shift;
+	return unless ref $code eq 'CODE';
+	my $nr = Kephra::Document::Data::current_nr();
+	my $attr = Kephra::Document::Data::_attributes();
+	Kephra::Document::Data::update_attributes();
+	for ( @{ Kephra::Document::Data::all_nr() } ) {
+		Kephra::Document::Data::set_current_nr($_);
+		&$code( $attr->[$_] );
 	}
-	_set_attribute('EOL', $mode);
-	Kephra::App::StatusBar::EOL_info($mode);
+	Kephra::Document::Data::set_current_nr($nr);
+	Kephra::Document::Data::evaluate_attributes($nr);
 }
-
-sub set_EOL_mode_lf   { set_EOL_mode('lf') }
-sub set_EOL_mode_cr   { set_EOL_mode('cr') }
-sub set_EOL_mode_crlf { set_EOL_mode('cr+lf') }
-sub set_EOL_mode_auto { set_EOL_mode('auto' ) }
-
-sub convert_EOL {
-	my $ep = Kephra::App::EditPanel::_ref();
-	my $doc_nr    = current_nr();
-	my $mode      = shift;
-	$mode = $Kephra::config{file}{defaultsettings}{EOL_new} if ( !$mode );
-
-	$mode = detect_EOL_mode() if $mode eq 'auto';
-	if    ($mode eq 'lf' or $mode eq 'lin' )  {$ep->ConvertEOLs(wxSTC_EOL_LF)}
-	elsif ($mode eq 'cr' or $mode eq 'mac' )  {$ep->ConvertEOLs(wxSTC_EOL_CR)}
-	elsif ($mode eq 'cr+lf'or $mode eq 'win') {$ep->ConvertEOLs(wxSTC_EOL_CRLF)}
-	set_EOL_mode($mode);
-}
-
-sub convert_EOL_2_lf   { convert_EOL('lf') }
-sub convert_EOL_2_cr   { convert_EOL('cr') }
-sub convert_EOL_2_crlf { convert_EOL('cr+lf') }
-
-sub detect_EOL_mode {
-	my $ep = Kephra::App::EditPanel::_ref();
-	my $end_pos   = $ep->PositionFromLine(1);
-	my $begin_pos = $end_pos - 3;
-	$begin_pos = 0 if $begin_pos < 0;
-	my $text = $ep->GetTextRange( $begin_pos, $end_pos );
-
-	if ( length($text) < 1 ) { return 'auto' }
-	else {
-		return 'cr+lf' if $text =~ /\r\n/;
-		return 'cr'    if $text =~ /\r/;
-		return 'lf'    if $text =~ /\n/;
-		return 'auto';
-	}
-}
-
-
-# auto indention
-sub get_autoindention { $Kephra::config{editpanel}{auto}{indention} }
-sub switch_autoindention { 
-	$Kephra::config{editpanel}{auto}{indention} ^= 1;
-	Kephra::Edit::eval_newline_sub();
-}
-sub set_autoindent_on   {
-	$Kephra::config{editpanel}{auto}{indention}  = 1; 
-	Kephra::Edit::eval_newline_sub();
-}
-sub set_autoindent_off  { 
-	$Kephra::config{editpanel}{auto}{indention}  = 0;
-	Kephra::Edit::eval_newline_sub();
-}
-
-# brace indention
-sub get_braceindention{ $Kephra::config{editpanel}{auto}{brace}{indention}}
-sub switch_braceindention{ 
-	$Kephra::config{editpanel}{auto}{brace}{indention} ^= 1;
-	Kephra::Edit::eval_newline_sub();
-}
-sub set_blockindent_on {
-	$Kephra::config{editpanel}{auto}{brace}{indention} = 1;
-	Kephra::Edit::eval_newline_sub();
-}
-sub set_blockindent_off {
-	$Kephra::config{editpanel}{auto}{brace}{indention} = 0;
-	Kephra::Edit::eval_newline_sub();
-}
-
-
-# bracelight
-sub bracelight_visible{
-	$Kephra::config{editpanel}{indicator}{bracelight}{visible}
-}
-sub get_bracelight{ bracelight_visible() }
-sub switch_bracelight{
-	bracelight_visible() ? set_bracelight_off() : set_bracelight_on();
-}
-sub set_bracelight_on {
-	$Kephra::config{editpanel}{indicator}{bracelight}{visible} = 1;
-	Kephra::App::EditPanel::apply_bracelight_settings()
-}
-sub set_bracelight_off {
-	$Kephra::config{editpanel}{indicator}{bracelight}{visible} = 0;
-	Kephra::App::EditPanel::apply_bracelight_settings()
-}
-#$Kephra::config{editpanel}{indicator}{bracelight}{mode} = 'adjacent';
-#$Kephra::config{editpanel}{indicator}{bracelight}{mode} = 'surround';
-
-
-# write protection
-sub get_readonly { $Kephra::document{current}{readonly} }
-sub set_readonly {
-	my $status     = shift;
-	my $ep         = Kephra::App::EditPanel::_ref();
-	my $file_name  = get_file_path();
-	my $old_state  = $ep->GetReadOnly;
-
-	if ( not $status or $status eq 'off' ) {
-		$ep->SetReadOnly(0);
-		$Kephra::document{current}{readonly} = 'off';
-	} elsif ( $status eq 'on' or $status eq '1' ) {
-		$ep->SetReadOnly(1);
-		$Kephra::document{current}{readonly} = 'on';
-	} elsif ( $status eq 'protect' or $status eq '2' ) {
-		if ( $file_name and -e $file_name and not -w $file_name ) 
-			{$ep->SetReadOnly(1)}
-		else{$ep->SetReadOnly(0)}
-		$Kephra::document{current}{readonly} = 'protect';
-	}
-	$Kephra::temp{current_doc}{readonly} = $ep->GetReadOnly ? 1 : 0;
-	Kephra::App::TabBar::refresh_current_label()
-		if $Kephra::config{app}{tabbar}{info_symbol};
-}
-sub set_readonly_on      { set_readonly('on') }
-sub set_readonly_off     { set_readonly('off') }
-sub set_readonly_protect { set_readonly('protect') }
 
 1;

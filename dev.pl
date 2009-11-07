@@ -10,7 +10,7 @@ BEGIN {
 require Kephra;
 
 $Kephra::STANDALONE = 'dev';
-Kephra->new->MainLoop;
+Kephra->start;
 
 #use FindBin;
 #$ENV{KEPHRA_DEV_START} = 1;

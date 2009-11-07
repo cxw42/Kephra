@@ -23,6 +23,7 @@ textselection_contextmenu:
  -
  - item find-selection
  - item replace-selection
+ - item tool-note-selection
  -
  - item edit-selection-convert-uppercase
  - item edit-selection-convert-lowercase
@@ -54,27 +55,40 @@ document_syntaxstyle_contextmenu:
  - checkitem document-syntaxmode-none
 
 document_whitespace_contextmenu:
- - item edit-document-format-del-trailing-whitespace
- -
  - checkitem document-auto-indention
+ - checkitem document-brace-indention
  -
- - item edit-document-convert-indent2spaces
- - item edit-document-convert-indent2tabs
+ - checkitem view-editpanel-whitespace
  -
- - item edit-document-convert-tabs2spaces
- - item edit-document-convert-spaces2tabs
+    menu document_tab_width:
+      - radioitem document-tabs-width-1
+      - radioitem document-tabs-width-2
+      - radioitem document-tabs-width-3
+      - radioitem document-tabs-width-4
+      - radioitem document-tabs-width-5
+      - radioitem document-tabs-width-6
+      - radioitem document-tabs-width-8
  -
- - checkitem document-tabs-soft
- - checkitem document-tabs-hard
+    menu document_convert:
+      - item edit-document-convert-tabs2spaces
+      - item edit-document-convert-spaces2tabs
+      -
+      - item edit-document-convert-indent2spaces
+      - item edit-document-convert-indent2tabs
+      -
+      - item edit-document-format-del-trailing-whitespace
+ -
+ - radioitem document-tabs-soft
+ - radioitem document-tabs-hard
 
 document_lineendchar_contextmenu:
  - checkitem view-editpanel-EOL
  -
  - item document-EOL-auto
  -
- - checkitem document-EOL-lf
- - checkitem document-EOL-cr
- - checkitem document-EOL-cr+lf
+ - radioitem document-EOL-lf
+ - radioitem document-EOL-cr
+ - radioitem document-EOL-cr+lf
 
 document_info_contexmenu:
  - radioitem view-statusbar-info-none
