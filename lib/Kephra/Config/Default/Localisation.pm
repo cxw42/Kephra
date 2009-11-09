@@ -1035,6 +1035,7 @@ sub get {
 				and => 'and',
 				wrappes => 'which wrappes',
 				extra => 'extra Perl Modules',
+				motto => 'Neter of software creation',
 				dedication => 'Deditcated to all people who ever tried to write an editor.',
 			},
 			keyboard_map => {

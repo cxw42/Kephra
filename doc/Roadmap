@@ -22,23 +22,11 @@
 0.4 fully configurable
  + Searchbar, 10 doc spanning bookmarks, goto last edit, brace navigation
  + notepad panel and one for the interpreter output
- + menus for templates, closed files
+ + menus for templates, closed files, better drag'n drop for files
  + new contextmenus: (on selected text, on searchbar, on tabbar, on statusbar)
  + autosave, autonotify (when file changed elsewhere), more formater
  + all internal calls, events, menus and bars are compiled from text files
  + checkable and disable menu items, starts even without configs with inline defaults
-
- + menu item switch view of tabbar contextmenu
- + position searchbar in the middle between tabbar and edit panel
- + marking config files in tabs optionally with straight lines
- + take autoautoindtion in statusbar tab-cell contextmenu
- + blockformat  line break, 
- + tabbar filename optional without ending: app > tabbar > file_info = [first]name
- + firstname: new document property holds filname without ending
- + can use [$$firstname] as template variable too
- + reload templates on save
- + move document line and page wise from searchbar input
- + opens whole dir when dragged onto
 
 0.3 more comfort
  + autoindent, bracelight, braceindent, block navigation

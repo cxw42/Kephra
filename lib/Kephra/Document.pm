@@ -20,6 +20,7 @@ sub new   {   # make document empty and reset all document properties to default
 
 sub reset {   # restore once opened file from its settings
 	my $doc_nr = Kephra::Document::Data::validate_doc_nr(shift);
+	$doc_nr = Kephra::Document::Data::current_nr() unless defined $doc_nr;
 	my $ep = Kephra::Document::Data::_ep( $doc_nr );
 	Kephra::Document::Property::set_readonly(0, $doc_nr);
 	$ep->ClearAll;

@@ -1,5 +1,5 @@
 package Kephra::App::TabBar;
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 =pod
 
 Tabbar is the visual element in top area of the main window which displays
@@ -13,38 +13,74 @@ use strict;
 use warnings;
 use Wx qw( 
 	wxVERTICAL wxGROW
-	wxAUI_NB_TOP wxAUI_NB_WINDOWLIST_BUTTON wxAUI_NB_TAB_MOVE
-	wxAUI_NB_CLOSE_BUTTON wxAUI_NB_CLOSE_ON_ACTIVE_TAB wxAUI_NB_SCROLL_BUTTONS
+	wxAUI_NB_TOP wxAUI_NB_WINDOWLIST_BUTTON wxAUI_NB_TAB_MOVE wxAUI_NB_SCROLL_BUTTONS
+	wxAUI_NB_CLOSE_BUTTON wxAUI_NB_CLOSE_ON_ACTIVE_TAB wxAUI_NB_CLOSE_ON_ALL_TABS
 );
 
 #
 # internal data
 #
-my @tab_order; # doc numbers in tab order
-my @doc_order; # tab numbers in doc order
-sub _update_doc_pos  { $doc_order[ $tab_order[$_] ] = $_ for 0 .. $#tab_order }
+my @doc2tab_pos; # tab index numbers in doc order
+my @tab2doc_pos; # doc numbers in tab index order
+my @doc2vis_pos; # visible tab pos number in doc order
+my @vis2doc_pos; # doc numbers in visible tab order
+sub _update_doc_pos  {
+	@doc2tab_pos = ();
+	@doc2vis_pos = ();
+	$doc2tab_pos[ $tab2doc_pos[$_] ] = $_ for 0 .. $#tab2doc_pos;
+	$doc2vis_pos[ $vis2doc_pos[$_] ] = $_ for 0 .. $#vis2doc_pos;
+}
 sub _validate_doc_nr { &Kephra::Document::Data::validate_doc_nr }
-sub doc2tab_pos {
+sub _doc2tab_pos {
 	my $nr = _validate_doc_nr(shift);
-	return $nr == -1 ? -1 : $doc_order[$nr];
+	return $nr == -1 ? -1 : $doc2tab_pos[$nr];
 }
-sub tab2doc_pos {
+sub _tab2doc_pos {
 	my $nr = _validate_doc_nr(shift);
-	return $nr == -1 ? -1 : $tab_order[$nr];
+	return $nr == -1 ? -1 : $tab2doc_pos[$nr];
 }
-sub move_tab {
+sub _vis2doc_pos {
+	my $nr = _validate_doc_nr(shift);
+	return $nr == -1 ? -1 : $vis2doc_pos[$nr];
+}
+sub _doc2vis_pos {
+	my $nr = _validate_doc_nr(shift);
+	return $nr == -1 ? -1 : $doc2vis_pos[$nr];
+}
+sub _move_vis_pos {
 	my $from = _validate_doc_nr(shift);
 	my $to = _validate_doc_nr(shift);
 	return if $from == -1 or $to == -1;
-	my $doc_nr = splice @tab_order, $from, 1;
-	splice @tab_order, $to, 0, $doc_nr;
-	_update_doc_pos(); #print "taborder: @tab_order, doc_order: @doc_order\n";
+	my $doc_nr = splice @vis2doc_pos, $from, 1;
+	splice @vis2doc_pos, $to, 0, $doc_nr;
+	_update_doc_pos();
+#print "vis_order: @vis2doc_pos, tab_order: @tab2doc_pos\n";
 #print $notebook->GetPageIndex( Kephra::Document::Data::_ep($_) )."\n" for @{Kephra::Document::Data::all_nr()};
+}
+sub _move_tab_pos {
+	my $from = _validate_doc_nr(shift);
+	my $to = _validate_doc_nr(shift);
+	return if $from == -1 or $to == -1;
+	my $doc_nr = splice @tab2doc_pos, $from, 1;
+	splice @tab2doc_pos, $to, 0, $doc_nr;
+	_update_doc_pos(); #print "taborder: @tab2doc_pos, doc_order: @doc_order\n";
+#print $notebook->GetPageIndex( Kephra::Document::Data::_ep($_) )."\n" for @{Kephra::Document::Data::all_nr()};
+}
+sub _remove_tab {
+	my $tab_nr = _validate_doc_nr(shift);
+	return if $tab_nr == -1;
+	my $doc_nr = $tab2doc_pos[$tab_nr];
+	my $vis_nr = $doc2vis_pos[$doc_nr];
+	splice @tab2doc_pos, $tab_nr, 1;
+	splice @vis2doc_pos, $vis_nr, 1;
+	for (0 .. $#tab2doc_pos) {$tab2doc_pos[$_]-- if $tab2doc_pos[$_] > $doc_nr}
+	for (0 .. $#vis2doc_pos) {$vis2doc_pos[$_]-- if $vis2doc_pos[$_] > $doc_nr}
+	_update_doc_pos();
+#print "vis_order: @vis2doc_pos, tab_order: @tab2doc_pos\n";
 }
 my $notebook;
 sub _ref    { $notebook = ref $_[0] eq 'Wx::AuiNotebook' ? $_[0] : $notebook }
 sub _config { $Kephra::config{app}{tabbar} }
-my $tabmove;
 #
 # basic toolbar creation
 #
@@ -56,44 +92,41 @@ sub create {
 		(Kephra::App::Window::_ref(),-1, [0,0], [-1,23],
 		wxAUI_NB_TOP | wxAUI_NB_SCROLL_BUTTONS);
 	_ref($notebook);
-	Wx::Event::EVT_LEFT_UP( $notebook, sub {
-		my ($tabs, $event) = @_; print "\n left up\n";
-		Kephra::Document::Data::set_value('b4tabchange', $tabs->GetSelection);
-		#Kephra::App::EditPanel::gets_focus();
-		$event->Skip;
-	});
-	Wx::Event::EVT_LEFT_DOWN( $notebook, sub {
-		my ($tabs, $event) = @_; print "\n left down\n";
-		Kephra::Document::Change::switch_back()
-			if Kephra::Document::Data::get_value('b4tabchange')==$tabs->GetSelection;
-		Kephra::App::EditPanel::gets_focus();
-		$event->Skip;
-	});
-	Wx::Event::EVT_AUINOTEBOOK_PAGE_CLOSE( $notebook, -1, sub {
-		my ( $bar, $event ) = @_;
-		if($bar->GetPageCount == 1) { Kephra::Document::reset(0) }
-		else                        { delete_tab($event->GetSelection) }
-		$event->Veto;
-	});
-	Wx::Event::EVT_AUINOTEBOOK_PAGE_CHANGED( $notebook, -1, sub {
-		my ( $bar, $event ) = @_;
-my $nr = $event->GetSelection;
-my $oldnr = $event->GetOldSelection;
-#print "=begin change page $oldnr -> $nr\n";
-		#print "=end change page $nr\n";
-		Kephra::Document::Change::to_number
-			( $event->GetSelection, $event->GetOldSelection) unless $tabmove;
-		Kephra::App::EditPanel::gets_focus();
-		$tabmove = 0;
-		$event->Skip;
-	});
+	#Wx::Event::EVT_LEFT_UP( $notebook, sub {
+		#my ($tabs, $event) = @_; print "\n left up\n";
+		#Kephra::Document::Data::set_value('b4tabchange', $tabs->GetSelection);
+		#Kephra::App::EditPanel::gets_focus(); $event->Skip;
+	#});
+	#Wx::Event::EVT_LEFT_DOWN( $notebook, sub {
+		#my ($tabs, $event) = @_; print "\n left down\n";
+		#Kephra::Document::Change::switch_back()
+			#if Kephra::Document::Data::get_value('b4tabchange')==$tabs->GetSelection;
+		#Kephra::App::EditPanel::gets_focus(); $event->Skip;
+	#});
 	my $begin_drag_index;
 	Wx::Event::EVT_AUINOTEBOOK_BEGIN_DRAG($notebook, -1, sub {
 		$begin_drag_index = $_[1]->GetSelection;
 	});	
 	Wx::Event::EVT_AUINOTEBOOK_END_DRAG($notebook, -1, sub {
-		move_tab($begin_drag_index, $_[1]->GetSelection);
+		_move_vis_pos($begin_drag_index, $_[1]->GetSelection);
+		#rotate_tab($_[1]->GetSelection - $begin_drag_index);
 		Kephra::App::EditPanel::gets_focus();
+		Kephra::API::EventTable::trigger('document.list');
+	});
+	Wx::Event::EVT_AUINOTEBOOK_PAGE_CHANGED( $notebook, -1, sub {
+		my ( $bar, $event ) = @_;
+		my $new_nr = _tab2doc_pos( $event->GetSelection );
+		my $old_nr = _tab2doc_pos( $event->GetOldSelection );
+#print "=begin change ".$event->GetSelection." page ; docs: $old_nr -> $new_nr\n";
+		#print "=end change page $nr\n";
+		Kephra::Document::Change::to_number( $new_nr, $old_nr);
+		Kephra::App::EditPanel::gets_focus();
+		$event->Skip;
+	});
+	Wx::Event::EVT_AUINOTEBOOK_PAGE_CLOSE( $notebook, -1, sub {
+		my ( $bar, $event ) = @_;
+		Kephra::File::close_nr( _tab2doc_pos($event->GetSelection) );
+		$event->Veto;
 	});
 }
 
@@ -110,35 +143,41 @@ sub apply_settings {
 	my $style = $notebook->GetWindowStyleFlag();
 	$style |= wxAUI_NB_TAB_MOVE if _config->{movable_tabs};
 	$style |= wxAUI_NB_WINDOWLIST_BUTTON if _config->{tablist_button};
-	if (_config->{close_button} eq 'all'){ $style |= wxAUI_NB_CLOSE_BUTTON }
-	elsif (_config->{close_button})   { $style |= wxAUI_NB_CLOSE_ON_ACTIVE_TAB }
+	if    (_config->{close_button} eq 'all'){ $style |= wxAUI_NB_CLOSE_ON_ALL_TABS}
+	elsif (_config->{close_button} eq 'one'){ $style |= wxAUI_NB_CLOSE_BUTTON}
+	elsif (_config->{close_button} eq 'current'){$style |= wxAUI_NB_CLOSE_ON_ACTIVE_TAB}
+	elsif (_config->{close_button} eq 'active') {$style |= wxAUI_NB_CLOSE_ON_ACTIVE_TAB}
 	$notebook->SetWindowStyle( $style );
+	show();
 	# wxAUI_NB_TAB_SPLIT wxAUI_NB_TAB_EXTERNAL_MOVE contextmenu_use, insert
 }
 #
 # tab functions
 #
 sub add_edit_tab  {
-	my $doc_nr = shift || Kephra::Document::Data::current_nr();
-	my $notebook = _ref();
-	#$notebook->Freeze();
-
-#$nr = 0             if $nr eq 'leftmost';
-#$nr = $current_nr   if $nr eq 'left';
-#$nr = $current_nr+1 if $nr eq 'right';
-#$nr = last_nr()+1   if $nr eq 'rightmost';
-	#my $panel = Wx::Panel->new( $notebook, -1);
+	my $current_nr = Kephra::Document::Data::current_nr();
+	my $doc_nr = shift || $current_nr;
+	my $mode = defined _config() ? _config()->{insert_new_tab} : 'rightmost';
+	my $vis_pos;
+	$vis_pos = 0             if $mode eq 'leftmost';
+	$vis_pos = $current_nr   if $mode eq 'left';
+	$vis_pos = $current_nr+1 if $mode eq 'right';
+	$vis_pos = $doc_nr       if $mode eq 'rightmost';
 	my $stc = Kephra::App::EditPanel::new();
 	Kephra::Document::Data::set_attribute('ref', $stc, $doc_nr);
+	#my $panel = Wx::Panel->new( $notebook, -1);
 	#$stc->Reparent($panel);
 	#my $sizer = Wx::BoxSizer->new( wxVERTICAL );
 	#$sizer->Add( $stc, 1, wxGROW, 0);
 	#$panel->SetSizer($sizer);
 	#$panel->SetAutoLayout(1);
+	#$notebook->Freeze(); #$notebook->Thaw();
+	my $notebook = _ref();
+	#$notebook->InsertPage( $vis_pos, $stc, '', 0 );
 	$notebook->AddPage( $stc, '', 0 );
-	push @tab_order, $doc_nr;
+	splice @tab2doc_pos, $doc_nr, 0, $doc_nr;   # splice @tab2doc_pos, $vis_pos, 0, $doc_nr;
+	splice @vis2doc_pos, $doc_nr, 0, $doc_nr;#splice @vis2doc_pos, $vis_pos, 0, $doc_nr;
 	_update_doc_pos();
-	#$notebook->Thaw();
 	return $stc;
 }
 
@@ -147,81 +186,55 @@ sub add_panel_tab {
 	my $panel = shift;
 	return unless defined $panel and substr(ref $panel, 0, 4) eq 'Wx::';
 	$panel->Reparent($notebook);
-	$notebook->AddPage( $panel, '', 0 );
+	$notebook->InsertPage( $panel, '', 0 );
 	return $panel;
 }
-sub raise_tab     { # tab selection
-	my ( $frame, $event ) = @_;
-	my $nr = $event->GetSelection;
-	Kephra::Document::Change::to_number( $nr, $event->GetOldSelection);
-	Wx::Window::SetFocus( $notebook->GetPage($nr) );
-	Kephra::App::EditPanel::gets_focus();
-	$event->Skip;
-}
-sub raise_tab_by_tab_nr { raise_tab_by_doc_nr( tab2doc_pos(shift) ) }
-sub raise_tab_by_doc_nr {
+
+sub raise_tab_by_doc_nr { raise_tab_by_tab_nr( _doc2tab_pos(shift) ) }
+sub raise_tab_by_vis_nr { raise_tab_by_tab_nr( _doc2tab_pos( _vis2doc_pos(shift)))}
+sub raise_tab_by_tab_nr {
 	my $nr = shift;
 	$notebook->SetSelection($nr) unless $nr == $notebook->GetSelection;
 }
-
-sub raise_tab_left {
-	my $nr = doc2tab_pos( Kephra::Document::Data::current_nr() );
-	raise_tab_by_tab_nr( Kephra::Document::Data::next_nr(-1, $nr) );
+sub raise_tab_left  {
+	my $vis_nr = _doc2vis_pos( Kephra::Document::Data::current_nr() );
+	raise_tab_by_vis_nr( Kephra::Document::Data::next_nr(-1, $vis_nr) );
 }
 sub raise_tab_right {
-	my $nr = doc2tab_pos( Kephra::Document::Data::current_nr() );
-	raise_tab_by_tab_nr( Kephra::Document::Data::next_nr(1, $nr) );
+	my $vis_nr = _doc2vis_pos( Kephra::Document::Data::current_nr() );
+	raise_tab_by_vis_nr( Kephra::Document::Data::next_nr(1, $vis_nr) );
 }
-sub rotate_tab_left {
-	
-}
-
-sub rotate_tab_right {
-	my $old_tab_nr = doc2tab_pos( Kephra::Document::Data::current_nr() );
-	my $new_tab_nr = Kephra::Document::Data::next_nr(1, $old_tab_nr);
+sub rotate_tab_left { rotate_tab(-1) }
+sub rotate_tab_right{ rotate_tab( 1) }
+sub rotate_tab {
+	return unless _config()->{movable_tabs};
+	my $rot_step = shift;
+	my $doc_nr = Kephra::Document::Data::current_nr();
+	my $old_tab_pos = _doc2tab_pos( $doc_nr );
+	my $old_vis_pos = _doc2vis_pos( $doc_nr );
+	my $new_vis_pos = Kephra::Document::Data::next_nr($rot_step, $old_vis_pos);
 	my $notebook = _ref();
-	my $label = $notebook->GetPageText( $old_tab_nr );
+	my $label = $notebook->GetPageText( $old_tab_pos );
 	my $stc = Kephra::Document::Data::get_attribute('ref');
-	move_tab( $old_tab_nr, $new_tab_nr );
-	$notebook->RemovePage( $old_tab_nr );
-	$tabmove = 1;
-print "between";
-	$notebook->InsertPage( $new_tab_nr, $stc, $label, 1 );
-#print "rot $old_tab_nr -> $new_tab_nr || ".$notebook->GetSelection." \n";
+	$notebook->RemovePage( $old_tab_pos );
+	$notebook->InsertPage( $new_vis_pos, $stc, $label, 0 );
+	_move_tab_pos( $old_tab_pos, $new_vis_pos );
+	_move_vis_pos( $old_vis_pos, $new_vis_pos );
+	raise_tab_by_vis_nr($new_vis_pos);
+	Kephra::API::EventTable::trigger('document.list');
 }
 
-sub switch_tab_content {
-	my ($old_nr, $new_nr) = @_;
-	return unless defined $new_nr;
-	my $text = $notebook->GetPageText($new_nr);
-	$notebook->SetPageText($new_nr, $notebook->GetPageText($old_nr) );
-	$notebook->SetPageText($old_nr, $text );
-}
-
-sub rot_tab_content {
-	my $dir = shift;
-	my $max = $notebook->GetPageCount() - 1;
-	if ($dir eq 'left'){
-		my $text = $notebook->GetPageText($max);
-		$notebook->SetPageText($_, $notebook->GetPageText($_-1)) 
-			for reverse 1 .. $max;
-		$notebook->SetPageText(0, $text);
-	}
-	elsif ($dir eq 'right'){
-		my $text = $notebook->GetPageText(0);
-		$notebook->SetPageText($_, $notebook->GetPageText($_+1)) 
-			for 0 .. $max - 1;
-		$notebook->SetPageText($max, $text);
-	}
-}
-sub delete_tab { 
-	my $nr = shift;
-print "delete tab";
-	my $xw = Kephra::Document::Data::_ep($nr);
+sub delete_tab_by_doc_nr { delete_tab_by_tab_nr( _doc2tab_pos(shift) ) }
+sub delete_tab_by_tab_nr { 
+	my $tab_nr = shift;
+	my $doc_nr = _tab2doc_pos($tab_nr);
+	my $notebook = _ref();
+#print "delete tab $tab_nr \n";
+	my $stc = Kephra::Document::Data::get_attribute('ref', $doc_nr);
 #print $notebook->GetSelection."current, del tab nr $nr\n";
-	$notebook->RemovePage($nr);#DeletePage,RemovePage
-	#$xw->Reparent( undef );
-	#$xw->Destroy();
+	_remove_tab($tab_nr);
+	$notebook->RemovePage($tab_nr); # DeletePage,RemovePage
+	$stc->Destroy(); # $xw->Reparent( undef );
 }
 #
 # refresh the label of given number
@@ -256,17 +269,28 @@ sub refresh_label {
 	$notebook->SetPageText( $doc_nr, $label );
 }
 
-sub refresh_current_label{ refresh_label(Kephra::Document::Data::current_nr()) }
+sub refresh_current_label { refresh_label(Kephra::Document::Data::current_nr()) }
 sub refresh_all_label {
 	if ( Kephra::Document::Data::get_value('loaded') ) {
 		refresh_label($_) for @{ Kephra::Document::Data::all_nr() };
 		raise_tab_by_doc_nr( Kephra::Document::Data::current_nr() );
 	}
 }
+#
+# tabbar and his menu visibility
+#
+sub get_visibility { _config()->{visible} }
+sub set_visibility { _config()->{visible} = shift }
+sub switch_visibility { show( _config()->{visible} ^ 1 ) }
+sub show {
+	my $visible = shift;
+	$visible = get_visibility() unless defined $visible;
+	$visible
+		? _ref()->SetTabCtrlHeight(25)
+		: _ref()->SetTabCtrlHeight(0);
+	set_visibility($visible);
+}
 
-#
-# set tabbar visibility
-#
 sub switch_contextmenu_visibility { 
 	_config()->{contextmenu_use} ^= 1;
 	Kephra::App::ContextMenu::connect_tabbar();

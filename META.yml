@@ -23,7 +23,7 @@ requires:
   File-UserConfig: 0
   Config-General: 0.30
   YAML-Tiny: 0.31
-  Wx:   0.70
+  Wx:   0.91
   Wx-Perl-ProcessStream: 0
 resources:
     homepage: http://kephra.sf.net

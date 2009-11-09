@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.4.1.14';      # version of entire app
+our $VERSION    = '0.4.1.15';      # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $LOGLEVEL;                     # flag for benchmark loggings
@@ -204,6 +204,12 @@ and documentation for your programming, web and text authoring.
 
 =item Main Goals
 
+A visually harmonic and beautiful, sparing and elegantly programed Editor,
+that helpes you with all you tasks. It should be also able to operate in the
+way you prefer and be not afraid to try new things.
+
+=item In Depth
+
 My ideal is a balance of:
 
 =over 2
@@ -320,9 +326,11 @@ and some help texts to be opened as normal files
 
 =head1 ROADMAP
 
+A more comlete roadmap you can find L<here|../doc/Roadmap>.
+
 =head2 Stable 0.4
 
-main features: 
+main new features are: 
 
 GUI abstraction layer, searchbar, output panel, brace navigation, notepad,
 	file history menu, templates, some more context menus
@@ -352,13 +360,14 @@ plugin API
 
 =head2 Testing 0.4.4
 
-library Plugin, config dialog?
+config dialog?, stability for 0.5
 
-=head2 Stable 0.5
+=head2 Plans up to Stable 0.6
 
-Coding support like mentioned for 0.4.n + tidy support, help integration, 
-autocompletition and so on. 
-wish that by the end of 0.4.n series will be the extention API stable.
+Coding support like L<Perl::Tidy>, outlining, help integration, 
+autocompletition and so on will be the goals for the next round.
+Not all of them but some. Because 0.5 is mainly about a stable
+plugin API also some of the first Plugins should 
 
 =head1 SUPPORT
 
@@ -378,7 +387,11 @@ L<http://kephra.sourceforge.net>
 
 =item * Jens Neuwerk E<lt>jenne@gmxpro.netE<gt> (author of icons, GUI advisor)
 
+=item * Andreas Kaschner
+
 =item * Adam Kennedy E<lt>adamk@cpan.orgE<gt> (cpanification)
+
+=item * Gabor Szabo E<lt>szabgab@cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 

@@ -3,6 +3,13 @@ BUGS:
  !!! test suite fails
  ! textchanged event triggers twice
 
+0.4.1.15
+ ] 2 level tab number translation
+ ~ moved motto from info box into localisation
+ ~ visibility of tabbar can be set again
+ ! move tabs by mouse has no side effects
+ ! move tabs by keyboard works again
+
 0.4.1.14
  ' added doc/Roadmap file
  ~ doubleclick on panel splitter now reacts properly

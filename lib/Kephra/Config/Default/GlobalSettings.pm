@@ -73,19 +73,21 @@ sub get {
 				visible => 1,
 			},
 			tabbar => {
-				close_button => 'current'     ,# (all|current|no)
-				contextmenu => 'document_list',# id of connected context menu
-				contextmenu_use => 1,          # (0|1) enable conextmenu ovr tabbar
+				close_button => 'current'     ,# (all|current|active|one|right|no) current = active
+											   # one = right, on right border
+				contextmenu => 'document_list',# -NI id of connected context menu
+				contextmenu_use => 1,          # (0|1) enable conextmenu over tabbar
 				file_info => 'file_name',      # (file_name|firstname) which part of filename to show
 				info_symbol => 1,              # (0|1) show *(unsaved) and #(write protected) symbols on end of tabs
-				insert => 'rightmost',         # -NI (left|right) tab position of opened file
+				insert_new_tab => 'rightmost', # (left|right[most]) tab position of opened file
 				mark_configs => 1,             # (0|1) set configfile names in square brackets
 				max_tab_width => 25,           # max tab width in chars, longer filenames will be cut and ... added
-				middle_click => 'file-close-current',  # command that is performed when middle click over tabbar
-				movable_tabs => 1,             # (0|1) 
+				middle_click => 'file-close-current',# -NI command that is performed when middle click over tabbar
+				movable_tabs => 1,             # (0|1) if 0 tabs can't moved by mouse or key 
 				number_tabs => 0,              # (0|1) display a number before the file name in the tabs
-				switch_back => 1,              # (0|1) switch back if you klick on current tab
-				tablist_button => 1,
+				switch_back => 1,              # -NI (0|1) switch back if you klick on current tab
+				tablist_button => 1,           # (0|1)
+				visible => 1,                  # (0|1)
 			},
 			toolbar => {
 				all => {

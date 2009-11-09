@@ -130,12 +130,12 @@ sub OnInit {
 	my $frame = Kephra::App::Window::create();
 	Kephra::Document::Data::create_slot(0);
 	Kephra::App::TabBar::create();
-	my $ep = Kephra::App::TabBar::add_edit_tab();
+	my $ep = Kephra::App::TabBar::add_edit_tab(0);
 	Kephra::Document::Data::set_current_nr(0);
 	Kephra::Document::Data::set_previous_nr(0);
 	Kephra::Document::Data::set_value('buffer',1);
 
-	Kephra::API::Plugin::load_all ();
+	Kephra::API::Plugin::load_all();
 	#$main::logger->debug("init app pntr");
 	print " init app:",
 		Benchmark::timestr( Benchmark::timediff( new Benchmark, $t0 ) ), "\n"

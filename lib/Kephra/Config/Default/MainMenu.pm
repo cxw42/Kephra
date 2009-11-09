@@ -371,6 +371,7 @@ sub get {
 			],},
 			{'menu view_bars' => [
 				'checkitem view-toolbar-main',
+				'checkitem view-tabbar',
 				'checkitem view-toolbar-search',
 				'checkitem view-statusbar',
 			],},
