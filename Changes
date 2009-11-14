@@ -3,6 +3,10 @@ BUGS:
  !!! test suite fails
  ! textchanged event triggers twice
 
+0.4.1.18
+ ~ session save now docs in visual order
+ ~ search findings even visible when hidden in folded line
+
 0.4.1.17
  ! sessions save does work again
  ! tabs and other doc settings work again

@@ -873,7 +873,7 @@ sub get {
 			},
 			tool => {
 				note => 'f4',
-				note-selection => 'shift+f4',
+				'note-selection' => 'shift+f4',
 				'interpreter-run-document' => 'f5',
 				'interpreter-stop-document' => 'shift+f5',
 			},

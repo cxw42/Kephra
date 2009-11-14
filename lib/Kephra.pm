@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.4.1.17';      # version of entire app
+our $VERSION    = '0.4.1.18';      # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $LOGLEVEL;                     # flag for benchmark loggings
@@ -101,7 +101,6 @@ sub load_modules {
 our %config;        # global settings, saved in /config/global/autosaved.conf
 sub global_config { Kephra::Config::Global::settings()      }
 sub localisation  { Kephra::Config::Localisation::strings() }
-
 
 sub configdir {
 	$_[0] and $_[0] eq $NAME and shift;

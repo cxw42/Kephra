@@ -1,17 +1,11 @@
 package Kephra::Edit::Search;
-our $VERSION = '0.30';
+our $VERSION = '0.31';
 
 use strict;
 use warnings;
 
 # internal and menu functions about find and replace text
 # drag n drop target class
-
-use Wx qw(
-	wxSTC_FIND_WHOLEWORD wxSTC_FIND_MATCHCASE wxSTC_FIND_WORDSTART
-	wxSTC_INDIC_STRIKE wxSTC_INDIC_DIAGONAL wxSTC_INDIC_TT wxSTC_INDIC_PLAIN
-	wxSTC_FIND_REGEXP wxYES wxCANCEL
-);
 
 # internal functions
 sub _attributes{ $Kephra::config{search}{attribute} }
@@ -21,15 +15,15 @@ sub _refresh_search_flags {
 	my $attr = _attributes();
 	my $flags = 0;
 
-	$flags |= wxSTC_FIND_MATCHCASE
+	$flags |= Wx::wxSTC_FIND_MATCHCASE
 		if defined $attr->{match_case} and $attr->{match_case};
 	if ( defined $attr->{match_whole_word} and $attr->{match_whole_word} ) {
-		$flags |= wxSTC_FIND_WHOLEWORD
+		$flags |= Wx::wxSTC_FIND_WHOLEWORD
 	} else {
-		$flags |= wxSTC_FIND_WORDSTART
+		$flags |= Wx::wxSTC_FIND_WORDSTART
 			if $attr->{match_word_begin} and $attr->{match_word_begin};
 	}
-	$flags |= wxSTC_FIND_REGEXP
+	$flags |= Wx::wxSTC_FIND_REGEXP
 		if defined $attr->{match_regex} and $attr->{match_regex};
 	$Kephra::temp{search}{flags} = $flags;
 }
@@ -258,13 +252,11 @@ sub find_all{
 		my $search_result = _find_first();
 		my ($sel_start, $sel_end);
 		#Kephra::Dialog::msg_box(undef, , '');
-		#$ep->IndicatorSetStyle(0, wxSTC_INDIC_TT );
+		#$ep->IndicatorSetStyle(0, Wx::wxSTC_INDIC_TT );
 		#$ep->IndicatorSetForeground(0, Wx::Colour->new(0xff, 0x00, 0x00));
-		#$ep->IndicatorSetStyle(1, wxSTC_INDIC_TT );
-		#$ep->IndicatorSetForeground(1, Wx::Colour->new(0xff, 0x00, 0x00));
-		$ep->IndicatorSetStyle(1, wxSTC_INDIC_TT );
+		$ep->IndicatorSetStyle(1, Wx::wxSTC_INDIC_TT );
 		$ep->IndicatorSetForeground(1, Wx::Colour->new(0xff, 0x00, 0x00));
-		# ^= wxSTC_INDIC_STRIKE;
+		# ^= Wx::wxSTC_INDIC_STRIKE;
 		$ep->SetSelection(0,0);
 		return 0 if $search_result == -1;
 		while ($search_result > -1){
@@ -619,7 +611,7 @@ sub replace_confirm {
 		my $len  = _exist_find_item();
 		my $sel_begin = $ep->GetSelectionStart;
 		my $sel_end   = $ep->GetSelectionEnd;
-		my $answer    = wxYES;
+		my $answer    = Wx::wxYES;
 		my $menu_call = shift;
 
 		set_range('selection')
@@ -635,7 +627,7 @@ sub replace_confirm {
 			my $begin_doc = Kephra::Document::Data::current_nr();
 			do {
 				{
-					next if $answer == wxCANCEL;
+					next if $answer == Wx::wxCANCEL;
 					Kephra::Edit::_save_positions();
 					$answer = sniff_selection
 						( $ep, 0, $ep->GetTextLength, $len, $line );
@@ -656,9 +648,9 @@ sub replace_confirm {
 			Kephra::Edit::_center_caret();
 			$answer = Kephra::Dialog::get_confirm_3
 				(undef, $l10n->{text}, $l10n->{title}, 100, 100);
-			last if $answer == wxCANCEL;
-			if ($answer == wxYES) {replace_selection()}
-			else                  {$ep->SetCurrentPos( $ep->GetCurrentPos + 1 )}
+			last if $answer == Wx::wxCANCEL;
+			if ($answer == Wx::wxYES) {replace_selection()}
+			else                    {$ep->SetCurrentPos( $ep->GetCurrentPos + 1 )}
 		}
 		$ep->EndUndoAction;
 		Kephra::Edit::Goto::_pos( $ep->PositionFromLine($line) );
@@ -676,6 +668,8 @@ our $VERSION = '0.04';
 
 use strict;
 use base qw(Wx::TextDropTarget);
+use Wx;
+use Wx::DND;
 
 sub new {
 	my $class  = shift;

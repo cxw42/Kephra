@@ -1,11 +1,11 @@
 package Kephra::App::Menu;
 our $VERSION = '0.14';
 
-=item1 Name
+=head1 NAME
 
-Kephra::App::Menu - 
+Kephra::App::Menu - Menu creation and storage
 
-=item1 Content
+=head1 DESCRIPTION
 
 Module Kephra::App::Menu - Menu handling for the main app
 
@@ -14,32 +14,30 @@ Module Kephra::App::Menu - Menu handling for the main app
 use strict;
 use warnings;
 
-use Wx qw (wxITEM_CHECK wxITEM_RADIO wxITEM_NORMAL);
-
 my %menu;
 sub _ref {
 	if    (ref $_[1] eq 'Wx::Menu')  {$menu{$_[0]}{ref} = $_[1]}
 	elsif (exists $menu{$_[0]}{ref}) {$menu{$_[0]}{ref}}
 }
-sub _data        { $menu{$_[0]} if stored($_[0]) }
+sub _data        { $menu{$_[0]} if stored($_[0])  }
 sub stored       { 1 if ref $menu{$_[0]} eq 'HASH'}
-sub set_absolete { $menu{$_[0]}{absolete} = 1    }
-sub not_absolete { $menu{$_[0]}{absolete} = 0    }
-sub is_absolete  { $menu{$_[0]}{absolete}        }
+sub set_absolete { $menu{$_[0]}{absolete} = 1     }
+sub not_absolete { $menu{$_[0]}{absolete} = 0     }
+sub is_absolete  { $menu{$_[0]}{absolete}         }
 sub set_update   { $menu{$_[0]}{update} =  $_[1] if ref $_[1] eq 'CODE' }
 sub no_update    { delete $menu{$_[0]}{update} if stored($_[0]) }
 
-sub add_onopen_check{
+sub add_onopen_check {
 	return until ref $_[2] eq 'CODE';
 	$menu{ $_[0] }{onopen}{ $_[1] } = $_[2];
 }
-sub del_onopen_check{
+sub del_onopen_check {
 	return until $_[1];
 	delete $menu{$_[0]}{onopen}{$_[1]} if exists $menu{$_[0]}{onopen}{$_[1]};
 }
 
-# make menu ready for display
-sub ready {
+
+sub ready          { # make menu ready for display
 	my $id = shift;
 	if ( stored($id) ){
 		my $menu = _data($id);
@@ -51,8 +49,8 @@ sub ready {
 	}
 }
 
-# create on runtime changeable menus
-sub create_dynamic {
+
+sub create_dynamic { # create on runtime changeable menus
 	my ( $menu_id, $menu_name ) = @_ ;
 	#
 	if ($menu_name eq '&insert_templates') {
@@ -150,15 +148,15 @@ sub create_dynamic {
 
 }
 
-# create colid, not on runtime changeable menus
-sub create_static {
+
+sub create_static  { # create solid, not on runtime changeable menus
 	my ($menu_id, $menu_def) = @_;
 	return unless ref $menu_def eq 'ARRAY';
 	not_absolete($menu_id);
 	eval_data($menu_id, assemble_data_from_def($menu_def));
 }
 
-# make menu data structures (MDS) from menu skeleton definitions (command list)
+# create menu data structures (MDS) from menu skeleton definitions (command list)
 sub assemble_data_from_def {
 	my $menu_def = shift;
 	return unless ref $menu_def eq 'ARRAY';
@@ -221,9 +219,7 @@ sub assemble_data_from_def {
 	return \@mds;
 }
 
-
-# eval menu data structures (MDS) to wxMenus
-sub eval_data {
+sub eval_data { # eval menu data structures (MDS) to wxMenus
 	my $menu_id = shift;
 	return unless defined $menu_id;
 	#emty the old or create new menu under the given ID
@@ -260,13 +256,10 @@ sub eval_data {
 				#print " $item_data->{label}- \n";
 			#});
 		} else {
-			if      ($item_data->{type} eq 'checkitem'){
-				$kind = wxITEM_CHECK
-			} elsif ($item_data->{type} eq 'radioitem'){
-				$kind = wxITEM_RADIO
-			} elsif ($item_data->{type} eq 'item'){
-				$kind = wxITEM_NORMAL
-			} else { next; }
+			if    ($item_data->{type} eq 'checkitem'){$kind = &Wx::wxITEM_CHECK}
+			elsif ($item_data->{type} eq 'radioitem'){$kind = &Wx::wxITEM_RADIO}
+			elsif ($item_data->{type} eq 'item')     {$kind = &Wx::wxITEM_NORMAL}
+			else                                     { next; }
 
 			my $menu_item = Wx::MenuItem->new
 				($menu, $item_id, $item_data->{label}, '', $kind);

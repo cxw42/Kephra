@@ -1,7 +1,14 @@
 package Kephra::File::Session;
 our $VERSION = '0.15';
 =pod
- file session handling
+
+=head1 NAME
+
+  Kephra::File::Session - 
+
+=head1 DESCRIPTION
+
+  file session handling
  current session is the group of all opened files
  sessionfiles contain metadata like syntaxmode, tabsize, cursorpos, -NI codset
 =cut
@@ -68,6 +75,7 @@ sub _add {
 	Kephra::Document::Data::set_previous_nr($prev_doc_nr);
 	Kephra::Edit::Bookmark::restore_all();
 	Kephra::App::EditPanel::Margin::reset_line_number_width();
+	Kephra::App::Window::refresh_title();
 }
 #
 # extern API
@@ -113,17 +121,19 @@ sub save      {
 	my $file = shift;
 	return unless $file;
 
+	Kephra::Document::Data::update_attributes();
 	my @saved_properties = qw(EOL codepage cursor_pos edit_pos file_path readonly
 		syntaxmode tab_size tab_use);
-	Kephra::Document::Data::update_attributes();
+	my $doc2vis = \&Kephra::App::TabBar::_doc2vis_pos;
 	my $config = _config();
 	my %temp_config = %{ Kephra::Config::File::load($file) } if -r $file;
-	$temp_config{current_nr} = Kephra::Document::Data::current_nr();
+	$temp_config{current_nr} = $doc2vis->(Kephra::Document::Data::current_nr());
 	$temp_config{document} = [];
 	my @doc_list = @{ Kephra::Document::Data::_attributes() };
 	for my $nr (0 .. $#doc_list) {
+		my $vis_pos = $doc2vis->($nr);
 		for my $key (@saved_properties) {
-			$temp_config{document}[$nr]{$key} = $doc_list[$nr]{$key};
+			$temp_config{document}[$vis_pos]{$key} = $doc_list[$nr]{$key};
 		}
 	}
 	@{ $temp_config{document} } = @{ _forget_gone_files( \$temp_config{document} ) };

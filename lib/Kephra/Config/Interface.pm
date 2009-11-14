@@ -24,8 +24,8 @@ sub load {
 		$file{index}     = &$path( $cache_dir, 'index_cmd.yml');
 		$file{cmd_cache} = &$path( $cache_dir, 'cmd_main.yml' );
 		$file{l18n_cache}= &$path( $cache_dir, 'l18n_main.yml');
-		$file{cmd}       = Kephra::API::CommandList::file;
-		$file{l18n}      = Kephra::Config::Localisation::file;
+		$file{cmd}       = Kephra::API::CommandList::file();
+		$file{l18n}      = Kephra::Config::Localisation::file();
 		%old_index = %{ &$read($file{index}) } if -e $file{index};
 		%new_index = (
 			'l18n' => {'file' => $file{cmd}, 'age' => &$get_age($file{cmd})},

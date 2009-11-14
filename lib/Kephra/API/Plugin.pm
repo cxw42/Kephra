@@ -1,12 +1,9 @@
 package Kephra::API::Plugin;
-use strict;
-use warnings;
-
 our $VERSION = '0.00';
 
 =head1 NAME
 
-Kephra::API::Extension - API for extentions (plugins)
+Kephra::API::Plugin - API to extend the App
 
 =head1 DESCRIPTION
 
@@ -16,6 +13,9 @@ in any way since they can mount functions to any event and provide new
 menus, menu items even whole modules.
 
 =cut
+
+use strict;
+use warnings;
 
 
 sub install {}

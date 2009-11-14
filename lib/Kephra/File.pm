@@ -78,7 +78,7 @@ sub check_b4_overwite {
 	my $allow = $Kephra::config{file}{save}{overwrite};
 	if ( -e $file ) {
 		my $frame = Kephra::App::Window::_ref();
-		my $label = Kephra::Config::Localisation::strings->{dialog};
+		my $label = Kephra::Config::Localisation::strings()->{dialog};
 		if ( $allow eq 'ask' ) {
 			my $answer = Kephra::Dialog::get_confirm_2( $frame,
 				"$label->{general}{overwrite} $file ?",

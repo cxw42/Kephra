@@ -1,12 +1,19 @@
 package Kephra::Document::Property;
-our $VERSION = '0.03';
-#
-# change doc data and eval it
-#
+our $VERSION = '0.04';
+
+=head1 NAME
+
+Kephra::Document::Property - 
+
+=head1 DESCRIPTION
+
+change doc data and eval it.
+
+=cut
+
 use strict;
 use warnings;
 
-use Wx qw( wxSTC_EOL_CR wxSTC_EOL_LF wxSTC_EOL_CRLF );
 
 # some internal shortcut helper
 sub _ep_ref     { Kephra::App::EditPanel::_ref() }
@@ -129,11 +136,11 @@ sub set_EOL_mode {
 	}
 	$mode = detect_EOL_mode() if $mode eq 'auto';
 	my $eoll = 1;
-	if ( $mode eq 'cr+lf'or $mode eq 'win') {$ep->SetEOLMode(wxSTC_EOL_CRLF); 
+	if ( $mode eq 'cr+lf'or $mode eq 'win') {$ep->SetEOLMode(&Wx::wxSTC_EOL_CRLF); 
 		$eoll = 2;
 	}
-	elsif ( $mode eq 'cr'or $mode eq 'mac') {$ep->SetEOLMode(wxSTC_EOL_CR) }
-	else                                    {$ep->SetEOLMode(wxSTC_EOL_LF) } 
+	elsif ( $mode eq 'cr'or $mode eq 'mac') {$ep->SetEOLMode(&Wx::wxSTC_EOL_CR) }
+	else                                    {$ep->SetEOLMode(&Wx::wxSTC_EOL_LF) } 
 	_set_attr('EOL',        $mode);
 	_set_attr('EOL_length', $eoll);
 	Kephra::App::StatusBar::EOL_info($mode);
@@ -152,9 +159,9 @@ sub convert_EOL {
 	$mode = $Kephra::config{file}{defaultsettings}{EOL_open} unless $mode;
 	$mode = detect_EOL_mode() if $mode eq 'auto';
 	Kephra::API::EventTable::freeze_group('edit');
-	if ($mode eq 'cr+lf' or $mode eq 'win')  {$ep->ConvertEOLs(wxSTC_EOL_CRLF)}
-	elsif ($mode eq 'cr' or $mode eq 'mac' ) {$ep->ConvertEOLs(wxSTC_EOL_CR)}
-	else                                     {$ep->ConvertEOLs(wxSTC_EOL_LF)}
+	if ($mode eq 'cr+lf' or $mode eq 'win')  {$ep->ConvertEOLs(&Wx::wxSTC_EOL_CRLF)}
+	elsif ($mode eq 'cr' or $mode eq 'mac' ) {$ep->ConvertEOLs(&Wx::wxSTC_EOL_CR)}
+	else                                     {$ep->ConvertEOLs(&Wx::wxSTC_EOL_LF)}
 	Kephra::API::EventTable::thaw_group('edit');
 	set_EOL_mode($mode);
 }

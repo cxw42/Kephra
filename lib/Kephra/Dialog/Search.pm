@@ -422,7 +422,7 @@ sub replace_input_keyfilter {
 	my $key_code = $event->GetKeyCode;
 	if ($key_code == WXK_RETURN ) {
 		if ( $event->ControlDown ) {
-			Kephra::Edit::Search::replace_all;
+			Kephra::Edit::Search::replace_all();
 			$dialog->Close;
 		} elsif ( $event->AltDown ) { replace_confirm($dialog) }
 		else                        { Kephra::Edit::Search::replace_all() }

@@ -21,7 +21,7 @@ sub keymap {
 
 		# init win mit grunddesign
 		$Kephra::temp{'keymap'}{'dialog_active'} = 1;
-		my $l18n = Kephra::Localisation::strings->{dialogs}{keyboard_map};
+		my $l18n = Kephra::Localisation::strings()->{dialogs}{keyboard_map};
 		my $keymap_win = Wx::Frame->new(
 			$frame, -1, ' ' . $l18n->{title},
 			[ 10,  10 ], [ 420, 460 ],

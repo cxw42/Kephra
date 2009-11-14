@@ -1,5 +1,5 @@
 package Kephra::Edit;
-our $VERSION = '0.31';
+our $VERSION = '0.32';
 
 use strict;
 use warnings;
@@ -30,7 +30,7 @@ sub _let_caret_visible {
 	my $los = $ep->LinesOnScreen;
 	if ( $selstart == $selend ) {
 		$ep->ScrollToLine($ep->GetCurrentLine - ( $los / 2 ))
-			unless $ep->GetCaretLineVisible;
+			unless $ep->GetLineVisible( $ep->GetCurrentLine() );
 	} else {
 		my $startline = $ep->LineFromPosition($selstart);
 		my $endline = $ep->LineFromPosition($selend);
@@ -43,8 +43,9 @@ sub _let_caret_visible {
 
 sub _center_caret {
 	my $ep = _ep_ref();
-	$ep->ScrollToLine($ep->GetCurrentLine - ( $ep->LinesOnScreen / 2 ));
-	$ep->EnsureCaretVisible;
+	my $line = $ep->GetCurrentLine();
+	$ep->ScrollToLine( $line - ( $ep->LinesOnScreen / 2 ));
+	$ep->EnsureVisible($line);
 }
 
 my @pos_stack;
