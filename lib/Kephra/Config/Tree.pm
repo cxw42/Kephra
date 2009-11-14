@@ -7,6 +7,40 @@ use warnings;
 # verbose config hash ops
 
 =cut
+
+#############################
+# single node manipulation
+#############################
+
+sub _convert_node_2_AoH {
+	my $node = shift;
+	if (ref $$node eq 'ARRAY') {
+		return $$node if ref $$node->[0] eq 'HASH';
+	} elsif (ref $$node eq 'HASH') {
+		my %temp_hash = %{$$node};
+		push( my @temp_array, \%temp_hash );
+		return $$node = \@temp_array;
+	} elsif (not ref $$node) {
+		my @temp_array = ();
+		return $$node = \@temp_array;
+	}
+}
+
+sub _convert_node_2_AoS {
+	my $node = shift;
+	if (ref $$node eq 'ARRAY') {
+		return $$node;
+	} elsif ( 'SCALAR' eq ref $node )  {
+		if ($$node) {
+			push( my @temp_array, $$node );
+			return $$node = \@temp_array;
+		} else {
+			my @temp_array = ();
+			return $$node = \@temp_array;
+		}
+	}
+}
+
 sub get_subtree { &subtree }
 sub subtree {
 	my $config = shift;
@@ -108,39 +142,5 @@ sub diff {
 # single node manipulation
 #############################
 
-
-
-#############################
-# single node manipulation
-#############################
-
-sub _convert_node_2_AoH {
-	my $node = shift;
-	if (ref $$node eq 'ARRAY') {
-		return $$node;
-	} elsif (ref $$node eq 'HASH') {
-		my %temp_hash = %{$$node};
-		push( my @temp_array, \%temp_hash );
-		return $$node = \@temp_array;
-	} elsif (not ref $$node) {
-		my @temp_array = ();
-		return $$node = \@temp_array;
-	}
-}
-
-sub _convert_node_2_AoS {
-	my $node = shift;
-	if (ref $$node eq 'ARRAY') {
-		return $$node;
-	} elsif ( 'SCALAR' eq ref $node )  {
-		if ($$node) {
-			push( my @temp_array, $$node );
-			return $$node = \@temp_array;
-		} else {
-			my @temp_array = ();
-			return $$node = \@temp_array;
-		}
-	}
-}
 
 1;

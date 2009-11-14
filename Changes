@@ -3,6 +3,15 @@ BUGS:
  !!! test suite fails
  ! textchanged event triggers twice
 
+0.4.1.17
+ ! sessions save does work again
+ ! tabs and other doc settings work again
+ ! file save works again
+ ! reload file works without flaws
+
+0.4.1.16
+ ! sessions do load again
+
 0.4.1.15
  ] 2 level tab number translation
  ~ moved motto from info box into localisation

@@ -13,7 +13,6 @@ sub to_number {
 	my $old_doc = Kephra::Document::Data::current_nr();
 
 	if ($new_doc != $old_doc and $new_doc > -1) {
-#print " change $oldtab to_number $newtab\n";
 		Kephra::Document::Data::update_attributes($old_doc);
 		Kephra::File::save_current() if $Kephra::config{file}{save}{change_doc};
 		Kephra::Document::Data::set_current_nr($new_doc);
@@ -21,10 +20,13 @@ sub to_number {
 		Kephra::App::Window::refresh_title();
 		Kephra::App::TabBar::raise_tab_by_doc_nr($new_doc);
 		Kephra::App::StatusBar::refresh_all_cells();
+		$Kephra::config{file}{current}{directory} = 
+			Kephra::Document::Data::get_attribute('directory', $new_doc);
 		Kephra::API::EventTable::trigger_group( 'doc_change' );
 		Kephra::App::EditPanel::gets_focus();
 		return 1;
-	} else { #print "not changed\n"
+	} else { 
+		#print "not changed\n"
 	}
 	return 0;
 }

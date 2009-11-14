@@ -22,13 +22,13 @@ sub load_autosaved {
 	for my $file ($autosave, $backup) {
 		if ( -e $file ) {
 			my $config_tree = Kephra::Config::File::load($file);
-			%Kephra::config = %$config_tree if ref $config_tree eq 'HASH';
-			last if %Kephra::config;
+			%settings = %Kephra::config = %$config_tree if ref $config_tree eq 'HASH';
+			last if %settings;
 			rename $file, $file . '.failed';
 		}
 	}
 
-	%Kephra::config
+	%settings
 		? evaluate()
 		: load_defaults();
 }
@@ -43,7 +43,6 @@ sub save_autosaved {
 
 sub open_current_file {
 	save_current();
-print auto_file(),"\n";
 	Kephra::Config::open_file( auto_file() );
 	#Kephra::File::reload_current();
 }
@@ -51,7 +50,7 @@ print auto_file(),"\n";
 sub load_backup_file { reload( auto_file() . '~' ) }
 
 sub load_defaults {
-	%Kephra::config = %{ Kephra::Config::Default::global_settings() };
+	%settings = %Kephra::config = %{ Kephra::Config::Default::global_settings() };
 	evaluate();
 }
 
@@ -123,9 +122,8 @@ print "  apply sets:", Benchmark::timestr( Benchmark::timediff( $t4, $t3 ) ), "\
 
 	Kephra::Config::build_fileendings2syntaxstyle_map();
 	Kephra::Config::build_fileendings_filterstring();
-
 	#Kephra::API::EventTable::start_timer();
-	#thats o todo list:
+	#todo:
 	#Kephra::API::EventTable::thaw_all();
 	#Kephra::App::clean_acc_table();
 
@@ -139,7 +137,7 @@ sub reload {
 		Kephra::Document::Data::update_attributes();
 		my %test_hash = %{ Kephra::Config::File::load($configfile) };
 		if (%test_hash) {
-			%Kephra::config = %test_hash;
+			%settings = %Kephra::config = %test_hash;
 			reload_tree();
 		} else {
 			save();
@@ -168,7 +166,7 @@ sub eval_config_file {
 	if ($config_path eq substr( $file_path, 0, $l_path)){
 		$file_path = substr $file_path, $l_path+1;
 	}
-	my $conf = $Kephra::config{app};
+	my $conf = $settings{app};
 	my $match = \&Kephra::Config::path_matches;
 
 	if ( &$match( $file_path, 
@@ -201,7 +199,7 @@ sub eval_config_file {
 sub save {
 	my $file_name = shift || file();
 	update();
-	Kephra::Config::File::store( $file_name, \%Kephra::config );
+	Kephra::Config::File::store( $file_name, \%settings );
 }
 
 sub save_as {
@@ -231,14 +229,14 @@ sub merge_with {
 sub load_subconfig {
 	my $file = shift;
 	if ( -e $file ) {
-		%Kephra::config = %{ Kephra::Config::Tree::merge
-			(Kephra::Config::File::load($file), \%Kephra::config) };
+		%settings = %{ Kephra::Config::Tree::merge
+			(Kephra::Config::File::load($file), \%settings) };
 		reload_tree();
 	}
 }
 
 sub open_templates_file {
-	my $config = $Kephra::config{file}{templates}; 
+	my $config = $settings{file}{templates}; 
 	Kephra::Config::open_file( $config->{directory}, $config->{file} );
 }
 

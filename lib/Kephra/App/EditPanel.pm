@@ -21,7 +21,7 @@ my $ref;
 sub _ref     { $ref }
 sub _set_ref { $ref = $_[0] if is($_[0]) }
 sub is       { 1 if ref $_[0] eq 'Wx::StyledTextCtrl'}
-sub _config           { $Kephra::config{editpanel} }
+sub _config  { $Kephra::config{editpanel} }
 sub _indicator_config { _config()->{indicator} }
 
 sub new { 

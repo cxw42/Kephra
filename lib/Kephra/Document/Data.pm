@@ -22,7 +22,7 @@ sub _attributes{ \@attributes }
 sub _values    { \%values     }
 sub _hash      { $attributes[$_[0]] }
 sub _ep        {
-	my $ep = $attributes[validate_doc_nr($_[0])]{ref};
+	my $ep = $attributes[validate_doc_nr($_[0])]{ep_ref};
 	$ep if Kephra::App::EditPanel::is($ep);
 }
 sub count      { @attributes  }
@@ -48,7 +48,7 @@ sub get_current_nr  { $current_nr }
 sub set_current_nr  { 
 	$current_nr = $_[0] if defined $_[0] and validate_doc_nr($_[0]) > -1;
 	$current_attr = $attributes[$current_nr];
-	Kephra::App::EditPanel::_set_ref( $current_attr->{ref} );
+	Kephra::App::EditPanel::_set_ref( $current_attr->{ep_ref} );
 }
 sub validate_doc_nr { 
 	my $nr = shift;
@@ -84,7 +84,6 @@ sub get_attribute {
 	return unless defined $attr or $attr;
 	my $nr = shift;
 	$nr = defined $nr ? validate_doc_nr($nr) : current_nr();
-#print "get attr $attr $nr \n";
 	return if $nr < 0;
 	$attributes[ $nr ]{ $attr } if defined $attributes[ $nr ]{ $attr };
 }
@@ -197,6 +196,14 @@ sub cursor_pos     {
 #
 # more complex operations
 #
+sub default_missing_attributes {
+	my ($nr, $file) = @_;
+	$nr = validate_doc_nr($nr);
+	return if $nr < 0;
+	$file = get_file_path($nr) unless defined $file;
+	my $default = $Kephra::config{file}{defaultsettings};
+}
+
 sub default_attributes {
 	my ($nr, $file) = @_;
 	$nr = validate_doc_nr($nr);
@@ -207,7 +214,7 @@ sub default_attributes {
 		'codepage'  => $default->{codepage},
 		'edit_pos'  => -1,
 		'file_path' => $file,
-		'ref'       => $attributes[$nr]{ref},
+		'ep_ref'    => $attributes[$nr]{ep_ref},
 		'readonly'  => $default->{readonly},
 		'syntaxmode'=> $default->{syntaxmode},
 		'tab_size'  => $default->{tab_size},
@@ -222,7 +229,6 @@ sub default_attributes {
 		$attr->{EOL}     = $default->{EOL_new};
 		$attr->{tab_use} = $default->{tab_use_new};
 	}
-
 	set_all_attributes($attr, $nr);
 	dissect_path($file, $nr);
 }
@@ -250,15 +256,15 @@ sub evaluate_attributes {
 	} 
 	else { $config->{current}{directory} = '' }
 	Kephra::Edit::_let_caret_visible();
-	Kephra::App::StatusBar::refresh_cursor();
 	Kephra::App::EditPanel::set_word_chars($ep);
 	Kephra::App::EditPanel::paint_bracelight($ep)
 		if Kephra::App::EditPanel::bracelight_visible;
+	Kephra::App::StatusBar::refresh_cursor();
 }
 
-# was named save_properties
-sub update_attributes {
-	my $doc_nr = validate_doc_nr(shift);
+sub update_attributes { # was named save_properties
+	my $doc_nr = shift;
+	$doc_nr = defined $doc_nr ? validate_doc_nr($doc_nr) : current_nr();
 	return if $doc_nr < 0;
 	my $attr = $attributes[$doc_nr];
 	my $ep = Kephra::App::EditPanel::_ref();

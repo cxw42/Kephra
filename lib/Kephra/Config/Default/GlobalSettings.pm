@@ -1,5 +1,5 @@
 package Kephra::Config::Default::GlobalSettings;
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 use strict;
 use warnings;
@@ -304,11 +304,6 @@ sub get {
 				text   => 'text',
 				web    => 'css html php perl js',
 			},
-			history => {
-				file => 'session/history.yml',
-				length => 10,
-				path => [],
-			},
 			open => {
 				dir_recursive       => 1, # opens dirs recursive
 				each_once           => 1, # opens each file only once
@@ -332,11 +327,19 @@ sub get {
 				unchanged     => 0,     # saves (touches) automaticly also unchanged files
 			},
 			session => {
-				autosave  => 'extern',
+				auto => {
+					file => 'current.yaml',
+					node => '',
+					save => 1,
+				},
 				backup    => 'backup.yaml',
-				current   => 'current.yaml',
 				directory => 'session', # subdir of config where to look for session files
-				node      => 'files',
+				history   => {
+					file => 'history.yml',
+					length => 10,
+					node => '',
+					save => 1,
+				},
 			},
 			templates => {
 				directory => 'templates',

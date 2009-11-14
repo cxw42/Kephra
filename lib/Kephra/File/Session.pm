@@ -1,19 +1,19 @@
 package Kephra::File::Session;
-our $VERSION = '0.14';
-
+our $VERSION = '0.15';
+=pod
+ file session handling
+ current session is the group of all opened files
+ sessionfiles contain metadata like syntaxmode, tabsize, cursorpos, -NI codset
+=cut
+#
+# intern API
+#
 use strict;
 use warnings;
-#
-# file session handling
-# current session is the group of all opened files
-# sessionfiles contain metadata like syntaxmode, tabsize, cursorpos, -NI codset
-#
-sub _config { $Kephra::config{file}{session} }
+
+sub _config      { $Kephra::config{file}{session} }
 sub _dialog_l18n { Kephra::Config::Localisation::strings()->{dialog} }
-#
-# intern
-#
-sub _forget_gone_files {
+sub _forget_gone_files  {
 	my @true_files = ();
 	my $node       = shift;
 	$node = $$node if ref $node eq 'REF' and ref $$node eq 'ARRAY';
@@ -35,99 +35,102 @@ sub _remember_directory {
 		@dirs = split( /\\/, $filename ) if $filename =~ /\\/ ;
 		@dirs = split( /\//, $filename ) if $filename =~ /\// ;
 		$dir .= "$dirs[$_]/" for 0 .. $#dirs - 1;
-		_config()->{directory} = $dir if $dir;
+		_config()->{dialog_dir} = $dir if $dir;
 	}
 }
+sub _add {
+	my $session_data = shift; # session data
+	return unless %$session_data
+			and $session_data->{document}
+			and $session_data->{document}[0];
+
+	my @load_files = @{Kephra::Config::Tree::_convert_node_2_AoH
+			( \$session_data->{document} )};
+	@load_files = @{ _forget_gone_files( \@load_files ) };
+	my $start_nr    =  Kephra::Document::Data::current_nr();
+	my $prev_doc_nr = Kephra::Document::Data::previous_nr();
+	my $loaded = Kephra::Document::Data::get_value('loaded');
+	Kephra::Document::Data::update_attributes($start_nr);
+	$start_nr = $session_data->{current_nr}
+		if $session_data->{current_nr}
+		and not $loaded and Kephra::App::EditPanel::_ref()->GetText eq '';
+
+	# open remembered files with all properties
+	Kephra::Document::restore( $_ ) for @load_files;
+	my $buffer = Kephra::Document::Data::get_value('buffer');
+
+	# selecting starting doc nr
+	$start_nr = 0 if (not defined $start_nr) or ($start_nr < 0 );
+	$start_nr = $buffer - 1 if $start_nr >= $buffer;
+
+	# activate the starting document & some afterwork
+	Kephra::Document::Change::to_number($start_nr);
+	Kephra::Document::Data::set_previous_nr($prev_doc_nr);
+	Kephra::Edit::Bookmark::restore_all();
+	Kephra::App::EditPanel::Margin::reset_line_number_width();
+}
 #
-# extern
+# extern API
 #
-sub load {
+sub restore   { add(shift, 1) }
+sub add       {
 	my $file = shift;
-	if ( -r $file ) {
-		my %temp_config = %{ Kephra::Config::File::load($file) };
-		if (%temp_config) {
-			Kephra::File::close_all();
-			my @load_files = 
-				@{Kephra::Config::Tree::_convert_node_2_AoH( \$temp_config{document} )};
-			@load_files = @{ &_forget_gone_files( \@load_files ) };
-			my $start_nr = $temp_config{current_nr};
-
-			# open remembered files with all properties
-			Kephra::Document::restore( $_ ) for @load_files;
-
-			# how many buffer we currently have and save the last doc?
-			my $buffer = Kephra::Document::Data::get_value('buffer');
-			Kephra::Document::Data::evaluate_attributes($buffer-1);
-
-			# selecting starting doc nr
-			$start_nr = 0 if (not defined $start_nr) or ($start_nr < 0 );
-			$start_nr = $buffer - 1 if $start_nr >= $buffer ;
-
-			# activate the starting document & some afterwork
-			Kephra::Edit::Bookmark::restore_all();
-			Kephra::App::Window::refresh_title();
-			Kephra::App::EditPanel::Margin::reset_line_number_width();
-			Kephra::Document::Data::evaluate_attributes($#load_files);
-			Kephra::Document::Change::to_number($start_nr);
-			Kephra::Document::Data::set_previous_nr($start_nr);
+	my $restore = shift;
+	if (-r $file) {
+		my $session_def = Kephra::Config::File::load($file);
+		if (ref $session_def eq 'HASH'){
+			Kephra::File::close_all() if $restore;
+			_add($session_def);
 		} else {
 			Kephra::Dialog::warning_box
 				(undef, $file, _dialog_l18n()->{error}{config_parse});
 		}
+	} else {
+		Kephra::Dialog::warning_box
+			(undef, $file, _dialog_l18n()->{error}{file_read});
 	}
 }
-
-sub add {
-	my $file_name = Kephra::Dialog::get_file_open(
+sub restore_from { # 
+	my $file = Kephra::Dialog::get_file_open(
+			Kephra::App::Window::_ref(),
+			_dialog_l18n()->{file}{open_session},
+			Kephra::Config::filepath( _config->{directory}
+		), $Kephra::temp{file}{filterstring}{config}
+	);
+	restore($file);
+}
+sub add_from  {
+	my $file = Kephra::Dialog::get_file_open(
 		Kephra::App::Window::_ref(),
 		_dialog_l18n()->{file}{add_session},
 		Kephra::Config::filepath( _config->{directory} ),
 		$Kephra::temp{file}{filterstring}{config}
 	);
-	if ( -r $file_name ) {
-		my %temp_config = %{ Kephra::Config::File::load($file_name) };
-		if (%temp_config) {
-			my $current_doc_nr = Kephra::Document::Data::current_nr();
-			my $prev_doc_nr    = Kephra::Document::Data::previous_nr();
-			#my $start_node = $Kephra::config{file}{current}{session}{node};
-			my @load_files = @{ Kephra::Config::Tree::_convert_node_2_AoH(
-					\$temp_config{document}
-			) };
-			@load_files = @{ _forget_gone_files( \@load_files ) };
+	add($file);
+}
 
-			# open remembered files with all properties
-			Kephra::Document::Data::update_attributes($current_doc_nr);
-			Kephra::Document::restore( \%{ $load_files[$_] } )
-				for 0 .. $#load_files;
+sub save      {
+	my $file = shift;
+	return unless $file;
 
-			# make file history like before
-			Kephra::Document::Data::set_current_nr($current_doc_nr);
-			Kephra::Document::Data::evaluate_attributes($current_doc_nr);
-			_remember_directory($file_name);
-		} else {
-			Kephra::Dialog::warning_box
-				(undef, $file_name, _dialog_l18n()->{error}{config_parse});
+	my @saved_properties = qw(EOL codepage cursor_pos edit_pos file_path readonly
+		syntaxmode tab_size tab_use);
+	Kephra::Document::Data::update_attributes();
+	my $config = _config();
+	my %temp_config = %{ Kephra::Config::File::load($file) } if -r $file;
+	$temp_config{current_nr} = Kephra::Document::Data::current_nr();
+	$temp_config{document} = [];
+	my @doc_list = @{ Kephra::Document::Data::_attributes() };
+	for my $nr (0 .. $#doc_list) {
+		for my $key (@saved_properties) {
+			$temp_config{document}[$nr]{$key} = $doc_list[$nr]{$key};
 		}
 	}
+	@{ $temp_config{document} } = @{ _forget_gone_files( \$temp_config{document} ) };
+	Kephra::Config::File::store( $file, \%temp_config );
 }
 
-sub save {
-	Kephra::Document::Data::update_attributes();
-	my $config      = _config();
-	my $config_file = shift ||
-		Kephra::Config::filepath( $config->{directory}, _config->{file} );
-	my %temp_config;
-	%temp_config = %{ Kephra::Config::File::load($config_file) } if -r $config_file;
-	undef $temp_config{document};
-	Kephra::Config::Tree::_convert_node_2_AoH( \$Kephra::document{open} );
-	# sorting out docs without file
-	@{ $Kephra::document{open} } = @{ _forget_gone_files($Kephra::document{open}) };
-	$temp_config{document} = Kephra::Document::Data::attributes();
-	$temp_config{current_nr} = Kephra::Document::Data::current_nr();
-	Kephra::Config::File::store( $config_file, \%temp_config );
-}
-
-sub save_as {
+sub save_as   {
 	my $file_name = Kephra::Dialog::get_file_save( Kephra::App::Window::_ref(),
 		_dialog_l18n()->{file}{save_session},
 		Kephra::Config::filepath( _config->{directory} ),
@@ -138,90 +141,36 @@ sub save_as {
 		_remember_directory($file_name);
 	}
 }
-
-#
+# default session handling
+sub do_autosave { # answers if autosave is turned on by config settings
+	my $config = _config()->{auto}{save};
+	return 1 if defined $config and $config and not $config eq 'not';
+	return 0;
+}
+sub autoload {    # restore session that was opened while last app shut down
+	if ( do_autosave() ) {
+		my $config = _config();
+		my $session_file = Kephra::Config::filepath
+			( $config->{directory}, $config->{auto}{file} );
+		restore($session_file);
+	} else { Kephra::Document::reset() }
+}
+sub autosave {
+	my $config = _config();
+	my $file = Kephra::Config::filepath($config->{directory}, $config->{auto}{file});
+	save( $file ) if do_autosave();
+}
 # backup session handling
-#
 sub load_backup {
 	my $config = _config();
-	load( Kephra::Config::filepath( $config->{directory}, $config->{backup} ) );
+	restore( Kephra::Config::filepath( $config->{directory}, $config->{backup} ) );
 }
 
 sub save_backup {
 	my $config = _config();
 	save( Kephra::Config::filepath( $config->{directory}, $config->{backup} ) );
 }
-
-#
-# default session handling
-#
-sub autosave {
-	my $config = _config();
-	my $file = Kephra::Config::filepath($config->{directory}, $config->{current});
-	save( $file ) if $config->{autosave} eq 'extern';
-}
-
-# restore autosaved
-sub autoload {
-	my $config = _config;
-	my $intern = $Kephra::temp{document};
-	my @load_files;
-	my $start_file_nr = $Kephra::document{current_nr} || 0;
-	$Kephra::document{current_nr}   = 0;
-	$Kephra::temp{document}{changed}= 0;
-	$Kephra::temp{document}{loaded} = 0;
-	my $file_name = Kephra::Config::filepath
-		( $config->{directory}, $config->{current} );
-
-	# detect wich files to load
-	if ( $config->{autosave} eq 'not' or not -e $file_name) { 
-	# Do nothing
-	} elsif ( $config->{autosave} eq 'intern' ) {
-		@load_files = 
-			@{Kephra::Config::Tree::_convert_node_2_AoH(\$Kephra::document{open})};
-	} elsif ( $config->{autosave} eq 'extern' ) {
-		#my $start_node  = $config;
-		my %temp_config = %{ Kephra::Config::File::load($file_name) };
-		@load_files = @{
-			Kephra::Config::Tree::_convert_node_2_AoH( \$temp_config{document} )
-		};
-		$start_file_nr = $temp_config{current_nr};
-	}
-
-	# delete all existing doc
-	$Kephra::document{open} = [];
-	# throw gone files
-	@load_files = @{ &_forget_gone_files( \@load_files ) };
-	# open remembered files with all properties
-	if ( $load_files[0]->{file_path} ) {
-		Kephra::Document::restore( $_ ) for @load_files;
-	# or make an emty edit panel if no doc remembered
-	} 
-	else { Kephra::Document::reset() }
-	Kephra::Edit::Bookmark::restore_all();
-	Kephra::App::Window::refresh_title();
-	Kephra::App::EditPanel::Margin::reset_line_number_width();
-
-	# detect with which file to start, switch to it & eval its properties
-	$start_file_nr = 0 if ( !$start_file_nr or $start_file_nr < 0 );
-	$start_file_nr = $intern->{loaded}-1 if 
-		$start_file_nr >= $intern->{loaded} and $intern->{loaded};
-	Kephra::Document::Change::to_number($start_file_nr) or
-		Kephra::Document::Data::evaluate_attributes($#load_files);
-	Kephra::Document::Data::previous_nr($start_file_nr);
-	Kephra::App::StatusBar::refresh_all_cells();
-}
-
-sub delete {
-	my $save = _config()->{autosave};
-	delete $Kephra::document{open}
-		if $save eq 'not' 
-		or $save eq 'extern';
-}
-
-#
 # other session formats
-#
 sub import_scite {
 	my $win = Kephra::App::Window::_ref();
 	my $err_msg = _dialog_l18n()->{error};
@@ -286,18 +235,6 @@ sub export_scite {
 				($win, $err_msg->{file_write}." $file", $err_msg->{file} );
 		}
 	}
-}
-#
-# open a session file in the editor
-#
-sub open_file {
-	my $file = Kephra::Dialog::get_file_open(
-			Kephra::App::Window::_ref(),
-			_dialog_l18n()->{file}{open_session},
-			Kephra::Config::filepath( _config->{directory}
-		), $Kephra::temp{file}{filterstring}{config}
-	);
-	load($file);
 }
 
 1;

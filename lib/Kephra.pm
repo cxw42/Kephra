@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.4.1.15';      # version of entire app
+our $VERSION    = '0.4.1.17';      # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $LOGLEVEL;                     # flag for benchmark loggings
@@ -326,9 +326,11 @@ and some help texts to be opened as normal files
 
 =head1 ROADMAP
 
+=head2 Past
+
 A more comlete roadmap you can find L<here|../doc/Roadmap>.
 
-=head2 Stable 0.4
+=item  Stable 0.4
 
 main new features are: 
 
@@ -339,26 +341,28 @@ This release is about getting the editor liquid or highly configurable.
 Its also about improvements in the user interface and of course the little
 things we missed, but config dialog was delayed.
 
-=head2 Testing 0.4.1
+=item  Testing 0.4.1
 
 folding, test suite, and new hotpluggable localisation system that also
-does UTF semi-automatically, initian czech and norwegian translation
+does some UTF semi-automatically, initian czech and norwegian translation
 
-=head2 TODO
+=head2 Future
+
+=item To Do
 
 fix config install under linux and mac
 
 fix test suite
 
-=head2 Testing 0.4.2
+=item Testing 0.4.2
 
 new tabbar and doc ref handling
 
-=head2 Testing 0.4.3
+=item Testing 0.4.3
 
-plugin API
+plugin API and codings
 
-=head2 Testing 0.4.4
+=item Testing 0.4.4
 
 config dialog?, stability for 0.5
 

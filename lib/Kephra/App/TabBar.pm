@@ -143,13 +143,13 @@ sub apply_settings {
 	my $style = $notebook->GetWindowStyleFlag();
 	$style |= wxAUI_NB_TAB_MOVE if _config->{movable_tabs};
 	$style |= wxAUI_NB_WINDOWLIST_BUTTON if _config->{tablist_button};
-	if    (_config->{close_button} eq 'all'){ $style |= wxAUI_NB_CLOSE_ON_ALL_TABS}
-	elsif (_config->{close_button} eq 'one'){ $style |= wxAUI_NB_CLOSE_BUTTON}
-	elsif (_config->{close_button} eq 'current'){$style |= wxAUI_NB_CLOSE_ON_ACTIVE_TAB}
-	elsif (_config->{close_button} eq 'active') {$style |= wxAUI_NB_CLOSE_ON_ACTIVE_TAB}
+	if    (_config->{close_button} =~ /all/){ $style |= wxAUI_NB_CLOSE_ON_ALL_TABS}
+	elsif (_config->{close_button} =~ /one/){ $style |= wxAUI_NB_CLOSE_BUTTON}
+	elsif (_config->{close_button} =~ /current/){$style |= wxAUI_NB_CLOSE_ON_ACTIVE_TAB}
+	elsif (_config->{close_button} =~ /active/) {$style |= wxAUI_NB_CLOSE_ON_ACTIVE_TAB}
+	# wxAUI_NB_TAB_SPLIT wxAUI_NB_TAB_EXTERNAL_MOVE
 	$notebook->SetWindowStyle( $style );
 	show();
-	# wxAUI_NB_TAB_SPLIT wxAUI_NB_TAB_EXTERNAL_MOVE contextmenu_use, insert
 }
 #
 # tab functions
@@ -157,14 +157,17 @@ sub apply_settings {
 sub add_edit_tab  {
 	my $current_nr = Kephra::Document::Data::current_nr();
 	my $doc_nr = shift || $current_nr;
-	my $mode = defined _config() ? _config()->{insert_new_tab} : 'rightmost';
+	my $config = _config();
+	my $mode = (defined $config and defined $config->{insert_new_tab})
+		? $config->{insert_new_tab}
+		: 'rightmost';
 	my $vis_pos;
 	$vis_pos = 0             if $mode eq 'leftmost';
 	$vis_pos = $current_nr   if $mode eq 'left';
 	$vis_pos = $current_nr+1 if $mode eq 'right';
 	$vis_pos = $doc_nr       if $mode eq 'rightmost';
 	my $stc = Kephra::App::EditPanel::new();
-	Kephra::Document::Data::set_attribute('ref', $stc, $doc_nr);
+	Kephra::Document::Data::set_attribute('ep_ref', $stc, $doc_nr);
 	#my $panel = Wx::Panel->new( $notebook, -1);
 	#$stc->Reparent($panel);
 	#my $sizer = Wx::BoxSizer->new( wxVERTICAL );
@@ -215,7 +218,7 @@ sub rotate_tab {
 	my $new_vis_pos = Kephra::Document::Data::next_nr($rot_step, $old_vis_pos);
 	my $notebook = _ref();
 	my $label = $notebook->GetPageText( $old_tab_pos );
-	my $stc = Kephra::Document::Data::get_attribute('ref');
+	my $stc = Kephra::Document::Data::_ep($doc_nr);
 	$notebook->RemovePage( $old_tab_pos );
 	$notebook->InsertPage( $new_vis_pos, $stc, $label, 0 );
 	_move_tab_pos( $old_tab_pos, $new_vis_pos );
@@ -230,7 +233,7 @@ sub delete_tab_by_tab_nr {
 	my $doc_nr = _tab2doc_pos($tab_nr);
 	my $notebook = _ref();
 #print "delete tab $tab_nr \n";
-	my $stc = Kephra::Document::Data::get_attribute('ref', $doc_nr);
+	my $stc = Kephra::Document::Data::_ep($doc_nr);
 #print $notebook->GetSelection."current, del tab nr $nr\n";
 	_remove_tab($tab_nr);
 	$notebook->RemovePage($tab_nr); # DeletePage,RemovePage
@@ -247,7 +250,7 @@ sub refresh_label {
 	my $config   = _config();
 	my $untitled = Kephra::Config::Localisation::strings()->{app}{general}{untitled};
 	my $label    = Kephra::Document::Data::get_attribute
-					( $config->{file_info} ) || "<$untitled>";
+					( $config->{file_info}, $doc_nr ) || "<$untitled>";
 
 	# shorten too long filenames
 	my $max_width = $config->{max_tab_width};

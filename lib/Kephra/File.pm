@@ -152,10 +152,10 @@ sub open_all_of_dir {
 sub reload          { reload_current(@_) } # alias
 sub reload_current  {
 	my $file_path = Kephra::Document::Data::get_file_path();
-	my $nr = Kephra::Document::Data::current_nr();
+	my $doc_nr = Kephra::Document::Data::current_nr();
 	if ($file_path and -e $file_path){
 		my $ep = Kephra::App::EditPanel::_ref();
-		Kephra::Document::Data::update_attributes();
+		Kephra::Document::Data::update_attributes($doc_nr);
 		$ep->BeginUndoAction;
 		$ep->SetText("");
 		Kephra::File::IO::open_pipe( $file_path );
@@ -166,13 +166,11 @@ sub reload_current  {
 		Kephra::App::EditPanel::Margin::autosize_line_number()
 			if ($Kephra::config{editpanel}{margin}{linenumber}{autosize}
 			and $Kephra::config{editpanel}{margin}{linenumber}{width} );
-		Kephra::App::EditPanel::gets_focus();
-	} else {}
+		Kephra::Document::Data::evaluate_attributes($doc_nr);
+	} else {
+	}
 }
-sub reload_all      { 
-	Kephra::Document::do_with_all( sub { reload_current() } )
-}
-
+sub reload_all      { Kephra::Document::do_with_all( sub { reload_current() } ) }
 
 sub insert {
 	my $insertfilename = Kephra::Dialog::get_file_open( 
@@ -191,7 +189,7 @@ sub insert {
 sub _save_nr {
 	my $nr = shift;
 	$nr = Kephra::Document::Data::current_nr() unless defined $nr;
-	my $ep = Kephra::Document::Data::_ep( shift );
+	my $ep = Kephra::Document::Data::_ep( $nr );
 	my $file = Kephra::Document::Data::get_file_path($nr);
 	return until defined $nr and $ep and -e $file;
 	my $save_config = $Kephra::config{file}{save};
@@ -335,7 +333,7 @@ sub close { close_current() }
 sub close_current { close_nr( Kephra::Document::Data::current_nr() ) }
 sub close_nr {
 	my $doc_nr     = shift;
-	my $ep         = Kephra::Document::Data::get_attribute('ref', $doc_nr);
+	my $ep         = Kephra::Document::Data::_ep($doc_nr);
 	my $config     = $Kephra::config{file}{save};
 	my $save_answer= Wx::wxNO;
 
@@ -372,7 +370,7 @@ sub close_current_unsaved { close_nr_unsaved( Kephra::Document::Data::current_nr
 sub close_nr_unsaved {
 	my $close_nr = shift;
 	my $current  = Kephra::Document::Data::current_nr();
-	my $ep       = Kephra::Document::Data::get_attribute('ref', $close_nr);
+	my $ep       = Kephra::Document::Data::_ep($close_nr);
 	my $file     = Kephra::Document::Data::get_file_path($close_nr);
 	my $buffer   = Kephra::Document::Data::get_value('buffer');
 

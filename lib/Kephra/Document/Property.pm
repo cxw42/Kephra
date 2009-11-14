@@ -10,7 +10,11 @@ use Wx qw( wxSTC_EOL_CR wxSTC_EOL_LF wxSTC_EOL_CRLF );
 
 # some internal shortcut helper
 sub _ep_ref     { Kephra::App::EditPanel::_ref() }
-sub _doc_nr     { Kephra::Document::Data::validate_doc_nr($_[0]) }
+sub _doc_nr     { 
+	defined $_[0]
+		? Kephra::Document::Data::validate_doc_nr($_[0])
+		: Kephra::Document::Data::current_nr();
+}
 sub _is_current { $_[0] == Kephra::Document::Data::current_nr() }
 sub _get_attr   { Kephra::Document::Data::get_attribute(@_) }
 sub _set_attr   { Kephra::Document::Data::set_attribute(@_) }
@@ -30,7 +34,7 @@ sub get {
 }
 sub _set{
 	my ($key, $v) = @_;
-	return unless $v;
+	return unless defined $v;
 	return set_codepage($v)  if $key eq 'codepage';
 	return set_EOL_mode($v)  if $key eq 'EOL';
 	return set_readonly($v)  if $key eq 'readonly';
@@ -88,7 +92,7 @@ sub set_tab_size_8 { set_tab_size(8) }
 #
 sub get_tab_mode { _get_attr('tab_use', $_[0]) }
 sub set_tab_mode {
-	my $mode = shift || 0;
+	my $mode = shift;
 	my $nr = _doc_nr(shift);
 	return if $nr < 0;
 	my $ep = _ep_ref();

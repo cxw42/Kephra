@@ -2,16 +2,66 @@ package Kephra::Document;
 our $VERSION = '0.53';
 
 =pod
- creating and closing a doc, internals,
- converter that take whole doc into account
+=head1 NAME
+
+Kephra::API::Document - 
+
+=head1 DESCRIPTION
+
+
+
 =cut
 
 use strict;
 use warnings;
 
+sub _new_if_allowed {
+	# new(empty), add(open) restore(open session)
+	my $mode = shift;
+	my $ep   = Kephra::App::EditPanel::_ref();
+	my $file = Kephra::Document::Data::get_file_path();
+	my $old_doc_nr= Kephra::Document::Data::current_nr();
+	my $new_doc_nr= Kephra::Document::Data::get_value('buffer');
+	my $config    = $Kephra::config{file}{open};
+
+	# check settings
+	# in single doc mode close previous doc first
+	if ( $config->{single_doc} == 1 ) {
+		Kephra::File::close_current();
+		return 0;
+	}
+	unless ( $mode eq 'new' ) {
+		if ($ep->GetText eq '' and $ep->GetModify == 0 and (not $file or not -e $file)){
+			return $old_doc_nr
+				if ($config->{into_empty_doc} == 1)
+				or ($config->{into_only_empty_doc} == 1 and $new_doc_nr == 1 );
+		}
+	}
+	# still there? good, now we make a new document
+	Kephra::Document::Data::create_slot($new_doc_nr);
+	Kephra::App::TabBar::add_edit_tab($new_doc_nr);
+	Kephra::App::EditPanel::apply_settings
+		( Kephra::Document::Data::_ep($new_doc_nr) );
+	Kephra::Document::Data::inc_value('buffer');
+	return $new_doc_nr;
+}
+
+sub _load_file_in_buffer {
+	my $file = shift || '';
+	#$doc_nr = shift;
+	my $ep = shift || Kephra::App::EditPanel::_ref();
+	return unless Kephra::App::EditPanel::is( $ep );
+	$ep->ClearAll();
+	Kephra::File::IO::open_pipe($file, $ep);
+	$ep->EmptyUndoBuffer;
+	$ep->SetSavePoint;
+	Kephra::File::_remember_save_moment($file);
+	Kephra::Document::Data::inc_value('loaded');
+}
+#
 sub new   {   # make document empty and reset all document properties to default
 	my $old_nr = Kephra::Document::Data::current_nr();
-	my $doc_nr = new_if_allowed('new');
+	my $doc_nr = _new_if_allowed('new');
 	Kephra::Document::Data::set_previous_nr( $old_nr );
 	Kephra::Document::Data::set_current_nr( $doc_nr );
 	Kephra::App::TabBar::raise_tab_by_doc_nr($doc_nr);
@@ -28,7 +78,11 @@ sub reset {   # restore once opened file from its settings
 	$ep->SetSavePoint;
 	Kephra::Document::Data::default_attributes($doc_nr, '');
 	Kephra::Document::Data::evaluate_attributes($doc_nr);
+	Kephra::Edit::Bookmark::restore_all();
+	Kephra::App::Window::refresh_title();
+	Kephra::App::TabBar::refresh_label($doc_nr);
 	Kephra::App::StatusBar::refresh_all_cells();
+	Kephra::App::EditPanel::Margin::reset_line_number_width();
 }
 
 
@@ -42,10 +96,13 @@ sub restore { # add newly opened file from known settings
 		# check if file is already open and goto this already opened
 		return if $config->{open}{each_once} == 1 
 		      and Kephra::Document::Data::file_already_open($file);
-		my $doc_nr = new_if_allowed('restore');
-		load_file_in_buffer($file);
+		my $doc_nr = _new_if_allowed('restore');
+		$file_settings{ep_ref} = Kephra::Document::Data::_ep($doc_nr);
+		_load_file_in_buffer($file, $file_settings{ep_ref});
 		Kephra::Document::Data::set_all_attributes(\%file_settings, $doc_nr);
+		Kephra::Document::Data::set_current_nr($doc_nr);
 		Kephra::Document::Data::set_file_path($file, $doc_nr);
+		Kephra::Document::Data::evaluate_attributes($doc_nr);
 	}
 }
 
@@ -62,76 +119,29 @@ sub add {     # create a new document if settings allow it
 		my $other_nr = Kephra::Document::Data::nr_from_file_path($file);
 		return Kephra::Document::Change::to_nr( $other_nr )
 			if $config->{open}{each_once} == 1 and $other_nr > -1;
-
 		# save constantly changing settings
 		Kephra::Document::Data::update_attributes();
 		# create new edit panel
-		my $doc_nr = new_if_allowed('add') || 0;
-		# was a new doc allowed ?
+		my $doc_nr = _new_if_allowed('add') || 0;
+		# return because settings didn't allow new doc
 		return if $doc_nr > 0 and $doc_nr == $old_nr;
-
 		Kephra::Document::Data::set_current_nr($doc_nr);
 		Kephra::Document::Data::set_previous_nr($old_nr);
-		load_file_in_buffer($file, Kephra::Document::Data::_ep($doc_nr));
+		_load_file_in_buffer($file, Kephra::Document::Data::_ep($doc_nr));
 		# load default settings for doc attributes
 		Kephra::Document::Data::default_attributes($doc_nr, $file);
-#print Kephra::Document::Data::_attributes()->[$doc_nr]->{file_name}," = open\n";
 		Kephra::Document::Data::evaluate_attributes($doc_nr);
 		Kephra::Document::Property::convert_EOL()
 			unless $config->{defaultsettings}{EOL_open} eq 'auto';
 
 		Kephra::App::Window::refresh_title();
-		#Kephra::App::TabBar::refresh_label($doc_nr);
 		Kephra::App::TabBar::raise_tab_by_doc_nr($doc_nr);
 		Kephra::App::EditPanel::Margin::autosize_line_number();
 		Kephra::API::EventTable::trigger('document.list');
 	}
 }
 
-sub new_if_allowed {
-	# new(empty), add(open) restore(open session)
-	my $mode = shift;
-	my $ep   = Kephra::App::EditPanel::_ref();
-	my $file = Kephra::Document::Data::get_file_path();
-	my $old_doc_nr= Kephra::Document::Data::current_nr();
-	my $new_doc_nr= Kephra::Document::Data::get_value('buffer');
-	my $config    = $Kephra::config{file}{open};
-
-	# check settings
-	# in single doc mode close previous doc first
-	if ( $config->{single_doc} == 1 ) {
-		Kephra::File::close_current();
-		return 0;
-	}
-	unless ( $mode eq 'new' ) {
-		if ($ep->GetText eq '' and $ep->GetModify == 0 and (!$file or !-e $file)){
-			return $old_doc_nr
-				if ($config->{into_empty_doc} == 1)
-				or ($config->{into_only_empty_doc} == 1 and $new_doc_nr == 1 );
-		}
-	}
-	# still there? good, now we make a new document
-	Kephra::Document::Data::create_slot($new_doc_nr);
-	Kephra::App::TabBar::add_edit_tab($new_doc_nr);
-	Kephra::App::EditPanel::apply_settings
-		( Kephra::Document::Data::_ep($new_doc_nr) );
-	Kephra::Document::Data::inc_value('buffer');
-	return $new_doc_nr;
-}
-
-sub load_file_in_buffer {
-	my $file = shift || '';
-	#$doc_nr = shift;
-	my $ep = shift || Kephra::App::EditPanel::_ref();
-	return unless Kephra::App::EditPanel::is( $ep );
-	$ep->ClearAll();
-	Kephra::File::IO::open_pipe($file, $ep);
-	$ep->EmptyUndoBuffer;
-	$ep->SetSavePoint;
-	Kephra::File::_remember_save_moment($file);
-	Kephra::Document::Data::inc_value('loaded');
-}
-############################################################################
+# document wide coverter
 sub convert_indent2tabs   { _edit( \&Kephra::Edit::Convert::indent2tabs  )}
 sub convert_indent2spaces { _edit( \&Kephra::Edit::Convert::indent2spaces)}
 sub convert_spaces2tabs   { _edit( \&Kephra::Edit::Convert::spaces2tabs  )}

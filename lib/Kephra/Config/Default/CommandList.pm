@@ -35,8 +35,8 @@ sub get {
 					'other-unsaved' => 'Kephra::File::close_other_unsaved()',
 				},
 				session => {
-					open => 'Kephra::File::Session::open_file()',
-					add => 'Kephra::File::Session::add()',
+					open => 'Kephra::File::Session::restore_from()',
+					add => 'Kephra::File::Session::add_from()',
 					save => 'Kephra::File::Session::save_as()',
 					import => 'Kephra::File::Session::import_scite()',
 					export => 'Kephra::File::Session::export_scite()',

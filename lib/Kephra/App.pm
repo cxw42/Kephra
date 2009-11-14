@@ -2,7 +2,15 @@ package Kephra::App;
 our $VERSION = '0.12';
 
 =pod
-     App stands for gui of the main app
+
+=head1 NAME
+
+Kephra::App - main GUI class derived from Wx::App
+
+=head1 DESCRIPTION
+
+
+
 =cut
 
 use strict;
@@ -33,7 +41,7 @@ sub splashscreen {
 			Kephra::Config::filepath( $Kephra::temp{file}{img}{splashscreen} ),
 			wxBITMAP_TYPE_ANY
 		),
-		wxSPLASH_CENTRE_ON_SCREEN | wxSPLASH_TIMEOUT, 150, undef, -1,
+		wxSPLASH_CENTRE_ON_SCREEN | wxSPLASH_TIMEOUT, 350, undef, -1,
 		wxDefaultPosition, wxDefaultSize,
 		wxSIMPLE_BORDER | wxFRAME_NO_TASKBAR | wxSTAY_ON_TOP
 	) if $img and -e $img;
@@ -110,7 +118,8 @@ sub assemble_layout {
 	$win_sizer->Add( $right_splitter, 1, $tg, 0 );
 	$win->SetSizer($win_sizer);
 	$win->SetAutoLayout(1);
-	$win->SetBackgroundColour($tab_bar->GetBackgroundColour);
+	$win->Layout();
+	#$win->SetBackgroundColour($tab_bar->GetBackgroundColour);
 
 	Kephra::API::EventTable::thaw
 		( qw(app.splitter.right.changed app.splitter.bottom.changed) );
@@ -134,8 +143,9 @@ sub OnInit {
 	Kephra::Document::Data::set_current_nr(0);
 	Kephra::Document::Data::set_previous_nr(0);
 	Kephra::Document::Data::set_value('buffer',1);
-
-	Kephra::API::Plugin::load_all();
+	Kephra::Document::Data::set_value('modified', 0);
+	Kephra::Document::Data::set_value('loaded', 0);
+	#Kephra::API::Plugin::load_all();
 	#$main::logger->debug("init app pntr");
 	print " init app:",
 		Benchmark::timestr( Benchmark::timediff( new Benchmark, $t0 ) ), "\n"
@@ -154,7 +164,7 @@ sub OnInit {
 			Benchmark::timestr( Benchmark::timediff( new Benchmark, $t2 ) ), "\n"
 			if $Kephra::BENCHMARK;
 		my $t3 = new Benchmark;
-		#Kephra::File::Session::autoload();
+		Kephra::File::Session::autoload();
 		Kephra::Document::add($_) for @ARGV;
 		print " file session:",
 			Benchmark::timestr( Benchmark::timediff( new Benchmark, $t3 ) ), "\n"
@@ -188,7 +198,7 @@ sub exit {
 sub exit_unsaved {
 	my $t0 = new Benchmark;
 	Kephra::API::EventTable::stop_timer();
-	#Kephra::File::Session::autosave();
+	Kephra::File::Session::autosave();
 	Kephra::Config::Global::update();
 	Kephra::Config::Global::save_autosaved();
 	Kephra::Config::set_xp_style(); #
@@ -200,7 +210,6 @@ sub exit_unsaved {
 }
 
 sub raw_exit { Wx::Window::Destroy(shift) }
-
 #sub new_instance { system("kephra.exe") }
 
 1;
