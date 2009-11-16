@@ -1,14 +1,8 @@
 package Kephra::Document::SyntaxMode;
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use strict;
 use warnings;
-
-
-use Wx qw(
-	wxSTC_LEX_NULL wxSTC_STYLE_DEFAULT
-	wxSTC_STYLE_BRACELIGHT wxSTC_STYLE_BRACEBAD wxSTC_STYLE_INDENTGUIDE
-);
 
 sub _ID {
 	if (defined $_[0]) { $Kephra::temp{current}{syntaxmode} = $_[0] }
@@ -57,7 +51,7 @@ sub set {
 	$ep->SetKeyWords( $_, '' ) for 0 .. 1;
 	# load syntax style
 	if ( $style eq 'none' ) { 
-		$ep->SetLexer(wxSTC_LEX_NULL);
+		$ep->SetLexer(&Wx::wxSTC_LEX_NULL);
 	} else {
 		eval("require syntaxhighlighter::$style");
 		eval("syntaxhighlighter::$style" . '::load($ep)');
@@ -67,18 +61,18 @@ sub set {
 	my $indicator = $Kephra::config{editpanel}{indicator};
 	my $bracelight = $indicator->{bracelight};
 	if ( $bracelight->{visible} ) {
-		$ep->StyleSetBold( wxSTC_STYLE_BRACELIGHT, 1 );
-		$ep->StyleSetBold( wxSTC_STYLE_BRACEBAD,   1 );
+		$ep->StyleSetBold( &Wx::wxSTC_STYLE_BRACELIGHT, 1 );
+		$ep->StyleSetBold( &Wx::wxSTC_STYLE_BRACEBAD,   1 );
 		$ep->StyleSetForeground
-			( wxSTC_STYLE_BRACELIGHT, &$color( $bracelight->{good_color} ) );
+			( &Wx::wxSTC_STYLE_BRACELIGHT, &$color( $bracelight->{good_color} ) );
 		$ep->StyleSetBackground
-			( wxSTC_STYLE_BRACELIGHT, &$color( $bracelight->{back_color} ) );
+			( &Wx::wxSTC_STYLE_BRACELIGHT, &$color( $bracelight->{back_color} ) );
 		$ep->StyleSetForeground
-			( wxSTC_STYLE_BRACEBAD, &$color( $bracelight->{bad_color} ) );
+			( &Wx::wxSTC_STYLE_BRACEBAD, &$color( $bracelight->{bad_color} ) );
 		$ep->StyleSetBackground
-			( wxSTC_STYLE_BRACEBAD, &$color( $bracelight->{back_color} ) );
+			( &Wx::wxSTC_STYLE_BRACEBAD, &$color( $bracelight->{back_color} ) );
 		$ep->StyleSetForeground 
-			(wxSTC_STYLE_INDENTGUIDE,&$color($indicator->{indent_guide}{color}));
+			(&Wx::wxSTC_STYLE_INDENTGUIDE,&$color($indicator->{indent_guide}{color}));
 	}
 
 	Kephra::Document::Data::set_attribute( 'syntaxmode', $style );

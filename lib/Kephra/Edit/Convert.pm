@@ -1,10 +1,9 @@
 package Kephra::Edit::Convert;
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 use strict;
 use warnings;
 
-use Wx qw(wxSTC_CMD_UPPERCASE wxSTC_CMD_LOWERCASE wxSTC_CMD_WORDRIGHT);
 
 # wrapper method for the always same preparation and afterwork
 sub _default {
@@ -37,18 +36,18 @@ sub _tr {
 #
 # external calls
 #
-sub upper_case {_default( sub{ shift->CmdKeyExecute(wxSTC_CMD_UPPERCASE) } )}
-sub lower_case {_default( sub{ shift->CmdKeyExecute(wxSTC_CMD_LOWERCASE) } )}
+sub upper_case {_default( sub{ shift->CmdKeyExecute(&Wx::wxSTC_CMD_UPPERCASE) } )}
+sub lower_case {_default( sub{ shift->CmdKeyExecute(&Wx::wxSTC_CMD_LOWERCASE) } )}
 sub title_case {_default( sub{
 		my $ep = shift;
 		my ($sel_end, $pos) = ($ep->GetSelectionEnd, 0);
 		$ep->SetCurrentPos( $ep->GetSelectionStart - 1 );
 		while () {
-			$ep->CmdKeyExecute(wxSTC_CMD_WORDRIGHT);
+			$ep->CmdKeyExecute(&Wx::wxSTC_CMD_WORDRIGHT);
 			$pos = $ep->GetCurrentPos;
 			last if $sel_end <= $pos;
 			$ep->SetSelection( $pos, $pos + 1 );
-			$ep->CmdKeyExecute(wxSTC_CMD_UPPERCASE);
+			$ep->CmdKeyExecute(&Wx::wxSTC_CMD_UPPERCASE);
 		}
 } )}
 
@@ -58,16 +57,16 @@ sub sentence_case { _default( sub{
 		my ($sel_end, $pos) = ($ep->GetSelectionEnd, 0);
 		$ep->SetCurrentPos( $ep->GetSelectionStart() - 1 );
 		while () {
-			$ep->CmdKeyExecute(wxSTC_CMD_WORDRIGHT);
+			$ep->CmdKeyExecute(&Wx::wxSTC_CMD_WORDRIGHT);
 			$pos  = $ep->GetCurrentPos;
 			$line = $ep->LineFromPosition($pos);
 			if ($pos == $ep->GetLineEndPosition( $ep->LineFromPosition($pos) )) {
-				$ep->CmdKeyExecute(wxSTC_CMD_WORDRIGHT);
+				$ep->CmdKeyExecute(&Wx::wxSTC_CMD_WORDRIGHT);
 				$pos = $ep->GetCurrentPos;
 			}
 			last if $sel_end <= $pos;
 			$ep->SetSelection( $pos, $pos + 1 );
-			$ep->CmdKeyExecute(wxSTC_CMD_UPPERCASE);
+			$ep->CmdKeyExecute(&Wx::wxSTC_CMD_UPPERCASE);
 			$ep->SetCurrentPos( $pos + 1 );
 			$ep->SearchAnchor;
 			last if $ep->SearchNext( 0, "." ) == -1 ;

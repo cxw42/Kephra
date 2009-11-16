@@ -1,13 +1,8 @@
 package Kephra::App::ToolBar;
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use strict;
 use warnings;
-use Wx qw (
-	wxTB_HORIZONTAL wxTB_DOCKABLE
-	wxITEM_CHECK wxITEM_NORMAL
-	wxNullBitmap
-);
 
 # central lib for gui toolbars
 # storing, fetching, assemble data, creating regular button items
@@ -21,7 +16,7 @@ sub _data         { $toolbar{$_[0]} if stored($_[0]) }
 sub stored        { 1 if ref $toolbar{$_[0]} eq 'HASH'}
 sub _create_empty {
 	Wx::ToolBar->new( Kephra::App::Window::_ref(),
-			-1, [-1,-1], [-1,-1], wxTB_HORIZONTAL|wxTB_DOCKABLE );
+			-1, [-1,-1], [-1,-1], &Wx::wxTB_HORIZONTAL|&Wx::wxTB_DOCKABLE );
 }
 
 sub create_new {
@@ -101,13 +96,13 @@ sub eval_data {
 			$bar->AddSeparator;
 		} elsif (ref $item_data->{icon} eq 'Wx::Bitmap'){
 			if ($item_data->{type} eq 'checkitem'){
-				$item_kind = wxITEM_CHECK
+				$item_kind = &Wx::wxITEM_CHECK
 			} elsif ($item_data->{type} eq 'item'){
-				$item_kind = wxITEM_NORMAL
+				$item_kind = &Wx::wxITEM_NORMAL
 			} else { next }
 			my $item_id = $bar_item_id++;
 			my $tool = $bar->AddTool(
-				$item_id, '', $item_data->{icon}, wxNullBitmap,
+				$item_id, '', $item_data->{icon}, &Wx::wxNullBitmap,
 				$item_kind, $item_data->{label}, $item_data->{help}
 			);
 			Wx::Event::EVT_TOOL ($win, $item_id, $item_data->{call});

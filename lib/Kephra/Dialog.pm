@@ -1,58 +1,51 @@
 package Kephra::Dialog;
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 use strict;
 use warnings;
-
-use Wx qw(:filedialog );    # :messagebox
-use Wx qw (wxDefaultPosition wxDefaultSize
-	wxOK wxYES wxYES_NO wxNO wxCANCEL wxID_CANCEL
-	wxICON_INFORMATION wxICON_QUESTION wxICON_WARNING
-	wxFD_SAVE wxFD_OPEN wxFD_MULTIPLE    wxSTAY_ON_TOP
-);
 
 sub _set_icon { my ($d, $cmd_id) = @_; }
 
 sub msg_box {
 	Wx::MessageBox
-		( $_[1], $_[2], wxOK | wxSTAY_ON_TOP, $_[0] );
+		( $_[1], $_[2], &Wx::wxOK | &Wx::wxSTAY_ON_TOP, $_[0] );
 }
 
 sub info_box {
 	Wx::MessageBox
-		( $_[1], $_[2], wxOK | wxICON_INFORMATION | wxSTAY_ON_TOP, $_[0] );
+		( $_[1], $_[2], &Wx::wxOK | &Wx::wxICON_INFORMATION | &Wx::wxSTAY_ON_TOP, $_[0] );
 }
 
 sub warning_box {
 	Wx::MessageBox
-		( $_[1], $_[2], wxOK | wxICON_WARNING | wxSTAY_ON_TOP, $_[0] );
+		( $_[1], $_[2], &Wx::wxOK | &Wx::wxICON_WARNING | &Wx::wxSTAY_ON_TOP, $_[0] );
 }
 
 sub get_confirm_2 {
 	Wx::MessageBox
-		( $_[1], $_[2], wxYES_NO | wxICON_QUESTION | wxSTAY_ON_TOP, $_[0]);
+		( $_[1], $_[2], &Wx::wxYES_NO | &Wx::wxICON_QUESTION | &Wx::wxSTAY_ON_TOP, $_[0]);
 }
 
 sub get_confirm_3 {
-	Wx::MessageBox( $_[1], $_[2], wxYES_NO | wxCANCEL | wxICON_QUESTION,
+	Wx::MessageBox( $_[1], $_[2], &Wx::wxYES_NO | &Wx::wxCANCEL | &Wx::wxICON_QUESTION,
 		$_[0], $_[3], $_[4] );
 }
 
 sub get_file_open {
-	Wx::FileSelector( $_[1], $_[2], '', '', $_[3], wxFD_OPEN, $_[0], -1, -1 );
+	Wx::FileSelector( $_[1], $_[2], '', '', $_[3], &Wx::wxFD_OPEN, $_[0], -1, -1 );
 }
 
 sub get_files_open {
 	my $dialog = Wx::FileDialog->new(
-		$_[0], $_[1], $_[2], '', $_[3], wxFD_OPEN | wxFD_MULTIPLE, [-1,-1] );
-	if ($dialog->ShowModal != wxID_CANCEL) {
+		$_[0], $_[1], $_[2], '', $_[3], &Wx::wxFD_OPEN | &Wx::wxFD_MULTIPLE, [-1,-1] );
+	if ($dialog->ShowModal != &Wx::wxID_CANCEL) {
 		my @files = $dialog->GetPaths;
 		return \@files;
 	}
 }
 
 sub get_file_save {
-	Wx::FileSelector( $_[1], $_[2], '', '', $_[3], wxFD_SAVE, $_[0], -1, -1)
+	Wx::FileSelector( $_[1], $_[2], '', '', $_[3], &Wx::wxFD_SAVE, $_[0], -1, -1)
 }
 
 sub get_dir {

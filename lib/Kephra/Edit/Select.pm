@@ -1,12 +1,10 @@
 package Kephra::Edit::Select;
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use strict;
 use warnings;
 
 # text selection
-
-use Wx qw( wxSTC_CMD_PARAUPEXTEND wxSTC_CMD_PARADOWNEXTEND );
 
 sub _ep_ref { Kephra::App::EditPanel::_ref() }
 
@@ -19,7 +17,7 @@ sub all_if_non {
 	return $ep->GetTextRange( $start, $end );
 }
 
-sub to_block_begin{ _ep_ref()->CmdKeyExecute(wxSTC_CMD_PARAUPEXTEND)   }
-sub to_block_end  { _ep_ref()->CmdKeyExecute(wxSTC_CMD_PARADOWNEXTEND) }
+sub to_block_begin{ _ep_ref()->CmdKeyExecute(&Wx::wxSTC_CMD_PARAUPEXTEND)   }
+sub to_block_end  { _ep_ref()->CmdKeyExecute(&Wx::wxSTC_CMD_PARADOWNEXTEND) }
 
 1;

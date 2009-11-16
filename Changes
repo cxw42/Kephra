@@ -1,7 +1,9 @@
 BUGS:
  !!! makefile.pl fails
- !!! test suite fails
- ! textchanged event triggers twice
+
+0.4.1.19
+ [ reduce clutter while boot and shut down
+ ] changed all constants to &Wx::... syntax
 
 0.4.1.18
  ~ session save now docs in visual order

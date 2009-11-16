@@ -1,19 +1,11 @@
 package Kephra::App::EditPanel;
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 use strict;
 use warnings; 
 
 # visual and event settings of the Edit Panel
 
-use Wx qw(
-	wxDEFAULT wxNORMAL wxLIGHT wxBOLD wxSLANT wxITALIC
-	WXK_RETURN
-	wxSTC_CACHE_PAGE
-	wxSTC_CMD_NEWLINE
-	wxSTC_EDGE_LINE wxSTC_EDGE_NONE     wxSTC_WRAP_NONE wxSTC_WRAP_WORD
-	wxSTC_STYLE_DEFAULT wxSTC_STYLE_BRACELIGHT wxSTC_STYLE_BRACEBAD
-);# EVT_STC_CHARADDED EVT_STC_MODIFIED
 #
 # internal API to config und app pointer
 #
@@ -75,7 +67,7 @@ sub apply_settings {
 	apply_bracelight_settings();
 
 	# internal
-	$ep->SetLayoutCache(wxSTC_CACHE_PAGE);
+	$ep->SetLayoutCache(&Wx::wxSTC_CACHE_PAGE);
 	$ep->SetBufferedDraw(1);
 	$conf->{contextmenu}{visible} eq 'default'
 		? $ep->UsePopUp(1) : $ep->UsePopUp(0);
@@ -144,7 +136,7 @@ sub connect_events {
 		# reacting on shortkeys that are defined in the Commanlist
 		return if Kephra::API::CommandList::run_cmd_by_keycode($key);
 		# reacting on Enter
-		if ($key ==  WXK_RETURN) { # Enter
+		if ($key ==  &Wx::WXK_RETURN) {
 			if ($config->{auto}{brace}{indention}) {
 				my $pos  = $ep->GetCurrentPos - 1;
 				my $char = $ep->GetCharAt($pos);
@@ -156,7 +148,7 @@ sub connect_events {
 			}
 			$config->{auto}{indention}
 				? Kephra::Edit::Format::autoindent()
-				: $ep->CmdKeyExecute(wxSTC_CMD_NEWLINE) ;
+				: $ep->CmdKeyExecute(&Wx::wxSTC_CMD_NEWLINE) ;
 		}
 		# scintilla handles the rest of the shortkeys
 		else { $event->Skip }
@@ -190,12 +182,12 @@ sub apply_autowrap_settings {
 	Kephra::API::EventTable::trigger('editpanel.autowrap');
 }
 
-sub get_autowrap_mode { _config()->{line_wrap} == wxSTC_WRAP_WORD}
+sub get_autowrap_mode { _config()->{line_wrap} == &Wx::wxSTC_WRAP_WORD}
 
 sub switch_autowrap_mode {
 	_config()->{line_wrap} = get_autowrap_mode()
-		? wxSTC_WRAP_NONE
-		: wxSTC_WRAP_WORD;
+		? &Wx::wxSTC_WRAP_NONE
+		: &Wx::wxSTC_WRAP_WORD;
 	apply_autowrap_settings();
 }
          ##############
@@ -288,7 +280,7 @@ sub switch_caret_line_visibility {
 # LLI = long line indicator = right margin
 #
 sub LLI_visible { 
-	_indicator_config()->{right_margin}{style} == wxSTC_EDGE_LINE
+	_indicator_config()->{right_margin}{style} == &Wx::wxSTC_EDGE_LINE
 }
 sub apply_LLI_settings {
 	my $ep = shift || _ref();
@@ -302,8 +294,8 @@ sub apply_LLI_settings {
 sub show_LLI { _ref->SetEdgeMode( shift ) }
 sub switch_LLI_visibility {
 	my $style = _indicator_config()->{right_margin}{style} = LLI_visible()
-		? wxSTC_EDGE_NONE
-		: wxSTC_EDGE_LINE;
+		? &Wx::wxSTC_EDGE_NONE
+		: &Wx::wxSTC_EDGE_LINE;
 	show_LLI($style);
 }
 #
@@ -341,24 +333,24 @@ sub switch_whitespace_visibility {
 #
 sub load_font {
 	my $ep = shift || _ref();
-	my ( $fontweight, $fontstyle ) = ( wxNORMAL, wxNORMAL );
+	my ( $fontweight, $fontstyle ) = ( &Wx::wxNORMAL, &Wx::wxNORMAL );
 	my $font = _config()->{font};
-	$fontweight = wxLIGHT  if $font->{weight} eq 'light';
-	$fontweight = wxBOLD   if $font->{weight} eq 'bold';
-	$fontstyle  = wxSLANT  if $font->{style}  eq 'slant';
-	$fontstyle  = wxITALIC if $font->{style}  eq 'italic';
-	my $wx_font = Wx::Font->new( $font->{size}, wxDEFAULT, 
+	$fontweight = &Wx::wxLIGHT  if $font->{weight} eq 'light';
+	$fontweight = &Wx::wxBOLD   if $font->{weight} eq 'bold';
+	$fontstyle  = &Wx::wxSLANT  if $font->{style}  eq 'slant';
+	$fontstyle  = &Wx::wxITALIC if $font->{style}  eq 'italic';
+	my $wx_font = Wx::Font->new( $font->{size}, &Wx::wxDEFAULT, 
 		$fontstyle, $fontweight, 0, $font->{family} );
-	$ep->StyleSetFont( wxSTC_STYLE_DEFAULT, $wx_font ) if $wx_font->Ok > 0;
+	$ep->StyleSetFont( &Wx::wxSTC_STYLE_DEFAULT, $wx_font ) if $wx_font->Ok > 0;
 }
 sub change_font {
-	my ( $fontweight, $fontstyle ) = ( wxNORMAL, wxNORMAL );
+	my ( $fontweight, $fontstyle ) = ( &Wx::wxNORMAL, &Wx::wxNORMAL );
 	my $font_config = _config()->{font};
-	$fontweight = wxLIGHT  if ( $$font_config{weight} eq 'light' );
-	$fontweight = wxBOLD   if ( $$font_config{weight} eq 'bold' );
-	$fontstyle  = wxSLANT  if ( $$font_config{style}  eq 'slant' );
-	$fontstyle  = wxITALIC if ( $$font_config{style}  eq 'italic' );
-	my $oldfont = Wx::Font->new( $$font_config{size}, wxDEFAULT, $fontstyle,
+	$fontweight = &Wx::wxLIGHT  if ( $$font_config{weight} eq 'light' );
+	$fontweight = &Wx::wxBOLD   if ( $$font_config{weight} eq 'bold' );
+	$fontstyle  = &Wx::wxSLANT  if ( $$font_config{style}  eq 'slant' );
+	$fontstyle  = &Wx::wxITALIC if ( $$font_config{style}  eq 'italic' );
+	my $oldfont = Wx::Font->new( $$font_config{size}, &Wx::wxDEFAULT, $fontstyle,
 		$fontweight, 0, $$font_config{family} );
 	my $newfont = Kephra::Dialog::get_font( Kephra::App::Window::_ref(), $oldfont );
 
@@ -367,11 +359,11 @@ sub change_font {
 		$$font_config{size}   = $newfont->GetPointSize;
 		$$font_config{family} = $newfont->GetFaceName;
 		$$font_config{weight} = 'normal';
-		$$font_config{weight} = 'light' if $fontweight == wxLIGHT;
-		$$font_config{weight} = 'bold' if $fontweight == wxBOLD;
+		$$font_config{weight} = 'light' if $fontweight == &Wx::wxLIGHT;
+		$$font_config{weight} = 'bold' if $fontweight == &Wx::wxBOLD;
 		$$font_config{style}  = 'normal';
-		$$font_config{style}  = 'slant' if $fontstyle == wxSLANT;
-		$$font_config{style}  = 'italic' if $fontstyle == wxITALIC;
+		$$font_config{style}  = 'slant' if $fontstyle == &Wx::wxSLANT;
+		$$font_config{style}  = 'italic' if $fontstyle == &Wx::wxITALIC;
 		&load_font;
 		Kephra::Document::SyntaxMode::reload();
 		Kephra::App::EditPanel::Margin::apply_line_number_width();
@@ -380,6 +372,7 @@ sub change_font {
 
 1;
 
+#EVT_STC_CHARADDED EVT_STC_MODIFIED
 #wxSTC_CP_UTF8 wxSTC_CP_UTF16 Wx::wxUNICODE()
 #wxSTC_WS_INVISIBLE wxSTC_WS_VISIBLEALWAYS
 #$ep->StyleSetForeground (wxSTC_STYLE_CONTROLCHAR, Wx::Colour->new(0x55, 0x55, 0x55));

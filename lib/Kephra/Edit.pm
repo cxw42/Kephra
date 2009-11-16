@@ -1,23 +1,17 @@
 package Kephra::Edit;
-our $VERSION = '0.32';
+our $VERSION = '0.33';
+=pod
 
+=head1 NAME
+
+Kephra::::Edit - basic edit menu calls and internals for editing
+
+=head1 DESCRIPTION
+
+
+=cut
 use strict;
 use warnings;
-
-
-# edit menu basic calls and internals for editing
-
-use Wx qw(:stc);    #Kephra::Dialog::msg_box(undef,'',"");
-use Wx qw(
-	wxSTC_CMD_NEWLINE wxSTC_CMD_LINECUT wxSTC_CMD_LINEDELETE wxSTC_CMD_DELLINELEFT
-	wxSTC_CMD_DELLINERIGHT wxSTC_CMD_UPPERCASE wxSTC_CMD_LOWERCASE
-	wxSTC_CMD_LINETRANSPOSE wxSTC_CMD_LINECOPY wxSTC_CMD_WORDLEFT
-	wxSTC_CMD_WORDRIGHT wxSTC_FIND_WORDSTART wxSTC_CMD_LINEEND
-	wxSTC_CMD_DELETEBACK wxSTC_CMD_PASTE
-	wxSTC_MARK_CIRCLE wxSTC_MARK_ARROW wxSTC_MARK_MINUS
-	wxCANCEL
-);
-
 #
 # internal helper function
 #
@@ -119,14 +113,13 @@ sub del_back_tab{
 	my $tab_size = Kephra::Document::Data::attr('tab_size');
 	my $deltaspace = $ep->GetColumn($pos--) % $tab_size;
 	$deltaspace = $tab_size unless $deltaspace;
-	do { $ep->CmdKeyExecute(wxSTC_CMD_DELETEBACK) }
+	do { $ep->CmdKeyExecute(&Wx::wxSTC_CMD_DELETEBACK) }
 	while $ep->GetCharAt(--$pos) == 32 and --$deltaspace;
 }
 
-######################
+#
 # Edit Selection
-######################
-
+#
 sub selection_move {
 	my ( $ep, $linedelta ) = @_;
 	my $text = $ep->GetSelectedText();
@@ -192,7 +185,7 @@ sub selection_move_up {
 	if ( $ep->LineFromPosition( $ep->GetSelectionStart ) > 0 ) {
 		if ( $ep->GetSelectionStart == $ep->GetSelectionEnd ) {
 			$ep->BeginUndoAction;
-			$ep->CmdKeyExecute( wxSTC_CMD_LINETRANSPOSE );
+			$ep->CmdKeyExecute( &Wx::wxSTC_CMD_LINETRANSPOSE );
 			$ep->GotoLine( $ep->GetCurrentLine - 1 );
 			$ep->EndUndoAction;
 		} else {
@@ -207,7 +200,7 @@ sub selection_move_down {
 		if ( $ep->GetSelectionStart == $ep->GetSelectionEnd ) {
 			$ep->BeginUndoAction;
 			$ep->GotoLine( $ep->GetCurrentLine + 1 );
-			$ep->CmdKeyExecute(wxSTC_CMD_LINETRANSPOSE);
+			$ep->CmdKeyExecute(&Wx::wxSTC_CMD_LINETRANSPOSE);
 			$ep->EndUndoAction;
 		} else {
 			selection_move( $ep, 1 );
@@ -225,7 +218,7 @@ sub selection_move_page_up {
 			$targetline = 0 if $targetline < 0;
 			for my $i (reverse $targetline + 1 .. $ep->GetCurrentLine ) {
 				$ep->GotoLine($i);
-				$ep->CmdKeyExecute(wxSTC_CMD_LINETRANSPOSE);
+				$ep->CmdKeyExecute(&Wx::wxSTC_CMD_LINETRANSPOSE);
 			}
 			$ep->GotoLine( $ep->GetCurrentLine - 1 );
 			$ep->EndUndoAction;
@@ -247,7 +240,7 @@ sub selection_move_page_down {
 			$targetline = $lastline if ( $targetline > $lastline );
 			for my $i ($ep->GetCurrentLine + 1 .. $targetline) {
 				$ep->GotoLine($i);
-				$ep->CmdKeyExecute(wxSTC_CMD_LINETRANSPOSE);
+				$ep->CmdKeyExecute(&Wx::wxSTC_CMD_LINETRANSPOSE);
 			}
 			$ep->EndUndoAction;
 		} else {
@@ -256,8 +249,7 @@ sub selection_move_page_down {
 	}
 }
 
-######################
-
+#
 sub insert_text {
 	my ($text, $pos) = @_;
 	return unless $text;
@@ -271,18 +263,18 @@ sub insert_at_pos {
 	_ep_ref()->InsertText( $pos, $text);
 }
 
-######################
+#
 # Edit Line
-######################
+#
 
-sub cut_current_line { _ep_ref()->CmdKeyExecute(wxSTC_CMD_LINECUT) }
-sub copy_current_line{ _ep_ref()->CmdKeyExecute(wxSTC_CMD_LINECOPY)}
+sub cut_current_line { _ep_ref()->CmdKeyExecute(&Wx::wxSTC_CMD_LINECUT) }
+sub copy_current_line{ _ep_ref()->CmdKeyExecute(&Wx::wxSTC_CMD_LINECOPY)}
 sub double_current_line {
 	my $ep = _ep_ref();
 	my $pos = $ep->GetCurrentPos;
 	$ep->BeginUndoAction;
-	$ep->CmdKeyExecute(wxSTC_CMD_LINECOPY);
-	$ep->CmdKeyExecute(wxSTC_CMD_PASTE);
+	$ep->CmdKeyExecute(&Wx::wxSTC_CMD_LINECOPY);
+	$ep->CmdKeyExecute(&Wx::wxSTC_CMD_PASTE);
 	$ep->GotoPos($pos);
 	$ep->EndUndoAction;
 }
@@ -300,14 +292,14 @@ sub replace_current_line {
 	$ep->EndUndoAction;
 }
 
-sub del_current_line{_ep_ref()->CmdKeyExecute(wxSTC_CMD_LINEDELETE)}
-sub del_line_left {_ep_ref()->CmdKeyExecute(wxSTC_CMD_DELLINELEFT) }
-sub del_line_right{_ep_ref()->CmdKeyExecute(wxSTC_CMD_DELLINERIGHT)}
+sub del_current_line{_ep_ref()->CmdKeyExecute(&Wx::wxSTC_CMD_LINEDELETE)}
+sub del_line_left {_ep_ref()->CmdKeyExecute(&Wx::wxSTC_CMD_DELLINELEFT) }
+sub del_line_right{_ep_ref()->CmdKeyExecute(&Wx::wxSTC_CMD_DELLINERIGHT)}
 
 #
 sub eval_newline_sub{
 }
 
-##########################
+#
 
 1;

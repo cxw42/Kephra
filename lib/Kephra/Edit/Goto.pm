@@ -3,7 +3,6 @@ our $VERSION = '0.09';
 
 use strict;
 use warnings;
-use Wx qw( wxCANCEL wxSTC_CMD_PARAUP wxSTC_CMD_PARADOWN wxSTC_FIND_REGEXP);
 #
 # internal calls
 #
@@ -56,7 +55,7 @@ sub line_nr {
 		$l18n->{goto_line_input}, $l18n->{goto_line_headline},
 		$ep->GetCurrentLine + 1
 	);
-	position( $ep->PositionFromLine($line - 1) ) unless $line == wxCANCEL;
+	position( $ep->PositionFromLine($line - 1) ) unless $line == &Wx::wxCANCEL;
 }
 
 sub last_edit {
@@ -67,8 +66,8 @@ sub last_edit {
 #
 # block navigation
 #
-sub prev_block{ _ep_ref()->CmdKeyExecute(wxSTC_CMD_PARAUP)   }
-sub next_block{ _ep_ref()->CmdKeyExecute(wxSTC_CMD_PARADOWN) }
+sub prev_block{ _ep_ref()->CmdKeyExecute(&Wx::wxSTC_CMD_PARAUP)   }
+sub next_block{ _ep_ref()->CmdKeyExecute(&Wx::wxSTC_CMD_PARADOWN) }
 #
 # brace navigation
 #
@@ -78,7 +77,7 @@ sub prev_brace{
 	$ep->GotoPos($pos - 1) if $ep->BraceMatch($pos) > -1;
 	$ep->GotoPos($pos - 2) if $ep->BraceMatch($pos - 1) > -1;
 	$ep->SearchAnchor();
-	my $newpos = $ep->SearchPrev(wxSTC_FIND_REGEXP, '[{}()\[\]]');
+	my $newpos = $ep->SearchPrev(&Wx::wxSTC_FIND_REGEXP, '[{}()\[\]]');
 	$newpos++ if $ep->BraceMatch($newpos) > $newpos;
 	$newpos > -1 ? $ep->GotoPos($newpos) : $ep->GotoPos($pos);
 }
@@ -88,7 +87,7 @@ sub next_brace{
 	my $pos = $ep->GetCurrentPos;
 	$ep->GotoPos($pos + 1);
 	$ep->SearchAnchor();
-	my $newpos = $ep->SearchNext(wxSTC_FIND_REGEXP, '[{}()\[\]]');
+	my $newpos = $ep->SearchNext(&Wx::wxSTC_FIND_REGEXP, '[{}()\[\]]');
 	$newpos++ if $ep->BraceMatch($newpos) > $newpos;
 	$newpos > -1 ? $ep->GotoPos($newpos) : $ep->GotoPos($pos);
 }

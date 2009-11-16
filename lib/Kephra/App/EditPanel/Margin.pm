@@ -1,26 +1,8 @@
 package Kephra::App::EditPanel::Margin;
-our $VERSION = '0.07';
+our $VERSION = '0.09';
 
 use strict;
 use warnings;
-
-use Wx qw( wxID_ANY
-	wxSTC_STYLE_DEFAULT wxSTC_STYLE_LINENUMBER
-	wxSTC_MASK_FOLDERS  wxSTC_MARGIN_SYMBOL wxSTC_MARGIN_NUMBER
-	wxSTC_MARKNUM_FOLDEREND wxSTC_MARK_BOXPLUSCONNECTED
-	wxSTC_MARKNUM_FOLDEROPENMID wxSTC_MARK_BOXMINUSCONNECTED
-	wxSTC_MARKNUM_FOLDERMIDTAIL wxSTC_MARK_TCORNER
-	wxSTC_MARKNUM_FOLDERTAIL wxSTC_MARK_LCORNER
-	wxSTC_MARKNUM_FOLDERSUB wxSTC_MARK_VLINE
-	wxSTC_MARKNUM_FOLDER wxSTC_MARK_BOXPLUS
-	wxSTC_MARKNUM_FOLDEROPEN wxSTC_MARK_BOXMINUS
-	wxSTC_MARKNUM_FOLDEREND
-	wxSTC_MARK_ARROW wxSTC_MARK_ARROWDOWN wxSTC_MARK_EMPTY
-);
-use Wx::Event qw(EVT_STC_MARGINCLICK);
-#wxSTC_MARK_MINUS wxSTC_MARK_PLUS wxSTC_MARK_CIRCLE
-# wxSTC_MARK_SHORTARROW
-#wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED
 
 sub _ep_ref {
 	ref $_[0] eq 'Wx::StyledTextCtrl' ? $_[0] : Kephra::App::EditPanel::_ref()   
@@ -49,12 +31,12 @@ sub in_nr {
 sub apply_settings {
 	my $ep = _ep_ref(shift);
 	# defining the 3 margins
-	$ep->SetMarginType( 0, wxSTC_MARGIN_SYMBOL );
-	$ep->SetMarginType( 1, wxSTC_MARGIN_NUMBER );
-	$ep->SetMarginType( 2, wxSTC_MARGIN_SYMBOL );
+	$ep->SetMarginType( 0, &Wx::wxSTC_MARGIN_SYMBOL );
+	$ep->SetMarginType( 1, &Wx::wxSTC_MARGIN_NUMBER );
+	$ep->SetMarginType( 2, &Wx::wxSTC_MARGIN_SYMBOL );
 	$ep->SetMarginMask( 0, 0x01FFFFFF );
 	$ep->SetMarginMask( 1, 0 );
-	$ep->SetMarginMask( 2, wxSTC_MASK_FOLDERS );
+	$ep->SetMarginMask( 2, &Wx::wxSTC_MASK_FOLDERS );
 	$ep->SetMarginSensitive( 0, 1 );
 	$ep->SetMarginSensitive( 1, 0 );
 	$ep->SetMarginSensitive( 2, 1 );
@@ -64,22 +46,22 @@ sub apply_settings {
 	my $f = &$color( _fold_config()->{fore_color} );
 	my $b = &$color( _fold_config()->{back_color} );
 	if (_fold_config()->{style} eq 'arrows') {
-		$ep->MarkerDefine(wxSTC_MARKNUM_FOLDER,       wxSTC_MARK_ARROW,    $b,$f);
-		$ep->MarkerDefine(wxSTC_MARKNUM_FOLDEREND,    wxSTC_MARK_ARROW,    $b,$f);
-		$ep->MarkerDefine(wxSTC_MARKNUM_FOLDEROPEN,   wxSTC_MARK_ARROWDOWN,$b,$f);
-		$ep->MarkerDefine(wxSTC_MARKNUM_FOLDEROPENMID,wxSTC_MARK_ARROWDOWN,$b,$f);
-		$ep->MarkerDefine(wxSTC_MARKNUM_FOLDERSUB,    wxSTC_MARK_EMPTY,    $b,$f);
-		$ep->MarkerDefine(wxSTC_MARKNUM_FOLDERMIDTAIL,wxSTC_MARK_EMPTY,    $b,$f);
-		$ep->MarkerDefine(wxSTC_MARKNUM_FOLDERTAIL,   wxSTC_MARK_EMPTY,    $b,$f);
+		$ep->MarkerDefine(&Wx::wxSTC_MARKNUM_FOLDER,       &Wx::wxSTC_MARK_ARROW,    $b,$f);
+		$ep->MarkerDefine(&Wx::wxSTC_MARKNUM_FOLDEREND,    &Wx::wxSTC_MARK_ARROW,    $b,$f);
+		$ep->MarkerDefine(&Wx::wxSTC_MARKNUM_FOLDEROPEN,   &Wx::wxSTC_MARK_ARROWDOWN,$b,$f);
+		$ep->MarkerDefine(&Wx::wxSTC_MARKNUM_FOLDEROPENMID,&Wx::wxSTC_MARK_ARROWDOWN,$b,$f);
+		$ep->MarkerDefine(&Wx::wxSTC_MARKNUM_FOLDERSUB,    &Wx::wxSTC_MARK_EMPTY,    $b,$f);
+		$ep->MarkerDefine(&Wx::wxSTC_MARKNUM_FOLDERMIDTAIL,&Wx::wxSTC_MARK_EMPTY,    $b,$f);
+		$ep->MarkerDefine(&Wx::wxSTC_MARKNUM_FOLDERTAIL,   &Wx::wxSTC_MARK_EMPTY,    $b,$f);
 	}
 	else {
-		$ep->MarkerDefine(wxSTC_MARKNUM_FOLDER,       wxSTC_MARK_BOXPLUS,  $b,$f);
-		$ep->MarkerDefine(wxSTC_MARKNUM_FOLDEREND,wxSTC_MARK_BOXPLUSCONNECTED,$b,$f);
-		$ep->MarkerDefine(wxSTC_MARKNUM_FOLDEROPEN,   wxSTC_MARK_BOXMINUS, $b,$f);
-		$ep->MarkerDefine(wxSTC_MARKNUM_FOLDEROPENMID,wxSTC_MARK_BOXMINUSCONNECTED,$b,$f);
-		$ep->MarkerDefine(wxSTC_MARKNUM_FOLDERMIDTAIL,wxSTC_MARK_TCORNER,  $b,$f);
-		$ep->MarkerDefine(wxSTC_MARKNUM_FOLDERTAIL,   wxSTC_MARK_LCORNER,  $b,$f);
-		$ep->MarkerDefine(wxSTC_MARKNUM_FOLDERSUB,    wxSTC_MARK_VLINE,    $b,$f);
+		$ep->MarkerDefine(&Wx::wxSTC_MARKNUM_FOLDER,       &Wx::wxSTC_MARK_BOXPLUS,  $b,$f);
+		$ep->MarkerDefine(&Wx::wxSTC_MARKNUM_FOLDEREND,    &Wx::wxSTC_MARK_BOXPLUSCONNECTED,$b,$f);
+		$ep->MarkerDefine(&Wx::wxSTC_MARKNUM_FOLDEROPEN,   &Wx::wxSTC_MARK_BOXMINUS, $b,$f);
+		$ep->MarkerDefine(&Wx::wxSTC_MARKNUM_FOLDEROPENMID,&Wx::wxSTC_MARK_BOXMINUSCONNECTED,$b,$f);
+		$ep->MarkerDefine(&Wx::wxSTC_MARKNUM_FOLDERMIDTAIL,&Wx::wxSTC_MARK_TCORNER,  $b,$f);
+		$ep->MarkerDefine(&Wx::wxSTC_MARKNUM_FOLDERTAIL,   &Wx::wxSTC_MARK_LCORNER,  $b,$f);
+		$ep->MarkerDefine(&Wx::wxSTC_MARKNUM_FOLDERSUB,    &Wx::wxSTC_MARK_VLINE,    $b,$f);
 	}
 	$ep->SetFoldFlags(16) if _fold_config()->{flag_line};
 
@@ -185,8 +167,8 @@ sub apply_line_number_color {
 	my $ep     = _ep_ref(shift);
 	my $config = _line_config();
 	my $color  = \&Kephra::Config::color;
-	$ep->StyleSetForeground(wxSTC_STYLE_LINENUMBER,&$color($config->{fore_color}));
-	$ep->StyleSetBackground(wxSTC_STYLE_LINENUMBER,&$color($config->{back_color}));
+	$ep->StyleSetForeground(&Wx::wxSTC_STYLE_LINENUMBER,&$color($config->{fore_color}));
+	$ep->StyleSetBackground(&Wx::wxSTC_STYLE_LINENUMBER,&$color($config->{back_color}));
 }
 
 
@@ -332,7 +314,7 @@ sub _get_line {
 }
 sub apply_fold_flag_color {
 	_ep_ref()->StyleSetForeground
-		(wxSTC_STYLE_DEFAULT, Kephra::Config::color(_fold_config()->{fore_color}));
+		(&Wx::wxSTC_STYLE_DEFAULT, Kephra::Config::color(_fold_config()->{fore_color}));
 }
 
 #
@@ -350,3 +332,5 @@ sub apply_text_width {
 }
 
 1;
+#wxSTC_MARK_MINUS wxSTC_MARK_PLUS wxSTC_MARK_CIRCLE wxSTC_MARK_SHORTARROW
+#wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED

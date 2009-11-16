@@ -1,6 +1,7 @@
 bin/kephra
 Changes
 dev.pl
+doc/Bugs
 doc/interna/manifest.txt
 doc/interna/perlrules.txt
 doc/interna/sketch.txt

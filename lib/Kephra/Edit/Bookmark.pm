@@ -1,9 +1,8 @@
 package Kephra::Edit::Bookmark;
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 use strict;
 use warnings;
-use Wx qw (wxSTC_MARK_SHORTARROW);
 
 #
 # internal data handling subs
@@ -87,7 +86,7 @@ sub define_marker {
 	my $color= \&Kephra::Config::color;
 	my $fore = &$color( $conf->{fore_color} );
 	my $back = &$color( $conf->{back_color} );
-	$ep->MarkerDefine( $_, wxSTC_MARK_SHORTARROW, $fore, $back ) for 0 .. 9;
+	$ep->MarkerDefine( $_, &Wx::wxSTC_MARK_SHORTARROW, $fore, $back ) for 0 .. 9;
 }
 
 sub restore_all {

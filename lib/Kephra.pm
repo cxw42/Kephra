@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.4.1.18';      # version of entire app
+our $VERSION    = '0.4.1.19';      # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $LOGLEVEL;                     # flag for benchmark loggings
@@ -21,9 +21,11 @@ sub load_modules {
 	require YAML::Tiny;
 
 	require Wx;                            # Core wxWidgets Framework
+	#Wx->import( ':everything' ); 
 	require Wx::AUI;                       # movable Panel controler
 	require Wx::STC;                       # Scintilla editor component
-	require Wx::DND;                       # Drag'n Drop & Clipboard support (only K::File)
+	require Wx::DND;                      # Drag'n Drop & Clipboard support (only K::File)
+	require Wx::Locale;
 	require Wx::Perl::ProcessStream;       # 
 	#require Wx::Print;                    # Printing Support (used only in Kephra::File )
 	#require Text::Wrap                    # for text formating

@@ -16,19 +16,7 @@ Kephra::App - main GUI class derived from Wx::App
 use strict;
 use warnings;
 
-use Wx qw(
-	wxDefaultPosition wxDefaultSize   wxGROW wxTOP wxBOTTOM wxVERTICAL wxHORIZONTAL
-	wxSTAY_ON_TOP wxSIMPLE_BORDER wxFRAME_NO_TASKBAR
-	wxSPLASH_CENTRE_ON_SCREEN wxSPLASH_TIMEOUT 
-	wxSP_3D wxSP_PERMIT_UNSPLIT wxSP_LIVE_UPDATE
-	wxBITMAP_TYPE_ANY wxBITMAP_TYPE_XPM
-	wxLI_HORIZONTAL
-	wxTheClipboard
-	wxNullAcceleratorTable 
-);
-
 our @ISA = 'Wx::App';       # $NAME is a wx application
-
 my $obj;
 sub _ref { $obj = ref $_[0] eq __PACKAGE__ ? $_[0] : $obj }
 
@@ -39,22 +27,22 @@ sub splashscreen {
 	Wx::SplashScreen->new(
 		Wx::Bitmap->new(
 			Kephra::Config::filepath( $Kephra::temp{file}{img}{splashscreen} ),
-			wxBITMAP_TYPE_ANY
+			&Wx::wxBITMAP_TYPE_ANY
 		),
-		wxSPLASH_CENTRE_ON_SCREEN | wxSPLASH_TIMEOUT, 350, undef, -1,
-		wxDefaultPosition, wxDefaultSize,
-		wxSIMPLE_BORDER | wxFRAME_NO_TASKBAR | wxSTAY_ON_TOP
+		&Wx::wxSPLASH_CENTRE_ON_SCREEN | &Wx::wxSPLASH_TIMEOUT, 350, undef, -1,
+		&Wx::wxDefaultPosition, &Wx::wxDefaultSize,
+		&Wx::wxSIMPLE_BORDER | &Wx::wxFRAME_NO_TASKBAR | &Wx::wxSTAY_ON_TOP
 	) if $img and -e $img;
 }
 
 sub assemble_layout {
 	my $win = Kephra::App::Window::_ref();
-	my $tg = wxTOP|wxGROW;
+	my $tg = &Wx::wxTOP | &Wx::wxGROW;
 	Kephra::API::EventTable::freeze
 		( qw(app.splitter.right.changed app.splitter.bottom.changed) );
 
 	$Kephra::app{splitter}{right} = Wx::SplitterWindow->new
-		($win, -1, [-1,-1], [-1,-1], wxSP_PERMIT_UNSPLIT|wxSP_LIVE_UPDATE)
+		($win, -1, [-1,-1], [-1,-1], &Wx::wxSP_PERMIT_UNSPLIT|&Wx::wxSP_LIVE_UPDATE)
 			unless exists $Kephra::app{splitter}{right};
 	my $right_splitter = $Kephra::app{splitter}{right};
 	Wx::Event::EVT_SPLITTER_SASH_POS_CHANGED( $right_splitter, $right_splitter, sub {
@@ -73,7 +61,7 @@ sub assemble_layout {
 
 	# setting up output splitter
 	$Kephra::app{splitter}{bottom} = Wx::SplitterWindow->new
-		($column_panel, -1, [-1,-1], [-1,-1], wxSP_PERMIT_UNSPLIT|wxSP_LIVE_UPDATE)
+		($column_panel, -1, [-1,-1], [-1,-1], &Wx::wxSP_PERMIT_UNSPLIT|&Wx::wxSP_LIVE_UPDATE)
 			unless exists $Kephra::app{splitter}{bottom};
 	my $bottom_splitter = $Kephra::app{splitter}{bottom};
 	Wx::Event::EVT_SPLITTER_SASH_POS_CHANGED( $bottom_splitter, $bottom_splitter, sub {
@@ -101,20 +89,20 @@ sub assemble_layout {
 	$notepad_panel->Reparent($right_splitter);
 	$output_panel->Reparent($bottom_splitter);
 
-	my $center_sizer = Wx::BoxSizer->new(wxVERTICAL);
+	my $center_sizer = Wx::BoxSizer->new(&Wx::wxVERTICAL);
 	$center_sizer->Add( $search_bar, 0, $tg, 0) if $search_pos eq 'above';
 	$center_sizer->Add( $tab_bar,    1, $tg, 0 );
 	$center_sizer->Add( $search_bar, 0, $tg, 0 ) if $search_pos eq 'below';
 	$center_panel->SetSizer($center_sizer);
 	$center_panel->SetAutoLayout(1);
 
-	my $column_sizer = Wx::BoxSizer->new(wxVERTICAL);
+	my $column_sizer = Wx::BoxSizer->new(&Wx::wxVERTICAL);
 	$column_sizer->Add( $bottom_splitter, 1, $tg, 0);
 	$column_sizer->Add( $search_bar,      0, $tg, 0) if $search_pos eq 'bottom';
 	$column_panel->SetSizer($column_sizer);
 	$column_panel->SetAutoLayout(1);
 
-	my $win_sizer = Wx::BoxSizer->new(wxVERTICAL);
+	my $win_sizer = Wx::BoxSizer->new(&Wx::wxVERTICAL);
 	$win_sizer->Add( $right_splitter, 1, $tg, 0 );
 	$win->SetSizer($win_sizer);
 	$win->SetAutoLayout(1);
@@ -159,7 +147,6 @@ sub OnInit {
 	if (Kephra::Config::Global::load_autosaved()) {
 		Kephra::App::EditPanel::apply_settings($ep);
 		#Kephra::API::EventTable::freeze_all();
-		$frame->Show(1);
 		print " configs eval:",
 			Benchmark::timestr( Benchmark::timediff( new Benchmark, $t2 ) ), "\n"
 			if $Kephra::BENCHMARK;
@@ -177,6 +164,7 @@ sub OnInit {
 			if $Kephra::BENCHMARK;
 		Kephra::App::EditPanel::gets_focus();
 		Kephra::Edit::_let_caret_visible();
+		$frame->Show(1);
 		print "app startet:",
 			Benchmark::timestr( Benchmark::timediff( new Benchmark, $t0 ) ), "\n"
 			if $Kephra::BENCHMARK;
@@ -197,13 +185,14 @@ sub exit {
 
 sub exit_unsaved {
 	my $t0 = new Benchmark;
+	Kephra::App::Window::_ref()->Show(0);
 	Kephra::API::EventTable::stop_timer();
 	Kephra::File::Session::autosave();
 	Kephra::Config::Global::update();
 	Kephra::Config::Global::save_autosaved();
 	Kephra::Config::set_xp_style(); #
 	Kephra::App::Window::destroy(); # close window
-	wxTheClipboard->Flush;          # set copied text free to the global Clipboard
+	Wx::wxTheClipboard->Flush;      # set copied text free to the global Clipboard
 	print "shut down in:",
 		Benchmark::timestr( Benchmark::timediff( new Benchmark, $t0 ) ), "\n"
 		if $Kephra::BENCHMARK;
@@ -211,5 +200,6 @@ sub exit_unsaved {
 
 sub raw_exit { Wx::Window::Destroy(shift) }
 #sub new_instance { system("kephra.exe") }
+# wxNullAcceleratorTable 
 
 1;

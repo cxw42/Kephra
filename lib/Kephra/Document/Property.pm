@@ -72,7 +72,7 @@ sub set_codepage {
 	return if $nr < 0 or not defined $value;
 	_set_attr('codepage', $value, $nr);
 	_ep_ref()->SetCodePage( $value );
-}#use Wx::STC qw(wxSTC_CP_UTF8); Wx::wxUNICODE()
+}#use Wx::STC qw(&Wx::wxSTC_CP_UTF8); Wx::wxUNICODE()
 
 #
 # tab size
@@ -130,8 +130,8 @@ sub set_EOL_mode {
 	my $mode = shift;
 	$mode = $Kephra::config{file}{defaultsettings}{EOL_new} if !$mode;
 	if ($mode eq 'OS') {
-		if    (Wx::wxMSW) {$mode = 'cr+lf'}
-		elsif (Wx::wxMAC) {$mode = 'cr'   }
+		if    (&Wx::wxMSW) {$mode = 'cr+lf'}
+		elsif (&Wx::wxMAC) {$mode = 'cr'   }
 		else              {$mode = 'lf'   }
 	}
 	$mode = detect_EOL_mode() if $mode eq 'auto';

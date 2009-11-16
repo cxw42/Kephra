@@ -258,7 +258,7 @@ sub evaluate_attributes {
 	Kephra::Edit::_let_caret_visible();
 	Kephra::App::EditPanel::set_word_chars($ep);
 	Kephra::App::EditPanel::paint_bracelight($ep)
-		if Kephra::App::EditPanel::bracelight_visible;
+		if Kephra::App::EditPanel::bracelight_visible();
 	Kephra::App::StatusBar::refresh_cursor();
 }
 

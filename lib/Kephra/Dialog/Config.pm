@@ -1,27 +1,11 @@
 package Kephra::Dialog::Config;
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 
 use strict;
 use warnings;
 
-use Wx qw( 
-	wxVERTICAL wxHORIZONTAL wxLEFT wxRIGHT wxTOP wxALL wxBOTTOM
-	wxGROW wxEXPAND wxALIGN_CENTRE wxALIGN_RIGHT
-	wxSYSTEM_MENU wxCAPTION wxSTAY_ON_TOP wxNO_FULL_REPAINT_ON_RESIZE
-	wxSIMPLE_BORDER wxRAISED_BORDER
-	wxBK_LEFT
-	wxCLOSE_BOX wxMINIMIZE_BOX  wxFRAME_NO_TASKBAR  wxBITMAP_TYPE_XPM  wxWHITE
-	wxTR_NO_BUTTONS wxTR_HIDE_ROOT wxTR_SINGLE
-	wxNOT_FOUND
-);
-
-use Wx::Event
-	qw(EVT_KEY_DOWN EVT_TEXT EVT_BUTTON EVT_CHECKBOX EVT_RADIOBUTTON EVT_CLOSE);
-
-sub _ref {
-	if (ref $_[0] eq 'Wx::Dialog'){ $Kephra::app{dialog}{config} = $_[0] }
-	else                          { $Kephra::app{dialog}{config} }
-}
+my $dialog;
+sub _ref { $dialog = ref $_[0] eq 'Wx::Dialog' ? $_[0] : $dialog }
 
 sub main {
 	if ( !$Kephra::temp{dialog}{config}{active}
@@ -36,16 +20,16 @@ sub main {
 		my $g_l10n = $l18n->{dialog}{general};
 		my $m_l10n = $l18n->{app}{menu};
 		my $cl_l10n = $l18n->{commandlist}{label};
-		my $d_style= wxNO_FULL_REPAINT_ON_RESIZE | wxSYSTEM_MENU | wxCAPTION
-			| wxMINIMIZE_BOX | wxCLOSE_BOX;
-		#$d_style |= wxSTAY_ON_TOP if $Kephra::config{app}{window}{stay_on_top};
+		my $d_style= &Wx::wxNO_FULL_REPAINT_ON_RESIZE | &Wx::wxSYSTEM_MENU | 
+			&Wx::wxCAPTION | &Wx::wxMINIMIZE_BOX | &Wx::wxCLOSE_BOX;
+		#$d_style |= &Wx::wxSTAY_ON_TOP if $Kephra::config{app}{window}{stay_on_top};
 
 
 # my $staticbox = Wx::StaticBox->new( $panel, -1, 'Wx::StaticBox' );
 # my $button    = Wx::Button->new( $panel, -1, 'Button 3' );
-# my $nsz = Wx::StaticBoxSizer->new( $staticbox, wxVERTICAL);
+# my $nsz = Wx::StaticBoxSizer->new( $staticbox, &Wx::wxVERTICAL);
 #	$panel->SetSizer($nsz);
-#	$nsz->Add( $button, 0, wxGROW|wxTOP, 5 );
+#	$nsz->Add( $button, 0, &Wx::wxGROW|&Wx::wxTOP, 5 );
 	
 		# making window & main design
 		my $d = Wx::Dialog->new( $frame, -1, ' '.$d_l10n->{title},
@@ -61,14 +45,14 @@ sub main {
 		# main panel
 		#my $mainpanel = Wx::Panel->new( $d, -1, [-1,-1], [-1,-1] );
 		# tree of categories
-		my $cfg_tree = Wx::Treebook->new( $d, -1, [-1,-1], [-1,-1], wxBK_LEFT);
+		my $cfg_tree = Wx::Treebook->new( $d, -1, [-1,-1], [-1,-1], &Wx::wxBK_LEFT);
 		my ($panel);
 
 		# general settings
 		my $pg = $panel->{general} = Wx::Panel->new( $cfg_tree );
 		$pg->{save} = Wx::StaticText->new( $pg, -1, 'Speichern');
-		$pg->{sizer} = Wx::BoxSizer->new(wxVERTICAL);
-		$pg->{sizer}->Add( $pg->{save} , 0, wxLEFT, 5 );
+		$pg->{sizer} = Wx::BoxSizer->new(&Wx::wxVERTICAL);
+		$pg->{sizer}->Add( $pg->{save} , 0, &Wx::wxLEFT, 5 );
 		$pg->SetSizer( $pg->{sizer} );
 
 		$cfg_tree->AddPage( $panel->{general}, 'General', 1);
@@ -83,17 +67,17 @@ sub main {
 		# button line
 		$d->{apply_button} = Wx::Button->new ( $d, -1, $g_l10n->{apply} );
 		$d->{cancel_button} = Wx::Button->new( $d, -1, $g_l10n->{cancel});
-		EVT_BUTTON( $d, $d->{apply_button}, sub {shift->Close} );
-		EVT_BUTTON( $d, $d->{cancel_button},sub {shift->Close} );
-		my $button_sizer = Wx::BoxSizer->new(wxHORIZONTAL);
-		$button_sizer->Add( $d->{apply_button},  0, wxRIGHT, 14 );
-		$button_sizer->Add( $d->{cancel_button}, 0, wxRIGHT, 22 );
+		Wx::Event::EVT_BUTTON( $d, $d->{apply_button}, sub {shift->Close} );
+		Wx::Event::EVT_BUTTON( $d, $d->{cancel_button},sub {shift->Close} );
+		my $button_sizer = Wx::BoxSizer->new(&Wx::wxHORIZONTAL);
+		$button_sizer->Add( $d->{apply_button},  0, &Wx::wxRIGHT, 14 );
+		$button_sizer->Add( $d->{cancel_button}, 0, &Wx::wxRIGHT, 22 );
 
 
 		# assembling lines
-		my $d_sizer = Wx::BoxSizer->new(wxVERTICAL);
-		$d_sizer->Add( $cfg_tree,     1, wxEXPAND|wxALL,   14);
-		$d_sizer->Add( $button_sizer, 0, wxBOTTOM|wxALIGN_RIGHT, 12);
+		my $d_sizer = Wx::BoxSizer->new(&Wx::wxVERTICAL);
+		$d_sizer->Add( $cfg_tree,     1, &Wx::wxEXPAND|&Wx::wxALL,   14);
+		$d_sizer->Add( $button_sizer, 0, &Wx::wxBOTTOM|&Wx::wxALIGN_RIGHT, 12);
 
 		# release
 		$d->SetSizer($d_sizer);
@@ -101,7 +85,7 @@ sub main {
 		$d->Show(1);
 		Wx::Window::SetFocus( $d->{cancel_button} );
 
-		EVT_CLOSE( $d, \&quit_config_dialog );
+		Wx::Event::EVT_CLOSE( $d, \&quit_config_dialog );
 	} else {
 		my $d = _ref();
 		$d->Iconize(0);

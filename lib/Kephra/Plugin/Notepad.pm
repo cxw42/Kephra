@@ -18,7 +18,7 @@ sub create {
 		my $indicator = Kephra::App::EditPanel::_config()->{indicator};
 		my $config = _config();
 		$notepad = Wx::StyledTextCtrl->new( $win, -1, [-1,-1], [-1,-1] );
-		$notepad->SetWrapMode(Wx::wxSTC_WRAP_WORD);
+		$notepad->SetWrapMode(&Wx::wxSTC_WRAP_WORD);
 		$notepad->SetScrollWidth(210);
 		$notepad->SetMarginWidth(0,0);
 		$notepad->SetMarginWidth(1,0);
@@ -32,8 +32,8 @@ sub create {
 				( 1, &$color( $indicator->{selection}{fore_color} ) );
 		}
 		$notepad->SetSelBackground( 1, &$color( $indicator->{selection}{back_color}));
-		$notepad->StyleSetFont( Wx::wxSTC_STYLE_DEFAULT, Wx::Font->new
-			(_config()->{font_size}, Wx::wxDEFAULT, Wx::wxNORMAL, Wx::wxNORMAL, 0,
+		$notepad->StyleSetFont( &Wx::wxSTC_STYLE_DEFAULT, Wx::Font->new
+			(_config()->{font_size}, &Wx::wxDEFAULT, &Wx::wxNORMAL, &Wx::wxNORMAL, 0,
 			_config()->{font_family}) 
 		);
 		# load content
@@ -52,19 +52,19 @@ sub create {
 			my ( $fi, $event ) = @_;
 			my $key = $event->GetKeyCode;
 			my $ep = Kephra::App::EditPanel::_ref();
-			if ($key == Wx::WXK_ESCAPE) {
+			if ($key == &Wx::WXK_ESCAPE ) {
 				Wx::Window::SetFocus( $ep );
-			} elsif ($key == Wx::WXK_F3) {
+			} elsif ($key == &Wx::WXK_F3 ) {
 				if ($event->ControlDown) {
 					my $sel = $notepad->GetSelectedText;
 					$event->ShiftDown
 						? Kephra::Edit::Search::set_replace_item($sel)
 						: Kephra::Edit::Search::set_find_item($sel);
 				}
-			} elsif ($key == Wx::WXK_F4) {
+			} elsif ($key == &Wx::WXK_F4) {
 				Wx::Window::SetFocus( $ep );
 				switch_visibility() if $event->ControlDown;
-			} elsif ($key == Wx::WXK_F5) {
+			} elsif ($key == &Wx::WXK_F5) {
 				my ( $sel_beg, $sel_end ) = $notepad->GetSelection;
 				Kephra::Plugin::Output::ensure_visibility();
 				my $code = $sel_beg == $sel_end

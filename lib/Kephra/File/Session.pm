@@ -4,13 +4,14 @@ our $VERSION = '0.15';
 
 =head1 NAME
 
-  Kephra::File::Session - 
+Kephra::File::Session - 
 
 =head1 DESCRIPTION
 
-  file session handling
- current session is the group of all opened files
- sessionfiles contain metadata like syntaxmode, tabsize, cursorpos, -NI codset
+file session handling
+
+current session is the group of all opened files
+sessionfiles contain metadata like syntaxmode, tabsize, cursorpos, -NI codset
 =cut
 #
 # intern API
@@ -228,7 +229,7 @@ sub export_scite {
 	);
 	if ( length($file) > 0 ) {
 		if ( open my $FH, '>', $file ) {
-			my $current = Kephra::Document::Data::current_nr;
+			my $current = Kephra::Document::Data::current_nr();
 			my $output;
 			for ( @{ Kephra::Document::Data::all_nr() } ) {
 				my %file_attr = %{ Kephra::Document::Data::_hash($_) };

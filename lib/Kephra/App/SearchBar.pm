@@ -1,14 +1,8 @@
 package Kephra::App::SearchBar;
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 use strict;
 use warnings;
-use Wx qw(
-		wxSTC_CMD_LINESCROLLUP wxSTC_CMD_LINESCROLLDOWN
-		wxSTC_CMD_PAGEUP wxSTC_CMD_PAGEDOWN
-		wxSTC_CMD_DOCUMENTSTART wxSTC_CMD_DOCUMENTEND
-		wxTE_PROCESS_ENTER
-);
 
 sub _ref    { Kephra::App::ToolBar::_ref('search', $_[0]) }
 sub _config { $Kephra::config{app}{toolbar}{search} }
@@ -30,7 +24,7 @@ sub create {
 		if ($item_data->{type} eq 'combobox' and $item_data->{id} eq 'find'){
 			my $find_input = $bar->{find_input} = Wx::ComboBox->new (
 				$bar , -1, '', [-1,-1], [$item_data->{size},-1], [],
-				wxTE_PROCESS_ENTER
+				&Wx::wxTE_PROCESS_ENTER
 			);
 			$find_input->SetDropTarget( SearchInputTarget->new($find_input, 'find'));
 			$find_input->SetValue( Kephra::Edit::Search::get_find_item() );
@@ -59,17 +53,17 @@ sub create {
 
 				my $found_something;
 				my $ep = Kephra::App::EditPanel::_ref();
-				if      ( $key == Wx::WXK_RETURN ) {
+				if      ( $key == &Wx::WXK_RETURN ) {
 					if    ( $event->ControlDown and $event->ShiftDown)   
 					                           {Kephra::Edit::Search::find_last() }
 					elsif ($event->ControlDown){Kephra::Edit::Search::find_first()}
 					elsif ($event->ShiftDown)  {Kephra::Edit::Search::find_prev() }
 					else                       {Kephra::Edit::Search::find_next() }
-				} elsif ($key == Wx::WXK_F3){
+				} elsif ($key == &Wx::WXK_F3){
 					$event->ShiftDown 
 						? Kephra::Edit::Search::find_prev()
 						: Kephra::Edit::Search::find_next();
-				} elsif ($key == Wx::WXK_ESCAPE) { # escape
+				} elsif ($key == &Wx::WXK_ESCAPE) { # escape
 					give_editpanel_focus_back()
 				} elsif ($key == 65 and $event->ControlDown) {# A
 					$bar->{find_input}->SetSelection
@@ -83,41 +77,41 @@ sub create {
 					}
 				} elsif ($key == 81) { # Q
 					switch_visibility() if $event->ControlDown;
-				#} elsif ( $key == Wx::WXK_LEFT ){ Wx::wxSTC_CMD_CHARLEFT return
-				#} elsif ($key == Wx::WXK_RIGHT ){ Wx::wxSTC_CMD_CHARRIGHT return;
-				} elsif ($key == Wx::WXK_UP){
+				#} elsif ( $key == &Wx::WXK_LEFT ){ &Wx::wxSTC_CMD_CHARLEFT return
+				#} elsif ($key == &Wx::WXK_RIGHT ){ &Wx::wxSTC_CMD_CHARRIGHT return;
+				} elsif ($key == &Wx::WXK_UP){
 					if ($event->ControlDown) {
-						$ep->CmdKeyExecute( wxSTC_CMD_LINESCROLLUP ); return;
+						$ep->CmdKeyExecute( &Wx::wxSTC_CMD_LINESCROLLUP ); return;
 					}
-				} elsif ($key == Wx::WXK_DOWN) {
+				} elsif ($key == &Wx::WXK_DOWN) {
 					if ($event->ControlDown) {
-						$ep->CmdKeyExecute( wxSTC_CMD_LINESCROLLDOWN ); return;
+						$ep->CmdKeyExecute( &Wx::wxSTC_CMD_LINESCROLLDOWN ); return;
 					}
-				} elsif ($key == Wx::WXK_PAGEUP) { # page up
+				} elsif ($key == &Wx::WXK_PAGEUP) { # page up
 					if ($event->ControlDown) {
 						my $pos = $bar->{find_input}->GetInsertionPoint;
 						Kephra::Document::Change::tab_left();
 						Wx::Window::SetFocus($bar->{find_input});
 						$bar->{find_input}->SetInsertionPoint($pos);
 					} else {
-						$ep->CmdKeyExecute( wxSTC_CMD_PAGEUP );
+						$ep->CmdKeyExecute( &Wx::wxSTC_CMD_PAGEUP );
 					}
 					return;
-				} elsif ($key == Wx::WXK_PAGEDOWN){ # page down
+				} elsif ($key == &Wx::WXK_PAGEDOWN){ # page down
 					if ($event->ControlDown) {
 						my $pos = $bar->{find_input}->GetInsertionPoint;
 						Kephra::Document::Change::tab_right();
 						Wx::Window::SetFocus($bar->{find_input});
 						$bar->{find_input}->SetInsertionPoint($pos);
 					} else {
-						$ep->CmdKeyExecute( wxSTC_CMD_PAGEDOWN );
+						$ep->CmdKeyExecute( &Wx::wxSTC_CMD_PAGEDOWN );
 					}
 					return;
-				} elsif ($key == Wx::WXK_HOME and $event->ControlDown) {
-					$ep->CmdKeyExecute( wxSTC_CMD_DOCUMENTSTART ); return;
-				} elsif ($key == Wx::WXK_END and $event->ControlDown) {
-					$ep->CmdKeyExecute( wxSTC_CMD_DOCUMENTEND ); return;
-				} elsif ($key == Wx::WXK_BACK and $event->ControlDown and $event->ShiftDown) {
+				} elsif ($key == &Wx::WXK_HOME and $event->ControlDown) {
+					$ep->CmdKeyExecute( &Wx::wxSTC_CMD_DOCUMENTSTART ); return;
+				} elsif ($key == &Wx::WXK_END and $event->ControlDown) {
+					$ep->CmdKeyExecute( &Wx::wxSTC_CMD_DOCUMENTEND ); return;
+				} elsif ($key == $Wx::WXK_BACK and $event->ControlDown and $event->ShiftDown) {
 					my $pos = $bar->{find_input}->GetInsertionPoint;
 					Kephra::Document::Change::switch_back();
 					Wx::Window::SetFocus($bar->{find_input});

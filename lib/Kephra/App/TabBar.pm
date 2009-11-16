@@ -1,6 +1,13 @@
 package Kephra::App::TabBar;
 our $VERSION = '0.18';
 =pod
+=pod
+
+=head1 NAME
+
+Kephra::App::Tabbar - 
+
+=head1 DESCRIPTION
 
 Tabbar is the visual element in top area of the main window which displays
        end enables selection between all curently opened documents
@@ -11,12 +18,6 @@ Tabbar is the visual element in top area of the main window which displays
 
 use strict;
 use warnings;
-use Wx qw( 
-	wxVERTICAL wxGROW
-	wxAUI_NB_TOP wxAUI_NB_WINDOWLIST_BUTTON wxAUI_NB_TAB_MOVE wxAUI_NB_SCROLL_BUTTONS
-	wxAUI_NB_CLOSE_BUTTON wxAUI_NB_CLOSE_ON_ACTIVE_TAB wxAUI_NB_CLOSE_ON_ALL_TABS
-);
-
 #
 # internal data
 #
@@ -90,7 +91,7 @@ sub create {
 	$notebook->Destroy if defined $notebook;
 	$notebook = Wx::AuiNotebook->new
 		(Kephra::App::Window::_ref(),-1, [0,0], [-1,23],
-		wxAUI_NB_TOP | wxAUI_NB_SCROLL_BUTTONS);
+		&Wx::wxAUI_NB_TOP | &Wx::wxAUI_NB_SCROLL_BUTTONS);
 	_ref($notebook);
 	#Wx::Event::EVT_LEFT_UP( $notebook, sub {
 		#my ($tabs, $event) = @_; print "\n left up\n";
@@ -141,12 +142,12 @@ sub apply_settings {
 		);
 	}
 	my $style = $notebook->GetWindowStyleFlag();
-	$style |= wxAUI_NB_TAB_MOVE if _config->{movable_tabs};
-	$style |= wxAUI_NB_WINDOWLIST_BUTTON if _config->{tablist_button};
-	if    (_config->{close_button} =~ /all/){ $style |= wxAUI_NB_CLOSE_ON_ALL_TABS}
-	elsif (_config->{close_button} =~ /one/){ $style |= wxAUI_NB_CLOSE_BUTTON}
-	elsif (_config->{close_button} =~ /current/){$style |= wxAUI_NB_CLOSE_ON_ACTIVE_TAB}
-	elsif (_config->{close_button} =~ /active/) {$style |= wxAUI_NB_CLOSE_ON_ACTIVE_TAB}
+	$style |= &Wx::wxAUI_NB_TAB_MOVE if _config->{movable_tabs};
+	$style |= &Wx::wxAUI_NB_WINDOWLIST_BUTTON if _config->{tablist_button};
+	if    (_config->{close_button} =~ /all/){ $style |= &Wx::wxAUI_NB_CLOSE_ON_ALL_TABS}
+	elsif (_config->{close_button} =~ /one/){ $style |= &Wx::wxAUI_NB_CLOSE_BUTTON}
+	elsif (_config->{close_button} =~ /current/){$style |= &Wx::wxAUI_NB_CLOSE_ON_ACTIVE_TAB}
+	elsif (_config->{close_button} =~ /active/) {$style |= &Wx::wxAUI_NB_CLOSE_ON_ACTIVE_TAB}
 	# wxAUI_NB_TAB_SPLIT wxAUI_NB_TAB_EXTERNAL_MOVE
 	$notebook->SetWindowStyle( $style );
 	show();
@@ -170,8 +171,8 @@ sub add_edit_tab  {
 	Kephra::Document::Data::set_attribute('ep_ref', $stc, $doc_nr);
 	#my $panel = Wx::Panel->new( $notebook, -1);
 	#$stc->Reparent($panel);
-	#my $sizer = Wx::BoxSizer->new( wxVERTICAL );
-	#$sizer->Add( $stc, 1, wxGROW, 0);
+	#my $sizer = Wx::BoxSizer->new( &Wx::wxVERTICAL );
+	#$sizer->Add( $stc, 1, &Wx::wxGROW, 0);
 	#$panel->SetSizer($sizer);
 	#$panel->SetAutoLayout(1);
 	#$notebook->Freeze(); #$notebook->Thaw();

@@ -1,13 +1,8 @@
 package Kephra::Edit::Format;
-our $VERSION = '0.25';
+our $VERSION = '0.26';
 
 use strict;
 use warnings;
-
-use Wx qw(
-	wxSTC_CMD_NEWLINE wxSTC_CMD_DELETEBACK wxSTC_CMD_LINEEND
-	wxSTC_CMD_WORDLEFT wxSTC_CMD_WORDRIGHT
-);
 
 sub _ep_ref { Kephra::App::EditPanel::_ref() }
 
@@ -29,7 +24,7 @@ sub autoindent {
 	my $line = $ep->GetCurrentLine;
 
 	$ep->BeginUndoAction;
-	$ep->CmdKeyExecute(wxSTC_CMD_NEWLINE);
+	$ep->CmdKeyExecute(&Wx::wxSTC_CMD_NEWLINE);
 	my $indent = $ep->GetLineIndentation( $line );
 	$ep->SetLineIndentation( $line + 1, $indent);
 	$ep->GotoPos( $ep->GetLineIndentPosition( $line + 1 ) );
@@ -58,12 +53,12 @@ sub blockindent_open {
 	my $matchindent= $ep->GetLineIndentation($ep->LineFromPosition($matchbrace));
 
 	# make newl line
-	$ep->CmdKeyExecute(wxSTC_CMD_NEWLINE);
+	$ep->CmdKeyExecute(&Wx::wxSTC_CMD_NEWLINE);
 
 	# make new brace if there is missing one
 	if ($Kephra::config{editpanel}{auto}{brace}{make} and
 		($matchbrace == -1 or $ep->GetLineIndentation($line) != $matchindent )){
-		$ep->CmdKeyExecute(wxSTC_CMD_NEWLINE);
+		$ep->CmdKeyExecute(&Wx::wxSTC_CMD_NEWLINE);
 		$ep->AddText('}');
 		$ep->SetLineIndentation( $line + 2, $leadindent );
 	}
@@ -89,7 +84,7 @@ sub blockindent_close {
 	unless ($ep->GetLineIndentPosition($line)+1 == $ep->GetLineEndPosition($line)
 		or  $ep->LineFromPosition($match) == $line ) {
 		$ep->GotoPos($bracepos);
-		$ep->CmdKeyExecute(wxSTC_CMD_NEWLINE);
+		$ep->CmdKeyExecute(&Wx::wxSTC_CMD_NEWLINE);
 		$ep->GotoPos( $ep->GetCurrentPos + 1 );
 		$line++;
 	}
@@ -107,7 +102,7 @@ sub blockindent_close {
 	# make new line
 	$Kephra::config{editpanel}{auto}{indent}
 		? autoindent()
-		: $ep->CmdKeyExecute(wxSTC_CMD_NEWLINE);
+		: $ep->CmdKeyExecute(&Wx::wxSTC_CMD_NEWLINE);
 
 	# 3 lösche dubs wenn in nächster zeile nur spaces bis dup
 	#if ( $Kephra::config{editpanel}{auto}{brace}{join} ) {

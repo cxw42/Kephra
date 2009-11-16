@@ -85,8 +85,8 @@ sub check_b4_overwite {
 				$label->{file}{overwrite},
 				-1, -1
 			);
-			return 1 if $answer == Wx::wxYES;
-			return 0 if $answer == Wx::wxNO;
+			return 1 if $answer == &Wx::wxYES;
+			return 0 if $answer == &Wx::wxNO;
 		} else {
 			Kephra::Dialog::info_box( $frame,
 				$label->{general}{dont_allow},
@@ -335,7 +335,7 @@ sub close_nr {
 	my $doc_nr     = shift;
 	my $ep         = Kephra::Document::Data::_ep($doc_nr);
 	my $config     = $Kephra::config{file}{save};
-	my $save_answer= Wx::wxNO;
+	my $save_answer= &Wx::wxNO;
 
 	# save text if options demand it
 	if ($ep->GetModify == 1 or $config->{unchanged} eq 1) {
@@ -346,8 +346,8 @@ sub close_nr {
 					Kephra::App::Window::_ref(),
 					$l10n->{save_current}, $l10n->{close_unsaved} );
 			}
-			return if $save_answer == Wx::wxCANCEL;
-			if ($save_answer == Wx::wxYES or $config->{b4_close} eq '1')
+			return if $save_answer == &Wx::wxCANCEL;
+			if ($save_answer == &Wx::wxYES or $config->{b4_close} eq '1')
 				{ _save_nr($doc_nr) }
 			else{ savepoint_reached($doc_nr) if $ep->GetModify }
 		}

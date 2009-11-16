@@ -4,10 +4,6 @@ our $VERSION = '0.08';
 use strict;
 use warnings;
 
-use Wx qw(wxSYSTEM_MENU wxCAPTION wxMINIMIZE_BOX wxCLOSE_BOX
-          wxBOTH wxVERSION_STRING
-    );
-
 sub combined {
 	return simple();
 
@@ -16,20 +12,20 @@ sub combined {
 		" Info About Kephra",
 		[ 100, 100 ],
 		[ 460, 260 ],
-		wxSYSTEM_MENU | wxCAPTION | wxMINIMIZE_BOX | wxCLOSE_BOX,
+		&Wx::wxSYSTEM_MENU | &Wx::wxCAPTION | &Wx::wxMINIMIZE_BOX | &Wx::wxCLOSE_BOX,
 	);
 	Kephra::App::Window::load_icon( $info_win,
 		$Kephra::config{app}{window}{icon} );
 	$info_win->SetBackgroundColour( Wx::Colour->new( 0xed, 0xeb, 0xdb ) );
 # Wx::HyperlinkCtrl->new($win,-1,label,url,pos,size,wxHL_CONTEXTMENU)
-	$info_win->Centre(wxBOTH);
+	$info_win->Centre(&Wx::wxBOTH);
 	$info_win->Show(1);
 }
 
 sub simple {
 	my $info = Kephra::Config::Localisation::strings()->{dialog}{info};
 	my $sciv = 'Scintilla ';
-	my $v = substr(wxVERSION_STRING ,-5);
+	my $v = substr(&Wx::wxVERSION_STRING ,-5);
 	if    ($v eq '2.4.2'){$sciv .= '1.54'}
 	elsif ($v eq '2.6.2'){$sciv .= '1.62'}
 	elsif ($v eq '2.6.3'){$sciv .= '1.62'}
@@ -44,7 +40,7 @@ sub simple {
 		. $info->{contains} . ": \n"
 		. " - Perl ". substr($],0,1).'.'.int(substr($],3,2)).'.'.substr($],7,1)."\n"
 		. " - WxPerl $Wx::VERSION $info->{wrappes} \n"
-		. "   - " . wxVERSION_STRING . " $info->{and} $sciv\n"
+		. "   - " . &Wx::wxVERSION_STRING . " $info->{and} $sciv\n"
 		. " - Config::General $Config::General::VERSION \n"
 		. " - YAML::Tiny $YAML::Tiny::VERSION \n"
 		."\n\n $info->{dedication}"

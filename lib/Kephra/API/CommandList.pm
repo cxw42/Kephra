@@ -3,15 +3,6 @@ our $VERSION = '0.15';
 
 use strict;
 use warnings;
-
-use Wx qw(
-	WXK_ESCAPE WXK_BACK WXK_RETURN WXK_TAB WXK_SPACE
-	WXK_DELETE WXK_INSERT WXK_HOME WXK_END WXK_PAGEUP WXK_PAGEDOWN
-	WXK_UP WXK_DOWN WXK_LEFT WXK_RIGHT
-	WXK_F1 WXK_F2 WXK_F3 WXK_F4 WXK_F5 WXK_F6 WXK_F7 WXK_F8 WXK_F9 WXK_F10
-	WXK_F11 WXK_F12 
-	WXK_NUMPAD_ENTER
-);
 use YAML::Tiny();
 
 
@@ -86,14 +77,18 @@ sub numify_key_code {
 	my $alt   = $k18n->{meta}{alt}  . '+';
 	my $ctrl  = $k18n->{meta}{ctrl} . '+';
 	my %keycode_map = (
-		back => WXK_BACK, tab => WXK_TAB, enter => WXK_RETURN, esc => WXK_ESCAPE,
-		space => WXK_SPACE, plus => 43, minus => 45, '#' => 47, tilde => 92, 
-		del=> WXK_DELETE, ins => WXK_INSERT,
-		pgup => WXK_PAGEUP, pgdn => WXK_PAGEDOWN, home => WXK_HOME, end => WXK_END,
-		left => WXK_LEFT, up => WXK_UP, right => WXK_RIGHT, down => WXK_DOWN,
-		f1 => WXK_F1, f2 => WXK_F2, f3 => WXK_F3, f4 => WXK_F4,  f5 => WXK_F5,  f6 => WXK_F6,
-		f7 => WXK_F7, f8 => WXK_F8, f9 => WXK_F9,f10 => WXK_F10,f11 => WXK_F11,f12 => WXK_F12,
-		numpad_enter => WXK_NUMPAD_ENTER
+		back => &Wx::WXK_BACK, tab => &Wx::WXK_TAB, enter => &Wx::WXK_RETURN,
+		esc => &Wx::WXK_ESCAPE, space => &Wx::WXK_SPACE,
+		plus => 43, minus => 45, '#' => 47, tilde => 92, 
+		del=> &Wx::WXK_DELETE, ins => &Wx::WXK_INSERT,
+		pgup => &Wx::WXK_PAGEUP, pgdn => &Wx::WXK_PAGEDOWN,
+		home => &Wx::WXK_HOME, end => &Wx::WXK_END,
+		left => &Wx::WXK_LEFT, up => &Wx::WXK_UP, 
+		right => &Wx::WXK_RIGHT, down => &Wx::WXK_DOWN,
+		f1 => &Wx::WXK_F1, f2 => &Wx::WXK_F2, f3 => &Wx::WXK_F3, f4 => &Wx::WXK_F4,
+		f5 => &Wx::WXK_F5,  f6 => &Wx::WXK_F6, f7 => &Wx::WXK_F7, f8 => &Wx::WXK_F8,
+		f9 => &Wx::WXK_F9,f10 => &Wx::WXK_F10,f11 => &Wx::WXK_F11,f12 => &Wx::WXK_F12,
+		numpad_enter => &Wx::WXK_NUMPAD_ENTER
 	);
 	for (@cmd){
 		$item_data = $list{$_};

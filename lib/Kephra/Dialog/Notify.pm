@@ -1,19 +1,8 @@
 package Kephra::Dialog::Notify;
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 use strict;
 use warnings;
-
-
-use Wx qw(
-		wxVERTICAL wxHORIZONTAL             wxRIGHT wxLEFT wxGROW wxTOP wxALL
-		wxLEFT wxCENTER wxRIGHT wxBOTTOM wxALIGN_CENTER_HORIZONTAL
-		wxWHITE
-		wxTE_READONLY wxTE_CENTRE
-		wxNO_FULL_REPAINT_ON_RESIZE wxCAPTION wxSYSTEM_MENU wxCAPTION 
-		wxCLOSE_BOX wxSTAY_ON_TOP
-);
-use Wx::Event qw( EVT_BUTTON EVT_CLOSE );
 
 our $dialog;
 
@@ -32,16 +21,16 @@ sub file_changed {
 	$dialog->{btn}{1}->SetLabel( $g10n->{reload});
 	$dialog->{btn}{2}->SetLabel( $g10n->{save_reload} );
 	$dialog->{btn}{3}->SetLabel( $g10n->{ignore} );
-	EVT_BUTTON($dialog, $dialog->{btn}{1},  sub {
+	Wx::Event::EVT_BUTTON($dialog, $dialog->{btn}{1},  sub {
 		quit_dialog(); 
 		Kephra::File::reload_current();
 	} );
-	EVT_BUTTON($dialog, $dialog->{btn}{2},  sub {
+	Wx::Event::EVT_BUTTON($dialog, $dialog->{btn}{2},  sub {
 		quit_dialog(); 
 		Kephra::File::save_copy_as(); 
 		Kephra::File::reload_current() 
 	} );
-	EVT_BUTTON($dialog, $dialog->{btn}{3},  sub {
+	Wx::Event::EVT_BUTTON($dialog, $dialog->{btn}{3},  sub {
 		quit_dialog();
 	} );
 	#Kephra::Document::Data::get_attribute('did_notify', 'ignore', $file_nr);
@@ -62,18 +51,18 @@ sub file_deleted {
 	$dialog->{btn}{2}->SetLabel( $d10n->{file}{save_as} );
 	$dialog->{btn}{3}->SetLabel( $g10n->{save} );
 	$dialog->{btn}{4}->SetLabel( $g10n->{ignore} );
-	EVT_BUTTON($dialog, $dialog->{btn}{1},  sub {
+	Wx::Event::EVT_BUTTON($dialog, $dialog->{btn}{1},  sub {
 		quit_dialog(); Kephra::File::close_current_unsaved() 
 	} );
-	EVT_BUTTON($dialog, $dialog->{btn}{2},  sub {
+	Wx::Event::EVT_BUTTON($dialog, $dialog->{btn}{2},  sub {
 		quit_dialog(); Kephra::File::save_as() 
 	} );
-	EVT_BUTTON($dialog, $dialog->{btn}{3},  sub {
+	Wx::Event::EVT_BUTTON($dialog, $dialog->{btn}{3},  sub {
 		quit_dialog(); Kephra::File::save_current() 
 	} );
 	$dialog->SetTitle($file_name . ' ' . $g10n->{deleted});
 	$dialog->{filename}->SetValue($file_path);
-	EVT_BUTTON($dialog, $dialog->{btn}{4},  sub {
+	Wx::Event::EVT_BUTTON($dialog, $dialog->{btn}{4},  sub {
 		quit_dialog();
 		Kephra::Document::Data::set_attribute('did_notify', 'ignore', $file_nr);
 	} );
@@ -84,30 +73,30 @@ sub create_raw_dialog {
 	my $btn_count = shift || 3;
 	my $dialog = Wx::Dialog->new(
 		Kephra::App::Window::_ref(), -1, '', [-1,-1], [361, 145], 
-		wxNO_FULL_REPAINT_ON_RESIZE | 
-		wxCAPTION | wxSYSTEM_MENU | wxCAPTION | wxCLOSE_BOX | wxSTAY_ON_TOP,
+		&Wx::wxNO_FULL_REPAINT_ON_RESIZE | &Wx::wxSTAY_ON_TOP |
+		&Wx::wxSYSTEM_MENU | &Wx::wxCAPTION | &Wx::wxCLOSE_BOX ,
 	);
 	Kephra::App::Window::load_icon
 		($dialog, Kephra::Config::filepath($Kephra::config{app}{window}{icon}));
-	#$dialog->SetBackgroundColour(wxWHITE);
-	EVT_CLOSE( $dialog, \&quit_dialog );
+	#$dialog->SetBackgroundColour(&Wx::wxWHITE);
+	Wx::Event::EVT_CLOSE( $dialog, \&quit_dialog );
 
 	# starting dialog layout
-	my $h_sizer = Wx::BoxSizer->new(wxHORIZONTAL);
+	my $h_sizer = Wx::BoxSizer->new(&Wx::wxHORIZONTAL);
 	$dialog->{btn}{1} = Wx::Button->new( $dialog, -1, '' );
-	$h_sizer->Add( $dialog->{btn}{1}  ,0, wxLEFT, 0);
+	$h_sizer->Add( $dialog->{btn}{1}  ,0, &Wx::wxLEFT, 0);
 	for my $btn_nr (2 .. $btn_count) {
 		$dialog->{btn}{$btn_nr} = Wx::Button->new( $dialog, -1, '' );
-		$h_sizer->Add( $dialog->{btn}{$btn_nr} ,0, wxLEFT, 10);
+		$h_sizer->Add( $dialog->{btn}{$btn_nr} ,0, &Wx::wxLEFT, 10);
 	}
 
 	$dialog->{msg} = Wx::StaticText->new($dialog, -1, '');
 	$dialog->{filename} = Wx::TextCtrl->new
-		( $dialog,-1, '', [-1,-1], [-1,-1], wxTE_READONLY | wxTE_CENTRE );
-	my $v_sizer = Wx::BoxSizer->new(wxVERTICAL);
-	$v_sizer->Add( $dialog->{msg}     ,1, wxCENTER | wxTOP                 , 10 );
-	$v_sizer->Add( $dialog->{filename},0, wxCENTER | wxBOTTOM | wxGROW     , 10 );
-	$v_sizer->Add( $h_sizer           ,0, wxALL | wxALIGN_CENTER_HORIZONTAL, 10 );
+		( $dialog,-1, '', [-1,-1], [-1,-1], &Wx::wxTE_READONLY | &Wx::wxTE_CENTRE );
+	my $v_sizer = Wx::BoxSizer->new(&Wx::wxVERTICAL);
+	$v_sizer->Add( $dialog->{msg}     ,1, &Wx::wxCENTER | &Wx::wxTOP                 , 10 );
+	$v_sizer->Add( $dialog->{filename},0, &Wx::wxCENTER | &Wx::wxBOTTOM | &Wx::wxGROW, 10 );
+	$v_sizer->Add( $h_sizer           ,0, &Wx::wxALL | &Wx::wxALIGN_CENTER_HORIZONTAL, 10 );
 
 	$dialog->SetSizer($v_sizer);
 	return $dialog;

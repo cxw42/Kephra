@@ -1,18 +1,24 @@
 package Kephra::Config;
-our $VERSION = '0.33';
+our $VERSION = '0.34';
+=pod
 
+=head1 NAME
+
+Kephra::Config - low level config stuff and basics
+
+=head1 DESCRIPTION
+
+
+
+=cut
 use strict;
 use warnings;
 
-# low level config manipulation
-
 use Cwd();
 use File::Spec ();
-use Wx qw( wxBITMAP_TYPE_ANY );
-
-##################################
+#
 # Files and Dirs
-##################################
+#
 my $dir;
 sub _dir { if (defined $_[0]) {$dir = $_[0]} else {$dir} }
 
@@ -88,7 +94,7 @@ sub icon_bitmap {
 	my $path = filepath( $Kephra::config{app}{iconset_path}, $name );
 	return Wx::Bitmap->new(16,16) unless -e $path;
 
-	my $bitmap = Wx::Bitmap->new( $path, wxBITMAP_TYPE_ANY );
+	my $bitmap = Wx::Bitmap->new( $path, &Wx::wxBITMAP_TYPE_ANY );
 	unless ( $bitmap ) {
 		warn "Failed to create bit map from $path";
 		return;

@@ -3,12 +3,7 @@ our $VERSION = '0.08';
 
 use strict;
 use warnings;
-
 use Cwd();
-use Wx qw( 
-	wxTE_PROCESS_ENTER wxTE_MULTILINE wxTE_LEFT 
-	wxFONTSTYLE_NORMAL wxNORMAL wxLIGHT 
-);
 use Wx::Perl::ProcessStream qw( 
 	EVT_WXP_PROCESS_STREAM_STDOUT
 	EVT_WXP_PROCESS_STREAM_STDERR
@@ -31,7 +26,7 @@ sub create {
 	else {
 		$output = Wx::TextCtrl->new
 			($win, -1,'', [-1,-1], [-1,-1],
-			wxTE_PROCESS_ENTER | wxTE_MULTILINE | wxTE_LEFT);
+			&Wx::wxTE_PROCESS_ENTER | &Wx::wxTE_MULTILINE | &Wx::wxTE_LEFT);
 	}
 	_ref($output);
 	my $config = _config();
@@ -39,7 +34,7 @@ sub create {
 	$output->SetForegroundColour( &$color( $config->{fore_color} ) );
 	$output->SetBackgroundColour( &$color( $config->{back_color} ) );
 	$output->SetFont( Wx::Font->new
-		($config->{font_size}, wxFONTSTYLE_NORMAL, wxNORMAL, wxLIGHT, 0,
+		($config->{font_size}, &Wx::wxFONTSTYLE_NORMAL, &Wx::wxNORMAL, &Wx::wxLIGHT, 0,
 		$config->{font_family})
 	);
 	$output->SetEditable(0);
@@ -118,9 +113,9 @@ sub save_size {
 
 sub clear {
 	_ref()->Clear;
-	if (Wx::wxMAC) {_ref()->SetFont
-		( Wx::Font->new(_config()->{font_size}, wxFONTSTYLE_NORMAL,
-		  wxNORMAL, wxLIGHT, 0, _config()->{font_family})
+	if (Wx::wxMAC()) {_ref()->SetFont
+		( Wx::Font->new(_config()->{font_size}, &Wx::wxFONTSTYLE_NORMAL,
+		  &Wx::wxNORMAL, &Wx::wxLIGHT, 0, _config()->{font_family})
 	)}
 }
 sub print { _ref()->AppendText( @_ ) if @_ }

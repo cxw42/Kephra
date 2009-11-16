@@ -1,13 +1,9 @@
 package Kephra::App::Window;    # Main application window
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 use strict;
 use warnings;
 use base qw(Wx::Frame);
-use Wx qw (
-	wxDEFAULT_FRAME_STYLE wxWINDOW_VARIANT_SMALL wxSTAY_ON_TOP
-	wxBITMAP_TYPE_ICO wxBITMAP_TYPE_XPM
-);
 
 my $frame;
 sub _ref { if (ref $_[0] eq 'Wx::Frame'){ $frame = $_[0] } else { $frame } }
@@ -15,8 +11,8 @@ sub _config { $Kephra::config{app}{window} }
 
 sub create {
 	my $win = Wx::Frame->new
-		(undef, -1, '', [-1,-1], [-1,-1], wxDEFAULT_FRAME_STYLE);
-	Wx::Window::SetWindowVariant($win, wxWINDOW_VARIANT_SMALL) if Wx::wxMAC;
+		(undef, -1, '', [-1,-1], [-1,-1], &Wx::wxDEFAULT_FRAME_STYLE);
+	Wx::Window::SetWindowVariant($win, &Wx::wxWINDOW_VARIANT_SMALL) if Wx::wxMAC();
 	_ref($win);
 	connect_events($win);
 	$win;
@@ -31,7 +27,7 @@ sub connect_events {
 		&$trigger('app.close');
 		Kephra::App::exit() 
 	});
-	#EVT_IDLE       ($win,  sub { } );
+	#Wx::Event::EVT_IDLE       ($win,  sub { } );
 }
 
 sub apply_settings {
@@ -48,8 +44,8 @@ sub load_icon {
 	my $icon_file = shift;
 	return unless -e $icon_file;
 	my $type ;
-	if    ($icon_file =~ /.ico$/) { $type = wxBITMAP_TYPE_ICO }
-	elsif ($icon_file =~ /.xpm$/) { $type = wxBITMAP_TYPE_XPM }
+	if    ($icon_file =~ /.ico$/) { $type = &Wx::wxBITMAP_TYPE_ICO }
+	elsif ($icon_file =~ /.xpm$/) { $type = &Wx::wxBITMAP_TYPE_XPM }
 	my $icon;
     $icon = Wx::Icon->new( $icon_file, $type ) if $type;
 	$frame->SetIcon( $icon ) if defined $icon;
@@ -81,8 +77,8 @@ sub switch_on_top_mode {
 sub eval_on_top_flag {
 	my $win   = _ref();
 	my $style = $win->GetWindowStyleFlag();
-	if ( get_on_top_mode() ) { $style |= wxSTAY_ON_TOP }
-	else                     { $style &= ~wxSTAY_ON_TOP }
+	if ( get_on_top_mode() ) { $style |= &Wx::wxSTAY_ON_TOP }
+	else                     { $style &= ~&Wx::wxSTAY_ON_TOP }
 	$win->SetWindowStyle($style);
 	Kephra::API::EventTable::trigger('app.window.ontop');
 }
