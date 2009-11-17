@@ -5,7 +5,6 @@ use strict;
 use warnings;
 
 # handling main config files under /config/global/
-
 my %settings;
 sub settings { \%settings }
 

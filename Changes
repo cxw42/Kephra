@@ -1,6 +1,8 @@
 BUGS:
  !!! makefile.pl fails
 
+0.4.2 testing release: new tabbar
+
 0.4.1.19
  [ reduce clutter while boot and shut down
  ] changed all constants to &Wx::... syntax
@@ -117,7 +119,7 @@ BUGS:
  + key binding for fold ops: fold => alt+plus, fold siblings => alt+shift+plus
  ! fixed commandlist cache logic, refreshes now if needed
 
-0.4.1 testing release
+0.4.1 testing release: folding
 
 0.4.0.12
  [ unfolds all if hides folding margin

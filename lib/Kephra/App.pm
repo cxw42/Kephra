@@ -106,7 +106,8 @@ sub assemble_layout {
 	$win_sizer->Add( $right_splitter, 1, $tg, 0 );
 	$win->SetSizer($win_sizer);
 	$win->SetAutoLayout(1);
-	$win->Layout();
+	$column_panel->Layout();
+	$center_panel->Layout();
 	#$win->SetBackgroundColour($tab_bar->GetBackgroundColour);
 
 	Kephra::API::EventTable::thaw
