@@ -20,7 +20,7 @@ sub _set { _config->{path} = shift }
 
 # external Appwide API
 sub init {
-	Kephra::API::EventTable::add_call( 
+	Kephra::EventTable::add_call( 
 		'document.list', 'file_history', sub {
 			my @history = @{ _get() };
 			my $path = Kephra::Document::Data::get_file_path();

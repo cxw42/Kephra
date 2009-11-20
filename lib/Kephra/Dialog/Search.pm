@@ -281,8 +281,8 @@ sub ready {
 		$range_sizer->Add( $rbz, 0, &Wx::wxGROW | &Wx::wxTOP, 10 );
 
 		my $pad_grid = Wx::FlexGridSizer->new( 4, 2, 0 , 1 );
-		$pad_grid->Add( $d->{replace_back}, 0, wxBOTTOM, 5);
-		$pad_grid->Add( $d->{replace_fore}, 0, wxBOTTOM, 5);
+		$pad_grid->Add( $d->{replace_back}, 0, &Wx::wxBOTTOM, 5);
+		$pad_grid->Add( $d->{replace_fore}, 0, &Wx::wxBOTTOM, 5);
 		$pad_grid->Add( $d->{backward_button}, 0, ,0);
 		$pad_grid->Add( $d->{foreward_button}, 0, ,0);
 		$pad_grid->Add( $d->{fast_back_button},0, ,0);

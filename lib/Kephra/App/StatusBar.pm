@@ -1,47 +1,69 @@
 package Kephra::App::StatusBar;
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use strict;
 use warnings;
 
-my %index = ( 
-	cursor => 0, selection => 1, syntaxmode => 2, tab => 3, EOL => 4, message => 5,
-);
-
-sub _ref    { $Kephra::app{statusbar} }
-sub _item   { }
+my (@fields, @abs_border_x, %index, %width);
+my $bar;
+sub _ref    { $bar = ref $_[0] eq 'Wx::StatusBar' ? $_[0] : $bar }
 sub _config { $Kephra::config{app}{statusbar} }
+sub _item   { $fields[$_[0]] }
 sub _set_text {
 	my ($msg, $nr) = @_;
 	my $win = Kephra::App::Window::_ref();
-	return if not defined $nr or $nr < 0 or $nr > 5 or not $win or not defined $msg;
+	return if not defined $nr or $nr < 0 or $nr > @fields or not $win or not defined $msg;
 	$win->SetStatusText($msg, $nr);
 }
-
+sub index_from_mouse_pos {
+	my $x_pos = shift;
+	for (0 .. $#abs_border_x) {
+		return $_ if $width{ $fields[$_] } == -1;
+		return $_ if $x_pos <= $abs_border_x[$_];
+	}
+}
 sub create {
-	# StatusBar settings, will be removed by stusbar config file
+	# $^O eq 'linux'
 	my $win = Kephra::App::Window::_ref();
 	$win->CreateStatusBar(1);
 	my $bar = $win->GetStatusBar;
 
-	$bar->SetFieldsCount(6);
-	if ( $^O eq 'linux' ) { $bar->SetStatusWidths( 90, 66, 60, 40, 70, -1 ) }
-	else                  { $bar->SetStatusWidths( 66, 60, 50, 25, 32, -1 ) }
+	my $statusbar_def = Kephra::Config::File::load_from_node_data( _config() );
+	unless ($statusbar_def) {
+		$statusbar_def = Kephra::Config::Default::toolbars()->{statusbar};
+	}
+
+	for my $nr (0 .. $#$statusbar_def) {
+		my @item = split / /, $statusbar_def->[$nr];
+		if ($item[0] eq 'textpanel' and defined $item[1]) {
+			$index{$item[1]} = $nr;
+			$width{$item[1]} = defined $item[2] ? $item[2] : 50;
+		}
+	}
+	$fields[ $index{$_} ] = $_ for keys %index;
+	$abs_border_x[0] = $width{ $fields[0] };
+	$abs_border_x[$_] = $abs_border_x[$_-1] + $width{ $fields[$_] } + 2
+		for 1 .. $#fields;
+
+	my $length = scalar keys %index;
+	$bar->SetFieldsCount( $length );
+	my @field_width;
+	$field_width[$_] = $width{ $fields[$_] } for 0 .. $length - 1;
+	$bar->SetStatusWidths( @field_width );
 	$win->SetStatusBarPane( $index{message} );
 
-	Wx::Event::EVT_LEFT_DOWN ( $bar,  \&left_click);
-	Wx::Event::EVT_RIGHT_DOWN( $bar,  \&right_click);
+	Wx::Event::EVT_LEFT_DOWN ( $bar, \&left_click);
+	Wx::Event::EVT_RIGHT_DOWN( $bar, \&right_click);
 
-	Kephra::API::EventTable::add_call
+	Kephra::EventTable::add_call
 		('caret.move',       'caret_status', \&caret_pos_info,   'status_bar');
-	Kephra::API::EventTable::add_call
+	Kephra::EventTable::add_call
 		('document.text.change', 'info_msg', \&refresh_info_msg, 'status_bar');
-	Kephra::API::EventTable::add_call
+	Kephra::EventTable::add_call
 		('editpanel.focus',      'info_msg', \&refresh_info_msg, 'status_bar');
 
 	show();
 }
-
 
 sub get_visibility { _config()->{'visible'} }
 sub switch_visibility {
@@ -53,43 +75,29 @@ sub show { Kephra::App::Window::_ref()->GetStatusBar->Show( get_visibility() ) }
 
 sub right_click {
 	return unless get_interactive();
-	my ( $bar,    $event )  = @_;
-	my ( $x,      $y )      = ( $event->GetX, $event->GetY );
+	my ( $bar, $event ) = @_;
+	my $x = $event->GetX;
+	my $index = index_from_mouse_pos( $x );
+	my $cell_start = $bar->GetFieldRect($index)->GetTopLeft;
+	$x = $cell_start->x unless $width{ _item($index) } == -1;
+	my $y = $cell_start->y; 
+	my $field = _item( $index );
 	my $menu = \&Kephra::App::ContextMenu::get;
-	if ( $^O eq 'linux' ) {
-		if    ($x < 156) {}
-		elsif ($x < 215) {$bar->PopupMenu( &$menu('status_syntaxmode'), $x, $y)}
-		elsif ($x < 257) {$bar->PopupMenu( &$menu('status_tab'),        $x, $y)}
-		elsif ($x < 326) {$bar->PopupMenu( &$menu('status_eol'),        $x, $y)}
-		else             {$bar->PopupMenu( &$menu('status_info'),       $x, $y)}
-	} else {
-		if    ($x < 128) {}
-		elsif ($x < 180) {$bar->PopupMenu( &$menu('status_syntaxmode'), $x, $y)}
-		elsif ($x < 206) {$bar->PopupMenu( &$menu('status_tab')       , $x, $y)}
-		elsif ($x < 241) {$bar->PopupMenu( &$menu('status_eol')       , $x, $y)}
-		else             {$bar->PopupMenu( &$menu('status_info')      , $x, $y)}
-	}
+	if    ($field eq 'syntaxmode'){$bar->PopupMenu( &$menu('status_syntaxmode'),$x,$y)}
+	elsif ($field eq 'tab')       {$bar->PopupMenu( &$menu('status_tab'),       $x,$y)}
+	elsif ($field eq 'EOL')       {$bar->PopupMenu( &$menu('status_eol'),       $x,$y)}
+	elsif ($field eq 'message')   {$bar->PopupMenu( &$menu('status_info'),      $x,$y)}
 }
 
 
 sub left_click {
 	return unless get_interactive();
 	my ( $bar,    $event )  = @_;
-	my ( $x,      $y )      = ( $event->GetX, $event->GetY );
-	my $menu = \&Kephra::App::ContextMenu::get;
-	if ( $^O eq 'linux' ) {
-		if    ($x < 156) {}
-		elsif ($x < 215) {Kephra::Document::SyntaxMode::switch_auto()}
-		elsif ($x < 256) {&Kephra::Document::Property::switch_tab_mode}
-		elsif ($x < 326) {&Kephra::App::EditPanel::switch_EOL_visibility}
-		else             {next_file_info()}
-	} else {
-		if    ($x < 128) {}
-		elsif ($x < 180) {Kephra::Document::SyntaxMode::switch_auto()}
-		elsif ($x < 206) {&Kephra::Document::Property::switch_tab_mode}
-		elsif ($x < 241) {&Kephra::App::EditPanel::switch_EOL_visibility}
-		else             {next_file_info()}
-	}
+	my $field = _item( index_from_mouse_pos( $event->GetX ) );
+	if    ($field eq 'syntaxmode') {Kephra::Document::SyntaxMode::switch_auto()}
+	elsif ($field eq 'tab')        {Kephra::Document::Property::switch_tab_mode()}
+	elsif ($field eq 'EOL')        {Kephra::App::EditPanel::switch_EOL_visibility()}
+	elsif ($field eq 'message')    {next_file_info(); }
 }
 
 sub get_interactive { _config()->{interactive} }
@@ -105,6 +113,7 @@ sub refresh_cursor {
 sub refresh_all_cells {
 	refresh_cursor();
 	style_info();
+	codepage_info();
 	tab_info();
 	EOL_info();
 	info_msg();
@@ -124,7 +133,7 @@ sub caret_pos_info {
 
 	# selection or  pos % display
 	my ( $sel_beg, $sel_end ) = $ep->GetSelection;
-	unless ( $Kephra::temp{current_doc}{text_selected} ) {
+	unless ( Kephra::Document::Data::attr('text_selected') ) {
 		my $chars = $ep->GetLength;
 		if ($chars) {
 			my $value = int 100 * $pos / $chars + .5;
@@ -132,7 +141,6 @@ sub caret_pos_info {
 			$value = ' ' . $value . ' ' if $value < 100;
 			_set_text( "    $value%", $index{selection} );
 		} else { _set_text( "    100%", $index{selection} ) }
-		$Kephra::temp{edit}{selected} = 0;
 	} else {
 		if ( $ep->SelectionIsRectangle ) {
 			my $x = abs int $ep->GetColumn($sel_beg) - $ep->GetColumn($sel_end);
@@ -153,18 +161,20 @@ sub caret_pos_info {
 			else                { $value = "$lines:$chars" }
 			_set_text( $value, $index{selection});
 		}
-		$Kephra::temp{edit}{selected} = 1;
 	}
 }
 
 sub style_info {
 	my $style = shift;
-	$style = Kephra::Document::SyntaxMode::_ID() unless defined $style;
+	$style = Kephra::Document::Data::attr('syntaxmode') unless defined $style;
 	$style = Kephra::Config::Localisation::strings()->{dialog}{general}{none}
 		unless defined $style;
 	_set_text( ' ' . $style, $index{syntaxmode} );
 }
-
+sub codepage_info {
+	my $codepage = Kephra::Document::Data::attr('codepage');
+	_set_text( ' ' . $codepage, $index{codepage} );
+}
 sub tab_info {
 	my $mode  = Kephra::App::EditPanel::_ref()->GetUseTabs || 0;
 	my $msg   = $mode ? ' HT' : ' ST';

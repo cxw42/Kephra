@@ -1,5 +1,5 @@
 package Kephra::App::EditPanel;
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 use strict;
 use warnings; 
@@ -75,14 +75,14 @@ sub apply_settings {
 	Kephra::Edit::eval_newline_sub();
 	Kephra::Edit::Bookmark::define_marker($ep);
 	connect_events($ep);
-	Kephra::API::EventTable::add_call ( 'editpanel.focus', 'editpanel', sub { 
+	Kephra::EventTable::add_call ( 'editpanel.focus', 'editpanel', sub { 
 		Wx::Window::SetFocus( $ep ) unless $Kephra::temp{dialog}{active};
 	} ) if $conf->{auto}{focus};
 }
 
 sub connect_events {
 	my $ep = shift || _ref();
-	my $trigger = \&Kephra::API::EventTable::trigger;
+	my $trigger = \&Kephra::EventTable::trigger;
 	my $config = _config ;
 
 	# override sci presets
@@ -101,7 +101,7 @@ sub connect_events {
 		if ($nr == -1) {
 			my $mconf = $config->{contextmenu};
 			if ($mconf->{visible} eq 'custom'){
-				my $menu_id = Kephra::Document::Data::get_value('text_selected')
+				my $menu_id = Kephra::Document::Data::attr('text_selected')
 					? $mconf->{ID_selection} : $mconf->{ID_normal};
 				my $menu = Kephra::App::ContextMenu::get($menu_id);
 				$ep->PopupMenu($menu, $event->GetX, $event->GetY) if $menu;
@@ -122,8 +122,8 @@ sub connect_events {
 		my ( $ep, $event) = @_;
 		my ( $sel_beg, $sel_end ) = $ep->GetSelection;
 		my $is_sel = $sel_beg != $sel_end;
-		my $was_sel = Kephra::Document::Data::get_value('text_selected');
-		Kephra::Document::Data::set_value('text_selected', $is_sel);
+		my $was_sel = Kephra::Document::Data::attr('text_selected');
+		Kephra::Document::Data::attr('text_selected', $is_sel);
 		&$trigger('document.text.select') if $is_sel xor $was_sel;
 		&$trigger('caret.move');
 	});
@@ -134,7 +134,7 @@ sub connect_events {
 		my $key = $event->GetKeyCode +
 			1000 * ($event->ShiftDown + $event->ControlDown*2 + $event->AltDown*4);
 		# reacting on shortkeys that are defined in the Commanlist
-		return if Kephra::API::CommandList::run_cmd_by_keycode($key);
+		return if Kephra::CommandList::run_cmd_by_keycode($key);
 		# reacting on Enter
 		if ($key ==  &Wx::WXK_RETURN) {
 			if ($config->{auto}{brace}{indention}) {
@@ -179,7 +179,7 @@ sub set_word_chars {
 sub apply_autowrap_settings {
 	my $ep = shift || _ref();
 	$ep->SetWrapMode( _config()->{line_wrap} );
-	Kephra::API::EventTable::trigger('editpanel.autowrap');
+	Kephra::EventTable::trigger('editpanel.autowrap');
 }
 
 sub get_autowrap_mode { _config()->{line_wrap} == &Wx::wxSTC_WRAP_WORD}
@@ -212,11 +212,11 @@ sub set_bracelight_off {
 sub apply_bracelight_settings {
 	my $ep = shift || _ref();
 	if (bracelight_visible()){
-		Kephra::API::EventTable::add_call
+		Kephra::EventTable::add_call
 			('caret.move', 'bracelight', \&paint_bracelight);
 		paint_bracelight($ep);
 	} else {
-		Kephra::API::EventTable::del_call('caret.move', 'bracelight');
+		Kephra::EventTable::del_call('caret.move', 'bracelight');
 		$ep->BraceHighlight( -1, -1 );
 	}
 }
@@ -289,9 +289,13 @@ sub apply_LLI_settings {
 
 	$ep->SetEdgeColour( &$color( $config->{color} ) );
 	$ep->SetEdgeColumn( $config->{position} );
-	show_LLI( $config->{style} );
+	show_LLI( $config->{style}, $ep);
 }
-sub show_LLI { _ref->SetEdgeMode( shift ) }
+sub show_LLI {
+	my $style = shift;
+	my $ep = shift || _ref();
+	$ep->SetEdgeMode( $style );
+}
 sub switch_LLI_visibility {
 	my $style = _indicator_config()->{right_margin}{style} = LLI_visible()
 		? &Wx::wxSTC_EDGE_NONE

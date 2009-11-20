@@ -209,11 +209,11 @@ sub get {
 				'delete-all' => 'Kephra::Edit::Bookmark::delete_all()',
 			},
 			tool => {
-				note => 'Kephra::Plugin::Notepad::note()',
-				'note-selection' => 'Kephra::Plugin::Notepad::append_selection()',
-				'interpreter-run-document' => 'Kephra::Plugin::Output::run()',
-				'interpreter-stop-document' => 'Kephra::Plugin::Output::stop()',
-				'output-inc' => 'Kephra::Plugin::Output::display_inc()',
+				note => 'Kephra::App::Panel::Notepad::note()',
+				'note-selection' => 'Kephra::App::Panel::Notepad::append_selection()',
+				'interpreter-run-document' => 'Kephra::App::Panel::Output::run()',
+				'interpreter-stop-document' => 'Kephra::App::Panel::Output::stop()',
+				'output-inc' => 'Kephra::App::Panel::Output::display_inc()',
 			},
 			document => {
 				'auto-indention' => 'Kephra::Document::Property::switch_autoindention()',
@@ -353,8 +353,8 @@ sub get {
 					},
 				},
 				panel => {
-					notepad => 'Kephra::Plugin::Notepad::switch_visibility()',
-					output => 'Kephra::Plugin::Output::switch_visibility()',
+					notepad => 'Kephra::App::Panel::Notepad::switch_visibility()',
+					output => 'Kephra::App::Panel::Output::switch_visibility()',
 				},
 				statusbar => 'Kephra::App::StatusBar::switch_visibility()',
 				'statusbar-contexmenu' => 'Kephra::App::StatusBar::switch_contextmenu_visibility()',
@@ -492,8 +492,8 @@ sub get {
 				selection => 'Kephra::Edit::can_copy()',
 			},
 			'tool-interpreter' => {
-				'run-document' => '! Kephra::Plugin::Output::is_running()',
-				'stop-document' => 'Kephra::Plugin::Output::is_running()',
+				'run-document' => '! Kephra::App::Panel::Output::is_running()',
+				'stop-document' => 'Kephra::App::Panel::Output::is_running()',
 			},
 		},
 		enable_event => {
@@ -666,8 +666,8 @@ sub get {
 					},
 				},
 				panel => {
-					notepad => 'Kephra::Plugin::Notepad::get_visibility()',
-					output => 'Kephra::Plugin::Output::get_visibility()',
+					notepad => 'Kephra::App::Panel::Notepad::get_visibility()',
+					output => 'Kephra::App::Panel::Output::get_visibility()',
 				},
 				statusbar => 'Kephra::App::StatusBar::get_visibility()',
 				'statusbar-contexmenu' => 'Kephra::App::StatusBar::get_contextmenu_visibility()',

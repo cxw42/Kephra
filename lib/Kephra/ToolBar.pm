@@ -1,4 +1,4 @@
-package Kephra::App::ToolBar;
+package Kephra::ToolBar;
 our $VERSION = '0.08';
 
 use strict;
@@ -61,7 +61,7 @@ sub assemble_data_from_def {
 			$item{type} = '';
 		# handle regular toolbar buttons
 		} elsif( substr( $item{type}, -4) eq 'item' ) {
-			$cmd_data = Kephra::API::CommandList::get_cmd_properties( $item{id} );
+			$cmd_data = Kephra::CommandList::get_cmd_properties( $item{id} );
 			# skipping when command call is missing
 			next unless ref $cmd_data and exists $cmd_data->{call};
 			for ('call','enable','enable_event','state', 'state_event','label',
@@ -109,7 +109,7 @@ sub eval_data {
 			if (ref $item_data->{enable} eq 'CODE' and $respond){
 				$tool->Enable( $item_data->{enable}() );
 				for my $event (split /,/, $item_data->{enable_event}){
-					Kephra::API::EventTable::add_call ( 
+					Kephra::EventTable::add_call ( 
 						$event, $bar_id.'_tool_enable_'.$item_id, sub{
 							$bar->EnableTool( $item_id, $item_data->{enable}() )
 					}, $bar_id);
@@ -119,7 +119,7 @@ sub eval_data {
 				and $item_data->{type} eq 'checkitem'){
 				$bar->ToggleTool( $item_id, $item_data->{state}() );
 				for my $event (split /,/, $item_data->{state_event}){
-					Kephra::API::EventTable::add_call (
+					Kephra::EventTable::add_call (
 						$event, , $bar_id.'_tool_state_'.$item_id, sub{
 							$bar->ToggleTool( $item_id, $item_data->{state}() )
 					}, $bar_id );
@@ -142,7 +142,7 @@ sub destroy {
 	my $bar = _ref( $bar_ID );
 	return unless $bar;
 	$bar->Destroy;
-	Kephra::API::EventTable::del_own_subscriptions( $bar_ID );
+	Kephra::EventTable::del_own_subscriptions( $bar_ID );
 }
 
 1;

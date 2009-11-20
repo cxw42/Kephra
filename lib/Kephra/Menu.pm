@@ -1,7 +1,7 @@
-package Kephra::App::Menu;
+package Kephra::Menu;
 our $VERSION = '0.14';
 
-=head1 NAME
+=head1 NAME 
 
 Kephra::App::Menu - Menu creation and storage
 
@@ -90,7 +90,7 @@ sub create_dynamic { # create on runtime changeable menus
 
 	} elsif ($menu_name eq '&file_history'){
 
-		Kephra::API::EventTable::add_call (
+		Kephra::EventTable::add_call (
 			'document.list', 'menu_'.$menu_id, sub { set_absolete($menu_id); }
 		);
 
@@ -114,7 +114,7 @@ sub create_dynamic { # create on runtime changeable menus
 
 	} elsif ($menu_name eq '&document_change'){
 
-		Kephra::API::EventTable::add_call (
+		Kephra::EventTable::add_call (
 			'document.list', 'menu_'.$menu_id, sub { set_absolete($menu_id) }
 		);
 
@@ -205,7 +205,7 @@ sub assemble_data_from_def {
 				$item{id} = $cmd_name;
 				$item{label}= $menu_label->{$cmd_name};
 			} else {
-				$cmd_data = Kephra::API::CommandList::get_cmd_properties( $cmd_name );
+				$cmd_data = Kephra::CommandList::get_cmd_properties( $cmd_name );
 				# skipping when command call is missing
 				next unless ref $cmd_data and exists $cmd_data->{call};
 				for ('call','enable','state','label','help','icon'){
@@ -265,7 +265,7 @@ sub eval_data { # eval menu data structures (MDS) to wxMenus
 				($menu, $item_id, $item_data->{label}, '', $kind);
 			if ($item_data->{type} eq 'item') {
 				if (ref $item_data->{icon} eq 'Wx::Bitmap') {
-					$menu_item->SetBitmap( $item_data->{icon} ) unless Wx::wxMAC;
+					$menu_item->SetBitmap( $item_data->{icon} ) unless Wx::wxMAC();
 				}
 				else {
 					# insert fake empty icons
@@ -290,7 +290,7 @@ sub eval_data { # eval menu data structures (MDS) to wxMenus
 	1; #sucess print "hl $item_id $menu_item\n";
 	}
 
-	Kephra::API::EventTable::add_call
+	Kephra::EventTable::add_call
 		('menu.open', 'menu_'.$menu, sub {ready($menu_id)} );
 	_ref($menu_id, $menu);
 	return $menu;
@@ -301,7 +301,7 @@ sub destroy {
 	my $menu = _ref( $menu_ID );
 	return unless $menu;
 	$menu->Destroy;
-	Kephra::API::EventTable::del_own_subscriptions( $menu_ID );
+	Kephra::EventTable::del_own_subscriptions( $menu_ID );
 }
 
 1;

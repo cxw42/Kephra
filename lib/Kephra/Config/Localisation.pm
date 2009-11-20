@@ -65,7 +65,7 @@ sub create_menus {
 
 	my $l18n = strings()->{commandlist}{help}{config};
 	my ($al_cmd,  $fl_cmd) = ('config-app-lang', 'config-file-localisation');
-	my ($al_help, $fl_help) = Kephra::API::CommandList::get_property_list
+	my ($al_help, $fl_help) = Kephra::CommandList::get_property_list
 			('help', $al_cmd, $fl_cmd);
 	my (@config_app_lang, @config_localisation);
 	for my $lang_file (sort keys %$l18n_index) {
@@ -74,13 +74,13 @@ sub create_menus {
 		my $lang_code = $lang_data->{iso_code};
 		my $al_lang_cmd = "$al_cmd-$lang_code";
 		my $fl_lang_cmd = "$fl_cmd-$lang_code";
-		Kephra::API::CommandList::new_cmd( $al_lang_cmd, {
+		Kephra::CommandList::new_cmd( $al_lang_cmd, {
 			call  => 'Kephra::Config::Localisation::change_to('."'".$lang_file."')",
 			state => 'Kephra::Config::Localisation::file_name() eq '."'".$lang_file."'",
 			label => $lang, 
 			help  => "$al_help $lang",
 		});
-		Kephra::API::CommandList::new_cmd( $fl_lang_cmd, {
+		Kephra::CommandList::new_cmd( $fl_lang_cmd, {
 			call  => 'Kephra::Config::Localisation::open_file('."'".$lang_file."')",
 			label => $lang,
 			help  => "$fl_help $lang",
@@ -88,8 +88,8 @@ sub create_menus {
 		push @config_app_lang, 'item '.$al_lang_cmd;
 		push @config_localisation, 'item '.$fl_lang_cmd;
 	}
-	Kephra::App::Menu::create_static('config_localisation',\@config_localisation);
-	Kephra::App::Menu::create_static('config_app_lang',    \@config_app_lang);
+	Kephra::Menu::create_static('config_localisation',\@config_localisation);
+	Kephra::Menu::create_static('config_app_lang',    \@config_app_lang);
 }
 
 sub refresh_index {

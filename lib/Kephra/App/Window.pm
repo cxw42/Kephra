@@ -3,7 +3,6 @@ our $VERSION = '0.09';
 
 use strict;
 use warnings;
-use base qw(Wx::Frame);
 
 my $frame;
 sub _ref { if (ref $_[0] eq 'Wx::Frame'){ $frame = $_[0] } else { $frame } }
@@ -20,7 +19,7 @@ sub create {
 
 sub connect_events {
 	my $win = shift || _ref();
-	my $trigger = \&Kephra::API::EventTable::trigger;
+	my $trigger = \&Kephra::EventTable::trigger;
 	Wx::Event::EVT_MENU_OPEN ($win,  sub {&$trigger('menu.open')});
 	Wx::Event::EVT_DROP_FILES($win, \&Kephra::File::add_dropped);
 	Wx::Event::EVT_CLOSE     ($win,  sub {
@@ -80,7 +79,7 @@ sub eval_on_top_flag {
 	if ( get_on_top_mode() ) { $style |= &Wx::wxSTAY_ON_TOP }
 	else                     { $style &= ~&Wx::wxSTAY_ON_TOP }
 	$win->SetWindowStyle($style);
-	Kephra::API::EventTable::trigger('app.window.ontop');
+	Kephra::EventTable::trigger('app.window.ontop');
 }
 
 

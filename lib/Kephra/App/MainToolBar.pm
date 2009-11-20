@@ -1,10 +1,10 @@
 package Kephra::App::MainToolBar;
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 use strict;
 use warnings;
 
-sub _ref    { Kephra::App::ToolBar::_ref( _name(), $_[0]) }
+sub _ref    { Kephra::ToolBar::_ref( _name(), $_[0]) }
 sub _name   { 'main' }
 sub _ID     { _name().'_toolbar' }
 sub _config { $Kephra::config{app}{toolbar}{main} }
@@ -14,16 +14,16 @@ sub create {
 	my $frame = Kephra::App::Window::_ref();
 	my $bar = $frame->GetToolBar;
 	# destroy old toolbar if there any
-	Kephra::App::ToolBar::destroy( _name() ) if $bar;
+	Kephra::ToolBar::destroy( _name() ) if $bar;
 	_ref( $frame->CreateToolBar );
 	my $bar_def = Kephra::Config::File::load_from_node_data( _config() );
 	unless ($bar_def) {
 		$bar_def = Kephra::Config::Tree::get_subtree
 			( Kephra::Config::Default::toolbars(), _ID() );
 	}
-	Kephra::App::ToolBar::create( _name(), $bar_def );
+	Kephra::ToolBar::create( _name(), $bar_def );
 }
-sub destroy { Kephra::App::ToolBar::destroy ( _name() ) }
+sub destroy { Kephra::ToolBar::destroy ( _name() ) }
 
 sub get_visibility    { _config()->{visible} }
 sub switch_visibility { _config()->{visible} ^= 1; show(); }
@@ -31,7 +31,7 @@ sub show {
 	if ( get_visibility() ){
 		create()
 	} else {
-		Kephra::App::ToolBar::destroy( _name() );
+		Kephra::ToolBar::destroy( _name() );
 		Kephra::App::Window::_ref()->SetToolBar(undef);
 	}
 }

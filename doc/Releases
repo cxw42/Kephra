@@ -1,7 +1,6 @@
+0.4.3 ()
 
-
-
-0.4.2 (0.4.1.11)
+0.4.2
  * folding changes
    + fold all (alt+shift+plus)
    + fold recursively (alt+shift+minus)
@@ -30,7 +29,7 @@
  ] define event groups
  ] new module Kephra::Document::Property for by user changeable doc property
  " some locale strings were translated to wrong language
- ! 8 fixes, many from Andreas Kaschner++:
+ ! countless fixes, many from Andreas Kaschner++:
 
 0.4.1
  * code folding support

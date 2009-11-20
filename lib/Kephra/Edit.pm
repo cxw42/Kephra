@@ -87,7 +87,7 @@ sub _select_all_if_none {
 }
 
 sub can_paste { _ep_ref()->CanPaste }
-sub can_copy  { Kephra::Document::Data::get_value('text_selected') }
+sub can_copy  { Kephra::Document::Data::attr('text_selected') }
 
 # simple textedit
 sub cut       { _ep_ref()->Cut }

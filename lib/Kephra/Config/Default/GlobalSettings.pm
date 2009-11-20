@@ -1,5 +1,5 @@
 package Kephra::Config::Default::GlobalSettings;
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 use strict;
 use warnings;
@@ -68,7 +68,9 @@ sub get {
 				},
 			},
 			statusbar => {
+				file => 'interface/appbars.yml',
 				interactive => 1,
+				node => 'statusbar',
 				msg_nr => 0,
 				visible => 1,
 			},
@@ -196,7 +198,7 @@ sub get {
 				right_margin => {
 					color    => 'ccccff',
 					position => 80,
-					style    => 1
+					style    => 1,
 				},
 				selection => {
 					back_color => '001177',

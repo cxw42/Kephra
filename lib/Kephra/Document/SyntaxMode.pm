@@ -1,13 +1,11 @@
 package Kephra::Document::SyntaxMode;
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 use strict;
 use warnings;
 
-sub _ID {
-	if (defined $_[0]) { $Kephra::temp{current}{syntaxmode} = $_[0] }
-	else               { $Kephra::temp{current}{syntaxmode}         }
-}
+my $current;
+sub _ID { $current = defined $_[0] ? $_[0] : $current }
 
 # syntaxstyles
 
@@ -32,6 +30,7 @@ sub switch_auto {
 }
 
 sub reload { set( _ID() ) }
+sub update { _ID(Kephra::Document::Data::attr('syntaxmode')) }
 
 sub set {
 	my $style   = shift;

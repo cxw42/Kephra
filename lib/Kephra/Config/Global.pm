@@ -8,13 +8,14 @@ use warnings;
 my %settings;
 sub settings { \%settings }
 
-my $file;
 sub _sub_dir {'global'}
-sub _file    { if (defined $_[0]) { $file = $_[0]} else { $file } }
-sub auto_file{ $file }
+my ($auto_file, $current_file);
+sub current_file{ $current_file = defined $_[0]? $_[0]  : $current_file }
+sub auto_file   { $auto_file    = defined $_[0] ? $_[0] : $auto_file }
 
 sub load_autosaved {
 	my $autosave = auto_file();
+	current_file( $autosave );
 	my $backup = $autosave . '~';
 	#$main::logger->debug("load_autosaved");
 
@@ -36,13 +37,13 @@ sub save_autosaved {
 	#$main::logger->debug("save_autosaved");
 	my $file_name = auto_file();
 	rename $file_name, $file_name . '~';
-	Kephra::Config::File::store( $file_name, \%Kephra::config );
+	Kephra::Config::File::store( $file_name, \%Kephra::config  );#settings()
 }
 
 
 sub open_current_file {
 	save_current();
-	Kephra::Config::open_file( auto_file() );
+	Kephra::Config::open_file_absolute( current_file() );
 	#Kephra::File::reload_current();
 }
 
@@ -61,20 +62,21 @@ sub load_from {
 		$Kephra::temp{file}{filterstring}{config}
 	);
 	reload($file_name) if -e $file_name;
+	current_file($file_name);
 }
 
 sub update {
 	Kephra::App::Window::save_positions();
 	Kephra::Document::Data::update_attributes();
 	Kephra::Edit::Bookmark::save_all();
-	Kephra::Plugin::Notepad::save();
-	Kephra::Plugin::Output::save();
+	Kephra::App::Panel::Notepad::save();
+	Kephra::App::Panel::Output::save();
 }
 
 sub evaluate {
 	my $t0 = new Benchmark;
-	Kephra::API::EventTable::del_all();
-	Kephra::API::EventTable::stop_timer();
+	Kephra::EventTable::del_all();
+	Kephra::EventTable::stop_timer();
 
 
 	my $t1 = new Benchmark;
@@ -106,8 +108,8 @@ print "  create gui:", Benchmark::timestr( Benchmark::timediff( $t3, $t2 ) ), "\
 	Kephra::App::TabBar::apply_settings();
 	Kephra::App::StatusBar::create();
 
-	Kephra::Plugin::Notepad::create();
-	Kephra::Plugin::Output::create();
+	Kephra::App::Panel::Notepad::create();
+	Kephra::App::Panel::Output::create();
 
 	Kephra::App::assemble_layout();
 	Kephra::Config::Interface::del_temp_data();
@@ -121,9 +123,9 @@ print "  apply sets:", Benchmark::timestr( Benchmark::timediff( $t4, $t3 ) ), "\
 
 	Kephra::Config::build_fileendings2syntaxstyle_map();
 	Kephra::Config::build_fileendings_filterstring();
-	#Kephra::API::EventTable::start_timer();
+	Kephra::EventTable::start_timer();
 	#todo:
-	#Kephra::API::EventTable::thaw_all();
+	#Kephra::EventTable::thaw_all();
 	#Kephra::App::clean_acc_table();
 
 	return 1;
@@ -131,7 +133,7 @@ print "  apply sets:", Benchmark::timestr( Benchmark::timediff( $t4, $t3 ) ), "\
 
 
 sub reload {
-	my $configfile = shift || auto_file();
+	my $configfile = shift || current_file();
 	if ( -e $configfile ) {
 		Kephra::Document::Data::update_attributes();
 		my %test_hash = %{ Kephra::Config::File::load($configfile) };
@@ -156,7 +158,7 @@ sub reload_tree {
 	Kephra::Document::Data::evaluate_attributes();
 }
 
-sub reload_current { reload( file() ) }
+sub reload_current { reload( current_file() ) }
 
 sub eval_config_file {
 	my $file_path   = Kephra::Config::standartize_path_slashes( shift );
@@ -196,9 +198,9 @@ sub eval_config_file {
 
 #
 sub save {
-	my $file_name = shift || file();
+	my $file_name = shift || current_file();
 	update();
-	Kephra::Config::File::store( $file_name, \%settings );
+	Kephra::Config::File::store( $file_name, \%Kephra::config );
 }
 
 sub save_as {
@@ -211,7 +213,7 @@ sub save_as {
 	save($file_name) if ( length($file_name) > 0 );
 }
 
-sub save_current { save( auto_file() ) }
+sub save_current { save( current_file() ) }
 
 #
 sub merge_with {
@@ -228,8 +230,8 @@ sub merge_with {
 sub load_subconfig {
 	my $file = shift;
 	if ( -e $file ) {
-		%settings = %{ Kephra::Config::Tree::merge
-			(Kephra::Config::File::load($file), \%settings) };
+		%Kephra::config = %settings = %{ Kephra::Config::Tree::merge
+			(Kephra::Config::File::load($file), \%Kephra::config) };
 		reload_tree();
 	}
 }

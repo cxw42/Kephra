@@ -1,7 +1,22 @@
 BUGS:
  !!! makefile.pl fails
 
+0.4.2.1
+ + loading stausbar from config
+ + status field codepage
+ " added keys app > statusbar > file and app > statusbar > node
+ ] refactor Kephra::API::EventTable -> Kephra::EventTable
+ ] refactor Kephra::API::CommandList -> Kephra::CommandList
+ ] refactor Notepad, Output: Kephra::Plugin::* -> Kephra::App::Panel::*
+ ] refactor Menu, ToolBar: Kephra::App::* -> Kephra::*
+ ! all event react on selection correct again
+
 0.4.2 testing release: new tabbar
+ ~ event driven stuff works again
+ ~ smaller tab width in notepad
+ ! open autoconfig file works again
+ ! reload global configs works again
+ ! file changed notify works again
 
 0.4.1.19
  [ reduce clutter while boot and shut down

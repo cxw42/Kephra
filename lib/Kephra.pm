@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.4.2';         # version of entire app
+our $VERSION    = '0.4.2.1';       # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $LOGLEVEL;                     # flag for benchmark loggings
@@ -37,22 +37,27 @@ sub load_modules {
 	#require Class::Inspector ();          # Class checking
 
 	# used internal modules, parts of kephra
-	require Kephra::API::CommandList;      # UI API
+	require Kephra::API::CommandList;      #
+	require Kephra::API::Config;           # 
 	require Kephra::API::EventTable;       # internal app API
+	require Kephra::API::Menu;             #
 	require Kephra::API::Panel;            #
 	require Kephra::API::Plugin;           # Plugin API
+	require Kephra::API::Toolbar;          #
 	require Kephra::App;                   # App start & shut down sequence
 	require Kephra::App::ContextMenu;      # contextmenu manager
 	require Kephra::App::EditPanel;        # Events, marker, visual settings of the EP
 	require Kephra::App::EditPanel::Margin;# events and visual stuff of 4 EP marigins
 	require Kephra::App::MainToolBar;      # toolbar below the main menu
-	require Kephra::App::Menu;             # base menu builder
 	require Kephra::App::MenuBar;          # main menu
-	require Kephra::App::ToolBar;          # base toolbar builder
+	require Kephra::App::Panel::Library;   #
+	require Kephra::App::Panel::Notepad;   #
+	require Kephra::App::Panel::Output;    #
 	require Kephra::App::SearchBar;        # Toolbar for searching and navigation
 	require Kephra::App::StatusBar;        #
 	require Kephra::App::TabBar;           # API 2 Wx::Notebook
 	require Kephra::App::Window;           # API 2 Wx::Frame and more
+	require Kephra::CommandList;           # 
 	require Kephra::Config;                # low level config manipulation
 	require Kephra::Config::Default;       # build in emergency settings
 	#require Kephra::Config::Default::CommandList;
@@ -87,15 +92,16 @@ sub load_modules {
 	require Kephra::Edit::Search;          # search menu functions
 	require Kephra::Edit::Select;          # text selection
 	require Kephra::Edit::Bookmark;        # doc spanning bookmarks
+	require Kephra::EventTable;       # internal app API
 	require Kephra::File;                  # file menu functions
 	require Kephra::File::History;         # list of recent used Files
 	require Kephra::File::IO;              # API 2 FS, read write files
 	require Kephra::File::Session;         # file session handling
 	require Kephra::Help;                  # help docs system
-
+	require Kephra::Menu;                  # base menu builder
 	require Kephra::Plugin;
-	require Kephra::Plugin::Notepad;
-	require Kephra::Plugin::Output;
+	require Kephra::Plugin::Demo;
+	require Kephra::ToolBar;               # base toolbar builder
 }
 
 
@@ -121,9 +127,9 @@ sub start {
 	# set locations of boot files
 	my $config_sub_dir = 'config';
 	my $help_sub_dir = 'help';
-	my $file_name = 'autosaved.conf';
+	my $start_file = 'autosaved.conf';
 	my $boot_file = File::Spec->catfile
-		(Kephra::Config::Global::_sub_dir(), $file_name);
+		(Kephra::Config::Global::_sub_dir(), $start_file);
 	my $splashscreen = 'interface/icon/splash/start_kephra.jpg';
 
 	if ($Kephra::STANDALONE) {
@@ -172,7 +178,7 @@ sub start {
 	}
 	my $config_dir = File::Spec->catdir($basedir, $config_sub_dir);
 	Kephra::Config::_dir( $config_dir );
-	Kephra::Config::Global::_file( File::Spec->catdir($config_dir, $boot_file) );
+	Kephra::Config::Global::auto_file( File::Spec->catdir($config_dir, $boot_file) );
 	Kephra::Help::_dir( File::Spec->catdir($basedir, $help_sub_dir) );
 	#$Kephra::temp{path}{logger} = File::Spec->catdir($basedir, 'log');
 	#use Wx::Perl::SplashFast ( File::Spec->catdir($config_dir,$splashscreen), 150);
@@ -347,6 +353,11 @@ things we missed, but config dialog was delayed.
 folding, test suite, and new hotpluggable localisation system that also
 does some UTF semi-automatically, initian czech and norwegian translation
 
+=item Testing 0.4.2
+
+new tabbar and doc ref handling
+partial test suite fix 
+
 =head2 Future
 
 =item To Do
@@ -355,15 +366,15 @@ fix config install under linux and mac
 
 fix test suite
 
-=item Testing 0.4.2
-
-new tabbar and doc ref handling
-
 =item Testing 0.4.3
 
-plugin API and codings
+codings and right UTF handling
 
 =item Testing 0.4.4
+
+plugin API 
+
+=item Testing 0.4.5
 
 config dialog?, stability for 0.5
 

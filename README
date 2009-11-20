@@ -50,30 +50,30 @@ DESCRIPTION
     
     Documents have several properties like syntax styling, auto indention, tab
     width, tab use, write protection.
-    
+
     View options contain switches for any GUI element and marker for: current
     line, end of line bytes, right margin, indetion guides, bracehiglighting,
     line wrap and font.
-    
+
     Every menu and toolbar is evaluated from a simple yaml file, so you can 
     change it easily by opening this files from the config menu.
 
 
-TO DO
+ROADMAP
 
   Stable Release 0.4
 
-    This release is about getting the editor liquid or highly configurable.
+    This release was about getting the editor liquid or highly configurable.
     Its also about improvements in the user interface and of course the little
-    things we missed. And its about time that it will released so that can we 
-    can concentrate more on features for coding support.
+    things we missed. It also contains interpreter output panel and a notepad.
 
   Stable Release 0.5
 
-    Things like output panel, code folding, snippet lib, help integration,
-    autocompletition and so on. Hope that by the end of 0.4.n series will be
-    the extention API stable.
+    code folding, utf ready, Plugin API, good test suite and easy CPAN install
 
+  Stable Release 0.6
+
+    the tools: tidy, outlining, snippet/tool tree, syntaxmode aware commenting
 
 SUPPORT
     OS: Linux, Mac and Win32 (Basically same es the module named Wx.)

@@ -38,7 +38,7 @@ sub splashscreen {
 sub assemble_layout {
 	my $win = Kephra::App::Window::_ref();
 	my $tg = &Wx::wxTOP | &Wx::wxGROW;
-	Kephra::API::EventTable::freeze
+	Kephra::EventTable::freeze
 		( qw(app.splitter.right.changed app.splitter.bottom.changed) );
 
 	$Kephra::app{splitter}{right} = Wx::SplitterWindow->new
@@ -46,10 +46,10 @@ sub assemble_layout {
 			unless exists $Kephra::app{splitter}{right};
 	my $right_splitter = $Kephra::app{splitter}{right};
 	Wx::Event::EVT_SPLITTER_SASH_POS_CHANGED( $right_splitter, $right_splitter, sub {
-		Kephra::API::EventTable::trigger( 'app.splitter.right.changed' );
+		Kephra::EventTable::trigger( 'app.splitter.right.changed' );
 	} );
 	Wx::Event::EVT_SPLITTER_DOUBLECLICKED($right_splitter, $right_splitter, sub {
-		Kephra::Plugin::Notepad::show(0);
+		Kephra::App::Panel::Notepad::show(0);
 	});
 	$right_splitter->SetSashGravity(1);
 	$right_splitter->SetMinimumPaneSize(10);
@@ -65,10 +65,10 @@ sub assemble_layout {
 			unless exists $Kephra::app{splitter}{bottom};
 	my $bottom_splitter = $Kephra::app{splitter}{bottom};
 	Wx::Event::EVT_SPLITTER_SASH_POS_CHANGED( $bottom_splitter, $bottom_splitter, sub {
-		Kephra::API::EventTable::trigger( 'app.splitter.bottom.changed' );
+		Kephra::EventTable::trigger( 'app.splitter.bottom.changed' );
 	} );
 	Wx::Event::EVT_SPLITTER_DOUBLECLICKED($bottom_splitter, $bottom_splitter, sub {
-		Kephra::Plugin::Output::show(0);
+		Kephra::App::Panel::Output::show(0);
 	});
 	$bottom_splitter->SetSashGravity(1);
 	$bottom_splitter->SetMinimumPaneSize(10);
@@ -81,8 +81,8 @@ sub assemble_layout {
 	my $tab_bar    = Kephra::App::TabBar::_ref();
 	my $search_bar = Kephra::App::SearchBar::_ref();
 	my $search_pos = Kephra::App::SearchBar::position();
-	my $notepad_panel = Kephra::Plugin::Notepad::_ref();
-	my $output_panel = Kephra::Plugin::Output::_ref();
+	my $notepad_panel = Kephra::App::Panel::Notepad::_ref();
+	my $output_panel = Kephra::App::Panel::Output::_ref();
 	$tab_bar->Reparent($center_panel);
 	$search_bar->Reparent($center_panel);
 	$search_bar->Reparent($column_panel) if $search_pos eq 'bottom';
@@ -110,11 +110,11 @@ sub assemble_layout {
 	$center_panel->Layout();
 	#$win->SetBackgroundColour($tab_bar->GetBackgroundColour);
 
-	Kephra::API::EventTable::thaw
+	Kephra::EventTable::thaw
 		( qw(app.splitter.right.changed app.splitter.bottom.changed) );
 	Kephra::App::SearchBar::show();
-	Kephra::Plugin::Notepad::show();
-	Kephra::Plugin::Output::show();
+	Kephra::App::Panel::Notepad::show();
+	Kephra::App::Panel::Output::show();
 }
 
 sub OnInit {
@@ -134,7 +134,7 @@ sub OnInit {
 	Kephra::Document::Data::set_value('buffer',1);
 	Kephra::Document::Data::set_value('modified', 0);
 	Kephra::Document::Data::set_value('loaded', 0);
-	#Kephra::API::Plugin::load_all();
+	#Kephra::Plugin::load_all();
 	#$main::logger->debug("init app pntr");
 	print " init app:",
 		Benchmark::timestr( Benchmark::timediff( new Benchmark, $t0 ) ), "\n"
@@ -147,7 +147,7 @@ sub OnInit {
 	my $t2 = new Benchmark;
 	if (Kephra::Config::Global::load_autosaved()) {
 		Kephra::App::EditPanel::apply_settings($ep);
-		#Kephra::API::EventTable::freeze_all();
+		Kephra::EventTable::freeze_all();
 		print " configs eval:",
 			Benchmark::timestr( Benchmark::timediff( new Benchmark, $t2 ) ), "\n"
 			if $Kephra::BENCHMARK;
@@ -159,7 +159,7 @@ sub OnInit {
 			if $Kephra::BENCHMARK;
 		my $t4 = new Benchmark;
 		Kephra::File::History::init();
-		#Kephra::API::EventTable::thaw_all();
+		Kephra::EventTable::thaw_all();
 		print " event table:",
 			Benchmark::timestr( Benchmark::timediff( new Benchmark, $t4 ) ), "\n"
 			if $Kephra::BENCHMARK;
@@ -176,9 +176,9 @@ sub OnInit {
 }
 
 sub exit { 
-	Kephra::API::EventTable::stop_timer();
+	Kephra::EventTable::stop_timer();
 	if (Kephra::Dialog::save_on_exit() eq 'cancel') {
-		Kephra::API::EventTable::start_timer();
+		Kephra::EventTable::start_timer();
 		return;
 	}
 	exit_unsaved();
@@ -187,7 +187,7 @@ sub exit {
 sub exit_unsaved {
 	my $t0 = new Benchmark;
 	Kephra::App::Window::_ref()->Show(0);
-	Kephra::API::EventTable::stop_timer();
+	Kephra::EventTable::stop_timer();
 	Kephra::File::Session::autosave();
 	Kephra::Config::Global::update();
 	Kephra::Config::Global::save_autosaved();

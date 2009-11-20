@@ -4,7 +4,7 @@ our $VERSION = '0.14';
 use strict;
 use warnings;
 
-sub _ref    { Kephra::App::ToolBar::_ref('search', $_[0]) }
+sub _ref    { Kephra::ToolBar::_ref('search', $_[0]) }
 sub _config { $Kephra::config{app}{toolbar}{search} }
 sub _ID     { 'search_bar' }
 #
@@ -17,7 +17,7 @@ sub create {
 	}
 
 	# create searchbar with buttons
-	my $rest_widgets = Kephra::App::ToolBar::create_new( 'search', $bar_def);
+	my $rest_widgets = Kephra::ToolBar::create_new( 'search', $bar_def);
 	my $bar = _ref();
 	# apply special searchbar widgets
 	for my $item_data (@$rest_widgets){
@@ -137,12 +137,12 @@ sub create {
 }
 
 
-sub destroy{ Kephra::App::ToolBar::destroy ('search') }
+sub destroy{ Kephra::ToolBar::destroy ('search') }
 #
 sub connect_find_input {
 	my $find_input = shift;
 	my $ID = _ID();
-	my $add_call = \&Kephra::API::EventTable::add_call;
+	my $add_call = \&Kephra::EventTable::add_call;
 	&$add_call( 'find.item.changed', $ID.'_input_refresh', sub {
 			my $value = Kephra::Edit::Search::get_find_item();
 			return if $value eq $find_input->GetValue;
@@ -158,7 +158,7 @@ sub connect_find_input {
 	}, $ID);
 	&$add_call( 'find', $ID.'_color_refresh', \&colour_find_input, $ID);
 }
-sub disconnect_find_input{ Kephra::API::EventTable::del_own_subscriptions(_ID()) }
+sub disconnect_find_input{ Kephra::EventTable::del_own_subscriptions(_ID()) }
 #
 sub colour_find_input {
 	my $find_input      = _ref()->{find_input};

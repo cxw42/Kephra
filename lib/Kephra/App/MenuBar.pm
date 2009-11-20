@@ -4,11 +4,8 @@ our $VERSION = 0.07;
 use strict;
 use warnings;
 
-
-sub _ref {
-	if (ref $_[0] eq 'Wx::MenuBar'){ $Kephra::app{menubar} = $_[0] }
-	else                           { $Kephra::app{menubar} }
-}
+my $bar;
+sub _ref { $bar = ref $_[0] eq 'Wx::MenuBar' ? $_[0] : $bar }
 
 sub create {
 	my $menubar_def = Kephra::Config::File::load_from_node_data
@@ -32,7 +29,7 @@ sub create {
 				$menu_name = $menu_id;
 			}
 			$menubar->Append(
-				Kephra::App::Menu::create_static( $menu_name, $menu_def->{$menu_id}),
+				Kephra::Menu::create_static( $menu_name, $menu_def->{$menu_id}),
 				$m18n->{$menu_name}
 			);
 		}

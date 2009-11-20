@@ -123,10 +123,10 @@ sub apply_line_number_width {
 		: 0;
 	$ep->SetMarginWidth( 1, $width);
 	if ($config->{autosize} and $config->{visible}) {
-		Kephra::API::EventTable::add_call ('document.text.change',
+		Kephra::EventTable::add_call ('document.text.change',
 			'autosize_line_number', \&line_number_autosize_update);
 	} else {
-		Kephra::API::EventTable::del_call
+		Kephra::EventTable::del_call
 			('document.text.change', 'autosize_line_number');
 	}
 }

@@ -46,12 +46,13 @@ sub get {
 			'item view-dialog-find',
 		],
 		statusbar => [
-			'textpanel cursor_pos 150',
-			'textpanel percent_pos_selection 150',
-			'textpanel syntax_mode 100',
-			'textpanel tab_mode 50',
-			'textpanel eol_mode 80',
-			'textpanel info -1',
+			'textpanel cursor 66',
+			'textpanel selection 60',
+			'textpanel syntaxmode 50',
+			'textpanel codepage 60',
+			'textpanel tab 25',
+			'textpanel EOL 32',
+			'textpanel message -1',
 		],
 	}
 }

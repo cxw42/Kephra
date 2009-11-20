@@ -51,15 +51,15 @@ sub path_matches {
 	return 0;
 }
 
-sub open_file {
-	Kephra::Document::add( filepath(@_) );
+sub open_file          { open_file_absolute( filepath(@_) ) }
+sub open_file_absolute {
+	Kephra::Document::add( $_[0] );
 	Kephra::Document::Data::set_attribute('config_file',1);
 	Kephra::App::TabBar::refresh_current_label();
 }
-##################################
+#
 # Wx GUI Stuff
-##################################
-
+#
 # Create a Wx::Colour from a config string
 # Either hex "0066FF" or decimal "0,128,255" is allowed.
 sub color {
@@ -117,10 +117,9 @@ sub set_xp_style {
 	}
 }
 
-##################################
+#
 # misc helper stuff
-##################################
-
+#
 sub build_fileendings2syntaxstyle_map {
 	foreach ( keys %{ $Kephra::config{file}{endings} } ) {
 		my $language_id = $_;

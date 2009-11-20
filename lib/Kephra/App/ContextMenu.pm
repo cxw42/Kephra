@@ -1,11 +1,11 @@
 package Kephra::App::ContextMenu;
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 use strict;
 use warnings;
 
 
-sub get{ &Kephra::App::Menu::ready or Wx::Menu->new() }
+sub get{ &Kephra::Menu::ready or Wx::Menu->new() }
 #
 sub create_all {
 	my $config = $Kephra::config{app}{contextmenu};
@@ -19,11 +19,11 @@ sub create_all {
 		if (not ref $menu_id){
 			my $start_node = $config->{id}{$menu_id};
 			substr($start_node, 0, 1) eq '&'
-				? Kephra::App::Menu::create_dynamic($menu_id, $start_node)
+				? Kephra::Menu::create_dynamic($menu_id, $start_node)
 				: do {
 					my $menu_def = Kephra::Config::Tree::get_subtree
 						($default_menu_def, $start_node);
-					Kephra::App::Menu::create_static ($menu_id, $menu_def);
+					Kephra::Menu::create_static ($menu_id, $menu_def);
 				}
 		} elsif (ref $menu_id eq 'HASH'){
 			my $menu = $config->{id}{$menu_id};
@@ -32,7 +32,7 @@ sub create_all {
 			next unless -e $file_name;
 			my $menu_def = Kephra::Config::File::load($file_name);
 			$menu_def = Kephra::Config::Tree::get_subtree($menu_def, $menu->{node});
-			Kephra::App::Menu::create_static($menu_id, $menu_def);
+			Kephra::Menu::create_static($menu_id, $menu_def);
 		}
 	}
 }

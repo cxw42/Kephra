@@ -1,4 +1,4 @@
-package Kephra::Plugin::Library;
+package Kephra::App::Panel::Library;
 use strict;
 use warnings;
 
@@ -6,7 +6,6 @@ our $VERSION = '0.01';
 
 
 
-sub start{
-}
+sub start{}
 
 1;

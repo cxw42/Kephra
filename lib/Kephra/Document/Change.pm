@@ -22,7 +22,7 @@ sub to_number {
 		Kephra::App::StatusBar::refresh_all_cells();
 		$Kephra::config{file}{current}{directory} = 
 			Kephra::Document::Data::get_attribute('directory', $new_doc);
-		Kephra::API::EventTable::trigger_group( 'doc_change' );
+		Kephra::EventTable::trigger_group( 'doc_change' );
 		Kephra::App::EditPanel::gets_focus();
 		return 1;
 	} else { 

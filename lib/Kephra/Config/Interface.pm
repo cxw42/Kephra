@@ -11,7 +11,7 @@ sub _sub_dir       { _config()->{app_data_sub_dir} }
 sub _cache_sub_dir { File::Spec->catdir(_sub_dir(), _config()->{cache}{sub_dir})}
 
 sub load { 
-	Kephra::API::CommandList::clear();
+	Kephra::CommandList::clear();
 	Kephra::Config::Localisation::refresh_index();
 	my $use_cache = _config()->{cache}{use}; # config allow to use the cache
 	my $load_cache = 0;                      # cache is successful loaded
@@ -24,7 +24,7 @@ sub load {
 		$file{index}     = &$path( $cache_dir, 'index_cmd.yml');
 		$file{cmd_cache} = &$path( $cache_dir, 'cmd_main.yml' );
 		$file{l18n_cache}= &$path( $cache_dir, 'l18n_main.yml');
-		$file{cmd}       = Kephra::API::CommandList::file();
+		$file{cmd}       = Kephra::CommandList::file();
 		$file{l18n}      = Kephra::Config::Localisation::file();
 		%old_index = %{ &$read($file{index}) } if -e $file{index};
 		%new_index = (
@@ -43,7 +43,7 @@ sub load {
 				}
 			}
 			if ($load_cache) {
-				Kephra::API::CommandList::data( &$read( $file{cmd_cache} ) );
+				Kephra::CommandList::data( &$read( $file{cmd_cache} ) );
 				Kephra::Config::Localisation::_set_strings
 					( &$read( $file{l18n_cache} ) );
 				Kephra::Config::Localisation::set_lang_by_file();
@@ -54,19 +54,19 @@ sub load {
 	}
 	unless ($load_cache) {
 		Kephra::Config::Localisation::load();
-		Kephra::API::CommandList::load();
+		Kephra::CommandList::load();
 		del_temp_data();
 		if ($use_cache) {
 			my $write = \&YAML::Tiny::DumpFile;
-			&$write( $file{cmd_cache}, Kephra::API::CommandList::data() );
+			&$write( $file{cmd_cache}, Kephra::CommandList::data() );
 			&$write( $file{l18n_cache}, Kephra::Config::Localisation::strings() );
 		}
 	}
-	Kephra::API::CommandList::eval_data();
+	Kephra::CommandList::eval_data();
 	Kephra::Config::Localisation::create_menus();
 }
 
-sub del_temp_data { Kephra::API::CommandList::del_temp_data() }
+sub del_temp_data { Kephra::CommandList::del_temp_data() }
 
 sub open_file {
 	my $item = shift;

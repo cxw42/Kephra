@@ -1,4 +1,4 @@
-package Kephra::API::EventTable;
+package Kephra::API::Menu;
 our $VERSION = '0.0';
 
 use strict;

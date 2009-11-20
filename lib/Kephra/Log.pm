@@ -1,5 +1,5 @@
 package Kephra::Log;
-$VERSION = '0.00';
+$VERSION = '0.01';
 
 use strict;
 use warnings;

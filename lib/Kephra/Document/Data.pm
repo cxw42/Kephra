@@ -26,7 +26,7 @@ sub _ep        {
 	$ep if Kephra::App::EditPanel::is($ep);
 }
 sub count      { @attributes  }
-sub last_nr    { $#attributes }
+sub last_nr    { $#attributes } 
 sub previous_nr{ $previous_nr }
 sub current_nr { $current_nr  }
 sub next_nr    {
@@ -53,15 +53,19 @@ sub set_current_nr  {
 sub validate_doc_nr { 
 	my $nr = shift;
 	return -1 unless defined $nr;
-	return -1 unless $nr == int $nr;
+	return -1 unless $nr eq int $nr;
 	$nr = exists $attributes[$nr] ? $nr : -1;
+}
+sub valid_or_current_doc_nr {
+	my $nr = validate_doc_nr(shift);
+	$nr == -1 ? current_nr() : $nr;
 }
 #
 sub create_slot     {
 	my $nr = shift;
 	$attributes[$_+1] = $attributes[$_] for reverse $nr .. last_nr();
 	$attributes[$nr] = {};
-	default_attributes($nr);
+	set_attributes_to_default($nr);
 
 	set_current_nr($current_nr+1) if $current_nr >= $nr;
 	$previous_nr++ if $previous_nr >= $nr;
@@ -142,8 +146,7 @@ sub file_path      { defined $_[0] ? set_file_path($_[0]) : get_file_path() }
 sub get_file_path  { get_attribute('file_path', $_[0]) }
 sub set_file_path  {
 	my ( $file_path, $doc_nr ) = @_;
-	$doc_nr = validate_doc_nr($doc_nr);
-	return if $doc_nr < 0;
+	$doc_nr = valid_or_current_doc_nr($doc_nr);
 	set_attribute('file_path', $file_path, $doc_nr);
 	dissect_path( $file_path, $doc_nr );
 }
@@ -196,7 +199,7 @@ sub cursor_pos     {
 #
 # more complex operations
 #
-sub default_missing_attributes {
+sub set_missing_attributes_to_default {
 	my ($nr, $file) = @_;
 	$nr = validate_doc_nr($nr);
 	return if $nr < 0;
@@ -204,21 +207,21 @@ sub default_missing_attributes {
 	my $default = $Kephra::config{file}{defaultsettings};
 }
 
-sub default_attributes {
+sub set_attributes_to_default {
 	my ($nr, $file) = @_;
 	$nr = validate_doc_nr($nr);
 	return if $nr < 0;
 	$file = get_file_path($nr) unless defined $file;
 	my $default = $Kephra::config{file}{defaultsettings};
 	my $attr = {
-		'codepage'  => $default->{codepage},
-		'edit_pos'  => -1,
-		'file_path' => $file,
-		'ep_ref'    => $attributes[$nr]{ep_ref},
-		'readonly'  => $default->{readonly},
-		'syntaxmode'=> $default->{syntaxmode},
-		'tab_size'  => $default->{tab_size},
-		'tab_pos'   => $nr,
+		'codepage'    => $default->{codepage},
+		'edit_pos'    => -1,
+		'file_path'   => $file,
+		'ep_ref'      => $attributes[$nr]{ep_ref},
+		'readonly'    => $default->{readonly},
+		'syntaxmode'  => $default->{syntaxmode},
+		'tab_size'    => $default->{tab_size},
+		'tab_pos'     => $nr,
 	};
 	$attr->{cursor_pos} = $default->{cursor_pos} ? $default->{cursor_pos} : 0;
 	if ($file and -e $file) {
@@ -231,6 +234,7 @@ sub default_attributes {
 	}
 	set_all_attributes($attr, $nr);
 	dissect_path($file, $nr);
+	set_current_nr($nr) if $nr == current_nr();
 }
 
 sub evaluate_attributes {

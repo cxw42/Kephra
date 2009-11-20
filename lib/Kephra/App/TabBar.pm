@@ -112,7 +112,7 @@ sub create {
 		_move_vis_pos($begin_drag_index, $_[1]->GetSelection);
 		#rotate_tab($_[1]->GetSelection - $begin_drag_index);
 		Kephra::App::EditPanel::gets_focus();
-		Kephra::API::EventTable::trigger('document.list');
+		Kephra::EventTable::trigger('document.list');
 	});
 	Wx::Event::EVT_AUINOTEBOOK_PAGE_CHANGED( $notebook, -1, sub {
 		my ( $bar, $event ) = @_;
@@ -137,8 +137,7 @@ sub apply_settings {
 	if ( _config()->{middle_click} ) {
 		Wx::Event::EVT_MIDDLE_UP(
 			$notebook,
-			Kephra::API::CommandList::get_cmd_property
-				( _config()->{middle_click}, 'call' )
+			Kephra::CommandList::get_cmd_property( _config()->{middle_click},'call')
 		);
 	}
 	my $style = $notebook->GetWindowStyleFlag();
@@ -225,7 +224,7 @@ sub rotate_tab {
 	_move_tab_pos( $old_tab_pos, $new_vis_pos );
 	_move_vis_pos( $old_vis_pos, $new_vis_pos );
 	raise_tab_by_vis_nr($new_vis_pos);
-	Kephra::API::EventTable::trigger('document.list');
+	Kephra::EventTable::trigger('document.list');
 }
 
 sub delete_tab_by_doc_nr { delete_tab_by_tab_nr( _doc2tab_pos(shift) ) }

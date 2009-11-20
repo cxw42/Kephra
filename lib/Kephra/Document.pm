@@ -4,7 +4,7 @@ our $VERSION = '0.53';
 =pod
 =head1 NAME
 
-Kephra::API::Document - 
+Kephra::Document - 
 
 =head1 DESCRIPTION
 
@@ -47,15 +47,16 @@ sub _new_if_allowed {
 }
 
 sub _load_file_in_buffer {
-	my $file = shift || '';
-	#$doc_nr = shift;
-	my $ep = shift || Kephra::App::EditPanel::_ref();
-	return unless Kephra::App::EditPanel::is( $ep );
+	my $file = shift;
+	my $doc_nr = shift || Kephra::Document::Data::current_nr();
+	my $ep = Kephra::Document::Data::_ep($doc_nr);
+	return unless -r $file and Kephra::App::EditPanel::is( $ep );
 	$ep->ClearAll();
 	Kephra::File::IO::open_pipe($file, $ep);
+	Kephra::File::_remember_save_moment($doc_nr, $file);
 	$ep->EmptyUndoBuffer;
 	$ep->SetSavePoint;
-	Kephra::File::_remember_save_moment($file);
+	Kephra::Document::Data::set_file_path($file, $doc_nr);
 	Kephra::Document::Data::inc_value('loaded');
 }
 #
@@ -76,7 +77,7 @@ sub reset {   # restore once opened file from its settings
 	$ep->ClearAll;
 	$ep->EmptyUndoBuffer;
 	$ep->SetSavePoint;
-	Kephra::Document::Data::default_attributes($doc_nr, '');
+	Kephra::Document::Data::set_attributes_to_default($doc_nr, '');
 	Kephra::Document::Data::evaluate_attributes($doc_nr);
 	Kephra::Edit::Bookmark::restore_all();
 	Kephra::App::Window::refresh_title();
@@ -98,8 +99,10 @@ sub restore { # add newly opened file from known settings
 		      and Kephra::Document::Data::file_already_open($file);
 		my $doc_nr = _new_if_allowed('restore');
 		$file_settings{ep_ref} = Kephra::Document::Data::_ep($doc_nr);
-		_load_file_in_buffer($file, $file_settings{ep_ref});
 		Kephra::Document::Data::set_all_attributes(\%file_settings, $doc_nr);
+		_load_file_in_buffer($file, $doc_nr);
+		#$file_settings{file_changed}
+		#	= Kephra::Document::Data::get_attribute('file_changed', $doc_nr);
 		Kephra::Document::Data::set_current_nr($doc_nr);
 		Kephra::Document::Data::set_file_path($file, $doc_nr);
 		Kephra::Document::Data::evaluate_attributes($doc_nr);
@@ -127,9 +130,9 @@ sub add {     # create a new document if settings allow it
 		return if $doc_nr > 0 and $doc_nr == $old_nr;
 		Kephra::Document::Data::set_current_nr($doc_nr);
 		Kephra::Document::Data::set_previous_nr($old_nr);
-		_load_file_in_buffer($file, Kephra::Document::Data::_ep($doc_nr));
 		# load default settings for doc attributes
-		Kephra::Document::Data::default_attributes($doc_nr, $file);
+		Kephra::Document::Data::set_attributes_to_default($doc_nr, $file);
+		_load_file_in_buffer($file, $doc_nr);
 		Kephra::Document::Data::evaluate_attributes($doc_nr);
 		Kephra::Document::Property::convert_EOL()
 			unless $config->{defaultsettings}{EOL_open} eq 'auto';
@@ -137,7 +140,7 @@ sub add {     # create a new document if settings allow it
 		Kephra::App::Window::refresh_title();
 		Kephra::App::TabBar::raise_tab_by_doc_nr($doc_nr);
 		Kephra::App::EditPanel::Margin::autosize_line_number();
-		Kephra::API::EventTable::trigger('document.list');
+		Kephra::EventTable::trigger('document.list');
 	}
 }
 

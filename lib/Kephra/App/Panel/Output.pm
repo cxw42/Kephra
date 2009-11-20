@@ -1,4 +1,4 @@
-package Kephra::Plugin::Output;
+package Kephra::App::Panel::Output;
 our $VERSION = '0.08';
 
 use strict;
@@ -39,9 +39,9 @@ sub create {
 	);
 	$output->SetEditable(0);
 
-	Kephra::API::EventTable::add_call('plugin.output.run', 'panel_output', sub {
+	Kephra::EventTable::add_call('plugin.output.run', 'panel_output', sub {
 	});
-	Kephra::API::EventTable::add_call
+	Kephra::EventTable::add_call
 		( 'app.splitter.bottom.changed', 'plugin_notepad', sub {
 			if ( get_visibility() and not _splitter()->IsSplit() ) {
 				show( 0 );
@@ -64,7 +64,7 @@ sub create {
 		my ($self, $event) = @_;
 		$event->Skip(1);
 		$event->GetProcess->Destroy;
-		Kephra::API::EventTable::trigger('plugin.output.run');
+		Kephra::EventTable::trigger('plugin.output.run');
 	} );
 	Wx::Event::EVT_TEXT_ENTER( $edit, $edit, sub {
 		my $selection = $edit->GetStringSelection();
@@ -99,7 +99,7 @@ sub show {
 	$output->Show($visibile);
 	$win->Layout;
 	$config->{visible} = $visibile;
-	Kephra::API::EventTable::trigger('plugin.output.visible');
+	Kephra::EventTable::trigger('plugin.output.visible');
 }
 
 sub save { save_size() }
@@ -145,7 +145,7 @@ sub run {
 			(qq~"$cmd" "$doc"~ , 'Interpreter-Plugin', $win); # -I$dir
 		chdir $dir;
 		new_output();
-		Kephra::API::EventTable::trigger('plugin.output.run');
+		Kephra::EventTable::trigger('plugin.output.run');
 		if (not $proc) {}
 	} else {
 		my $l18n = Kephra::Config::Localisation::strings()->{app};
@@ -164,7 +164,7 @@ sub stop {
 	if (ref $proc eq 'Wx::Perl::ProcessStream::Process') {
 		$proc->KillProcess;
 		$proc->TerminateProcess;
-		Kephra::API::EventTable::trigger('plugin.output.run');
+		Kephra::EventTable::trigger('plugin.output.run');
 	}
 }
 

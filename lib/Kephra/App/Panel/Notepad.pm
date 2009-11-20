@@ -1,4 +1,4 @@
-package Kephra::Plugin::Notepad;
+package Kephra::App::Panel::Notepad;
 our $VERSION = '0.13';
 
 use strict;
@@ -36,6 +36,10 @@ sub create {
 			(_config()->{font_size}, &Wx::wxDEFAULT, &Wx::wxNORMAL, &Wx::wxNORMAL, 0,
 			_config()->{font_family}) 
 		);
+		$notepad->SetTabWidth(4);
+		$notepad->SetIndent(4);
+		$notepad->SetHighlightGuide(4);
+
 		# load content
 		my $file_name = $config->{content_file};
 		if ($file_name) {
@@ -78,12 +82,12 @@ sub create {
 				} else {
 					$result = `$interpreter $code`;
 				}
-				Kephra::Plugin::Output::output($result);
+				Kephra::Plugin::Output::say($result);
 			}
 			$event->Skip;
 	});	
 
-	Kephra::API::EventTable::add_call
+	Kephra::EventTable::add_call
 		( 'app.splitter.right.changed', 'plugin_notepad', sub {
 			if ( get_visibility() and not _splitter()->IsSplit() ) {
 				show( 0 );
@@ -116,7 +120,7 @@ sub show {
 	$notepad->Show( $visibile );
 	$win->Layout;
 	$config->{visible} = $visibile;
-	Kephra::API::EventTable::trigger('plugin.notepad.visible');
+	Kephra::EventTable::trigger('plugin.notepad.visible');
 }
 
 sub note {
