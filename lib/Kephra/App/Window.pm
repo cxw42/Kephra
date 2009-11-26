@@ -109,7 +109,7 @@ sub restore_positions{
 				{ $config->{size_y} = $screen_y - 55}
 			else{ $config->{size_y} = $default->{size_y} }
 		}
-		if (Wx::wxMAC) {$config->{size_y}-=23; if ($config->{position_y}<21) {$config->{position_y}=21;}}
+		if (Wx::wxMAC()) {$config->{size_y}-=23; if ($config->{position_y}<21) {$config->{position_y}=21;}}
 		$config->{position_x} = 0 if $screen_x < $config->{position_x};
 		$config->{position_y} = 0 if $screen_y < $config->{position_y};
 	} else {

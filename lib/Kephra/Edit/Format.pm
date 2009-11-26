@@ -33,7 +33,7 @@ sub autoindent {
 
 sub blockindent_open {
 	my $ep         = _ep_ref();
-	my $tabsize    = $Kephra::document{current}{tab_size};
+	my $tabsize    = Kephra::Document::Data::attr('tab_size');
 	my $line       = $ep->GetCurrentLine;
 	my $first_cpos = $ep->PositionFromLine($line)
 		+ $ep->GetLineIndentation($line); # position of first char in line
@@ -96,7 +96,7 @@ sub blockindent_close {
 	} else {
 		$ep->SetLineIndentation( $line,
 			$ep->GetLineIndentation( $line - 1 )
-				- $Kephra::document{current}{tab_size} );
+				- Kephra::Document::Data::attr('tab_size') );
 	}
 
 	# make new line
@@ -120,8 +120,8 @@ sub blockindent_close {
 
 sub indent_space { _indent_selection( 1) }
 sub dedent_space { _indent_selection(-1) }
-sub indent_tab   { _indent_selection( $Kephra::document{current}{tab_size}) }
-sub dedent_tab   { _indent_selection(-$Kephra::document{current}{tab_size}) }
+sub indent_tab   { _indent_selection( Kephra::Document::Data::attr('tab_size') ) }
+sub dedent_tab   { _indent_selection(-Kephra::Document::Data::attr('tab_size') ) }
 
 #
 sub align_indent {
@@ -170,8 +170,8 @@ sub blockformat{
 	$ep->SetSelection($tmp_begin, $end);
 	require Text::Wrap;
 	$Text::Wrap::columns  = $width;
-	$Text::Wrap::unexpand = $Kephra::document{current}{tab_use};
-	$Text::Wrap::tabstop  = $Kephra::document{current}{tab_size};
+	$Text::Wrap::unexpand = Kephra::Document::Data::attr('tab_use');
+	$Text::Wrap::tabstop  = Kephra::Document::Data::attr('tab_size');
 
 	my $text = $ep->GetSelectedText;
 	$text =~ s/[\r|\n]+/ /g;
@@ -207,8 +207,8 @@ sub line_break {
 	$ep->SetSelection($tmp_begin, $end);
 	require Text::Wrap;
 	$Text::Wrap::columns  = $width;
-	$Text::Wrap::unexpand = $Kephra::document{current}{tab_use};
-	$Text::Wrap::tabstop  = $Kephra::document{current}{tab_size};
+	$Text::Wrap::unexpand = Kephra::Document::Data::attr('tab_use');
+	$Text::Wrap::tabstop  = Kephra::Document::Data::attr('tab_size');
 
 	$ep->BeginUndoAction();
 	$ep->ReplaceSelection( Text::Wrap::wrap('', '', $ep->GetSelectedText) );

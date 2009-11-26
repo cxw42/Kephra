@@ -74,7 +74,7 @@ sub ready {
 			[ $dsettings->{position_x}, $dsettings->{position_y} ],
 			[ $dsettings->{width}     , 268                      ], $d_style );
 		my $icon = Wx::Icon->new;
-		my $icon_bmp = Kephra::API::CommandList::get_cmd_property
+		my $icon_bmp = Kephra::CommandList::get_cmd_property
 			('view-dialog-find', 'icon');
 		$icon->CopyFromBitmap($icon_bmp) if ref $icon_bmp eq 'Wx::Bitmap';
 		$d->SetIcon($icon);
@@ -218,7 +218,7 @@ sub ready {
 
 
 		my $ID = _ID();
-		my $add_call = \&Kephra::API::EventTable::add_call;
+		my $add_call = \&Kephra::EventTable::add_call;
 
 		&$add_call( 'find', $ID.'_color_refresh', \&colour_find_input, $ID);
 
@@ -231,7 +231,7 @@ sub ready {
 			$d->{replace_input}->SetInsertionPointEnd;
 		}, $ID);
 
-		Kephra::API::EventTable::add_call('find.item.history.changed', $ID, sub {
+		Kephra::EventTable::add_call('find.item.history.changed', $ID, sub {
 			Kephra::App::_ref()->Yield();
 			my $cb = $d->{find_input};
 			$Kephra::temp{dialog}{search}{control} = 1;
@@ -241,7 +241,7 @@ sub ready {
 			$cb->SetInsertionPointEnd;
 			$Kephra::temp{dialog}{search}{control} = 0;
 		}, $ID);
-		Kephra::API::EventTable::add_call('replace.item.history.changed', $ID, sub {
+		Kephra::EventTable::add_call('replace.item.history.changed', $ID, sub {
 			my $cb = $d->{replace_input};
 			$Kephra::temp{dialog}{search}{control} = 1;
 			$cb->Clear();
@@ -435,7 +435,7 @@ sub quit_search_dialog {
 	$Kephra::temp{dialog}{search}{active} = 0;
 	$Kephra::temp{dialog}{active}--;
 
-	Kephra::API::EventTable::del_own_subscriptions( _ID() );
+	Kephra::EventTable::del_own_subscriptions( _ID() );
 
 	$win->Destroy();
 }

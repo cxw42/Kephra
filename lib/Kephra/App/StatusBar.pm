@@ -1,5 +1,5 @@
 package Kephra::App::StatusBar;
-our $VERSION = '0.07';
+our $VERSION = '0.09';
 
 use strict;
 use warnings;
@@ -9,21 +9,27 @@ my $bar;
 sub _ref    { $bar = ref $_[0] eq 'Wx::StatusBar' ? $_[0] : $bar }
 sub _config { $Kephra::config{app}{statusbar} }
 sub _item   { $fields[$_[0]] }
+sub _l18n   { Kephra::Config::Localisation::strings()->{app}{status} }
+sub _none_string {
+	Kephra::Config::Localisation::strings()->{dialog}{general}{none};
+}
 sub _set_text {
 	my ($msg, $nr) = @_;
 	my $win = Kephra::App::Window::_ref();
 	return if not defined $nr or $nr < 0 or $nr > @fields or not $win or not defined $msg;
 	$win->SetStatusText($msg, $nr);
 }
-sub index_from_mouse_pos {
+sub _index_from_mouse_pos {
 	my $x_pos = shift;
 	for (0 .. $#abs_border_x) {
 		return $_ if $width{ $fields[$_] } == -1;
 		return $_ if $x_pos <= $abs_border_x[$_];
 	}
 }
+#
+# external API
+#
 sub create {
-	# $^O eq 'linux'
 	my $win = Kephra::App::Window::_ref();
 	$win->CreateStatusBar(1);
 	my $bar = $win->GetStatusBar;
@@ -52,8 +58,41 @@ sub create {
 	$bar->SetStatusWidths( @field_width );
 	$win->SetStatusBarPane( $index{message} );
 
-	Wx::Event::EVT_LEFT_DOWN ( $bar, \&left_click);
-	Wx::Event::EVT_RIGHT_DOWN( $bar, \&right_click);
+	Wx::Event::EVT_LEFT_DOWN  ( $bar, sub {
+		return unless get_interactive();
+		my ( $bar,    $event )  = @_;
+		my $field = _item( _index_from_mouse_pos( $event->GetX ) );
+		if    ($field eq 'syntaxmode') {Kephra::Document::SyntaxMode::switch_auto()}
+		elsif ($field eq 'codepage')   {Kephra::Document::Property::switch_codepage()}
+		elsif ($field eq 'tab')        {Kephra::Document::Property::switch_tab_mode()}
+		elsif ($field eq 'EOL')        {Kephra::App::EditPanel::switch_EOL_visibility()}
+		elsif ($field eq 'message')    {next_file_info(); }
+	} );
+	Wx::Event::EVT_RIGHT_DOWN ( $bar, sub {
+		return unless get_interactive();
+		my ( $bar, $event ) = @_;
+		my $x = $event->GetX;
+		my $index = _index_from_mouse_pos( $x );
+		my $cell_start = $bar->GetFieldRect($index)->GetTopLeft;
+		$x = $cell_start->x unless $width{ _item($index) } == -1;
+		my $y = $cell_start->y; 
+		my $field = _item( $index );
+		my $menu = \&Kephra::App::ContextMenu::get;
+		if    ($field eq 'syntaxmode'){$bar->PopupMenu( &$menu('status_syntaxmode'),$x,$y)}
+		elsif ($field eq 'codepage')  {$bar->PopupMenu( &$menu('document_encoding'),$x,$y)}
+		elsif ($field eq 'tab')       {$bar->PopupMenu( &$menu('status_tab'),       $x,$y)}
+		elsif ($field eq 'EOL')       {$bar->PopupMenu( &$menu('status_eol'),       $x,$y)}
+		elsif ($field eq 'message')   {$bar->PopupMenu( &$menu('status_info'),      $x,$y)}
+	});
+	my $help_index = -1;
+	Wx::Event::EVT_MOTION      ( $bar, sub {
+		my $index = _index_from_mouse_pos( $_[1]->GetX );
+		return if $index == $help_index;
+		$help_index = $index;
+		info_msg( _l18n()->{help}{ _item( $index ) } );
+	});
+	Wx::Event::EVT_LEAVE_WINDOW( $bar, sub { info_msg(''); $help_index = -1 });
+
 
 	Kephra::EventTable::add_call
 		('caret.move',       'caret_status', \&caret_pos_info,   'status_bar');
@@ -64,7 +103,6 @@ sub create {
 
 	show();
 }
-
 sub get_visibility { _config()->{'visible'} }
 sub switch_visibility {
 	_config()->{'visible'} ^= 1;
@@ -72,39 +110,12 @@ sub switch_visibility {
 	Kephra::App::Window::_ref()->Layout();
 }
 sub show { Kephra::App::Window::_ref()->GetStatusBar->Show( get_visibility() ) }
-
-sub right_click {
-	return unless get_interactive();
-	my ( $bar, $event ) = @_;
-	my $x = $event->GetX;
-	my $index = index_from_mouse_pos( $x );
-	my $cell_start = $bar->GetFieldRect($index)->GetTopLeft;
-	$x = $cell_start->x unless $width{ _item($index) } == -1;
-	my $y = $cell_start->y; 
-	my $field = _item( $index );
-	my $menu = \&Kephra::App::ContextMenu::get;
-	if    ($field eq 'syntaxmode'){$bar->PopupMenu( &$menu('status_syntaxmode'),$x,$y)}
-	elsif ($field eq 'tab')       {$bar->PopupMenu( &$menu('status_tab'),       $x,$y)}
-	elsif ($field eq 'EOL')       {$bar->PopupMenu( &$menu('status_eol'),       $x,$y)}
-	elsif ($field eq 'message')   {$bar->PopupMenu( &$menu('status_info'),      $x,$y)}
-}
-
-
-sub left_click {
-	return unless get_interactive();
-	my ( $bar,    $event )  = @_;
-	my $field = _item( index_from_mouse_pos( $event->GetX ) );
-	if    ($field eq 'syntaxmode') {Kephra::Document::SyntaxMode::switch_auto()}
-	elsif ($field eq 'tab')        {Kephra::Document::Property::switch_tab_mode()}
-	elsif ($field eq 'EOL')        {Kephra::App::EditPanel::switch_EOL_visibility()}
-	elsif ($field eq 'message')    {next_file_info(); }
-}
-
 sub get_interactive { _config()->{interactive} }
 sub get_contextmenu_visibility { &get_interactive }
 sub switch_contextmenu_visibility { _config()->{interactive} ^= 1 }
-
-
+#
+# update cell content
+#
 sub refresh_cursor {
 	caret_pos_info();
 	refresh_info_msg();
@@ -165,15 +176,16 @@ sub caret_pos_info {
 }
 
 sub style_info {
-	my $style = shift;
-	$style = Kephra::Document::Data::attr('syntaxmode') unless defined $style;
-	$style = Kephra::Config::Localisation::strings()->{dialog}{general}{none}
-		unless defined $style;
+	my $style = shift 
+		|| Kephra::Document::Data::attr('syntaxmode')
+		|| _none_string();
 	_set_text( ' ' . $style, $index{syntaxmode} );
 }
 sub codepage_info {
-	my $codepage = Kephra::Document::Data::attr('codepage');
-	_set_text( ' ' . $codepage, $index{codepage} );
+	my $codepage = shift || Kephra::Document::Data::attr('codepage') || _none_string();
+	my $msg = Kephra::CommandList::get_cmd_property
+		( 'document-encoding-'.$codepage, 'label' );
+	_set_text( ' ' . $msg, $index{codepage} );
 }
 sub tab_info {
 	my $mode  = Kephra::App::EditPanel::_ref()->GetUseTabs || 0;
@@ -182,18 +194,16 @@ sub tab_info {
 }
 
 sub EOL_info {
-	my ( $mode, $msg ) = shift;
-	$mode = Kephra::Document::Data::get_attribute('EOL') if !$mode;
-	if ( !$mode or $mode eq 'none' or $mode eq 'no' )  {
-		$msg = Kephra::Config::Localisation::strings()->{dialog}{general}{none};
-	}
-	elsif ( $mode eq 'cr'    or $mode eq 'mac' ) { $msg = " Mac" }
+	my $mode = shift || Kephra::Document::Data::get_attribute('EOL') || _none_string() || 'no';
+	my $msg;
+	if    ( $mode eq 'none'  or $mode eq 'no' )  { $msg = _none_string() || 'no' }
+	elsif ( $mode eq 'cr'    or $mode eq 'mac' ) { $msg = " Mac"  }
 	elsif ( $mode eq 'lf'    or $mode eq 'lin' ) { $msg = "Linux" }
-	elsif ( $mode eq 'cr+lf' or $mode eq 'win' ) { $msg = " Win" }
+	elsif ( $mode eq 'cr+lf' or $mode eq 'win' ) { $msg = " Win"  }
 	_set_text( $msg, $index{EOL} );
 }
 #
-# info messages
+# info messages, last cell
 #
 sub status_msg { info_msg(@_) }
 sub info_msg   {
@@ -229,26 +239,26 @@ sub refresh_file_info {
 sub _get_file_info {
 	my $selector = shift;
 	return '' unless $selector;
-	my $l10 = Kephra::Config::Localisation::strings()->{app}{status};
+	my $l18n = _l18n()->{label};
 
 	# show how big file is
 	if ( $selector == 1 ) {
 		my $ep = Kephra::App::EditPanel::_ref();
 
 		return sprintf ' %s: %s   %s: %s',
-			$l10->{chars}, _dotted_number( $ep->GetLength ),
-			$l10->{lines}, _dotted_number( $ep->GetLineCount );
+			$l18n->{chars}, _dotted_number( $ep->GetLength ),
+			$l18n->{lines}, _dotted_number( $ep->GetLineCount );
 
 	# show how old file is
 	} elsif ( $selector == 2 ) {
 		my $file = Kephra::Document::Data::get_file_path();
 		if ($file) {
 			my @time = localtime( $^T - ( -M $file ) * 86300 );
-			return sprintf ' %s: %02d:%02d - %02d.%02d.%d', $l10->{last_change},
+			return sprintf ' %s: %02d:%02d - %02d.%02d.%d', $l18n->{last_change},
 				$time[2], $time[1], $time[3], $time[4] + 1, $time[5] + 1900;
 		} else {
 			my @time = localtime;
-			return sprintf ' %s: %02d:%02d - %02d.%02d.%d', $l10->{now_is},
+			return sprintf ' %s: %02d:%02d - %02d.%02d.%d', $l18n->{now_is},
 				$time[2], $time[1], $time[3], $time[4] + 1, $time[5] + 1900;
 		}
 	}

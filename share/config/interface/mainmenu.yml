@@ -4,7 +4,9 @@ full_menubar:
     menu file:
       - item file-new
       -
-        menu file_open:
+      - menu file_insert_templates
+      -
+        menu file_open file-open:
           - item file-open
           - item file-open-dir
           -
@@ -12,18 +14,8 @@ full_menubar:
           -
           - item file-reload
           - item file-reload-all
-      -
-        menu file_close:
-          - item file-close-current
-          - item file-close-other
-          - item file-close-all
-          -
-          - item file-close-unsaved
-          - item file-close-other-unsaved
-          - item file-close-all-unsaved
-      -
       - menu file_history
-      - menu file_insert_templates
+      -
       -
         menu file_session:
           - item file-session-open
@@ -43,6 +35,16 @@ full_menubar:
       - item file-save-copy-as
       - item file-rename
       - item file-print#
+      -
+      -
+        menu file_close:
+          - item file-close-current
+          - item file-close-other
+          - item file-close-all
+          -
+          - item file-close-unsaved
+          - item file-close-other-unsaved
+          - item file-close-all-unsaved
       -
       - item app-exit-unsaved
       - item app-exit
@@ -203,6 +205,8 @@ full_menubar:
       - item tool-interpreter-stop-document
       -
       - item tool-output-inc
+      -
+      - item tool-choose-color
   -
     menu document:
       -
@@ -325,6 +329,10 @@ full_menubar:
               - checkitem document-syntaxmode-idl
               - checkitem document-syntaxmode-make
               - checkitem document-syntaxmode-matlab
+      -
+        menu document_encoding:
+          - radioitem document-encoding-8bit
+          - radioitem document-encoding-utf8
       - checkitem document-brace-indention
       - checkitem document-auto-indention
       - checkitem document-tabs-use

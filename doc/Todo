@@ -1,15 +1,20 @@
+open Issues, known problems
 
-0.4.2 wishlist
- - file open clutter
+Technical Issues:
  - to many attr acess
- - insert pos
- - read sesseion
- - write session
- - history
- - bookmarks
- - open dir dialog
- - utf bug
+ - file open clutter in Tabbar
 
+
+0.4.3 wishlist
+ - coding handling
+ - insert pos
+ - file history as session
+ - bookmarks reworked, loaded from extra config file
+
+
+0.5
+ - utf
+ - plugins
 
 
 long time:

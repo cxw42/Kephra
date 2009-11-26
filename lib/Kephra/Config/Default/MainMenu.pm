@@ -8,7 +8,7 @@ sub get {
 	return [
 		{'menu file' => [
 			'item file-new',
-			{'menu file_open' => [
+			{'menu file_open  file-open' => [
 				'item file-open',
 				'item file-open-dir',
 				undef ,
@@ -208,6 +208,8 @@ sub get {
 			'item tool-interpreter-stop-document',
 			undef ,
 			'item tool-output-inc',
+			undef ,
+			'item tool-choose-color',
 		],},
 		{'menu document' => [
 			{'menu document_change' => [
@@ -329,6 +331,10 @@ sub get {
 					'checkitem document-syntaxmode-make',
 					'checkitem document-syntaxmode-matlab',
 				],},
+			],},
+			{'menu document_encoding' => [
+				'radioitem document-encoding-8bit',
+				'radioitem document-encoding-utf8',
 			],},
 			'checkitem document-brace-indention',
 			'checkitem document-auto-indention',

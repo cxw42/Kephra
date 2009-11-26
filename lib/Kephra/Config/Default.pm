@@ -9,8 +9,8 @@ use warnings;
 
 sub global_settings {
 	require Kephra::Config::Default::GlobalSettings;
-	my $config=Kephra::Config::Default::GlobalSettings::get();
-	if ($^O=~/linux/i) {
+	my $config = Kephra::Config::Default::GlobalSettings::get();
+	if ($^O =~ /linux/i) {
 		$config->{editpanel}{font}{family} = 'DejaVu Sans Mono';
 		$config->{editpanel}{font}{size} = 10;
 		$config->{app}{panel}{output}{font_family} = 'DejaVu Sans Mono';
@@ -22,7 +22,7 @@ sub global_settings {
 		$config->{app}{window}{size_x} = 770;
 		$config->{app}{window}{size_y} = 525;
 	}
-	elsif ($^O=~/darwin/i) {
+	elsif ($^O =~ /darwin/i) {
 		$config->{editpanel}{font}{family} = 'Monaco';
 		$config->{editpanel}{font}{size} = 12;
 		$config->{app}{panel}{output}{font_family} = 'Monaco';

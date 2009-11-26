@@ -71,9 +71,12 @@ sub set_codepage {
 	$nr = _doc_nr($nr);
 	return if $nr < 0 or not defined $value;
 	_set_attr('codepage', $value, $nr);
-	_ep_ref()->SetCodePage( $value );
+	#_ep_ref()->SetCodePage( $value );
+	Kephra::App::StatusBar::codepage_info($value);
 }#use Wx::STC qw(&Wx::wxSTC_CP_UTF8); Wx::wxUNICODE()
-
+sub switch_codepage {
+	set_codepage( get_codepage( _doc_nr() ) eq '8bit' ? 'utf8' : '8bit' );
+}
 #
 # tab size
 #

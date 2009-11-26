@@ -395,20 +395,20 @@ sub close_nr_unsaved {
 		# select to which file nr to jump
 		my $close_last = $close_nr == Kephra::Document::Data::last_nr();
 		my $switch     = $close_nr == $current; 
-		Kephra::Document::Data::dec_value('buffer');
-		Kephra::Document::Data::dec_value('loaded')
-			if Kephra::Document::Data::get_file_path( $close_nr );
 		if ($switch){
 			$close_last
 				? Kephra::Document::Change::to_number( $close_nr - 1 )
 				: Kephra::Document::Change::to_number( $close_nr + 1 );
 		}
+		Kephra::Document::Data::dec_value('buffer');
+		Kephra::Document::Data::dec_value('loaded')
+			if Kephra::Document::Data::get_file_path( $close_nr );
 		Kephra::App::TabBar::delete_tab_by_doc_nr( $close_nr );
 		Kephra::Document::Data::delete_slot( $close_nr );
 		Kephra::Document::Data::set_current_nr( $close_nr ) unless $close_last and $switch;
 	}
+	Kephra::App::Window::refresh_title();
 	Kephra::App::EditPanel::gets_focus();
-	Kephra::App::EditPanel::Margin::reset_line_number_width();
 	Kephra::EventTable::trigger('document.list');
 	# remember filepath in history
 	Kephra::File::History::add( $file );

@@ -12,19 +12,6 @@ sub window {
   return PrintingDemoWindow->new( $parent, -1 );
 }
 
-sub description {
-  return <<EOT;
-<html>
-<head>
-  <title>Printing Framework</title>
-</head>
-<body>
-<h3>Printing Framework</h3>
-
-</body>
-</html>
-EOT
-}
 
 package PrintingDemoWindow;
 

@@ -30,7 +30,7 @@ sub online_documentation {
 
 sub forum_site {
 	my $url = _lang() eq 'deutsch'
-		? 'http://board.perl-community.de' 
+		? 'http://www.perl-community.de/bat/poard/start' 
 		: 'http://www.perlmonks.org'; 
 	_web_page($url);
 }

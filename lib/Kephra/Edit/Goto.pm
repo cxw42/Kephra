@@ -13,6 +13,7 @@ sub _pos {
 	my $pos = shift;
 	$pos += $ep->GetLength if $pos < 0;
 	$ep->GotoPos($pos);
+	$ep->EnsureCaretVisible();
 }
 #
 # simple jump calls

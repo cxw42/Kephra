@@ -1,6 +1,41 @@
 BUGS:
  !!! makefile.pl fails
 
+0.4.2.8
+ + color picker
+ + statusbar has context help while mouse hover
+ ] reformat to one API module
+ ! tab info chat in wrong tab
+ ! encodings menu visible, also in the statusbar
+
+0.4.2.7
+ ~ current dir is now always synched with current file
+ ! wrong titlebar content after some close doc events
+
+0.4.2.6
+ ] rest of renaming plugin -> panel for notepad and output
+ ] rename bookmark.pm -> marker
+ ! splashscreen works again
+
+0.4.2.5
+ + can assign icons to menus
+ [ rearranged file menu
+ ! crash while folding
+
+0.4.2.4
+ [ added encoding menu
+ [ splitter are now without live update, has lot less flicker
+ ' updated german help-forum link
+
+0.4.2.3
+ ~ linenr margin width autosize works now per doc
+ ] separated fold functions in own module
+ ! change font works again on all edit tabs
+
+0.4.2.2
+ ! most visual settings work global again
+ ! dont loose caret while find and defold
+
 0.4.2.1
  + loading stausbar from config
  + status field codepage

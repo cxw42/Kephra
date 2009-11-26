@@ -111,7 +111,7 @@ sub create {
 					$ep->CmdKeyExecute( &Wx::wxSTC_CMD_DOCUMENTSTART ); return;
 				} elsif ($key == &Wx::WXK_END and $event->ControlDown) {
 					$ep->CmdKeyExecute( &Wx::wxSTC_CMD_DOCUMENTEND ); return;
-				} elsif ($key == $Wx::WXK_BACK and $event->ControlDown and $event->ShiftDown) {
+				} elsif ($key == &Wx::WXK_BACK and $event->ControlDown and $event->ShiftDown) {
 					my $pos = $bar->{find_input}->GetInsertionPoint;
 					Kephra::Document::Change::switch_back();
 					Wx::Window::SetFocus($bar->{find_input});

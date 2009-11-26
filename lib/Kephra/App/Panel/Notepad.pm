@@ -70,7 +70,7 @@ sub create {
 				switch_visibility() if $event->ControlDown;
 			} elsif ($key == &Wx::WXK_F5) {
 				my ( $sel_beg, $sel_end ) = $notepad->GetSelection;
-				Kephra::Plugin::Output::ensure_visibility();
+				Kephra::App::Panel::Output::ensure_visibility();
 				my $code = $sel_beg == $sel_end
 					? $notepad->GetText
 					: $notepad->GetSelectedText;
@@ -82,13 +82,13 @@ sub create {
 				} else {
 					$result = `$interpreter $code`;
 				}
-				Kephra::Plugin::Output::say($result);
+				Kephra::App::Panel::Output::say($result);
 			}
 			$event->Skip;
 	});	
 
 	Kephra::EventTable::add_call
-		( 'app.splitter.right.changed', 'plugin_notepad', sub {
+		( 'app.splitter.right.changed', 'panel_notepad', sub {
 			if ( get_visibility() and not _splitter()->IsSplit() ) {
 				show( 0 );
 				return;
@@ -120,7 +120,7 @@ sub show {
 	$notepad->Show( $visibile );
 	$win->Layout;
 	$config->{visible} = $visibile;
-	Kephra::EventTable::trigger('plugin.notepad.visible');
+	Kephra::EventTable::trigger('panel.notepad.visible');
 }
 
 sub note {

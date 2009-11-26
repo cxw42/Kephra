@@ -91,7 +91,9 @@ AUTHORS
     * Adam Kennedy <adamk@cpan.org> (cpanification)
  
     * Gabor Szabo E<lt>szabgab@cpan.orgE<gt>
- 
+
+    * Renee Bäcker E<lt>module@renee-baecker.deE<gt> (color picker)
+
 COPYRIGHT
     This Copyright applies only to the "Kephra" Perl software distribution, not 
     the icons bundled within.

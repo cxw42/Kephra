@@ -30,7 +30,7 @@ sub create {
 			}
 			$menubar->Append(
 				Kephra::Menu::create_static( $menu_name, $menu_def->{$menu_id}),
-				$m18n->{$menu_name}
+				$m18n->{label}{$menu_name}
 			);
 		}
 	}

@@ -74,8 +74,7 @@ sub _add {
 	# activate the starting document & some afterwork
 	Kephra::Document::Change::to_number($start_nr);
 	Kephra::Document::Data::set_previous_nr($prev_doc_nr);
-	Kephra::Edit::Bookmark::restore_all();
-	Kephra::App::EditPanel::Margin::reset_line_number_width();
+	Kephra::Edit::Marker::restore_all();
 	Kephra::App::Window::refresh_title();
 }
 #

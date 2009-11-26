@@ -20,8 +20,6 @@ sub to_number {
 		Kephra::App::Window::refresh_title();
 		Kephra::App::TabBar::raise_tab_by_doc_nr($new_doc);
 		Kephra::App::StatusBar::refresh_all_cells();
-		$Kephra::config{file}{current}{directory} = 
-			Kephra::Document::Data::get_attribute('directory', $new_doc);
 		Kephra::EventTable::trigger_group( 'doc_change' );
 		Kephra::App::EditPanel::gets_focus();
 		return 1;

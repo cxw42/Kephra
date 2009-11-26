@@ -71,7 +71,7 @@ sub create_menus {
 	for my $lang_file (sort keys %$l18n_index) {
 		my $lang_data = $l18n_index->{$lang_file};
 		my $lang = ucfirst $lang_data->{language};
-		my $lang_code = $lang_data->{iso_code};
+		my $lang_code = $lang_data->{iso_code} || '';
 		my $al_lang_cmd = "$al_cmd-$lang_code";
 		my $fl_lang_cmd = "$fl_cmd-$lang_code";
 		Kephra::CommandList::new_cmd( $al_lang_cmd, {

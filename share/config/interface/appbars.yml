@@ -19,8 +19,8 @@ main_toolbar:
  - checkitem view-editpanel-line-wrap
  - checkitem view-window-stay-on-top
  -
- - checkitem view-panel-notepad
  - checkitem view-panel-output
+ - checkitem view-panel-notepad
  -
  - item view-dialog-find#
  - item view-dialog-config#
@@ -42,7 +42,7 @@ statusbar:
  - textpanel cursor 66
  - textpanel selection 60
  - textpanel syntaxmode 50
- - textpanel codepage 60
+ - textpanel codepage 40
  - textpanel tab 25
  - textpanel EOL 32
  - textpanel message -1

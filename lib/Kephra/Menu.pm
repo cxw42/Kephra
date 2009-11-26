@@ -1,5 +1,5 @@
 package Kephra::Menu;
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 =head1 NAME 
 
@@ -15,6 +15,7 @@ use strict;
 use warnings;
 
 my %menu;
+sub _all { \%menu }
 sub _ref {
 	if    (ref $_[1] eq 'Wx::Menu')  {$menu{$_[0]}{ref} = $_[1]}
 	elsif (exists $menu{$_[0]}{ref}) {$menu{$_[0]}{ref}}
@@ -161,7 +162,7 @@ sub assemble_data_from_def {
 	my $menu_def = shift;
 	return unless ref $menu_def eq 'ARRAY';
 
-	my $menu_label = Kephra::Config::Localisation::strings()->{app}{menu};
+	my $menu_l18n = Kephra::Config::Localisation::strings()->{app}{menu};
 	my ($cmd_name, $cmd_data, $type_name, $pos, $sub_id);
 	my @mds = (); # menu data structure
 	for my $item_def (@$menu_def){
@@ -183,16 +184,19 @@ sub assemble_data_from_def {
 			if ($pos == -1){
 				$item{type} = 'menu';
 				$item{id} = $sub_id;
-				$item{label} = $menu_label->{$sub_id};
+				$item{label} = $menu_l18n->{label}{$sub_id};
+				$item{help} = $menu_l18n->{help}{$sub_id} || '';
 				$item{data} = assemble_data_from_def($item_def->{$sub_id}); 
 			} else {
-				$item{type} = substr $sub_id, 0, $pos;
-				$cmd_name = substr $sub_id, $pos+1;
+				my @id_parts = split / /, $sub_id;
+				$item{type} = $id_parts[0];
 				# make submenu when finding the menu command
 				if ($item{type} eq 'menu'){
-					$item{id}   = $cmd_name;
-					$item{label}= $menu_label->{$cmd_name};
+					$item{id}   = $id_parts[1];
+					$item{label}= $menu_l18n->{label}{$id_parts[1]};
+					$item{help} = $menu_l18n->{help}{$id_parts[1]} || '';
 					$item{data} = assemble_data_from_def($item_def->{$sub_id}); 
+					$item{icon} = $id_parts[2] if $id_parts[2];
 				}
 			}
 		# menu items
@@ -203,7 +207,7 @@ sub assemble_data_from_def {
 			$cmd_name = substr $item_def, $pos+1;
 			if ($item{type} eq 'menu'){
 				$item{id} = $cmd_name;
-				$item{label}= $menu_label->{$cmd_name};
+				$item{label} = $menu_l18n->{label}{$cmd_name};
 			} else {
 				$cmd_data = Kephra::CommandList::get_cmd_properties( $cmd_name );
 				# skipping when command call is missing
@@ -244,17 +248,24 @@ sub eval_data { # eval menu data structures (MDS) to wxMenus
 		if (not $item_data->{type} or $item_data->{type} eq 'separator'){
 			$menu->AppendSeparator;
 		} elsif ($item_data->{type} eq 'menu'){
-			my $menu_item;
-			if (ref $item_data->{data} eq 'ARRAY'){
-				$menu_item = $menu->Append( $item_id++, $item_data->{label}, 
-						eval_data( $item_data->{id}, $item_data->{data} ));
-			} elsif ( $item_data->{id} and $item_data->{label}){
-				$menu_item = $menu->Append
-					($item_id++, $item_data->{label}, ready( $item_data->{id} ));
+			my $submenu = ref $item_data->{data} eq 'ARRAY'
+				? eval_data( $item_data->{id}, $item_data->{data} )
+				: ready( $item_data->{id} );
+			$item_data->{help} = '' unless defined $item_data->{help};
+			my $menu_item = Wx::MenuItem->new(
+				$menu, $item_id++, $item_data->{label}, $item_data->{help},
+				&Wx::wxITEM_NORMAL, $submenu
+			);
+			if (defined $item_data->{icon}) {
+				my $bmp = Kephra::CommandList::get_cmd_property
+					( $item_data->{icon}, 'icon' );
+				$menu_item->SetBitmap( $bmp )
+					if ref $bmp eq 'Wx::Bitmap' and not Wx::wxMAC();
 			}
 			#Wx::Event::EVT_MENU_HIGHLIGHT($win, $item_id-1, sub {
-				#print " $item_data->{label}- \n";
+			#	Kephra::App::StatusBar::info_msg( $item_data->{help} )
 			#});
+			$menu->Append($menu_item);
 		} else {
 			if    ($item_data->{type} eq 'checkitem'){$kind = &Wx::wxITEM_CHECK}
 			elsif ($item_data->{type} eq 'radioitem'){$kind = &Wx::wxITEM_RADIO}
@@ -262,7 +273,7 @@ sub eval_data { # eval menu data structures (MDS) to wxMenus
 			else                                     { next; }
 
 			my $menu_item = Wx::MenuItem->new
-				($menu, $item_id, $item_data->{label}, '', $kind);
+				($menu, $item_id, $item_data->{label}||'', '', $kind);
 			if ($item_data->{type} eq 'item') {
 				if (ref $item_data->{icon} eq 'Wx::Bitmap') {
 					$menu_item->SetBitmap( $item_data->{icon} ) unless Wx::wxMAC();
@@ -287,11 +298,10 @@ sub eval_data { # eval menu data structures (MDS) to wxMenus
 			$menu->Append( $menu_item );
 			$item_id++; 
 		}
-	1; #sucess print "hl $item_id $menu_item\n";
+	1; # sucess
 	}
 
-	Kephra::EventTable::add_call
-		('menu.open', 'menu_'.$menu, sub {ready($menu_id)} );
+	Kephra::EventTable::add_call('menu.open', 'menu_'.$menu, sub {ready($menu_id)});
 	_ref($menu_id, $menu);
 	return $menu;
 }

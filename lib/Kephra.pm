@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.4.2.1';       # version of entire app
+our $VERSION    = '0.4.2.8';       # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $LOGLEVEL;                     # flag for benchmark loggings
@@ -37,16 +37,11 @@ sub load_modules {
 	#require Class::Inspector ();          # Class checking
 
 	# used internal modules, parts of kephra
-	require Kephra::API::CommandList;      #
-	require Kephra::API::Config;           # 
-	require Kephra::API::EventTable;       # internal app API
-	require Kephra::API::Menu;             #
-	require Kephra::API::Panel;            #
-	require Kephra::API::Plugin;           # Plugin API
-	require Kephra::API::Toolbar;          #
+	require Kephra::API;                   # API for most inter modul communication
 	require Kephra::App;                   # App start & shut down sequence
 	require Kephra::App::ContextMenu;      # contextmenu manager
 	require Kephra::App::EditPanel;        # Events, marker, visual settings of the EP
+	require Kephra::App::EditPanel::Fold;  # events and visual stuff of 4 EP marigins
 	require Kephra::App::EditPanel::Margin;# events and visual stuff of 4 EP marigins
 	require Kephra::App::MainToolBar;      # toolbar below the main menu
 	require Kephra::App::MenuBar;          # main menu
@@ -72,12 +67,13 @@ sub load_modules {
 	require Kephra::Config::Interface;     # loading Interface data menus, bars etc
 	require Kephra::Config::Tree;          # data tree manipulation
 	require Kephra::Dialog;                # API 2 dialogs, fileselectors, msgboxes
-	#require Kephra::Dialog::Config;       # config dialog
-	#require Kephra::Dialog::Exit;         # select files to be saved while exit program
-	#require Kephra::Dialog::Info;         # info box
-	#require Kephra::Dialog::Keymap;       #
-	#require Kephra::Dialog::Notify        # inform about filechanges from outside
-	#require Kephra::Dialog::Search;       # find and replace dialog
+	#require Kephra::Dialog::Color;         #
+	#require Kephra::Dialog::Config;        # config dialog
+	#require Kephra::Dialog::Exit;          # select files to be saved while exit program
+	#require Kephra::Dialog::Info;          # info box
+	#require Kephra::Dialog::Keymap;        #
+	#require Kephra::Dialog::Notify         # inform about filechanges from outside
+	#require Kephra::Dialog::Search;        # find and replace dialog
 	require Kephra::Document;              # internal doc handling: create, destroy, etc
 	require Kephra::Document::Change;      # calls for changing current doc
 	require Kephra::Document::Data;        # manage data structure for all docs
@@ -89,9 +85,9 @@ sub load_modules {
 	require Kephra::Edit::Format;          # formating functions
 	require Kephra::Edit::History;         # undo redo etc.
 	require Kephra::Edit::Goto;            # editpanel textcursor navigation
+	require Kephra::Edit::Marker;          # doc spanning bookmarks
 	require Kephra::Edit::Search;          # search menu functions
 	require Kephra::Edit::Select;          # text selection
-	require Kephra::Edit::Bookmark;        # doc spanning bookmarks
 	require Kephra::EventTable;       # internal app API
 	require Kephra::File;                  # file menu functions
 	require Kephra::File::History;         # list of recent used Files
@@ -139,7 +135,7 @@ sub start {
 	} else {
 		my $copy_defaults;
 		$basedir = Kephra::configdir();
-		if (not -d File::Spec->catdir($basedir,$config_sub_dir)) {
+		if (not -d File::Spec->catdir($basedir, $config_sub_dir)) {
 			$copy_defaults = 1 
 		}
 		else {
@@ -178,10 +174,11 @@ sub start {
 	}
 	my $config_dir = File::Spec->catdir($basedir, $config_sub_dir);
 	Kephra::Config::_dir( $config_dir );
+	Kephra::App::splashscreen($splashscreen);
+	#use Wx::Perl::SplashFast ( File::Spec->catfile($config_dir, $splashscreen), 150);
 	Kephra::Config::Global::auto_file( File::Spec->catdir($config_dir, $boot_file) );
 	Kephra::Help::_dir( File::Spec->catdir($basedir, $help_sub_dir) );
 	#$Kephra::temp{path}{logger} = File::Spec->catdir($basedir, 'log');
-	#use Wx::Perl::SplashFast ( File::Spec->catdir($config_dir,$splashscreen), 150);
 
 	# make .pm config files acessable - absolete when real syntax modes work
 	push @INC, $config_dir;
@@ -401,13 +398,15 @@ L<http://kephra.sourceforge.net>
 
 =item * Herbert Breunung E<lt>lichtkind@cpan.orgE<gt> (main author)
 
-=item * Jens Neuwerk E<lt>jenne@gmxpro.netE<gt> (author of icons, GUI advisor)
+=item * Andreas Kaschner 
 
-=item * Andreas Kaschner
+=item * Jens Neuwerk E<lt>jenne@gmxpro.netE<gt> (author of icons, GUI advisor)
 
 =item * Adam Kennedy E<lt>adamk@cpan.orgE<gt> (cpanification)
 
-=item * Gabor Szabo E<lt>szabgab@cpan.orgE<gt>
+=item * Gabor Szabo E<lt>szabgab@cpan.orgE<gt> 
+
+=item * Renee Bäcker E<lt>module@renee-baecker.deE<gt> (color picker)
 
 =head1 COPYRIGHT AND LICENSE
 

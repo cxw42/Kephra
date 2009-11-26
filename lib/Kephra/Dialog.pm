@@ -27,8 +27,7 @@ sub get_confirm_2 {
 }
 
 sub get_confirm_3 {
-	Wx::MessageBox( $_[1], $_[2], &Wx::wxYES_NO | &Wx::wxCANCEL | &Wx::wxICON_QUESTION,
-		$_[0], $_[3], $_[4] );
+	Wx::MessageBox( $_[1], $_[2], &Wx::wxYES_NO | &Wx::wxCANCEL | &Wx::wxICON_QUESTION, $_[0] );
 }
 
 sub get_file_open {
@@ -65,7 +64,10 @@ sub replace {
 	require Kephra::Dialog::Search;
 	&Kephra::Dialog::Search::replace;
 }
-
+sub choose_color {
+	require Kephra::Dialog::Color;
+	Kephra::Dialog::Color::choose_color();
+}
 sub config {
 	require Kephra::Dialog::Config;
 	&Kephra::Dialog::Config::main;

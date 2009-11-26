@@ -10,8 +10,8 @@ Kephra::App - main GUI class derived from Wx::App
 =head1 DESCRIPTION
 
 
-
 =cut
+
 
 use strict;
 use warnings;
@@ -22,17 +22,15 @@ sub _ref { $obj = ref $_[0] eq __PACKAGE__ ? $_[0] : $obj }
 
 # main layout, main frame
 sub splashscreen {
+	my $img_file = shift;
+	$img_file = Kephra::Config::filepath( $img_file );
 	Wx::InitAllImageHandlers();
-	my $img = Kephra::Config::filepath( $Kephra::temp{file}{img}{splashscreen} );
 	Wx::SplashScreen->new(
-		Wx::Bitmap->new(
-			Kephra::Config::filepath( $Kephra::temp{file}{img}{splashscreen} ),
-			&Wx::wxBITMAP_TYPE_ANY
-		),
+		Wx::Bitmap->new( $img_file, &Wx::wxBITMAP_TYPE_ANY ),
 		&Wx::wxSPLASH_CENTRE_ON_SCREEN | &Wx::wxSPLASH_TIMEOUT, 350, undef, -1,
 		&Wx::wxDefaultPosition, &Wx::wxDefaultSize,
 		&Wx::wxSIMPLE_BORDER | &Wx::wxFRAME_NO_TASKBAR | &Wx::wxSTAY_ON_TOP
-	) if $img and -e $img;
+	) if $img_file and -e $img_file;
 }
 
 sub assemble_layout {
@@ -42,7 +40,7 @@ sub assemble_layout {
 		( qw(app.splitter.right.changed app.splitter.bottom.changed) );
 
 	$Kephra::app{splitter}{right} = Wx::SplitterWindow->new
-		($win, -1, [-1,-1], [-1,-1], &Wx::wxSP_PERMIT_UNSPLIT|&Wx::wxSP_LIVE_UPDATE)
+		($win, -1, [-1,-1], [-1,-1], &Wx::wxSP_PERMIT_UNSPLIT)
 			unless exists $Kephra::app{splitter}{right};
 	my $right_splitter = $Kephra::app{splitter}{right};
 	Wx::Event::EVT_SPLITTER_SASH_POS_CHANGED( $right_splitter, $right_splitter, sub {
@@ -61,7 +59,7 @@ sub assemble_layout {
 
 	# setting up output splitter
 	$Kephra::app{splitter}{bottom} = Wx::SplitterWindow->new
-		($column_panel, -1, [-1,-1], [-1,-1], &Wx::wxSP_PERMIT_UNSPLIT|&Wx::wxSP_LIVE_UPDATE)
+		($column_panel, -1, [-1,-1], [-1,-1], &Wx::wxSP_PERMIT_UNSPLIT)
 			unless exists $Kephra::app{splitter}{bottom};
 	my $bottom_splitter = $Kephra::app{splitter}{bottom};
 	Wx::Event::EVT_SPLITTER_SASH_POS_CHANGED( $bottom_splitter, $bottom_splitter, sub {
@@ -124,7 +122,7 @@ sub OnInit {
 	_ref($app);
 	#setup_logging();
 	Wx::InitAllImageHandlers();
-	splashscreen();             # 2'nd splashscreen can close when app is ready
+	#splashscreen();             # 2'nd splashscreen can close when app is ready
 	my $frame = Kephra::App::Window::create();
 	Kephra::Document::Data::create_slot(0);
 	Kephra::App::TabBar::create();
@@ -146,7 +144,7 @@ sub OnInit {
 		if $Kephra::BENCHMARK;
 	my $t2 = new Benchmark;
 	if (Kephra::Config::Global::load_autosaved()) {
-		Kephra::App::EditPanel::apply_settings($ep);
+		Kephra::App::EditPanel::apply_settings_here($ep);
 		Kephra::EventTable::freeze_all();
 		print " configs eval:",
 			Benchmark::timestr( Benchmark::timediff( new Benchmark, $t2 ) ), "\n"

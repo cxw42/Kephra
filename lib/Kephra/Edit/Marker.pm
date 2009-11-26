@@ -1,5 +1,5 @@
-package Kephra::Edit::Bookmark;
-our $VERSION = '0.19';
+package Kephra::Edit::Marker;
+our $VERSION = '0.20';
 
 use strict;
 use warnings;
@@ -8,25 +8,29 @@ use warnings;
 # internal data handling subs
 #
 my @bookmark;
-sub is_set { 
+sub bookmark_is_set {
 	my $nr = shift;
 	return if $nr < 0 or $nr > 9;
 	$bookmark[$nr]{set};
 }
+sub _ep    { Kephra::App::EditPanel::_ref() }
+sub _config{ Kephra::API::Config::settings()->{search}{bookmark} }
+
 # checkes if bookmark with given number is still alive an refresh his data
 # or deletes data if dead
-sub _refresh_data_nr {
+# my $doc2vis = \&Kephra::App::TabBar::_doc2vis_pos;
+sub _refresh_bookmark {
 	my $nr = shift;
 	my $temp = $bookmark[$nr];
 
 #print "refresh $nr $temp\n";
 	# care only about active bookmarks
-	return unless is_set($nr);
+	return unless bookmark_is_set($nr);
 #print "passed\n";
 
 	my $config = $Kephra::config{search}{bookmark}{$nr};
 	my $cur_doc_nr = Kephra::Document::Data::current_nr();
-	my $ep = Kephra::App::EditPanel::_ref();
+	my $ep = _ep();
 	my $marker_byte = 1 << $nr;
 	my $line;
 
@@ -90,7 +94,7 @@ sub define_marker {
 }
 
 sub restore_all {
-	my $ep         = Kephra::App::EditPanel::_ref();
+	my $ep         = _ep();
 	my $cur_doc_nr = Kephra::Document::Data::current_nr();
 	my $bookmark   = $Kephra::config{search}{bookmark};
 
@@ -102,31 +106,27 @@ sub restore_all {
 			else                        { next }
 			$ep = Kephra::Document::Data::_ep( $doc_nr );
 			$ep->GotoPos( $bookmark->{$nr}{pos} );
-			toggle_nr( $nr );
+			toggle_bookmark( $nr );
 		}
 	}
 }
 
-sub save_all { _refresh_data_nr($_) for 0..9 }
+sub save_all    { 
+	_refresh_bookmark($_) for 0..9;
+	save_into_file();
+}
+sub save_into_file {
+	#Kephra::API::Config::settings()->{search}
+}
 
-sub toggle_nr_0 { toggle_nr( 0 ) }
-sub toggle_nr_1 { toggle_nr( 1 ) }
-sub toggle_nr_2 { toggle_nr( 2 ) }
-sub toggle_nr_3 { toggle_nr( 3 ) }
-sub toggle_nr_4 { toggle_nr( 4 ) }
-sub toggle_nr_5 { toggle_nr( 5 ) }
-sub toggle_nr_6 { toggle_nr( 6 ) }
-sub toggle_nr_7 { toggle_nr( 7 ) }
-sub toggle_nr_8 { toggle_nr( 8 ) }
-sub toggle_nr_9 { toggle_nr( 9 ) }
-sub toggle_nr   {
+sub toggle_bookmark   {
 	my $nr = shift;
-	my $ep = Kephra::App::EditPanel::_ref();
+	my $ep = _ep();
 	my $pos = $ep->GetCurrentPos;
 	my $line = $ep->GetCurrentLine;
 	# is selected bookmark in current line ?
 	my $marker_in_line = (1 << $nr) & $ep->MarkerGet($line);
-	delete_nr($nr);
+	delete_bookmark($nr);
 	unless ($marker_in_line) {
 		my $temp = $bookmark[$nr];
 		my $config = $Kephra::config{search}{bookmark}{$nr};
@@ -138,33 +138,22 @@ sub toggle_nr   {
 		$temp->{line}   = $line;
 		$temp->{set}    = 1;
 		$ep->GotoPos( $pos );
-	} else { $ep->GotoPos($pos) }
+	} # else { $ep->GotoPos($pos) } # old behaviour not yet to delete
 }
 
-
-sub goto_nr_0  { goto_nr( 0 ) }
-sub goto_nr_1  { goto_nr( 1 ) }
-sub goto_nr_2  { goto_nr( 2 ) }
-sub goto_nr_3  { goto_nr( 3 ) }
-sub goto_nr_4  { goto_nr( 4 ) }
-sub goto_nr_5  { goto_nr( 5 ) }
-sub goto_nr_6  { goto_nr( 6 ) }
-sub goto_nr_7  { goto_nr( 7 ) }
-sub goto_nr_8  { goto_nr( 8 ) }
-sub goto_nr_9  { goto_nr( 9 ) }
-sub goto_nr    {
+sub goto_bookmark     {
 	my $nr = shift;
-	if ( _refresh_data_nr($nr) ) {
-print "goto $nr\n";
+	if ( _refresh_bookmark($nr) ) {
+#print "goto $nr\n";
 #print "toggle $nr ; ".$config->{pos}.":".$temp->{line}." - ".$temp->{col}."\n";
 		Kephra::Document::Change::to_nr( $bookmark[$nr]{doc_nr} );
 		Kephra::Edit::Goto::pos( $Kephra::config{search}{bookmark}{$nr}{pos} );
 	}
 }
 
-sub delete_nr  {
+sub delete_bookmark   {
 	my $nr = shift;
-	if ( _refresh_data_nr( $nr ) ){
+	if ( _refresh_bookmark( $nr ) ){
 		my $cur_doc_nr = Kephra::Document::Data::current_nr();
 		my $ep = Kephra::Document::Data::_ep( $nr );
 		Kephra::Document::Data::set_current_nr( $bookmark[$nr]{doc_nr} );
@@ -173,11 +162,11 @@ sub delete_nr  {
 		Kephra::Document::Data::set_current_nr($cur_doc_nr);
 	}
 }
-sub delete_all {
+sub delete_all_bookmarks  {
 	Kephra::Edit::_save_positions();
-	delete_nr($_) for 0..9;
+	delete_bookmark($_) for 0..9;
 	Kephra::Edit::_restore_positions();
-	Wx::Window::SetFocus(Kephra::App::EditPanel::_ref());
+	Kephra::App::EditPanel::gets_focus( );
 }
 
 1;

@@ -1,5 +1,14 @@
 package Kephra::App::EditPanel::Margin;
-our $VERSION = '0.09';
+our $VERSION = '0.11';
+=pod
+
+=head1 NAME
+
+Kephra::App::EditPanel::Margin - left margin mouse binding, folding
+
+=head1 DESCRIPTION
+
+=cut
 
 use strict;
 use warnings;
@@ -7,6 +16,8 @@ use warnings;
 sub _ep_ref {
 	ref $_[0] eq 'Wx::StyledTextCtrl' ? $_[0] : Kephra::App::EditPanel::_ref()   
 }
+sub _all_ref { Kephra::Document::Data::get_all_ep() }
+
 sub _config        { $Kephra::config{editpanel}{margin}}
 sub _line_config   { _config()->{linenumber}}
 sub _fold_config   { _config()->{fold}      }
@@ -28,7 +39,7 @@ sub in_nr {
 	return -1;
 }
 
-sub apply_settings {
+sub apply_settings_here {# eval view settings for the margin of this edit panel obj
 	my $ep = _ep_ref(shift);
 	# defining the 3 margins
 	$ep->SetMarginType( 0, &Wx::wxSTC_MARGIN_SYMBOL );
@@ -65,16 +76,17 @@ sub apply_settings {
 	}
 	$ep->SetFoldFlags(16) if _fold_config()->{flag_line};
 
-	show_marker($ep);
-	Kephra::Document::Data::set_value('margin_linemax', 0);
-	apply_line_number_width($ep);
-	apply_line_number_color($ep);
-	show_fold($ep);
-	apply_text_width($ep);
+	show_marker_here($ep);
+	Kephra::Document::Data::set_attribute('margin_linemax', 0);
+	apply_line_number_width_here($ep);
+	apply_line_number_color_here($ep);
+	show_fold_here($ep);
+	apply_text_width_here($ep);
 }
 sub refresh_changeable_settings {
-	apply_line_number_color(@_);
-	apply_fold_flag_color(@_);
+	my $ep = _ep_ref(shift);
+	apply_line_number_color_here($ep);
+	apply_fold_flag_color_here($ep);
 }
 #
 # deciding what to do when clicked on edit panel margin
@@ -82,19 +94,19 @@ sub refresh_changeable_settings {
 sub on_left_click {
 	my ($ep, $event) = @_;
 	my $nr = $event->GetMargin();
-	toggle_here(@_) if $nr == 2;
+	Kephra::App::EditPanel::Fold::toggle_here(@_) if $nr == 2;
 }
 sub on_middle_click {
 	my ($ep, $event, $nr) = @_;
-	Kephra::App::EditPanel::Margin::toggle_recursively($ep, $event) if $nr == 2;
+	Kephra::App::EditPanel::Fold::toggle_recursively($ep, $event) if $nr == 2;
 
 }
 sub on_right_click {
 	my ($ep, $event, $nr) = @_;
 	if ($nr == 2) {
 		$event->LeftIsDown
-			? Kephra::App::EditPanel::Margin::toggle_all()
-			: Kephra::App::EditPanel::Margin::toggle_siblings($ep, $event);
+			? Kephra::App::EditPanel::Fold::toggle_all()
+			: Kephra::App::EditPanel::Fold::toggle_siblings($ep, $event);
 	}
 }
 
@@ -108,20 +120,22 @@ sub switch_line_number {
 	_line_config->{visible} ^= 1;
 	apply_line_number_width()
 }
-
-sub set_line_number_width {
-	my $config = _line_config();
-	$config->{width} = shift;
-	apply_line_number_width();
-}
-
-sub apply_line_number_width {
+sub apply_line_number_width { apply_line_number_width_here($_) for @{_all_ref()} }
+sub apply_line_number_width_here {
 	my $ep = _ep_ref(shift);
+	my $doc_nr = shift;
+	$doc_nr = Kephra::Document::Data::nr_from_ep($ep) unless defined $doc_nr;
 	my $config = _line_config();
-	my $width = $config->{visible}
-		? $config->{width} * $Kephra::config{editpanel}{font}{size}
+	my $char_width = Kephra::Document::Data::get_attribute('line_nr_margin_width', $doc_nr);
+	if (not defined $char_width or not $char_width) {
+		$char_width = needed_line_number_width($ep);
+		Kephra::Document::Data::set_attribute
+			('line_nr_margin_width', $char_width, $doc_nr);
+	}
+	my $px_width = $config->{visible}
+		? $char_width * $Kephra::config{editpanel}{font}{size}
 		: 0;
-	$ep->SetMarginWidth( 1, $width);
+	$ep->SetMarginWidth( 1, $px_width );
 	if ($config->{autosize} and $config->{visible}) {
 		Kephra::EventTable::add_call ('document.text.change',
 			'autosize_line_number', \&line_number_autosize_update);
@@ -130,40 +144,37 @@ sub apply_line_number_width {
 			('document.text.change', 'autosize_line_number');
 	}
 }
-
-sub reset_line_number_width {
+sub set_line_number_width_here {
+	my $width = shift;
+	my $doc_nr = shift or Kephra::Document::Data::current_nr();
 	my $config = _line_config();
-	my ($max_digits, $lnr_digits);
-
-	if ( $config->{start_with_min} ) {
-		$max_digits = $config->{min_width};
-		if ((ref $Kephra::document{open} eq 'ARRAY') and $config->{autosize}) {
-			my $ep = _ep_ref();
-			Kephra::Document::do_with_all( sub {
-				$lnr_digits = length $ep->GetLineCount;
-				$max_digits = $lnr_digits if $lnr_digits > $max_digits;
-			} )
-		}
-		$config->{width} = $max_digits;
-		Kephra::Document::Data::set_value('margin_linemax', 10 ** $max_digits - 1);
-	}
-	apply_line_number_width();
+	Kephra::Document::Data::set_attribute('line_nr_margin_width', $width, $doc_nr);
+	Kephra::Document::Data::set_attribute('margin_linemax', 10 ** $width - 1, $doc_nr);
+	apply_line_number_width_here( Kephra::Document::Data::_ep($doc_nr) );
 }
-
-
+sub needed_line_number_width { 
+	my $width = length _ep_ref(shift)->GetLineCount;
+	my $min = _line_config()->{min_width};
+	$width = $min if defined $min and $min and $min > $width;
+}
 sub autosize_line_number {
+	my $ep = _ep_ref(shift);
+	my $doc_nr = shift;
+	$doc_nr = Kephra::Document::Data::nr_from_ep($ep) unless defined $doc_nr;
 	my $config = _line_config();
-	return unless $config->{autosize};
-	my $need = length _ep_ref->GetLineCount;
-	set_line_number_width($need) if $need > $config->{width};
-	Kephra::Document::Data::set_value('margin_linemax', 10 ** $need - 1);
+	return unless _line_config()->{autosize};
+	my $need = needed_line_number_width($ep);
+	my $is = Kephra::Document::Data::get_attribute('line_nr_margin_width', $doc_nr);
+	set_line_number_width_here($need, $doc_nr) if not defined $is or $need > $is;
 }
+
 sub line_number_autosize_update {
-	my $line_max = Kephra::Document::Data::get_value('margin_linemax');
+	my $line_max = Kephra::Document::Data::get_attribute('margin_linemax');
 	autosize_line_number() if _ep_ref->GetLineCount > $line_max;
 }
 
-sub apply_line_number_color {
+sub apply_line_number_color { apply_line_number_color_here($_) for @{_all_ref()} }
+sub apply_line_number_color_here {
 	my $ep     = _ep_ref(shift);
 	my $config = _line_config();
 	my $color  = \&Kephra::Config::color;
@@ -176,7 +187,8 @@ sub apply_line_number_color {
 # marker margin
 #
 sub marker_visible { _marker_config->{visible} }
-sub show_marker {
+sub show_marker { show_marker_here($_) for @{_all_ref()} }
+sub show_marker_here {
 	my $ep = _ep_ref(shift);
 	marker_visible()
 		? $ep->SetMarginWidth(0, 16)
@@ -192,129 +204,24 @@ sub switch_marker {
 # fold margin
 #
 sub fold_visible { _fold_config()->{visible} }
-sub show_fold {
+sub show_fold    { show_fold_here($_) for @{_all_ref()} }
+sub show_fold_here {
 	my $ep  = _ep_ref(shift);
 	my $visible = fold_visible();
 	my $width = $visible ? 16 : 0;
 	$ep->SetProperty('fold' => $visible);
 	$ep->SetMarginWidth( 2, $width );
-	unfold_all() unless $visible;
+	Kephra::App::EditPanel::Fold::unfold_all() unless $visible;
 }
-sub switch_fold {
+sub switch_fold  {
 	_fold_config()->{visible} ^= 1;
 	show_fold();
 }
-sub toggle_here {
-	# params you get if triggered by mouse click
-	my ($ep, $event ) = @_;
-	$ep = _ep_ref();
-	my $line = defined $event
-		? $ep->LineFromPosition( $event->GetPosition() )
-		: $ep->GetCurrentLine();
-	$ep->ToggleFold($line);
-	Kephra::Edit::Goto::next_visible_pos() if _fold_config()->{keep_caret_visible}
-	                                       and not $ep->GetFoldExpanded($line);
-}
-sub toggle_recursively {
-	my $ep = _ep_ref();
-	my $line = _get_line(@_);
-	my $level = $ep->GetFoldLevel($line);
-	unless ( _is_head( $ep->GetFoldLevel($line) ) ) {
-		$line = $ep->GetFoldParent($line);
-		return if $line == -1;
-	}
-	my $xp = not $ep->GetFoldExpanded($line);
-	my $cursor = $ep->GetLastChild($line, -1);
-	while ($cursor >= $line) {
-		$ep->ToggleFold($cursor) if $ep->GetFoldExpanded($cursor) xor $xp;
-		$cursor--;
-	}
-	Kephra::Edit::Goto::next_visible_pos() if _fold_config()->{keep_caret_visible};
-}
-sub toggle_siblings         { toggle_siblings_of_line( _get_line(@_) ) }
-sub toggle_siblings_of_line {
-	my $ep = _ep_ref();
-	my $line = shift;
-	return if $line < 0 or $line > ($ep->GetLineCount()-1);
-	my $level = $ep->GetFoldLevel($line);
-	my $parent = $ep->GetFoldParent($line);
-	my $xp = not $ep->GetFoldExpanded($line);
-	my $first_line = $parent;
-	my $cursor = $ep->GetLastChild($parent, -1 );
-	($first_line, $cursor) = (-1, $ep->GetLineCount()-2) if $parent == -1;
-	while ($cursor > $first_line){
-		$ep->ToggleFold($cursor) if $ep->GetFoldLevel($cursor) == $level
-		                         and ($ep->GetFoldExpanded($cursor) xor $xp);
-		$cursor--;
-	}
-	Kephra::Edit::Goto::next_visible_pos() if _fold_config()->{keep_caret_visible}
-	                                       and not $xp;
-}
-sub show_folded_children {
-	my $ep = _ep_ref();
-	my $parent = _get_line(@_);
-	unless ( _is_head( $ep->GetFoldLevel($parent) ) ) {
-		$parent = $ep->GetFoldParent($parent);
-		return if $parent == -1;
-	}
-	$ep->ToggleFold($parent) unless $ep->GetFoldExpanded($parent);
-	my $cursor = $ep->GetLastChild( $parent, -1 );
-	my $level = $ep->GetFoldLevel($parent) >> 16;
-	while ($cursor > $parent) {
-		$ep->ToggleFold($cursor) if $ep->GetFoldLevel($cursor) % 2048 == $level
-		                         and $ep->GetFoldExpanded($cursor);
-		$cursor--;
-	}
-}
-sub toggle_all {
-	my $ep = _ep_ref();
-	my $line = $ep->GetLineCount() - 1;
-	# looking for the head of heads // capi di capi
-	$line = $ep->GetFoldParent($line) while $ep->GetFoldParent($line) > -1;
-	my $xp = $ep->GetFoldExpanded($line);
-	$xp ? fold_all() : unfold_all();
-	Kephra::Edit::Goto::next_visible_pos() if _fold_config()->{keep_caret_visible}
-	                                       and $xp;
-}
-sub fold_all {
-	my $ep  = _ep_ref();
-	my $cursor = $ep->GetLineCount()-1;
-	while ($cursor > -1) {
-		$ep->ToggleFold($cursor) if $ep->GetFoldExpanded($cursor);
-		$cursor--;
-	}
-}
-sub unfold_all {
-	my $ep  = _ep_ref();
-	my $cursor = $ep->GetLineCount()-1;
-	while ($cursor > -1) {
-		$ep->ToggleFold($cursor) unless $ep->GetFoldExpanded($cursor);
-		$cursor--;
-	}
-}
-# is this the fold level of a head node ?
-sub _is_head {
-	my $level = shift;
-	return 1 if ($level % 1024) < (($level >> 16) % 1024);
-}
-sub _get_line {
-	my ($ep, $event ) = @_;
-	$ep = _ep_ref();
-	my $line;
-	if (defined $event) {
-		my ($x, $y, $max_y) = (width()+5, $event->GetY, $ep->GetSize->GetHeight);
-		my $pos = $ep->PositionFromPointClose($x, $y);
-		while ($pos < 0 and $y+10 < $max_y) {
-			$y += 10;
-			$pos = $ep->PositionFromPointClose($x, $y);
-		}
-		$line = $ep->LineFromPosition($pos);
-	} else { $line = $ep->GetCurrentLine() }
-	return $line;
-}
-sub apply_fold_flag_color {
-	_ep_ref()->StyleSetForeground
-		(&Wx::wxSTC_STYLE_DEFAULT, Kephra::Config::color(_fold_config()->{fore_color}));
+sub apply_fold_flag_color { apply_text_width_here($_) for @{_all_ref()}; }
+sub apply_fold_flag_color_here {
+	my $ep  = _ep_ref(shift);
+	my $color = Kephra::Config::color( _fold_config()->{fore_color} );
+	$ep->StyleSetForeground(&Wx::wxSTC_STYLE_DEFAULT, $color);
 }
 
 #
@@ -325,7 +232,8 @@ sub set_text_width {
 	_config->{text} = shift;
 	apply_text_width();
 }
-sub apply_text_width {
+sub apply_text_width { apply_text_width_here($_) for @{_all_ref()} }
+sub apply_text_width_here {
 	my $ep = _ep_ref(shift);
 	my $width = get_text_width();
 	$ep->SetMargins( $width, $width );

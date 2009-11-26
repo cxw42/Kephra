@@ -35,7 +35,7 @@ sub main {
 		my $d = Wx::Dialog->new( $frame, -1, ' '.$d_l10n->{title},
 			[ $config->{position_x}, $config->{position_y} ], [ 470, 560 ],
 			$d_style);
-		my $icon_bmp = Kephra::API::CommandList::get_cmd_property
+		my $icon_bmp = Kephra::CommandList::get_cmd_property
 			('view-dialog-config', 'icon');
 		my $icon = Wx::Icon->new;
 		$icon->CopyFromBitmap($icon_bmp) if ref $icon_bmp eq 'Wx::Bitmap';

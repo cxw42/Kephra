@@ -8,6 +8,7 @@ use warnings;
 # storing, fetching, assemble data, creating regular button items
 
 my %toolbar;
+sub _all { \%toolbar }
 sub _ref {
 	if   (ref $_[1] eq 'Wx::ToolBar')  {$toolbar{$_[0]}{ref} = $_[1]}
 	elsif(exists $toolbar{$_[0]}{ref}) {$toolbar{$_[0]}{ref}}

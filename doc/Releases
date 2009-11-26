@@ -1,4 +1,22 @@
-0.4.3 ()
+0.4.3 (0.4.2.6)
+ * new document property: encoding
+   + status field codepage
+   [ added encoding menu
+ + loading stausbar from config
+   " added keys app > statusbar > file and app > statusbar > node
+   [ contextmenus are more visually synced with statusbar
+ + can assign icons to menus
+ ~ line_nr margin width autosize works now per doc
+ ' updated german help-forum link
+ [ splitter are now without live update, has lot less flicker
+ [ rearranged file menu
+ ! crash while folding
+ ! all visual settings work global again
+ ! dont loose caret while find and defold
+ ! all event react on selection correct again
+ ! wrong tabbar content after some close doc events
+ ! splashscreen works again
+
 
 0.4.2
  * folding changes

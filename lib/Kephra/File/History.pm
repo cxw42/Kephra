@@ -7,7 +7,7 @@ use warnings;
 my @session;
 
 # internal Module API
-sub _config { $Kephra::config{file}{history} }
+sub _config { my %h; $Kephra::config{file}{history} || \%h  }
 #sub _config { $Kephra::config{file}{session}{history} }
 # file length node save = 1
 sub _get {
@@ -38,7 +38,7 @@ sub get {
 sub add {
 	my $file    = shift;
 	my @history = @{ _get() };
-	my $length  = _config->{length};
+	my $length  = _config->{length} || 0;
 	return unless defined $file;
 	my %seen;
 	unshift @history, $file;

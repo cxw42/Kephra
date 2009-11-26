@@ -1,6 +1,14 @@
 package Kephra::Config::Global;
 our $VERSION = '0.26';
 
+=head1 NAME
+
+Kephra::Config::Global - loading and storing the config settings for the app
+
+=head1 DESCRIPTION
+
+=cut
+
 use strict;
 use warnings;
 
@@ -10,7 +18,7 @@ sub settings { \%settings }
 
 sub _sub_dir {'global'}
 my ($auto_file, $current_file);
-sub current_file{ $current_file = defined $_[0]? $_[0]  : $current_file }
+sub current_file{ $current_file = defined $_[0] ? $_[0] : $current_file }
 sub auto_file   { $auto_file    = defined $_[0] ? $_[0] : $auto_file }
 
 sub load_autosaved {
@@ -68,7 +76,7 @@ sub load_from {
 sub update {
 	Kephra::App::Window::save_positions();
 	Kephra::Document::Data::update_attributes();
-	Kephra::Edit::Bookmark::save_all();
+	Kephra::Edit::Marker::save_all();
 	Kephra::App::Panel::Notepad::save();
 	Kephra::App::Panel::Output::save();
 }
@@ -119,7 +127,7 @@ print "  apply sets:", Benchmark::timestr( Benchmark::timediff( $t4, $t3 ) ), "\
 	if $Kephra::BENCHMARK;
 
 	Kephra::App::ContextMenu::connect_all();
-	Kephra::App::EditPanel::apply_settings();
+	Kephra::App::EditPanel::apply_settings_here();
 
 	Kephra::Config::build_fileendings2syntaxstyle_map();
 	Kephra::Config::build_fileendings_filterstring();

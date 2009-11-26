@@ -4,10 +4,9 @@ our $VERSION = '0.33';
 
 =head1 NAME
 
-Kephra::::Edit - basic edit menu calls and internals for editing
+Kephra::Edit - basic edit menu calls and internals for editing
 
 =head1 DESCRIPTION
-
 
 =cut
 use strict;
@@ -17,7 +16,6 @@ use warnings;
 #
 sub _ep_ref { Kephra::App::EditPanel::_ref() }
 sub _keep_focus{ Wx::Window::SetFocus( _ep_ref() ) }
-
 sub _let_caret_visible {
 	my $ep = _ep_ref();
 	my ($selstart, $selend) = $ep->GetSelection;
@@ -40,6 +38,7 @@ sub _center_caret {
 	my $line = $ep->GetCurrentLine();
 	$ep->ScrollToLine( $line - ( $ep->LinesOnScreen / 2 ));
 	$ep->EnsureVisible($line);
+	$ep->EnsureCaretVisible();
 }
 
 my @pos_stack;
@@ -266,7 +265,6 @@ sub insert_at_pos {
 #
 # Edit Line
 #
-
 sub cut_current_line { _ep_ref()->CmdKeyExecute(&Wx::wxSTC_CMD_LINECUT) }
 sub copy_current_line{ _ep_ref()->CmdKeyExecute(&Wx::wxSTC_CMD_LINECOPY)}
 sub double_current_line {
@@ -296,10 +294,6 @@ sub del_current_line{_ep_ref()->CmdKeyExecute(&Wx::wxSTC_CMD_LINEDELETE)}
 sub del_line_left {_ep_ref()->CmdKeyExecute(&Wx::wxSTC_CMD_DELLINELEFT) }
 sub del_line_right{_ep_ref()->CmdKeyExecute(&Wx::wxSTC_CMD_DELLINERIGHT)}
 
-#
-sub eval_newline_sub{
-}
-
-#
+sub eval_newline_sub{}
 
 1;

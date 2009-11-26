@@ -1,6 +1,6 @@
 package Kephra::App::TabBar;
 our $VERSION = '0.18';
-=pod
+
 =pod
 
 =head1 NAME
@@ -269,7 +269,7 @@ sub refresh_label {
 		$label .= ' #' if Kephra::Document::Data::get_attribute('editable');
 		$label .= ' *' if Kephra::Document::Data::get_attribute('modified');
 	}
-	$notebook->SetPageText( $doc_nr, $label );
+	$notebook->SetPageText( _doc2tab_pos($doc_nr), $label );
 }
 
 sub refresh_current_label { refresh_label(Kephra::Document::Data::current_nr()) }

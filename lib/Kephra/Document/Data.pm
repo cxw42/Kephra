@@ -17,6 +17,14 @@ my $current_attr;   # data of current doc
 my $current_nr = 0;
 my $previous_nr = 0;
 my %values;         # global doc values
+#
+# global values
+#
+sub values   { \%values }
+sub get_value { $values{$_[0]} if defined $values{$_[0]} }
+sub set_value { $values{$_[0]} = $_[1] if defined $_[1]  }
+sub inc_value { $values{$_[0]}++ }
+sub dec_value { $values{$_[0]}-- }
 
 sub _attributes{ \@attributes } 
 sub _values    { \%values     }
@@ -25,6 +33,7 @@ sub _ep        {
 	my $ep = $attributes[validate_doc_nr($_[0])]{ep_ref};
 	$ep if Kephra::App::EditPanel::is($ep);
 }
+
 sub count      { @attributes  }
 sub last_nr    { $#attributes } 
 sub previous_nr{ $previous_nr }
@@ -48,7 +57,8 @@ sub get_current_nr  { $current_nr }
 sub set_current_nr  { 
 	$current_nr = $_[0] if defined $_[0] and validate_doc_nr($_[0]) > -1;
 	$current_attr = $attributes[$current_nr];
-	Kephra::App::EditPanel::_set_ref( $current_attr->{ep_ref} );
+	Kephra::App::EditPanel::_set_ref( _ep($current_nr) );
+	$Kephra::config{file}{current}{directory} = get_attribute('directory', $current_nr);
 }
 sub validate_doc_nr { 
 	my $nr = shift;
@@ -59,26 +69,6 @@ sub validate_doc_nr {
 sub valid_or_current_doc_nr {
 	my $nr = validate_doc_nr(shift);
 	$nr == -1 ? current_nr() : $nr;
-}
-#
-sub create_slot     {
-	my $nr = shift;
-	$attributes[$_+1] = $attributes[$_] for reverse $nr .. last_nr();
-	$attributes[$nr] = {};
-	set_attributes_to_default($nr);
-
-	set_current_nr($current_nr+1) if $current_nr >= $nr;
-	$previous_nr++ if $previous_nr >= $nr;
-}
-sub empty_slot      {
-	my $nr = shift;
-	return if $nr < 0 or exists $attributes[$nr];
-	$attributes[$nr] = {}
-}
-sub delete_slot     {
-	my $nr = validate_doc_nr(shift);
-	return if $nr < 0;
-	splice @attributes, $nr, 1;
 }
 #
 # generic attr data accessors on any value and any doc
@@ -129,14 +119,7 @@ sub attr {
 	if (defined $_[1]){ $current_attr->{$_[0]} = $_[1]}
 	else              { $current_attr->{$_[0]} }
 }
-#
-# global values
-#
-sub values   { \%values }
-sub get_value { $values{$_[0]} if defined $values{$_[0]} }
-sub set_value { $values{$_[0]} = $_[1] if defined $_[1]  }
-sub inc_value { $values{$_[0]}++ }
-sub dec_value { $values{$_[0]}-- }
+
 #
 # specific data (attribute) accessors
 #
@@ -196,9 +179,44 @@ sub cursor_pos     {
 	my $attr = $attributes[$current_nr];
 	$attr->{cursor_pos} if $values{loaded};
 }
+sub nr_from_ep {
+	my $ep = shift;
+	for (@{all_nr()}) {
+		return $_ if $ep eq _ep($_);
+	}
+	return -1;
+}
+sub get_all_ep {
+	my @ep;
+	for (@{all_nr()}) {
+		my $ep = _ep($_);
+		push @ep, $ep if $ep;
+	}
+	\@ep;
+}
 #
+#
+#
+sub create_slot     {
+	my $nr = shift;
+	$attributes[$_+1] = $attributes[$_] for reverse $nr .. last_nr();
+	$attributes[$nr] = {};
+	set_attributes_to_default($nr);
+
+	set_current_nr($current_nr+1) if $current_nr >= $nr;
+	$previous_nr++ if $previous_nr >= $nr;
+}
+sub empty_slot      {
+	my $nr = shift;
+	return if $nr < 0 or exists $attributes[$nr];
+	$attributes[$nr] = {}
+}
+sub delete_slot     {
+	my $nr = validate_doc_nr(shift);
+	return if $nr < 0;
+	splice @attributes, $nr, 1;
+}
 # more complex operations
-#
 sub set_missing_attributes_to_default {
 	my ($nr, $file) = @_;
 	$nr = validate_doc_nr($nr);
@@ -217,7 +235,7 @@ sub set_attributes_to_default {
 		'codepage'    => $default->{codepage},
 		'edit_pos'    => -1,
 		'file_path'   => $file,
-		'ep_ref'      => $attributes[$nr]{ep_ref},
+		'ep_ref'      => _ep($nr),
 		'readonly'    => $default->{readonly},
 		'syntaxmode'  => $default->{syntaxmode},
 		'tab_size'    => $default->{tab_size},
@@ -271,7 +289,7 @@ sub update_attributes { # was named save_properties
 	$doc_nr = defined $doc_nr ? validate_doc_nr($doc_nr) : current_nr();
 	return if $doc_nr < 0;
 	my $attr = $attributes[$doc_nr];
-	my $ep = Kephra::App::EditPanel::_ref();
+	my $ep = _ep($doc_nr);
 	$attr->{cursor_pos}= $ep->GetCurrentPos;
 	$attr->{selstart}  = $ep->GetSelectionStart;
 	$attr->{selend}    = $ep->GetSelectionEnd;

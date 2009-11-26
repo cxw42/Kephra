@@ -223,9 +223,8 @@ sub get {
 					autosize   => 1,
 					back_color => 'd8d8d4',
 					fore_color => '777788',
-					min_width  => 4,
+					min_width  => 3,
 					visible    => 1,
-					width      => 4,
 				},
 				marker => {
 					back_color => '0022ff',
@@ -243,16 +242,25 @@ sub get {
 				'open'    => [],
 			},
 			defaultsettings => {
-				EOL_new     => 'OS',      # (OS|auto|cr|lf|cr+lf)  EOL settings for new files, OS means current OS standart -NI auto means take setting of the last touched file
-				EOL_open    => 'auto',    # (auto|cr+lf|cr|lf) EOL of opened files, if not set to auto, 
+				new => {
+					EOL      => 'OS',     # (OS|auto|cr|lf|cr+lf)  EOL settings for new files, OS means current OS standart -NI auto means take setting of the last touched file
+					codepage => '8bit',   # UTF codepage, used for charset
+					cursor_pos => 0,
+					readonly => 'no',     # (0|1|2|on|off|protect) if =1 it set a write protection on readonly files
+					syntaxmode => 'perl', # (auto|none|lang_id) which syntaxstyle on new files
+					tab_size => '4',      # (0..n) how much (white)spaces equals one tab?
+					tab_use  => '1',      # (0|1) use of tab chars
+				},
+				open => {
+					EOL         => 'auto',# (auto|cr+lf|cr|lf) EOL of opened files, if not set to auto, 
 				                          # the file automaticly will converted to set value
-				codepage    => 65001,     # UTF codepage, used for charset
-				cursor_pos  => 0,
-				readonly    => 'protect', # (0|1|2|on|off|protect) if =1 it set a write protection on readonly files
-				syntaxmode  => 'auto',    # (auto|none|lang_id) which syntaxstyle on new files
-				tab_size    => '4',       # (0..n) how much (white)spaces equals one tab?
-				tab_use_new => '1',       # (0|1) use of tab chars
-				tab_use_open=> 'auto',    # (auto|0|1) use of tab chars
+					codepage    => 'auto',# (8bit|utf8) codepage, used for charset
+					cursor_pos  => 0,
+					readonly    => 'protect', # (0|1|2|on|off|protect) if =1 it set a write protection on readonly files
+					syntaxmode  => 'auto',    # (auto|none|lang_id) which syntaxstyle on new files
+					tab_size    => '4',       # (0..n) how much (white)spaces equals one tab?
+					tab_use     => 'auto',    # (auto|0|1) use of tab chars
+				},
 			},
 			endings => {
 				ada     => 'ada ads adb',
@@ -360,6 +368,7 @@ sub get {
 				match_word_begin => 0,
 			},
 			bookmark => {},
+			file => 'search_data.yml',
 			history => {
 				current_find_item => 'patch',
 				current_replace_item => '--',

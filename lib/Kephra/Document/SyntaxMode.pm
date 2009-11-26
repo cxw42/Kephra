@@ -29,13 +29,18 @@ sub switch_auto {
 	else                      { set('none')      }
 }
 
-sub reload { set( _ID() ) }
+sub reload { 
+	my $nr = Kephra::Document::Data::valid_or_current_doc_nr(shift);
+	set( Kephra::Document::Data::get_attribute('syntaxmode', $nr), $nr );
+}
 sub update { _ID(Kephra::Document::Data::attr('syntaxmode')) }
 
 sub set {
-	my $style   = shift;
-	my $ep      = Kephra::App::EditPanel::_ref();
-	my $color   = \&Kephra::Config::color;
+	my $style  = shift;
+	my $doc_nr = Kephra::Document::Data::valid_or_current_doc_nr(shift);
+	return if $doc_nr == -1;
+	my $ep     = Kephra::Document::Data::_ep($doc_nr);
+	my $color  = \&Kephra::Config::color;
 	$style = _get_by_fileending() if $style eq 'auto';
 	$style = 'none' unless $style;
 	# do nothing when syntaxmode of next doc is the same
@@ -45,7 +50,7 @@ sub set {
 	else                                { $ep->SetStyleBits(5) }
 	# clear style infos
 	$ep->StyleResetDefault;
-	Kephra::App::EditPanel::load_font();
+	Kephra::App::EditPanel::load_font($ep);
 	$ep->StyleClearAll;
 	$ep->SetKeyWords( $_, '' ) for 0 .. 1;
 	# load syntax style
@@ -74,11 +79,11 @@ sub set {
 			(&Wx::wxSTC_STYLE_INDENTGUIDE,&$color($indicator->{indent_guide}{color}));
 	}
 
-	Kephra::Document::Data::set_attribute( 'syntaxmode', $style );
+	Kephra::Document::Data::set_attribute( 'syntaxmode', $style, $doc_nr);
 	_ID($style);
 	$ep->Colourise( 0, $ep->GetTextLength ); # refresh editpanel painting
 	# cleanup
-	Kephra::App::EditPanel::Margin::refresh_changeable_settings();
+	Kephra::App::EditPanel::Margin::refresh_changeable_settings($ep);
 	Kephra::App::StatusBar::style_info($style);
 	return $style;
 }

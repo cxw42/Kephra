@@ -77,7 +77,7 @@ sub refresh_find_history {
 		}
 		# new history item
 		unshift @{$item}, $current_find_item;
-		Kephra::API::EventTable::trigger('find.item.history.changed');
+		Kephra::EventTable::trigger('find.item.history.changed');
 		$Kephra::temp{search}{history}{refresh} = 1;
 	} else {
 		$Kephra::temp{search}{history}{refresh} = 0;
@@ -102,7 +102,7 @@ sub refresh_replace_history {
 			pop @{$item} if ( $_ == $length );
 		}
 		unshift @{$item}, $current_item;
-		Kephra::API::EventTable::trigger('replace.item.history.changed');
+		Kephra::EventTable::trigger('replace.item.history.changed');
 	}
 }
 
@@ -165,7 +165,7 @@ sub set_find_item {
 	if (defined $new and $new ne $old){
 		_history()->{current_find_item} = $new;
 		$Kephra::temp{search}{item}{foundpos} = -1;
-		Kephra::API::EventTable::trigger('find.item.changed');
+		Kephra::EventTable::trigger('find.item.changed');
 	}
 }
 
@@ -183,11 +183,11 @@ sub set_replace_item {
 	my $new = shift;
 	if (defined $new and $new ne $old){
 		$Kephra::config{search}{history}{current_replace_item} = $new;
-		Kephra::API::EventTable::trigger('replace.item.changed');
+		Kephra::EventTable::trigger('replace.item.changed');
 	}
 }
 
-sub set_selection_as_replace_item{
+sub set_selection_as_replace_item {
 	set_replace_item( Kephra::App::EditPanel::_ref()->GetSelectedText )
 }
 
@@ -202,7 +202,7 @@ sub _find_next  {
 		$Kephra::temp{search}{flags},
 		get_find_item()
 	);
-	Kephra::API::EventTable::trigger('find');
+	Kephra::EventTable::trigger('find');
 	return $Kephra::temp{search}{item}{foundpos};
 }
 
@@ -213,7 +213,7 @@ sub _find_prev {
 		$Kephra::temp{search}{flags},
 		get_find_item()
 	);
-	Kephra::API::EventTable::trigger('find');
+	Kephra::EventTable::trigger('find');
 	return $Kephra::temp{search}{item}{foundpos};
 }
 
@@ -245,7 +245,7 @@ sub first_increment {
 
 #sub next_increment {}
 # find related menu calls
-sub find_all{
+sub find_all {
 #Kephra::Dialog::msg_box(undef, &Wx::wxUNICODE(), '');
 	my $ep = Kephra::App::EditPanel::_ref();
 	if ( _exist_find_item() ) {

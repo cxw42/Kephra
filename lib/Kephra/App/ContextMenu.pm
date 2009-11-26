@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 
-sub get{ &Kephra::Menu::ready or Wx::Menu->new() }
+sub get{ &Kephra::Menu::ready || Wx::Menu->new() }
 #
 sub create_all {
 	my $config = $Kephra::config{app}{contextmenu};

@@ -40,7 +40,7 @@ sub _new_if_allowed {
 	# still there? good, now we make a new document
 	Kephra::Document::Data::create_slot($new_doc_nr);
 	Kephra::App::TabBar::add_edit_tab($new_doc_nr);
-	Kephra::App::EditPanel::apply_settings
+	Kephra::App::EditPanel::apply_settings_here
 		( Kephra::Document::Data::_ep($new_doc_nr) );
 	Kephra::Document::Data::inc_value('buffer');
 	return $new_doc_nr;
@@ -79,11 +79,11 @@ sub reset {   # restore once opened file from its settings
 	$ep->SetSavePoint;
 	Kephra::Document::Data::set_attributes_to_default($doc_nr, '');
 	Kephra::Document::Data::evaluate_attributes($doc_nr);
-	Kephra::Edit::Bookmark::restore_all();
+	Kephra::Edit::Marker::restore_all();
 	Kephra::App::Window::refresh_title();
 	Kephra::App::TabBar::refresh_label($doc_nr);
 	Kephra::App::StatusBar::refresh_all_cells();
-	Kephra::App::EditPanel::Margin::reset_line_number_width();
+	Kephra::App::EditPanel::Margin::autosize_line_number($ep, $doc_nr);
 }
 
 
