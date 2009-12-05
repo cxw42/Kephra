@@ -12,5 +12,7 @@ Kephra::Plugin - dummy base class for all Extentions/Plugins
 use strict;
 use warnings;
 
-
+sub install{}
+sub deinstall{}
+sub init {}
 1;

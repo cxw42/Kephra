@@ -48,7 +48,7 @@ sub get {
 			'radioitem search-range-document',
 			'radioitem search-range-open-docs',
 		],
-		'document_syntaxstyle_contextmenu' => [
+		'status_syntaxstyle_contextmenu' => [
 			'radioitem document-syntaxmode-c',
 			'radioitem document-syntaxmode-conf',
 			'radioitem document-syntaxmode-css',
@@ -61,7 +61,7 @@ sub get {
 			'item document-syntaxmode-auto',
 			'checkitem document-syntaxmode-none',
 		],
-		'document_whitespace_contextmenu' => [
+		'status_whitespace_contextmenu' => [
 			'checkitem document-auto-indention',
 			'checkitem document-brace-indention',
 			'',
@@ -88,7 +88,7 @@ sub get {
 			'radioitem document-tabs-soft',
 			'radioitem document-tabs-hard',
 		],
-		'document_lineendchar_contextmenu' => [
+		'status_lineendchar_contextmenu' => [
 			'checkitem view-editpanel-EOL',
 			'',
 			'item document-EOL-auto',
@@ -97,7 +97,7 @@ sub get {
 			'radioitem document-EOL-cr',
 			'radioitem document-EOL-cr+lf',
 		],
-		'document_info_contexmenu' => [
+		'status_info_contexmenu' => [
 			'radioitem view-statusbar-info-none',
 			'radioitem view-statusbar-info-length',
 			'radioitem view-statusbar-info-date',

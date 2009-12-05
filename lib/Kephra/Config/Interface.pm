@@ -6,7 +6,7 @@ use warnings;
  
 # handling config files under config/interface
 
-sub _config        { $Kephra::config{app} }
+sub _config        { Kephra::API::settings()->{app} }
 sub _sub_dir       { _config()->{app_data_sub_dir} }
 sub _cache_sub_dir { File::Spec->catdir(_sub_dir(), _config()->{cache}{sub_dir})}
 

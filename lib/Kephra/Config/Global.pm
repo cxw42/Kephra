@@ -30,7 +30,7 @@ sub load_autosaved {
 	for my $file ($autosave, $backup) {
 		if ( -e $file ) {
 			my $config_tree = Kephra::Config::File::load($file);
-			%settings = %Kephra::config = %$config_tree if ref $config_tree eq 'HASH';
+			%settings = %$config_tree if ref $config_tree eq 'HASH';
 			last if %settings;
 			rename $file, $file . '.failed';
 		}
@@ -45,7 +45,7 @@ sub save_autosaved {
 	#$main::logger->debug("save_autosaved");
 	my $file_name = auto_file();
 	rename $file_name, $file_name . '~';
-	Kephra::Config::File::store( $file_name, \%Kephra::config  );#settings()
+	Kephra::Config::File::store( $file_name, \%settings  );
 }
 
 
@@ -58,7 +58,7 @@ sub open_current_file {
 sub load_backup_file { reload( auto_file() . '~' ) }
 
 sub load_defaults {
-	%settings = %Kephra::config = %{ Kephra::Config::Default::global_settings() };
+	%settings = %{ Kephra::Config::Default::global_settings() };
 	evaluate();
 }
 
@@ -146,7 +146,7 @@ sub reload {
 		Kephra::Document::Data::update_attributes();
 		my %test_hash = %{ Kephra::Config::File::load($configfile) };
 		if (%test_hash) {
-			%settings = %Kephra::config = %test_hash;
+			%settings = %test_hash;
 			reload_tree();
 		} else {
 			save();
@@ -196,7 +196,7 @@ sub eval_config_file {
 		return;
 	}
 	# reload template menu wenn template file changed
-	my $cfg = $Kephra::config{file}{templates};
+	my $cfg = $settings{file}{templates};
 	my $path = File::Spec->catfile( $cfg->{directory}, $cfg->{file} );
 	if ( substr($file_path, - length $path) eq $path ) {
 		Kephra::App::Menu::set_absolete('file_insert_templates');
@@ -208,7 +208,7 @@ sub eval_config_file {
 sub save {
 	my $file_name = shift || current_file();
 	update();
-	Kephra::Config::File::store( $file_name, \%Kephra::config );
+	Kephra::Config::File::store( $file_name, \%settings );
 }
 
 sub save_as {
@@ -238,8 +238,8 @@ sub merge_with {
 sub load_subconfig {
 	my $file = shift;
 	if ( -e $file ) {
-		%Kephra::config = %settings = %{ Kephra::Config::Tree::merge
-			(Kephra::Config::File::load($file), \%Kephra::config) };
+		%settings = %{ Kephra::Config::Tree::merge
+			(Kephra::Config::File::load($file), \%settings) };
 		reload_tree();
 	}
 }

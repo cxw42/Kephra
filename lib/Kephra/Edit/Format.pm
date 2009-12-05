@@ -1,10 +1,18 @@
 package Kephra::Edit::Format;
 our $VERSION = '0.26';
+=head1 NAME
+
+Kephra::App::Format - 
+
+=head1 DESCRIPTION
+
+=cut
 
 use strict;
 use warnings;
 
 sub _ep_ref { Kephra::App::EditPanel::_ref() }
+sub _config { Kephra::API::settings()->{editpanel} }
 
 # change indention width of selected text
 sub _indent_selection {
@@ -56,7 +64,7 @@ sub blockindent_open {
 	$ep->CmdKeyExecute(&Wx::wxSTC_CMD_NEWLINE);
 
 	# make new brace if there is missing one
-	if ($Kephra::config{editpanel}{auto}{brace}{make} and
+	if (_config()->{auto}{brace}{make} and
 		($matchbrace == -1 or $ep->GetLineIndentation($line) != $matchindent )){
 		$ep->CmdKeyExecute(&Wx::wxSTC_CMD_NEWLINE);
 		$ep->AddText('}');
@@ -100,12 +108,12 @@ sub blockindent_close {
 	}
 
 	# make new line
-	$Kephra::config{editpanel}{auto}{indent}
+	_config()->{auto}{indent}
 		? autoindent()
 		: $ep->CmdKeyExecute(&Wx::wxSTC_CMD_NEWLINE);
 
 	# 3 lösche dubs wenn in nächster zeile nur spaces bis dup
-	#if ( $Kephra::config{editpanel}{auto}{brace}{join} ) {
+	#if ( _config()->{auto}{brace}{join} ) {
 		#my $delbrace = $ep->PositionFromLine( $line + 2 )
 			#+ $ep->GetLineIndentation( $line + 1 );
 		#if ( $ep->GetCharAt($delbrace) == 125 ) {
@@ -164,7 +172,7 @@ sub blockformat{
 	my $bline     = $ep->LineFromPosition($begin);
 	my $tmp_begin = $ep->PositionFromLine($bline);
 	my $bspace    = ' ' x $ep->GetLineIndentation($bline);
-	my $space     = $Kephra::config{editpanel}{auto}{indention} ? $bspace : '';
+	my $space     = _config()->{auto}{indention} ? $bspace : '';
 	chop $bspace;
 
 	$ep->SetSelection($tmp_begin, $end);
@@ -181,7 +189,7 @@ sub blockformat{
 }
 
 sub blockformat_LLI{
-	blockformat( $Kephra::config{editpanel}{indicator}{right_margin}{position} );
+	blockformat( _config()->{indicator}{right_margin}{position} );
 }
 
 sub blockformat_custom {
@@ -223,7 +231,7 @@ sub linebreak_custom {
 }
 
 sub linebreak_LLI {
-	line_break( $Kephra::config{editpanel}{indicator}{right_margin}{position} );
+	line_break( _config()->{indicator}{right_margin}{position} );
 }
 
 sub linebreak_window {

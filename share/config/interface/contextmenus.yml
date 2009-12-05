@@ -41,7 +41,7 @@ searchbar_contextmenu:
  - radioitem search-range-document
  - radioitem search-range-open-docs
 
-document_syntaxstyle_contextmenu:
+status_syntaxstyle_contextmenu:
  - checkitem document-syntaxmode-c
  - checkitem document-syntaxmode-conf
  - checkitem document-syntaxmode-css
@@ -53,8 +53,8 @@ document_syntaxstyle_contextmenu:
  -
  - item document-syntaxmode-auto
  - checkitem document-syntaxmode-none
-
-document_whitespace_contextmenu:
+ 
+status_whitespace_contextmenu:
  - checkitem document-auto-indention
  - checkitem document-brace-indention
  -
@@ -81,7 +81,7 @@ document_whitespace_contextmenu:
  - radioitem document-tabs-soft
  - radioitem document-tabs-hard
 
-document_lineendchar_contextmenu:
+status_lineendchar_contextmenu:
  - checkitem view-editpanel-EOL
  -
  - item document-EOL-auto
@@ -90,7 +90,7 @@ document_lineendchar_contextmenu:
  - radioitem document-EOL-cr
  - radioitem document-EOL-cr+lf
 
-document_info_contexmenu:
+status_info_contexmenu:
  - radioitem view-statusbar-info-none
  - radioitem view-statusbar-info-length
  - radioitem view-statusbar-info-date

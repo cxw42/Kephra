@@ -14,7 +14,7 @@ sub main {
 		# init search and replace dialog
 		$Kephra::temp{dialog}{config}{active} = 1;
 		my $frame  = Kephra::App::Window::_ref();
-		my $config = $Kephra::config{dialog}{config};
+		my $config = Kephra::API::settings()->{dialog}{config};
 		my $l18n   = Kephra::Config::Localisation::strings();
 		my $d_l10n = $l18n->{dialog}{config};
 		my $g_l10n = $l18n->{dialog}{general};
@@ -22,7 +22,7 @@ sub main {
 		my $cl_l10n = $l18n->{commandlist}{label};
 		my $d_style= &Wx::wxNO_FULL_REPAINT_ON_RESIZE | &Wx::wxSYSTEM_MENU | 
 			&Wx::wxCAPTION | &Wx::wxMINIMIZE_BOX | &Wx::wxCLOSE_BOX;
-		#$d_style |= &Wx::wxSTAY_ON_TOP if $Kephra::config{app}{window}{stay_on_top};
+		#$d_style |= &Wx::wxSTAY_ON_TOP if Kephra::API::settings()->{app}{window}{stay_on_top};
 
 
 # my $staticbox = Wx::StaticBox->new( $panel, -1, 'Wx::StaticBox' );
@@ -97,7 +97,7 @@ sub main {
 
 sub quit_config_dialog {
 	my ( $win, $event ) = @_;
-	my $cfg = $Kephra::config{dialog}{config};
+	my $cfg = Kephra::API::settings()->{dialog}{config};
 	if ( $cfg->{save_position} == 1 ) {
 		( $cfg->{position_x}, $cfg->{position_y} ) = $win->GetPositionXY;
 	}

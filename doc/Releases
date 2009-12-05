@@ -1,20 +1,65 @@
-0.4.3 (0.4.2.6)
+0.5 {0.4.2.8}
+ * code folding support
+   + 4 toggle functions: fold here, recursice, siblings, all
+   + usable with mouse (fold margin) and keys (<alt>[+<shift>]+(<+>|<->))
+   + 2 styles for folding marker: boxes and arrows
+   + optional flagline shows where text is folded
+ * new tabbar
+   + move tabs with mouse and keys
+   + close icons on each tab
+   + document menu in the right corner
+ * new document property: encoding (8bit/utf-8)
+ * marker added
+ + improved stausbar
+   + created from a config file
+   + context help
+ + new tools
+   + color picker
+   + display @INC and %ENV
+   + note selection on shift+f4
+ + changeable interpreter path
+ + convert HTML enteties
+ + open online doc and native lang forum URL in default browser
+ + file missing dialog
+ ~ end of line chars of new docs depends now on the running OS
+ [ on splitters can now be clicked
+
+0.4.3 (0.4.2.13)
  * new document property: encoding
+   [ added encoding menu under document > encoding
    + status field codepage
-   [ added encoding menu
- + loading stausbar from config
+ + bookmarks reworked
+   + goto, set/unset or delete marker
+   + set marker by mouse
+   [ marker nav in searchbar
+   [ new bookmark icons (jenne++)
+ + new tools
+   + color picker
+   + output %ENV 
+   + notepad has line move
+ + loading statusbar from config
+   + statusbar has context help while mouse hover
    " added keys app > statusbar > file and app > statusbar > node
    [ contextmenus are more visually synced with statusbar
+ + set search dialo transparency unter dialog > search > transparency
  + can assign icons to menus
+ ~ autoconverts of EOL are now visible
  ~ line_nr margin width autosize works now per doc
+ ~ current dir is now always synched with current file
  ' updated german help-forum link
+ " different defaultsettings for new and opened files
+ [ some icons reworked (jenne++)
+ [ bookmarks have now individual icons (jenne++)
  [ splitter are now without live update, has lot less flicker
  [ rearranged file menu
  ! crash while folding
  ! all visual settings work global again
- ! dont loose caret while find and defold
  ! all event react on selection correct again
+ ! don't loose caret while find and defold
+ ! fixed cursor pos on line move
  ! wrong tabbar content after some close doc events
+ ! tab info chat in wrong tab
+ ! bookmarks work again
  ! splashscreen works again
 
 
@@ -24,7 +69,7 @@
    + fold recursively (alt+shift+minus)
    + key binding for fold ops: fold => alt+minus, fold siblings => alt+shift+minus
    ~ fold mouse binding: left => here, midd => recursive, right => siblings, l+f => all
-   + optional flagline showes where text is folded
+   + optional flagline shows where text is folded
    + option for keeping caret visible while folding
  + second fold marker style set editpanel > margin > fold > style to arrows or boxes
  + open online doc and native lang forum URL in default browser

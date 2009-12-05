@@ -7,11 +7,11 @@ use warnings;
 my @session;
 
 # internal Module API
-sub _config { my %h; $Kephra::config{file}{history} || \%h  }
+sub _config { my %h; Kephra::API::settings()->{file}{history} || \%h  }
 #sub _config { $Kephra::config{file}{session}{history} }
 # file length node save = 1
 sub _get {
-	my $history = _config->{path};
+	my $history = _config()->{path};
 	if (ref $history eq 'ARRAY') {                            $history }
 	elsif (defined $history)     { my @history = ($history); \@history }
 	else                         { my @history = ();         \@history }

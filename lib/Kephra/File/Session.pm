@@ -19,7 +19,7 @@ sessionfiles contain metadata like syntaxmode, tabsize, cursorpos, -NI codset
 use strict;
 use warnings;
 
-sub _config      { $Kephra::config{file}{session} }
+sub _config      { Kephra::API::settings()->{file}{session} }
 sub _dialog_l18n { Kephra::Config::Localisation::strings()->{dialog} }
 sub _forget_gone_files  {
 	my @true_files = ();
@@ -132,9 +132,8 @@ sub save      {
 	my @doc_list = @{ Kephra::Document::Data::_attributes() };
 	for my $nr (0 .. $#doc_list) {
 		my $vis_pos = $doc2vis->($nr);
-		for my $key (@saved_properties) {
-			$temp_config{document}[$vis_pos]{$key} = $doc_list[$nr]{$key};
-		}
+		$temp_config{document}[$vis_pos]{$_} = $doc_list[$nr]{$_}
+			for @saved_properties;
 	}
 	@{ $temp_config{document} } = @{ _forget_gone_files( \$temp_config{document} ) };
 	Kephra::Config::File::store( $file, \%temp_config );

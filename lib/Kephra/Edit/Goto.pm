@@ -1,6 +1,12 @@
 package Kephra::Edit::Goto;
-our $VERSION = '0.09';
+our $VERSION = '0.10';
+=head1 NAME
 
+Kephra::App::Goto - 
+
+=head1 DESCRIPTION
+
+=cut
 use strict;
 use warnings;
 #
@@ -47,17 +53,17 @@ sub next_visible_pos {
 	_center_caret();
 }
 
-sub line    { line_nr(@_) }
-sub line_nr {
+sub line    {
 	my $ep = _ep_ref();
-	my $l18n = Kephra::Config::Localisation::strings()->{dialog}{edit};
+	my $l18n = Kephra::API::localisation()->{dialog}{edit};
 	my $line = Kephra::Dialog::get_number( 
 		Kephra::App::Window::_ref(),
 		$l18n->{goto_line_input}, $l18n->{goto_line_headline},
 		$ep->GetCurrentLine + 1
 	);
-	position( $ep->PositionFromLine($line - 1) ) unless $line == &Wx::wxCANCEL;
+	line_nr( $line - 1) unless $line == &Wx::wxCANCEL;
 }
+sub line_nr { position( _ep_ref()->PositionFromLine( shift ) ) }
 
 sub last_edit {
 	my $pos = Kephra::Document::Data::attr('edit_pos');

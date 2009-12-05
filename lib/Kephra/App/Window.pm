@@ -1,12 +1,20 @@
 package Kephra::App::Window;    # Main application window
 our $VERSION = '0.09';
 
+=head1 NAME
+
+Kephra::App::Window - frame of the main window
+
+=head1 DESCRIPTION
+
+=cut
+
 use strict;
 use warnings;
 
 my $frame;
 sub _ref { if (ref $_[0] eq 'Wx::Frame'){ $frame = $_[0] } else { $frame } }
-sub _config { $Kephra::config{app}{window} }
+sub _config { Kephra::API::settings()->{app}{window} }
 
 sub create {
 	my $win = Wx::Frame->new
@@ -64,7 +72,8 @@ sub refresh_title {
 	my $filename = Kephra::Document::Data::file_name() || "<$untitled>";
 	my $docnr = Kephra::Document::Data::current_nr() + 1;
 	my $doccount = Kephra::Document::Data::last_nr();
-	set_title( eval qq/"$Kephra::config{app}{window}{title}"/ );
+	my $title = _config()->{title};
+	set_title( eval qq/"$title"/ );
 }
 
 

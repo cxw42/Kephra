@@ -29,10 +29,11 @@ sub get {
 					document_selection => 'textselection_contextmenu',
 					file_history => '&file_history',
 					file_insert_templates => '&insert_templates',
-					status_eol => 'document_lineendchar_contextmenu',
-					status_info => 'document_info_contexmenu',
-					status_syntaxmode => 'document_syntaxstyle_contextmenu',
-					status_tab => 'document_whitespace_contextmenu',
+					status_eol => 'status_lineendchar_contextmenu',
+					status_encoding => 'status_encoding_contextmenu',
+					status_info => 'status_info_contexmenu',
+					status_syntaxmode => 'status_syntaxstyle_contextmenu',
+					status_tab => 'status_whitespace_contextmenu',
 					toolbar_search => 'searchbar_contextmenu',
 				},
 			},
@@ -134,17 +135,18 @@ sub get {
 		},
 		dialog => {
 			button_handing => 'right',
-			search => {
-				save_position => 1,
-				position_y    => 100,
-				position_x    => 100,
-				tooltips      => 1,
-			},
 			config => {
 				save_position => 1,
 				position_y    => 100,
 				position_x    => 100,
 				tooltips      => 1,
+			},
+			search => {
+				save_position => 1,
+				position_y    => 100,
+				position_x    => 100,
+				tooltips      => 1,
+				transparency  => 0.7,  # 1 visible .. 0 unvisible
 			},
 		},
 		editpanel => {
@@ -239,11 +241,10 @@ sub get {
 		file => {
 			current => {
 				directory => '',
-				'open'    => [],
 			},
 			defaultsettings => {
-				new => {
-					EOL      => 'OS',     # (OS|auto|cr|lf|cr+lf)  EOL settings for new files, OS means current OS standart -NI auto means take setting of the last touched file
+				new => {                  # defaults for new docs
+					EOL      => 'OS',     # (OS|auto|cr|lf|cr+lf) end of line character, OS means current OS standart -NI auto means take setting of the last touched file
 					codepage => '8bit',   # UTF codepage, used for charset
 					cursor_pos => 0,
 					readonly => 'no',     # (0|1|2|on|off|protect) if =1 it set a write protection on readonly files
@@ -251,7 +252,7 @@ sub get {
 					tab_size => '4',      # (0..n) how much (white)spaces equals one tab?
 					tab_use  => '1',      # (0|1) use of tab chars
 				},
-				open => {
+				open => {                 # defaults for opened files
 					EOL         => 'auto',# (auto|cr+lf|cr|lf) EOL of opened files, if not set to auto, 
 				                          # the file automaticly will converted to set value
 					codepage    => 'auto',# (8bit|utf8) codepage, used for charset
@@ -367,16 +368,19 @@ sub get {
 				match_whole_word => 0,
 				match_word_begin => 0,
 			},
-			bookmark => {},
-			file => 'search_data.yml',
+			data_file => 'search_data.yml',
 			history => {
 				current_find_item => 'patch',
 				current_replace_item => '--',
-				'length' => 12,
+				length => 12,
 				remember_only_matched => 1,
 				save => 1,
-				'use' => 1,
-			}
+				use => 1,
+			},
+			marker => {
+				any => 1,
+				wrap => 1,
+			},
 		},
 		texts => {
 			special    => 'english/special_feature.txt',

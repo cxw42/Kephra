@@ -25,7 +25,7 @@ sub keymap {
 		);
 		$frame->{keymap_win} = $keymap_win;
 		Kephra::App::Window::load_icon( $keymap_win,
-			$Kephra::config{main}{icon} );
+			Kephra::API::settings()->{main}{icon} );
 		$keymap_win->SetBackgroundColour(&Wx::wxWHITE);
 
 	  #my $keymap_ground = Wx::Panel->new($keymap_win, -1, [0,0], [-1,-1], ,);

@@ -14,7 +14,7 @@ sub to_number {
 
 	if ($new_doc != $old_doc and $new_doc > -1) {
 		Kephra::Document::Data::update_attributes($old_doc);
-		Kephra::File::save_current() if $Kephra::config{file}{save}{change_doc};
+		Kephra::File::save_current() if Kephra::File::_config()->{save}{change_doc};
 		Kephra::Document::Data::set_current_nr($new_doc);
 		Kephra::Document::Data::set_previous_nr($old_doc);
 		Kephra::App::Window::refresh_title();

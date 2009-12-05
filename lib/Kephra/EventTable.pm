@@ -17,15 +17,15 @@ sub _table { \%table }
 sub start_timer {
 	# set or update timer events
 	my $win = Kephra::App::Window::_ref();
-	my $config = $Kephra::config{file};   
+	my $config = Kephra::API::settings()->{file};   
 
 	stop_timer();
-	if ($Kephra::config{file}{open}{notify_change}) {
+	if ($config->{open}{notify_change}) {
 		$timer{file_notify} = Wx::Timer->new( $win, 2 );
 		$timer{file_notify}->Start( $config->{open}{notify_change} * 1000 );
 		Wx::Event::EVT_TIMER( $win, 2, sub { Kephra::File::changed_notify_check() } );
 	}
-	if ($Kephra::config{file}{save}{auto_save}) {
+	if ($config->{save}{auto_save}) {
 		$timer{file_save} = Wx::Timer->new( $win, 1 );
 		$timer{file_save}->Start( $config->{save}{auto_save} * 1000 );
 		Wx::Event::EVT_TIMER( $win, 1, sub { Kephra::File::save_all_named() } );

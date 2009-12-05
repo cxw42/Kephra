@@ -90,7 +90,7 @@ sub eval_data {
 		? $toolbar{$bar_id}{item_id}
 		: $Kephra::app{GUI}{masterID}++ * 100;
 	$toolbar{$bar_id}{item_id} = $bar_item_id;
-	my $respond = $Kephra::config{app}{toolbar}{all}{responsive};
+	my $respond = Kephra::API::settings()->{app}{toolbar}{all}{responsive};
 
 	for my $item_data (@$bar_data){
 		if (not $item_data->{type} or $item_data->{type} eq 'separator'){

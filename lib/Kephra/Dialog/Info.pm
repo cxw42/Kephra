@@ -15,7 +15,7 @@ sub combined {
 		&Wx::wxSYSTEM_MENU | &Wx::wxCAPTION | &Wx::wxMINIMIZE_BOX | &Wx::wxCLOSE_BOX,
 	);
 	Kephra::App::Window::load_icon( $info_win,
-		$Kephra::config{app}{window}{icon} );
+		Kephra::API::settings()->{app}{window}{icon} );
 	$info_win->SetBackgroundColour( Wx::Colour->new( 0xed, 0xeb, 0xdb ) );
 # Wx::HyperlinkCtrl->new($win,-1,label,url,pos,size,wxHL_CONTEXTMENU)
 	$info_win->Centre(&Wx::wxBOTH);

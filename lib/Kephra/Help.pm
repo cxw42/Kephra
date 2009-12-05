@@ -7,7 +7,7 @@ use warnings;
 my $dir;
 sub _dir { if (defined $_[0]) {$dir = $_[0]} else {$dir} }
 sub _hf { Kephra::Document::add ( File::Spec->catfile( $dir, shift ) ) }
-sub _config { $Kephra::config{texts} }
+sub _config { Kephra::API::settings()->{texts} }
 
 sub welcome              { _hf _config()->{welcome}}
 sub version_text         { _hf _config()->{version}}

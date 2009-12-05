@@ -1,14 +1,21 @@
 package Kephra::App::ContextMenu;
 our $VERSION = '0.10';
 
+=head1 NAME
+
+Kephra::App::ContextMenu - 
+
+=head1 DESCRIPTION
+
+=cut
+
 use strict;
 use warnings;
-
 
 sub get{ &Kephra::Menu::ready || Wx::Menu->new() }
 #
 sub create_all {
-	my $config = $Kephra::config{app}{contextmenu};
+	my $config = Kephra::API::settings()->{app}{contextmenu};
 	my $default_file = Kephra::Config::filepath($config->{defaultfile});
 	my $default_menu_def = Kephra::Config::File::load($default_file);
 	unless ($default_menu_def) {

@@ -8,12 +8,18 @@ use warnings;
 # drag n drop target class
 
 # internal functions
-sub _attributes{ $Kephra::config{search}{attribute} }
-sub _history   { $Kephra::config{search}{history} }
+my $flags;
+my $foundpos;
+my $history_refresh;
+my $old_pos;
+sub _config    { Kephra::API::settings()->{search} }
+sub _attributes{ _config()->{attribute} }
+sub _history   { _config()->{history}   }
+sub _find_pos  { $foundpos }
 
 sub _refresh_search_flags {
 	my $attr = _attributes();
-	my $flags = 0;
+	$flags = 0;
 
 	$flags |= &Wx::wxSTC_FIND_MATCHCASE
 		if defined $attr->{match_case} and $attr->{match_case};
@@ -25,7 +31,6 @@ sub _refresh_search_flags {
 	}
 	$flags |= &Wx::wxSTC_FIND_REGEXP
 		if defined $attr->{match_regex} and $attr->{match_regex};
-	$Kephra::temp{search}{flags} = $flags;
 }
 
 sub _init_history {
@@ -47,7 +52,7 @@ sub _init_history {
 		@{ $history->{replace_item} } = ();
 	}
 	# search item is findable
-	$Kephra::temp{search}{item}{foundpos} = 0;
+	$foundpos = 0;
 }
 
 sub refresh_find_history {
@@ -78,9 +83,9 @@ sub refresh_find_history {
 		# new history item
 		unshift @{$item}, $current_find_item;
 		Kephra::EventTable::trigger('find.item.history.changed');
-		$Kephra::temp{search}{history}{refresh} = 1;
+		$history_refresh = 1;
 	} else {
-		$Kephra::temp{search}{history}{refresh} = 0;
+		$history_refresh = 0;
 	}
 }
 
@@ -164,7 +169,7 @@ sub set_find_item {
 	my $new = shift;
 	if (defined $new and $new ne $old){
 		_history()->{current_find_item} = $new;
-		$Kephra::temp{search}{item}{foundpos} = -1;
+		$foundpos = -1;
 		Kephra::EventTable::trigger('find.item.changed');
 	}
 }
@@ -174,15 +179,15 @@ sub set_selection_as_find_item {
 }
 
 sub get_replace_item {
-	$Kephra::config{search}{history}{current_replace_item}
-		if defined $Kephra::config{search}{history}{current_replace_item}
+	_history()->{current_replace_item}
+		if defined _history()->{current_replace_item}
 }
 
 sub set_replace_item {
-	my $old = $Kephra::config{search}{history}{current_replace_item};
+	my $old = _history()->{current_replace_item};
 	my $new = shift;
 	if (defined $new and $new ne $old){
-		$Kephra::config{search}{history}{current_replace_item} = $new;
+		_history()->{current_replace_item} = $new;
 		Kephra::EventTable::trigger('replace.item.changed');
 	}
 }
@@ -198,23 +203,17 @@ sub replace_selection  {
 sub _find_next  {
 	my $ep = Kephra::App::EditPanel::_ref();
 	$ep->SearchAnchor;
-	$Kephra::temp{search}{item}{foundpos} = $ep->SearchNext(
-		$Kephra::temp{search}{flags},
-		get_find_item()
-	);
+	$foundpos = $ep->SearchNext( $flags, get_find_item() );
 	Kephra::EventTable::trigger('find');
-	return $Kephra::temp{search}{item}{foundpos};
+	return $foundpos;
 }
 
 sub _find_prev {
 	my $ep = Kephra::App::EditPanel::_ref();
 	$ep->SearchAnchor;
-	$Kephra::temp{search}{item}{foundpos} = $ep->SearchPrev(
-		$Kephra::temp{search}{flags},
-		get_find_item()
-	);
+	$foundpos = $ep->SearchPrev( $flags, get_find_item() );
 	Kephra::EventTable::trigger('find');
-	return $Kephra::temp{search}{item}{foundpos};
+	return $foundpos;
 }
 
 sub _find_first {
@@ -238,8 +237,7 @@ sub first_increment {
 			return 1;
 		}
 	}
-	Kephra::Edit::Goto::_pos( $Kephra::temp{search}{old_pos} )
-		if defined $Kephra::temp{search}{old_pos};
+	Kephra::Edit::Goto::_pos( $old_pos ) if defined $old_pos;
 	return 0;
 }
 
@@ -270,8 +268,7 @@ sub find_all {
 		$ep->Colourise( 0, $sel_end);
 		return 1;
 	} else {
-		Kephra::Edit::Goto::_pos( $Kephra::temp{search}{old_pos} )
-			if defined $Kephra::temp{search}{old_pos};
+		Kephra::Edit::Goto::_pos( $old_pos ) if defined $old_pos;
 		return 1;
 	}
 }
@@ -659,34 +656,6 @@ sub replace_confirm {
 	}
 	refresh_replace_history();
 	Kephra::Edit::_keep_focus();
-}
-
-
-#
-package SearchInputTarget;
-our $VERSION = '0.04';
-
-use strict;
-use base qw(Wx::TextDropTarget);
-use Wx::DND;
-
-sub new {
-	my $class  = shift;
-	my $target  = shift;
-	my $kind  = shift;
-	my $self = $class->SUPER::new(@_);
-	$self->{target} = $target if substr(ref $target, 0, 12) eq 'Wx::ComboBox';
-	$self->{kind} = $kind;
-	return $self;
-}
-
-sub OnDropText {
-	my ( $self, $x, $y, $text ) = @_;
-	$self->{target}->SetValue( $text ) if $self->{target};
-	$self->{kind} eq 'replace'
-		? Kephra::Edit::Search::set_replace_item($text)
-		: Kephra::Edit::Search::set_find_item($text);
-	0; #dont skip event
 }
 
 1;

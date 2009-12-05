@@ -1,5 +1,12 @@
 package Kephra::Edit::History;
-our $VERSION = '0.02';
+our $VERSION = '0.03';
+=head1 NAME
+
+Kephra::App::History - undo, redo and so on
+
+=head1 DESCRIPTION
+
+=cut
 
 use strict;
 use warnings;
@@ -7,18 +14,19 @@ use warnings;
 # undo, redo etc.
 
 sub _ep_ref { Kephra::App::EditPanel::_ref() }
+sub _config { Kephra::API::settings()->{editpanel}{history} }
 
 sub undo { _ep_ref()->Undo }
 sub redo { _ep_ref()->Redo }
 
 sub undo_several {
 	my $ep = _ep_ref();
-	$ep->Undo for 1 .. $Kephra::config{editpanel}{history}{fast_undo_steps};
+	$ep->Undo for 1 .. _config->{fast_undo_steps};
 }
 
 sub redo_several {
 	my $ep = _ep_ref();
-	$ep->Redo for 1 .. $Kephra::config{editpanel}{history}{fast_undo_steps};
+	$ep->Redo for 1 .. _config->{fast_undo_steps};
 }
 
 sub undo_begin {

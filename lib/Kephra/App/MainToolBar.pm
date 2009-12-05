@@ -1,13 +1,20 @@
 package Kephra::App::MainToolBar;
 our $VERSION = '0.09';
 
+=head1 NAME
+
+Kephra::App::MainToolBar - main toolbar of the app 
+
+=head1 DESCRIPTION
+
+=cut
 use strict;
 use warnings;
 
 sub _ref    { Kephra::ToolBar::_ref( _name(), $_[0]) }
 sub _name   { 'main' }
 sub _ID     { _name().'_toolbar' }
-sub _config { $Kephra::config{app}{toolbar}{main} }
+sub _config { Kephra::API::settings()->{app}{toolbar}{main} }
 
 sub create {
 	return until get_visibility();

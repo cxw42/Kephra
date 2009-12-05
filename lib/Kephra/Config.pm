@@ -47,6 +47,7 @@ sub standartize_path_slashes { File::Spec->canonpath( shift ) }
 
 sub path_matches {
 	my $given = shift;
+	return unless defined $given and @_;
 	for my $path (@_) { return 1 if $given eq standartize_path_slashes($path) }
 	return 0;
 }
@@ -91,7 +92,7 @@ sub icon_bitmap {
 	}
 	$name .= '.xpm' unless $name =~ /\.xpm$/ ;
 
-	my $path = filepath( $Kephra::config{app}{iconset_path}, $name );
+	my $path = filepath( Kephra::API::settings()->{app}{iconset_path}, $name );
 	return Wx::Bitmap->new(16,16) unless -e $path;
 
 	my $bitmap = Wx::Bitmap->new( $path, &Wx::wxBITMAP_TYPE_ANY );
@@ -106,11 +107,11 @@ sub icon_bitmap {
 sub set_xp_style {
 	my $xp_def_file = "$^X.manifest";
 	if ( $^O eq 'MSWin32' ) {
-		if (    ( $Kephra::config{app}{xp_style} eq '1' )
+		if (    ( Kephra::API::settings()->{app}{xp_style} eq '1' )
 			and ( !-r $xp_def_file ) ) {
 			Kephra::Config::Default::drop_xp_style_file($xp_def_file);
 		}
-		if (    ( $Kephra::config{app}{xp_style} eq '0' )
+		if (    ( Kephra::API::settings()->{app}{xp_style} eq '0' )
 			and ( -r $xp_def_file ) ) {
 			unlink $xp_def_file;
 		}
@@ -121,10 +122,10 @@ sub set_xp_style {
 # misc helper stuff
 #
 sub build_fileendings2syntaxstyle_map {
-	foreach ( keys %{ $Kephra::config{file}{endings} } ) {
+	foreach ( keys %{ Kephra::API::settings()->{file}{endings} } ) {
 		my $language_id = $_;
 		my @fileendings
-			= split( /\s+/, $Kephra::config{file}{endings}{$language_id} );
+			= split( /\s+/, Kephra::API::settings()->{file}{endings}{$language_id} );
 		foreach ( @fileendings ) {
 			$Kephra::temp{file}{end2langmap}{$_} = $language_id;
 		}
@@ -137,7 +138,7 @@ sub build_fileendings_filterstring {
 	my $all   = $l18n->{general}{all} . " $files (*.*)|*.*";
 	my $tfile = $Kephra::temp{file};
 	$tfile->{filterstring}{all} = $all;
-	my $conf = $Kephra::config{file};
+	my $conf = Kephra::API::settings()->{file};
 	foreach ( keys %{$conf->{group}} ) {
 		my ( $filter_id, $file_filter ) = ( $_, '' );
 		my $filter_name = ucfirst($filter_id);

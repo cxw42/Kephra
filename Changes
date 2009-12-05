@@ -1,11 +1,44 @@
 BUGS:
  !!! makefile.pl fails
 
+0.4.2.14
+ + output selection in dec and hex
+ [ output menu
+ [ file close submenu has icon
+ ! file history works again
+
+0.4.2.13
+ + set search dialo transparency unter dialog > search > transparency
+ + notepad has line move
+ ! fixed cursor pos on line move
+
+0.4.2.12
+ + new tool: output the %ENV 
+ [ marker nav in searchbar
+
+0.4.2.11
+ * marker functions
+ + set marker by mouse
+ [ bookmarks have now individual icons (jenne++)
+ ] missing helpstring for menu entry causes no more warning
+
+0.4.2.10
+ ~ autoconverts of EOL are now visible
+ " minor bit in german tab status field help
+ [ config access only through API
+ [ cleaned Kephra.pm
+ ! bookmarks work again
+ ! fixed property handling for the different file defaults
+
+0.4.2.9
+ " different default setting for new und open files
+ " new icons from jenne++
+
 0.4.2.8
  + color picker
  + statusbar has context help while mouse hover
  ] reformat to one API module
- ! tab info chat in wrong tab
+ ! tab info char in wrong tab
  ! encodings menu visible, also in the statusbar
 
 0.4.2.7
@@ -37,7 +70,7 @@ BUGS:
  ! dont loose caret while find and defold
 
 0.4.2.1
- + loading stausbar from config
+ + loading stautsbar from config
  + status field codepage
  " added keys app > statusbar > file and app > statusbar > node
  ] refactor Kephra::API::EventTable -> Kephra::EventTable
@@ -161,7 +194,7 @@ BUGS:
  ! when text margin set 0 menu shows it now
 
 0.4.1.2
- + optional flagline showes where text is folded
+ + optional flagline shows where text is folded
  + option for keeping caret visible while folding
  ! fold siblings works now also in the first line
 

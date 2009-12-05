@@ -1,13 +1,20 @@
 package Kephra::App::StatusBar;
 our $VERSION = '0.09';
 
+=head1 NAME
+
+Kephra::App::StatusBar - 
+
+=head1 DESCRIPTION
+
+=cut
 use strict;
 use warnings;
 
 my (@fields, @abs_border_x, %index, %width);
 my $bar;
 sub _ref    { $bar = ref $_[0] eq 'Wx::StatusBar' ? $_[0] : $bar }
-sub _config { $Kephra::config{app}{statusbar} }
+sub _config { Kephra::API::settings()->{app}{statusbar} }
 sub _item   { $fields[$_[0]] }
 sub _l18n   { Kephra::Config::Localisation::strings()->{app}{status} }
 sub _none_string {
@@ -75,11 +82,11 @@ sub create {
 		my $index = _index_from_mouse_pos( $x );
 		my $cell_start = $bar->GetFieldRect($index)->GetTopLeft;
 		$x = $cell_start->x unless $width{ _item($index) } == -1;
-		my $y = $cell_start->y; 
+		my $y = $cell_start->y;
 		my $field = _item( $index );
 		my $menu = \&Kephra::App::ContextMenu::get;
 		if    ($field eq 'syntaxmode'){$bar->PopupMenu( &$menu('status_syntaxmode'),$x,$y)}
-		elsif ($field eq 'codepage')  {$bar->PopupMenu( &$menu('document_encoding'),$x,$y)}
+		elsif ($field eq 'codepage')  {$bar->PopupMenu( &$menu('document_encoding'),  $x,$y)}
 		elsif ($field eq 'tab')       {$bar->PopupMenu( &$menu('status_tab'),       $x,$y)}
 		elsif ($field eq 'EOL')       {$bar->PopupMenu( &$menu('status_eol'),       $x,$y)}
 		elsif ($field eq 'message')   {$bar->PopupMenu( &$menu('status_info'),      $x,$y)}
@@ -138,7 +145,7 @@ sub caret_pos_info {
 	my $value;
 
 	# caret pos display
-	if ( $line > 9999  or $lpos > 9999 ) 
+	if ( $line > 9999  or $lpos > 9999 )
 	     { _set_text(" $line : $lpos", $index{cursor} ) }
 	else { _set_text("  $line : $lpos", $index{cursor} ) }
 
@@ -165,7 +172,7 @@ sub caret_pos_info {
 		} else {
 			my $lines = 1 + $ep->LineFromPosition($sel_end)
 						  - $ep->LineFromPosition($sel_beg);
-			my $chars = $sel_end - $sel_beg - 
+			my $chars = $sel_end - $sel_beg -
 				($lines - 1) * Kephra::Document::Data::get_attribute('EOL_length');
 			$lines = ' ' . $lines if $lines < 100;
 			if ($lines < 10000) { $value = "$lines : $chars" }
@@ -176,21 +183,23 @@ sub caret_pos_info {
 }
 
 sub style_info {
-	my $style = shift 
+	my $style = shift
 		|| Kephra::Document::Data::attr('syntaxmode')
 		|| _none_string();
 	_set_text( ' ' . $style, $index{syntaxmode} );
 }
 sub codepage_info {
-	my $codepage = shift || Kephra::Document::Data::attr('codepage') || _none_string();
-	my $msg = Kephra::CommandList::get_cmd_property
-		( 'document-encoding-'.$codepage, 'label' );
+	my $codepage = shift || Kephra::Document::Data::attr('codepage');
+	my $msg = defined $codepage 
+		? Kephra::CommandList::get_cmd_property
+			( 'document-encoding-'.$codepage, 'label' )
+		: _none_string();
 	_set_text( ' ' . $msg, $index{codepage} );
 }
 sub tab_info {
 	my $mode  = Kephra::App::EditPanel::_ref()->GetUseTabs || 0;
 	my $msg   = $mode ? ' HT' : ' ST';
-	_set_text( $msg, $index{tab} );
+	_set_text( $msg, $index{'tab'} );
 }
 
 sub EOL_info {

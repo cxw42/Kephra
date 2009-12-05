@@ -179,7 +179,7 @@ sub get {
 					up => 'Kephra::Edit::Goto::prev_related_brace()',
 				},
 				'last-edit' => 'Kephra::Edit::Goto::last_edit()',
-				line => 'Kephra::Edit::Goto::line_nr()',
+				line => 'Kephra::Edit::Goto::line()',
 			},
 			bookmark => {
 				goto => {
@@ -208,12 +208,24 @@ sub get {
 				},
 				'delete-all' => 'Kephra::Edit::Marker::delete_all_bookmarks()',
 			},
+			marker => {
+				'goto-prev' => 'Kephra::Edit::Marker::goto_prev_marker()',
+				'goto-next' => 'Kephra::Edit::Marker::goto_next_marker()',
+				'toggle-here' => 'Kephra::Edit::Marker::toggle_marker()',
+				'del-doc' => 'Kephra::Edit::Marker::delete_all_marker_in_doc()',
+				'del-all' => 'Kephra::Edit::Marker::delete_all_marker()',
+			},
 			tool => {
 				note => 'Kephra::App::Panel::Notepad::note()',
 				'note-selection' => 'Kephra::App::Panel::Notepad::append_selection()',
 				'interpreter-run-document' => 'Kephra::App::Panel::Output::run()',
 				'interpreter-stop-document' => 'Kephra::App::Panel::Output::stop()',
-				'output-inc' => 'Kephra::App::Panel::Output::display_inc()',
+				'output' => {
+					'inc' => 'Kephra::App::Panel::Output::display_inc()',
+					'env' => 'Kephra::App::Panel::Output::display_env()',
+					'selection-dec' => 'Kephra::App::Panel::Output::display_selection_dec()',
+					'selection-hex' => 'Kephra::App::Panel::Output::display_selection_hex()',
+				},
 				'choose-color' => 'Kephra::Dialog::choose_color()',
 			},
 			document => {
@@ -725,7 +737,35 @@ sub get {
 			},
 			goto => {
 				'last-edit' => 'goto-last-edit.xpm',
-				line => 'goto-last-edit.xpm',
+				line => 'goto-line.xpm',
+			},
+			marker => {
+				'goto-prev' => 'find-previous.xpm',
+				'goto-next' => 'find-next.xpm',
+			},
+			'bookmark-goto' => {
+				1 => 'bookmark1.xpm',
+				2 => 'bookmark2.xpm',
+				3 => 'bookmark3.xpm',
+				4 => 'bookmark4.xpm',
+				5 => 'bookmark5.xpm',
+				6 => 'bookmark6.xpm',
+				7 => 'bookmark7.xpm',
+				8 => 'bookmark8.xpm',
+				9 => 'bookmark9.xpm',
+				0 => 'bookmark0.xpm',
+			},
+			'bookmark-toggle' => {
+				1 => 'bookmark1.xpm',
+				2 => 'bookmark2.xpm',
+				3 => 'bookmark3.xpm',
+				4 => 'bookmark4.xpm',
+				5 => 'bookmark5.xpm',
+				6 => 'bookmark6.xpm',
+				7 => 'bookmark7.xpm',
+				8 => 'bookmark8.xpm',
+				9 => 'bookmark9.xpm',
+				0 => 'bookmark0.xpm',
 			},
 			view => {
 				dialog => {
@@ -737,15 +777,10 @@ sub get {
 				},
 				'editpanel-line-wrap' => 'line-wrap.xpm',
 				'panel-notepad' => 'note.xpm',
-				'panel-output' => 'console.xpm',
-				'toolbar-search' => 'edit-delete.xpm',
+				'panel-output' => 'output-panel.xpm',
+				'toolbar-search' => 'panel-close.xpm',
 				'window-stay-on-top' => 'stay-on-top.xpm',
 			},
-			#has_ending' => '1
-			#path' => 'interface/icon/set/jenne/
-			#type' => 'xpm
-			#use_path' => '1
-			#use_file_type' => '1
 		},
 		key => {
 			'app-exit' => 'alt+q',
@@ -853,6 +888,12 @@ sub get {
 				},
 				'last-edit' => 'ctrl+shift+g',
 				line => 'ctrl+g',
+			},
+			marker => {
+				'goto-prev' => 'ctrl+shift+m',
+				'goto-next' => 'ctrl+m',
+				'toggle-here' => 'ctrl+alt+m',
+				'del-doc' => 'ctrl+alt+shift+m',
 			},
 			bookmark => {
 				goto => {

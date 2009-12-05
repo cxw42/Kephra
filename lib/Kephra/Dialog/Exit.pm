@@ -8,8 +8,9 @@ use warnings;
 sub save_on_exit {
 
 	# checking settings if i should save or quit without question
-	if    ($Kephra::config{file}{save}{b4_quit} eq '0') {                      return}
-	elsif ($Kephra::config{file}{save}{b4_quit} eq '1') {&Kephra::File::save_all; return}
+	my $save = Kephra::API::settings()->{file}{save}{b4_quit};
+	if    ($save eq '0') {                         return}
+	elsif ($save eq '1') {&Kephra::File::save_all; return}
 
 	# count unsaved dacuments?
 	my $unsaved_docs = 0;

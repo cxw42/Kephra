@@ -11,7 +11,7 @@ my @keymap; # maps numerical key code to cmd call ref
 sub data  { if (ref $_[0] eq 'HASH') { %list = %{$_[0]}  } else { \%list } }
 sub clear  { %list = () }
 sub file   { Kephra::Config::filepath( _config()->{file}) }
-sub _config{ $Kephra::config{app}{commandlist} }
+sub _config{ Kephra::API::settings()->{app}{commandlist} }
 
 #sub load_cache  { %list = %{ YAML::Tiny::LoadFile( $_[0] ) }}
 #sub store_cache { YAML::Tiny::DumpFile( \%list ) }
@@ -118,7 +118,7 @@ sub numify_key_code {
 
 sub eval_cmd_data {
 	my @cmd = @_;
-	#Kephra::Config::existing_dirpath( $Kephra::config{app}{iconset_path} );
+	#Kephra::Config::existing_dirpath( Kephra::API::settings()->{app}{iconset_path} );
 	my ($item_data, $ico_path);
 	for (@cmd){
 		my $item_data = $list{$_};

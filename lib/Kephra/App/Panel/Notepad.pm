@@ -1,12 +1,12 @@
 package Kephra::App::Panel::Notepad;
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 use strict;
 use warnings;
 
 my $notepad;
 sub _ref     { $notepad = ref $_[0] eq 'Wx::StyledTextCtrl' ? $_[0] : $notepad }
-sub _config  { $Kephra::config{app}{panel}{notepad} }
+sub _config  { Kephra::API::settings()->{app}{panel}{notepad} }
 sub _splitter{ $Kephra::app{splitter}{right} }
 
 sub create {
@@ -58,6 +58,12 @@ sub create {
 			my $ep = Kephra::App::EditPanel::_ref();
 			if ($key == &Wx::WXK_ESCAPE ) {
 				Wx::Window::SetFocus( $ep );
+			} elsif ($key == &Wx::WXK_UP ) {
+				Kephra::Edit::selection_move_up($notepad)
+					if $event->ControlDown and $event->AltDown;
+			} elsif ($key == &Wx::WXK_DOWN){
+				Kephra::Edit::selection_move_down($notepad)
+					if $event->ControlDown and $event->AltDown;
 			} elsif ($key == &Wx::WXK_F3 ) {
 				if ($event->ControlDown) {
 					my $sel = $notepad->GetSelectedText;
@@ -129,7 +135,7 @@ sub note {
 }
 
 sub append_selection {
-	my $selection = Kephra::App::EditPanel::_ref()->GetSelectedText;
+	my $selection = Kephra::Edit::get_selection();
 	my $np = _ref();
 	my $size = $np->GetLength();
 	$selection = "\n".$selection if $size;

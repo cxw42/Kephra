@@ -1,14 +1,11 @@
 package Kephra::App::EditPanel;
 our $VERSION = '0.13';
 
-=pod
-
 =head1 NAME
 
 Kephra::App::EditPanel - visual and event settings of the editing canvas
 
 =head1 DESCRIPTION
-
 
 =cut
 use strict;
@@ -21,7 +18,7 @@ sub _ref     { $ref }
 sub _set_ref { $ref = $_[0] if is($_[0]) }
 sub _all_ref { Kephra::Document::Data::get_all_ep() }
 sub is       { 1 if ref $_[0] eq 'Wx::StyledTextCtrl'}
-sub _config  { $Kephra::config{editpanel} }
+sub _config  { Kephra::API::settings()->{editpanel} }
 sub _indicator_config { _config()->{indicator} }
 
 sub new { 
@@ -398,6 +395,5 @@ sub change_font {
 #wxSTC_CP_UTF8 wxSTC_CP_UTF16 Wx::wxUNICODE()
 #wxSTC_WS_INVISIBLE wxSTC_WS_VISIBLEALWAYS
 #$ep->StyleSetForeground (wxSTC_STYLE_CONTROLCHAR, Wx::Colour->new(0x55, 0x55, 0x55));
-#$ep->StyleSetBackground (wxSTC_STYLE_CONTROLCHAR, Wx::Colour->new(0xff, 0xff, 0xff));
 #$ep->CallTipShow(3,"testtooltip\n next line"); #tips
-#$ep->SetSelectionMode(wxSTC_SEL_RECTANGLE); #$ep->GetSelectionMode;
+#SetSelectionMode(wxSTC_SEL_RECTANGLE);

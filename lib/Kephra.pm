@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.4.2.8';       # version of entire app
+our $VERSION    = '0.4.2.14';      # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $LOGLEVEL;                     # flag for benchmark loggings
@@ -21,11 +21,11 @@ sub load_modules {
 	require YAML::Tiny;
 
 	require Wx;                            # Core wxWidgets Framework
-	#Wx->import( ':everything' ); 
+	#Wx->import( ':everything' );          # handy while debugging
 	require Wx::AUI;                       # movable Panel controler
 	require Wx::STC;                       # Scintilla editor component
-	require Wx::DND;                      # Drag'n Drop & Clipboard support (only K::File)
-	require Wx::Locale;
+	require Wx::DND;                       # Drag'n Drop & Clipboard support (only K::File)
+	require Wx::Locale;                    # not yet in use
 	require Wx::Perl::ProcessStream;       # 
 	#require Wx::Print;                    # Printing Support (used only in Kephra::File )
 	#require Text::Wrap                    # for text formating
@@ -87,6 +87,7 @@ sub load_modules {
 	require Kephra::Edit::Goto;            # editpanel textcursor navigation
 	require Kephra::Edit::Marker;          # doc spanning bookmarks
 	require Kephra::Edit::Search;          # search menu functions
+	require Kephra::Edit::Search::InputTarget;
 	require Kephra::Edit::Select;          # text selection
 	require Kephra::EventTable;       # internal app API
 	require Kephra::File;                  # file menu functions
@@ -100,26 +101,19 @@ sub load_modules {
 	require Kephra::ToolBar;               # base toolbar builder
 }
 
-
-# global data
-our %config;        # global settings, saved in /config/global/autosaved.conf
-sub global_config { Kephra::Config::Global::settings()      }
-sub localisation  { Kephra::Config::Localisation::strings() }
-
 sub configdir {
 	$_[0] and $_[0] eq $NAME and shift;
 	File::UserConfig->configdir(@_);
 }
 
-sub import {
-	#@_;
+sub import { #@_;
 }
 
 sub start {
 	load_modules();
 
 	my $basedir;
-	#$Kephra::temp{path}{user} = $ENV{HOME};
+	# $ENV{HOME};
 	# set locations of boot files
 	my $config_sub_dir = 'config';
 	my $help_sub_dir = 'help';

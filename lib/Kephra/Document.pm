@@ -1,13 +1,11 @@
 package Kephra::Document;
 our $VERSION = '0.53';
 
-=pod
 =head1 NAME
 
-Kephra::Document - 
+Kephra::Document - general doc functions
 
 =head1 DESCRIPTION
-
 
 
 =cut
@@ -15,6 +13,7 @@ Kephra::Document -
 use strict;
 use warnings;
 
+sub _file_config { Kephra::File::_config() }
 sub _new_if_allowed {
 	# new(empty), add(open) restore(open session)
 	my $mode = shift;
@@ -22,7 +21,7 @@ sub _new_if_allowed {
 	my $file = Kephra::Document::Data::get_file_path();
 	my $old_doc_nr= Kephra::Document::Data::current_nr();
 	my $new_doc_nr= Kephra::Document::Data::get_value('buffer');
-	my $config    = $Kephra::config{file}{open};
+	my $config    = _file_config()->{open};
 
 	# check settings
 	# in single doc mode close previous doc first
@@ -90,7 +89,7 @@ sub reset {   # restore once opened file from its settings
 sub restore { # add newly opened file from known settings
 	my %file_settings = %{ shift; };
 	my $file = $file_settings{file_path};
-	my $config = $Kephra::config{file};
+	my $config = _file_config();
 	if ( -e $file ) {
 		# open only text files and empty files
 		return if $config->{open}{only_text} == 1 and -B $file;
@@ -112,12 +111,12 @@ sub restore { # add newly opened file from known settings
 
 sub add {     # create a new document if settings allow it
 	my $file = shift;
-	my $config = $Kephra::config{file};
+	my $config = _file_config();
 	my $old_nr = Kephra::Document::Data::current_nr();
 	if ( defined $file and -e $file ) {
 		$file = Kephra::Config::standartize_path_slashes( $file );
 		# open only text files and empty files
-		return if -B $file and $Kephra::config{file}{open}{only_text} == 1;
+		return if -B $file and $config->{open}{only_text} == 1;
 		# check if file is already open and goto this already opened
 		my $other_nr = Kephra::Document::Data::nr_from_file_path($file);
 		return Kephra::Document::Change::to_nr( $other_nr )
@@ -133,10 +132,9 @@ sub add {     # create a new document if settings allow it
 		# load default settings for doc attributes
 		Kephra::Document::Data::set_attributes_to_default($doc_nr, $file);
 		_load_file_in_buffer($file, $doc_nr);
+		Kephra::Document::Property::convert_EOL(), Kephra::File::_save_nr($doc_nr)
+			unless Kephra::Document::Data::get_attribute{'EOL',$doc_nr} eq 'auto';
 		Kephra::Document::Data::evaluate_attributes($doc_nr);
-		Kephra::Document::Property::convert_EOL()
-			unless $config->{defaultsettings}{EOL_open} eq 'auto';
-
 		Kephra::App::Window::refresh_title();
 		Kephra::App::TabBar::raise_tab_by_doc_nr($doc_nr);
 		Kephra::App::EditPanel::Margin::autosize_line_number();

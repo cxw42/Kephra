@@ -56,7 +56,7 @@ sub create_dynamic { # create on runtime changeable menus
 	#
 	if ($menu_name eq '&insert_templates') {
 		set_update($menu_id, sub {
-			my $cfg = $Kephra::config{file}{templates}; 
+			my $cfg = Kephra::API::settings()->{file}{templates}; 
 			my $file = Kephra::Config::filepath($cfg->{directory}, $cfg->{file});
 			my $tmp = Kephra::Config::File::load( $file );
 			my @menu_data;
@@ -90,7 +90,6 @@ sub create_dynamic { # create on runtime changeable menus
 		set_absolete($menu_id);
 
 	} elsif ($menu_name eq '&file_history'){
-
 		Kephra::EventTable::add_call (
 			'document.list', 'menu_'.$menu_id, sub { set_absolete($menu_id); }
 		);
@@ -99,6 +98,7 @@ sub create_dynamic { # create on runtime changeable menus
 			my @menu_data;
 			my $files = Kephra::File::History::get();
 			return unless ref $files eq 'ARRAY';
+print scalar @$files, " \n";
 			for my $file ( @$files ){
 				my %item;
 				$item{type} = 'item';
@@ -294,7 +294,7 @@ sub eval_data { # eval menu data structures (MDS) to wxMenus
 			Wx::Event::EVT_MENU          ($win, $menu_item, $item_data->{call} );
 			Wx::Event::EVT_MENU_HIGHLIGHT($win, $menu_item, sub {
 				Kephra::App::StatusBar::info_msg( $item_data->{help} )
-			});
+			}) if $item_data->{help} ;
 			$menu->Append( $menu_item );
 			$item_id++; 
 		}

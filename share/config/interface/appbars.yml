@@ -29,11 +29,13 @@ main_toolbar:
 searchbar:
  - item view-toolbar-search
  - combobox find 180
- - item find-mark-all#
  - item find-prev
  - item find-next
  -
  - item goto-last-edit
+ -
+ - item marker-goto-prev
+ - item marker-goto-next
  -
  - item goto-line
  - item view-dialog-find

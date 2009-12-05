@@ -1,6 +1,14 @@
 package Kephra::App::MenuBar;
 our $VERSION = 0.07;
 
+=head1 NAME
+
+Kephra::App::MenuBar - main menu of the app 
+
+=head1 DESCRIPTION
+
+=cut
+
 use strict;
 use warnings;
 
@@ -9,7 +17,7 @@ sub _ref { $bar = ref $_[0] eq 'Wx::MenuBar' ? $_[0] : $bar }
 
 sub create {
 	my $menubar_def = Kephra::Config::File::load_from_node_data
-		( $Kephra::config{app}{menubar} );
+		( Kephra::API::settings()->{app}{menubar} );
 	unless ($menubar_def) {
 		$menubar_def = Kephra::Config::Default::mainmenu();
 	}

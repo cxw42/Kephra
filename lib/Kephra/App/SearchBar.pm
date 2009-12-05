@@ -1,12 +1,22 @@
 package Kephra::App::SearchBar;
 our $VERSION = '0.14';
 
+=head1 NAME
+
+Kephra::App::SearchBar - 
+
+=head1 DESCRIPTION
+
+=cut
+
 use strict;
 use warnings;
 
-sub _ref    { Kephra::ToolBar::_ref('search', $_[0]) }
-sub _config { $Kephra::config{app}{toolbar}{search} }
-sub _ID     { 'search_bar' }
+sub _ref           { Kephra::ToolBar::_ref('search', $_[0]) }
+sub _config        { Kephra::API::settings()->{app}{toolbar}{search} }
+sub _search_config { Kephra::API::settings()->{search} }
+sub _ID            { 'search_bar' }
+my $highlight_search; # set 1 if searchbar turns red
 #
 sub create {
 	# load searchbar definition
@@ -21,19 +31,19 @@ sub create {
 	my $bar = _ref();
 	# apply special searchbar widgets
 	for my $item_data (@$rest_widgets){
+		my $ctrl;
 		if ($item_data->{type} eq 'combobox' and $item_data->{id} eq 'find'){
 			my $find_input = $bar->{find_input} = Wx::ComboBox->new (
 				$bar , -1, '', [-1,-1], [$item_data->{size},-1], [],
 				&Wx::wxTE_PROCESS_ENTER
 			);
-			$find_input->SetDropTarget( SearchInputTarget->new($find_input, 'find'));
+			$find_input->SetDropTarget
+				( Kephra::Edit::Search::InputTarget->new($find_input, 'find'));
 			$find_input->SetValue( Kephra::Edit::Search::get_find_item() );
 			$find_input->SetSize($item_data->{size},-1) if $item_data->{size};
-			if ( $Kephra::config{search}{history}{use} ){
-				$find_input->Append($_)
-					for @{$Kephra::config{search}{history}{find_item}}
+			if ( _search_config()->{history}{use} ){
+				$find_input->Append($_) for @{_search_config()->{history}{find_item}}
 			}
-			$bar->InsertControl( $item_data->{pos}, $find_input );
 
 			Wx::Event::EVT_TEXT( $bar, $find_input, sub {
 				my ($bar, $event) = @_;
@@ -42,19 +52,17 @@ sub create {
 				if ($new ne $old){
 					Kephra::Edit::Search::set_find_item( $new );
 					Kephra::Edit::Search::first_increment()
-						if $Kephra::config{search}{attribute}{incremental}
+						if _search_config()->{attribute}{incremental}
 						and Wx::Window::FindFocus() eq $find_input;
 				}
 			} );
 			Wx::Event::EVT_KEY_DOWN( $find_input, sub {
 				my ( $fi, $event ) = @_;
-				my $map = $Kephra::app{editpanel}{keymap};
 				my $key = $event->GetKeyCode;
-
 				my $found_something;
 				my $ep = Kephra::App::EditPanel::_ref();
 				if      ( $key == &Wx::WXK_RETURN ) {
-					if    ( $event->ControlDown and $event->ShiftDown)   
+					if    ($event->ControlDown and $event->ShiftDown)   
 					                           {Kephra::Edit::Search::find_last() }
 					elsif ($event->ControlDown){Kephra::Edit::Search::find_first()}
 					elsif ($event->ShiftDown)  {Kephra::Edit::Search::find_prev() }
@@ -63,7 +71,7 @@ sub create {
 					$event->ShiftDown 
 						? Kephra::Edit::Search::find_prev()
 						: Kephra::Edit::Search::find_next();
-				} elsif ($key == &Wx::WXK_ESCAPE) { # escape
+				} elsif ($key == &Wx::WXK_ESCAPE) {
 					give_editpanel_focus_back()
 				} elsif ($key == 65 and $event->ControlDown) {# A
 					$bar->{find_input}->SetSelection
@@ -87,7 +95,7 @@ sub create {
 					if ($event->ControlDown) {
 						$ep->CmdKeyExecute( &Wx::wxSTC_CMD_LINESCROLLDOWN ); return;
 					}
-				} elsif ($key == &Wx::WXK_PAGEUP) { # page up
+				} elsif ($key == &Wx::WXK_PAGEUP) {
 					if ($event->ControlDown) {
 						my $pos = $bar->{find_input}->GetInsertionPoint;
 						Kephra::Document::Change::tab_left();
@@ -97,7 +105,7 @@ sub create {
 						$ep->CmdKeyExecute( &Wx::wxSTC_CMD_PAGEUP );
 					}
 					return;
-				} elsif ($key == &Wx::WXK_PAGEDOWN){ # page down
+				} elsif ($key == &Wx::WXK_PAGEDOWN){
 					if ($event->ControlDown) {
 						my $pos = $bar->{find_input}->GetInsertionPoint;
 						Kephra::Document::Change::tab_right();
@@ -128,7 +136,25 @@ sub create {
 			});
 			Wx::Event::EVT_LEAVE_WINDOW( $find_input,sub{connect_find_input($find_input) });
 			connect_find_input($find_input);
-			$Kephra::temp{bar}{search}{colored} = 1;
+			$highlight_search = 1;
+			$ctrl = $find_input;
+		}
+		elsif ($item_data->{type} eq 'combobox' and $item_data->{id} eq 'replace'){
+			my $replace_input = $bar->{replace_input} = Wx::ComboBox->new (
+				$bar , -1, '', [-1,-1], [$item_data->{size},-1], [],
+				&Wx::wxTE_PROCESS_ENTER
+			);
+			$replace_input->SetDropTarget
+				( Kephra::Edit::Search::InputTarget->new($replace_input, 'replace'));
+			$replace_input->SetValue( Kephra::Edit::Search::get_replace_item() );
+			$replace_input->SetSize($item_data->{size},-1) if $item_data->{size};
+			if ( _search_config()->{history}{use} ){
+				$replace_input->Append($_) for @{_search_config()->{history}{replace_item}}
+			}
+			$ctrl = $replace_input;
+		}
+		if (ref $ctrl) {
+			$bar->InsertControl( $item_data->{pos}, $ctrl );
 		}
 	}
 	Wx::Event::EVT_LEAVE_WINDOW($bar, \&leave_focus);
@@ -162,10 +188,10 @@ sub disconnect_find_input{ Kephra::EventTable::del_own_subscriptions(_ID()) }
 #
 sub colour_find_input {
 	my $find_input      = _ref()->{find_input};
-	my $found_something = $Kephra::temp{search}{item}{foundpos} > -1
+	my $found_something = Kephra::Edit::Search::_find_pos() > -1
 		? 1 : 0;
-	return if $Kephra::temp{bar}{search}{colored} eq $found_something;
-	$Kephra::temp{bar}{search}{colored} = $found_something;
+	return if $highlight_search eq $found_something;
+	$highlight_search = $found_something;
 	if ($found_something){
 		$find_input->SetForegroundColour( Wx::Colour->new( 0x00, 0x00, 0x55 ) );
 		$find_input->SetBackgroundColour( Wx::Colour->new( 0xff, 0xff, 0xff ) );
@@ -194,7 +220,7 @@ sub position { _config()->{position} }
 sub show {
 	my $visible = shift || get_visibility();
 	my $bar = _ref();
-	my $sizer = $bar->GetParent->GetSizer;#$Kephra::app{sizer}{main}
+	my $sizer = $bar->GetParent->GetSizer;
 	$sizer->Show( $bar, $visible );
 	$sizer->Layout();
 	_config()->{visible} = $visible;

@@ -1,8 +1,6 @@
 package Kephra::App::TabBar;
 our $VERSION = '0.18';
 
-=pod
-
 =head1 NAME
 
 Kephra::App::Tabbar - 
@@ -15,12 +13,15 @@ Tabbar is the visual element in top area of the main window which displays
        this module manages the tab position handling because the nr of document
        might be different from its postition in the tabbar
 =cut
-
 use strict;
 use warnings;
 #
 # internal data
 #
+my $notebook;
+sub _ref    { $notebook = ref $_[0] eq 'Wx::AuiNotebook' ? $_[0] : $notebook }
+sub _config { Kephra::API::settings()->{app}{tabbar} }
+
 my @doc2tab_pos; # tab index numbers in doc order
 my @tab2doc_pos; # doc numbers in tab index order
 my @doc2vis_pos; # visible tab pos number in doc order
@@ -79,9 +80,6 @@ sub _remove_tab {
 	_update_doc_pos();
 #print "vis_order: @vis2doc_pos, tab_order: @tab2doc_pos\n";
 }
-my $notebook;
-sub _ref    { $notebook = ref $_[0] eq 'Wx::AuiNotebook' ? $_[0] : $notebook }
-sub _config { $Kephra::config{app}{tabbar} }
 #
 # basic toolbar creation
 #
@@ -260,7 +258,7 @@ sub refresh_label {
 	# set config files in square brackets
 	if (    $config->{mark_configs}
 		and Kephra::Document::Data::get_attribute('config_file', $doc_nr)
-		and $Kephra::config{file}{save}{reload_config}              ) {
+		and Kephra::API::settings()->{file}{save}{reload_config}              ) {
 		$label = '$ ' . $label;
 	}
 	$label = ( $doc_nr + 1 ) . " $label" if $config->{number_tabs};

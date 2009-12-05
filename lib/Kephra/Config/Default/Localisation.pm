@@ -1,5 +1,5 @@
 package Kephra::Config::Default::Localisation;
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 use strict;
 use warnings;
@@ -40,6 +40,7 @@ sub get {
 					bookmark_goto => 'Goto Bookmark',
 					bookmark_toggle => 'Toggle Bookmark',
 					tools => 'Tools',
+					tool_output => 'Output',
 					document => 'Document',
 					document_change => 'Change',
 					document_convert => 'Convert',
@@ -72,8 +73,7 @@ sub get {
 					'config_syntaxmode_N-Z' => 'Syntaxmodes N - Z',
 					help => 'Help'
 				},
-				help => {
-				},
+				help => {},
 			},
 			status => {
 				label => {
@@ -267,6 +267,13 @@ sub get {
 					'last-edit' => 'Goto Last Edit',
 					line => 'Goto Line Number  ...',
 				},
+				marker => {
+					'goto-prev' => 'Goto Previous Marker',
+					'goto-next' => 'Goto Next Marker',
+					'toggle-here' => 'Toggle Marker Here',
+					'del-doc' => 'Delete Marker in Doc',
+					'del-all' => 'Delete All Marker',
+				},
 				bookmark => {
 					goto => {
 						1 => 1,
@@ -299,7 +306,12 @@ sub get {
 					'note-selection' => 'Note Selection',
 					'interpreter-run-document' => 'Run',
 					'interpreter-stop-document' => 'Stop',
-					'output-inc' => '@INC',
+					'output' => {
+						'inc' => '@INC',
+						'env' => '%ENV',
+						'selection-dec' => 'Selection in Dec',
+						'selection-hex' => 'Selection in Hex',
+					},
 					'choose-color' => 'Color Picker',
 				},
 				document => {
@@ -700,6 +712,13 @@ sub get {
 					'last-edit' => 'jump to position of last change in this document',
 					line => 'jump to line with chosen number',
 				},
+				marker => {
+					'goto-prev' => 'go to the previous marker (upwards) in this document',
+					'goto-next' => 'go to the next marker (downwards) in this document',
+					'toggle-here' => 'set a marker in current line or delete if already present',
+					'del-doc' => 'delete marker just in the current document',
+					'del-all' => 'delete marker in all open documents',
+				},
 				bookmark => {
 					goto => {
 						1 => 'go to bookmark number 1',
@@ -729,10 +748,15 @@ sub get {
 				},
 				tool => {
 					note => 'jump to the notepad',
-					'note-selection' => 'paste selected text into the notepad',
+					'note-selection' => 'paste selected text on the end of the notepad',
 					'interpreter-run-document' => 'run current programm and show result in output panel',
 					'interpreter-stop-document' => 'stop the current running output panel process',
-					'output-inc' => 'display the include pathes in the ouput panel',
+					'output' => {
+						'inc' => 'display the include paths of the Perl Interpreter in the ouput panel',
+						'env' => 'display the environment variables in the ouput panel',
+						'selection-dec' => 'display selected text in decimal coding in the ouput panel',
+						'selection-hex' => 'display selected text in hexadecimal coding in the ouput panel',
+					},
 					'choose-color' => 'display text selection as color and choose a new from a rainbow',
 				},
 				document => {

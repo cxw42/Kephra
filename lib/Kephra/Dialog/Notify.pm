@@ -77,7 +77,8 @@ sub create_raw_dialog {
 		&Wx::wxSYSTEM_MENU | &Wx::wxCAPTION | &Wx::wxCLOSE_BOX ,
 	);
 	Kephra::App::Window::load_icon
-		($dialog, Kephra::Config::filepath($Kephra::config{app}{window}{icon}));
+		($dialog, Kephra::Config::filepath
+			(Kephra::API::settings()->{app}{window}{icon}));
 	#$dialog->SetBackgroundColour(&Wx::wxWHITE);
 	Wx::Event::EVT_CLOSE( $dialog, \&quit_dialog );
 

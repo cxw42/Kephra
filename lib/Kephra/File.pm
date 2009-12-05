@@ -1,13 +1,9 @@
 package Kephra::File;
 our $VERSION = '0.44';
 
-use strict;
-use warnings;
-
-=pod
 =head1 NAME
 
-Kephra::File - App side of IO functions
+Kephra::File - basic file menu functions
 
 =head1 DESCRIPTION
 
@@ -19,8 +15,13 @@ file save events
  
 =cut
 
+use strict;
+use warnings;
+
 
 sub _dialog_l18n { Kephra::Config::Localisation::strings()->{dialog} }
+sub _config      { Kephra::API::settings()->{file} }
+sub _dir         { _config()->{current}{directory} }
 #
 # file events #
 #
@@ -31,7 +32,7 @@ sub savepoint_left {
 		unless Kephra::Document::Data::get_attribute('modified', $doc_nr);
 	Kephra::Document::Data::set_attribute('modified', 1, $doc_nr);
 	Kephra::App::TabBar::refresh_label($doc_nr)
-		if $Kephra::config{app}{tabbar}{info_symbol};
+		if Kephra::App::TabBar::_config()->{info_symbol};
 	Kephra::EventTable::trigger('document.savepoint');
 }
 sub savepoint_reached {
@@ -87,7 +88,7 @@ sub _remember_save_moment {
 sub check_b4_overwite {
 	my $file = shift;
 	$file = Kephra::Document::Data::get_file_path() unless $file;
-	my $allow = $Kephra::config{file}{save}{overwrite};
+	my $allow = _config()->{save}{overwrite};
 	if ( -e $file ) {
 		my $frame = Kephra::App::Window::_ref();
 		my $label = Kephra::Config::Localisation::strings()->{dialog};
@@ -123,7 +124,7 @@ sub add_dir{ # add all files of an dnd-held dir
 	my @dir_items = readdir($DH);
 	closedir($DH);
 	my $path;
-	my $recursive = $Kephra::config{file}{open}{dir_recursive};
+	my $recursive = _config()->{open}{dir_recursive};
 
 	foreach (@dir_items) {
 		$path = "$dir/$_";
@@ -143,9 +144,9 @@ sub open {
 	Kephra::App::_ref()->Yield();
 
 	# file selector dialog
-	my $files = Kephra::Dialog::get_files_open( Kephra::App::Window::_ref(),
-		_dialog_l18n()->{file}{open},
-		$Kephra::config{file}{current}{directory},
+	my $files = Kephra::Dialog::get_files_open( 
+		Kephra::App::Window::_ref(),
+		_dialog_l18n()->{file}{open}, _dir(),
 		$Kephra::temp{file}{filterstring}{all}
 	);
 	# opening selected files
@@ -153,9 +154,7 @@ sub open {
 }
 
 sub open_all_of_dir {
-	my $dir = Kephra::Dialog::get_dir(
-		_dialog_l18n()->{file}{open_dir}, $Kephra::config{file}{current}{directory}
-	);
+	my $dir = Kephra::Dialog::get_dir( _dialog_l18n()->{file}{open_dir}, _dir() );
 	add_dir( $dir );
 }
 
@@ -174,8 +173,8 @@ sub reload_current  {
 		_remember_save_moment();
 		Kephra::Document::Data::evaluate_attributes();
 		Kephra::App::EditPanel::Margin::autosize_line_number()
-			if ($Kephra::config{editpanel}{margin}{linenumber}{autosize}
-			and $Kephra::config{editpanel}{margin}{linenumber}{width} );
+			if (Kephra::App::EditPanel::Margin::_config()->{linenumber}{autosize}
+			and Kephra::App::EditPanel::Margin::_config()->{linenumber}{width} );
 		Kephra::Document::Data::evaluate_attributes($doc_nr);
 	} else {
 	}
@@ -186,7 +185,7 @@ sub insert {
 	my $insertfilename = Kephra::Dialog::get_file_open( 
 		Kephra::App::Window::_ref(),
 		_dialog_l18n()->{file}{insert},
-		$Kephra::config{file}{current}{directory},
+		_dir(),
 		$Kephra::temp{file}{filterstring}{all}
 	);
 	if ( -e $insertfilename ) {
@@ -202,7 +201,7 @@ sub _save_nr {
 	my $ep = Kephra::Document::Data::_ep( $nr );
 	my $file = Kephra::Document::Data::get_file_path($nr);
 	return until defined $nr and $ep and -e $file;
-	my $save_config = $Kephra::config{file}{save};
+	my $save_config = _config()->{save};
 	return unless $ep->GetModify == 1 or $save_config->{unchanged};
 	rename $file, $file . '~' if $save_config->{tilde_backup} == 1;
 	Kephra::File::IO::write_buffer( $file, $ep->GetText );
@@ -214,7 +213,7 @@ sub save_current {
 	my ($ctrl, $event) = @_;
 	my $ep = Kephra::App::EditPanel::_ref();
 	my $file = Kephra::Document::Data::get_file_path();
-	my $save_config = $Kephra::config{file}{save};
+	my $save_config = _config()->{save};
 	if ( $ep->GetModify == 1 or $save_config->{unchanged} ) {
 		if ( $file and -e $file ) {
 			if (not -w $file ) {
@@ -237,7 +236,7 @@ sub save_as {
 	my $file = Kephra::Dialog::get_file_save(
 		Kephra::App::Window::_ref(),
 		_dialog_l18n()->{file}{save_as},
-		$Kephra::config{file}{current}{directory},
+		_dir(),
 		$Kephra::temp{file}{filterstring}{all}
 	);
 	if ( $file and check_b4_overwite($file) ) {
@@ -252,7 +251,7 @@ sub save_as {
 		Kephra::App::Window::refresh_title();
 		Kephra::App::TabBar::refresh_current_label();
 		Kephra::App::StatusBar::refresh_all_cells();
-		$Kephra::config{file}{current}{directory} = 
+		_config()->{current}{directory} = 
 			Kephra::Document::Data::get_attribute('directory');
 		_remember_save_moment( );
 		Kephra::EventTable::trigger('document.list');
@@ -264,7 +263,7 @@ sub save_copy_as {
 	my $file = Kephra::Dialog::get_file_save(
 		Kephra::App::Window::_ref(),
 		_dialog_l18n()->{file}{save_copy_as},
-		$Kephra::config{file}{current}{directory},
+		_dir(),
 		$Kephra::temp{file}{filterstring}{all}
 	);
 	Kephra::File::IO::write_buffer
@@ -277,14 +276,14 @@ sub rename   {
 	my $new_path_name = Kephra::Dialog::get_file_save(
 		Kephra::App::Window::_ref(),
 		_dialog_l18n()->{file}{rename},
-		$Kephra::config{file}{current}{directory},
+		_dir(),
 		$Kephra::temp{file}{filterstring}{all} );
 	if ($new_path_name){
 		my $old_path_name = Kephra::Document::Data::get_file_path();
 		rename $old_path_name, $new_path_name if $old_path_name;
 		Kephra::Document::Data::set_file_path($new_path_name);
 		Kephra::Document::SyntaxMode::set('auto');
-		$Kephra::config{file}{current}{directory} = 
+		_config()->{current}{directory} = 
 			Kephra::Document::Data::get_attribute('directory');
 		Kephra::EventTable::trigger('document.list');
 		_remember_save_moment();
@@ -345,7 +344,7 @@ sub close_current { close_nr( Kephra::Document::Data::current_nr() ) }
 sub close_nr {
 	my $doc_nr     = shift;
 	my $ep         = Kephra::Document::Data::_ep($doc_nr);
-	my $config     = $Kephra::config{file}{save};
+	my $config     = _config()->{save};
 	my $save_answer= &Wx::wxNO;
 
 	# save text if options demand it

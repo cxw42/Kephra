@@ -1,10 +1,15 @@
 package Kephra::Edit::Convert;
 our $VERSION = '0.10';
+=head1 NAME
+
+Kephra::App::Convert - 
+
+=head1 DESCRIPTION
+
+=cut
 
 use strict;
 use warnings;
-
-
 # wrapper method for the always same preparation and afterwork
 sub _default {
 	my $action = shift;

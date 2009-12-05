@@ -11,7 +11,7 @@ use YAML::Tiny();
 my %strings;
 sub _set_strings { %strings = %{$_[0]} if ref $_[0] eq 'HASH' }
 sub strings   { \%strings }
-sub _config   { $Kephra::config{app}{localisation} }
+sub _config   { Kephra::API::settings()->{app}{localisation} }
 sub _sub_dir  { _config->{directory} if _config->{directory} }
 
 my %index;

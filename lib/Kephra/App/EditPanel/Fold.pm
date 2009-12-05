@@ -5,7 +5,7 @@ our $VERSION = '0.01';
 sub _ep_ref {
 	ref $_[0] eq 'Wx::StyledTextCtrl' ? $_[0] : Kephra::App::EditPanel::_ref()   
 }
-sub _config { $Kephra::config{editpanel}{margin}{fold} }
+sub _config { Kephra::App::EditPanel::Margin::_config()->{fold} }
 #
 # is this the fold level of a head node ?
 sub _is_head {

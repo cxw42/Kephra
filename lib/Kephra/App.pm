@@ -1,14 +1,11 @@
 package Kephra::App;
 our $VERSION = '0.12';
 
-=pod
-
 =head1 NAME
 
 Kephra::App - main GUI class derived from Wx::App
 
 =head1 DESCRIPTION
-
 
 =cut
 

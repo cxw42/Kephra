@@ -1,5 +1,5 @@
 package Kephra::App::Panel::Output;
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 use strict;
 use warnings;
@@ -13,10 +13,8 @@ use Wx::DND;
 
 my $output;
 sub _ref { if (ref $_[0] eq 'Wx::TextCtrl') {$output = $_[0]} else {$output} }
-sub _config   { $Kephra::config{app}{panel}{output} }
+sub _config   { Kephra::API::settings()->{app}{panel}{output} }
 sub _splitter { $Kephra::app{splitter}{bottom} }
-
-sub init {}
 
 sub create {
 	my $win = Kephra::App::Window::_ref();
@@ -26,7 +24,7 @@ sub create {
 	else {
 		$output = Wx::TextCtrl->new
 			($win, -1,'', [-1,-1], [-1,-1],
-			&Wx::wxTE_PROCESS_ENTER | &Wx::wxTE_MULTILINE | &Wx::wxTE_LEFT);
+			&Wx::wxTE_READONLY|&Wx::wxTE_PROCESS_ENTER|&Wx::wxTE_MULTILINE|&Wx::wxTE_LEFT);
 	}
 	_ref($output);
 	my $config = _config();
@@ -37,7 +35,7 @@ sub create {
 		($config->{font_size}, &Wx::wxFONTSTYLE_NORMAL, &Wx::wxNORMAL, &Wx::wxLIGHT, 0,
 		$config->{font_family})
 	);
-	$output->SetEditable(0);
+	#$output->SetEditable(0);
 
 	Kephra::EventTable::add_call('panel.output.run', 'panel_output', sub {
 	});
@@ -66,8 +64,9 @@ sub create {
 		$event->GetProcess->Destroy;
 		Kephra::EventTable::trigger('panel.output.run');
 	} );
-	Wx::Event::EVT_TEXT_ENTER( $edit, $edit, sub {
+	Wx::Event::EVT_TEXT_ENTER( $win, $edit, sub {
 		my $selection = $edit->GetStringSelection();
+print " -- $selection \n";
 		return unless $selection;
 		wxTheClipboard->Open;
 		wxTheClipboard->SetData( Wx::TextDataObject->new( $selection ) );
@@ -118,32 +117,47 @@ sub clear {
 		  &Wx::wxNORMAL, &Wx::wxLIGHT, 0, _config()->{font_family})
 	)}
 }
-sub print { _ref()->AppendText( @_ ) if @_ }
+sub print { _ref()->AppendText( $_ ) for @_ }
 sub say   { &print; _ref()->AppendText( "\n" ) }
 sub new_output {
 	ensure_visibility();
 	_config()->{append}
-		? print( "\n\n" )
-		: clear();
+		? &print(_ref()->IsEmpty ? '' : "\n\n")
+		: &clear();
 	&print( @_ );
 }
 
 # 
 sub display_inc { new_output('@INC:'."\n"); &say("  -$_") for @INC }
-
+sub display_env { 
+	new_output('%ENV:'."\n");
+	&say( "  -$_:" . $ENV{$_} ) for sort keys %ENV;
+}
+sub display_selection_dec {
+	my $selection = Kephra::Edit::get_selection();
+	return unless defined $selection and $selection;
+	my @output = map { ' ' . $_ } unpack 'C*', $selection;
+	new_output(@output);
+}
+sub display_selection_hex {
+	my $selection = Kephra::Edit::get_selection();
+	return unless defined $selection and $selection;
+	my @output = map { sprintf '%3X', $_ } unpack 'C*', $selection;
+	new_output(@output);
+}
 # to be outsourced into interpreter plugin
 sub run {
 	my $win = Kephra::App::Window::_ref();
 	my $doc = Kephra::Document::Data::get_file_path();
 	my $cmd = _config->{interpreter_path};
-	my $dir = $Kephra::config{file}{current}{directory};
+	my $dir = Kephra::File::_dir();
 	Kephra::File::save();
 	if ($doc) {
-		my $dir = Cwd::cwd();
+		my $cwd = Cwd::cwd();
 		chdir $dir;
 		my $proc = _ref()->{process} = Wx::Perl::ProcessStream->OpenProcess
 			(qq~"$cmd" "$doc"~ , 'Interpreter-Plugin', $win); # -I$dir
-		chdir $dir;
+		chdir $cwd;
 		new_output();
 		Kephra::EventTable::trigger('panel.output.run');
 		if (not $proc) {}

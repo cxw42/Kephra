@@ -13,15 +13,9 @@ change doc data and eval it.
 
 use strict;
 use warnings;
-
-
 # some internal shortcut helper
-sub _ep_ref     { Kephra::App::EditPanel::_ref() }
-sub _doc_nr     { 
-	defined $_[0]
-		? Kephra::Document::Data::validate_doc_nr($_[0])
-		: Kephra::Document::Data::current_nr();
-}
+sub _ep_ref     { Kephra::Document::Data::_ep($_[0]) }
+sub _doc_nr     { Kephra::Document::Data::valid_or_current_doc_nr($_[0]) }
 sub _is_current { $_[0] == Kephra::Document::Data::current_nr() }
 sub _get_attr   { Kephra::Document::Data::get_attribute(@_) }
 sub _set_attr   { Kephra::Document::Data::set_attribute(@_) }
@@ -91,12 +85,6 @@ sub set_tab_size {
 	$ep->SetHighlightGuide($size);
 	_set_attr('tab_size', $size, $nr);
 }
-sub set_tab_size_2 { set_tab_size(2) }
-sub set_tab_size_3 { set_tab_size(3) }
-sub set_tab_size_4 { set_tab_size(4) }
-sub set_tab_size_5 { set_tab_size(5) }
-sub set_tab_size_6 { set_tab_size(6) }
-sub set_tab_size_8 { set_tab_size(8) }
 #
 # tab use
 #
@@ -129,15 +117,15 @@ sub switch_tab_mode{ get_tab_mode() ? set_tab_mode(0) : set_tab_mode(1) }
 sub EOL_length   { _get_attr('EOL_length') }
 sub get_EOL_mode { _get_attr('EOL') }
 sub set_EOL_mode {
-	my $ep = _ep_ref();
 	my $mode = shift;
-	$mode = $Kephra::config{file}{defaultsettings}{EOL_new} if !$mode;
+	return unless defined $mode;
 	if ($mode eq 'OS') {
 		if    (&Wx::wxMSW) {$mode = 'cr+lf'}
 		elsif (&Wx::wxMAC) {$mode = 'cr'   }
-		else              {$mode = 'lf'   }
+		else               {$mode = 'lf'   }
 	}
 	$mode = detect_EOL_mode() if $mode eq 'auto';
+	my $ep = _ep_ref();
 	my $eoll = 1;
 	if ( $mode eq 'cr+lf'or $mode eq 'win') {$ep->SetEOLMode(&Wx::wxSTC_EOL_CRLF); 
 		$eoll = 2;
@@ -149,29 +137,20 @@ sub set_EOL_mode {
 	Kephra::App::StatusBar::EOL_info($mode);
 }
 
-sub set_EOL_mode_lf   { set_EOL_mode('lf') }
-sub set_EOL_mode_cr   { set_EOL_mode('cr') }
-sub set_EOL_mode_crlf { set_EOL_mode('cr+lf') }
-sub set_EOL_mode_auto { set_EOL_mode('auto' ) }
-sub set_EOL_mode_OS   { set_EOL_mode('OS') }
-
 sub convert_EOL {
-	my $ep = _ep_ref();
-	my $mode  = shift;
+	my $mode  = shift || get_EOL_mode();
 	my $doc_nr = _doc_nr(shift);
-	$mode = $Kephra::config{file}{defaultsettings}{EOL_open} unless $mode;
+	my $ep = _ep_ref($doc_nr);
+	$mode = Kephra::File::_config()->{defaultsettings}{EOL_open} unless $mode;
 	$mode = detect_EOL_mode() if $mode eq 'auto';
-	Kephra::API::EventTable::freeze_group('edit');
+	Kephra::EventTable::freeze_group('edit');
 	if ($mode eq 'cr+lf' or $mode eq 'win')  {$ep->ConvertEOLs(&Wx::wxSTC_EOL_CRLF)}
 	elsif ($mode eq 'cr' or $mode eq 'mac' ) {$ep->ConvertEOLs(&Wx::wxSTC_EOL_CR)}
 	else                                     {$ep->ConvertEOLs(&Wx::wxSTC_EOL_LF)}
-	Kephra::API::EventTable::thaw_group('edit');
+	Kephra::EventTable::thaw_group('edit');
 	set_EOL_mode($mode);
 }
 
-sub convert_EOL_2_lf   { convert_EOL('lf') }
-sub convert_EOL_2_cr   { convert_EOL('cr') }
-sub convert_EOL_2_crlf { convert_EOL('cr+lf') }
 sub detect_EOL_mode {
 	my $ep = _ep_ref();
 	my $end_pos   = $ep->PositionFromLine(1);
@@ -192,36 +171,26 @@ sub detect_EOL_mode {
 #
 # auto indention
 #
-sub get_autoindention { $Kephra::config{editpanel}{auto}{indention} }
-sub switch_autoindention { 
-	$Kephra::config{editpanel}{auto}{indention} ^= 1;
+sub get_autoindention { Kephra::App::EditPanel::_config()->{auto}{indention} }
+sub set_autoindention {
+	Kephra::App::EditPanel::_config()->{auto}{indention} = shift;
 	Kephra::Edit::eval_newline_sub();
 }
-sub set_autoindent_on   {
-	$Kephra::config{editpanel}{auto}{indention}  = 1; 
-	Kephra::Edit::eval_newline_sub();
-}
-sub set_autoindent_off  { 
-	$Kephra::config{editpanel}{auto}{indention}  = 0;
-	Kephra::Edit::eval_newline_sub();
-}
+sub switch_autoindention { set_autoindention( get_autoindention() ^ 1 ) } 
+sub set_autoindent_on    { set_autoindention( 1 ) }
+sub set_autoindent_off   { set_autoindention( 0 ) }
 
 #
 # brace indention
 #
-sub get_braceindention{ $Kephra::config{editpanel}{auto}{brace}{indention}}
-sub switch_braceindention{ 
-	$Kephra::config{editpanel}{auto}{brace}{indention} ^= 1;
+sub get_braceindention { Kephra::App::EditPanel::_config()->{auto}{brace}{indention}}
+sub set_braceindention {
+	Kephra::App::EditPanel::_config()->{auto}{brace}{indention} = shift;
 	Kephra::Edit::eval_newline_sub();
 }
-sub set_blockindent_on {
-	$Kephra::config{editpanel}{auto}{brace}{indention} = 1;
-	Kephra::Edit::eval_newline_sub();
-}
-sub set_blockindent_off {
-	$Kephra::config{editpanel}{auto}{brace}{indention} = 0;
-	Kephra::Edit::eval_newline_sub();
-}
+sub switch_braceindention { set_braceindention( get_braceindention() ^ 1 ) }
+sub set_blockindent_on    { set_braceindention( 1 ) }
+sub set_blockindent_off   { set_braceindention( 0 ) }
 
 #
 # write protection
@@ -246,7 +215,7 @@ sub set_readonly {
 	$status = $ep->GetReadOnly ? 1 : 0;
 	_set_attr('editable', $status);
 	Kephra::App::TabBar::refresh_current_label()
-		if $Kephra::config{app}{tabbar}{info_symbol};
+		if Kephra::App::TabBar::_config()->{info_symbol};
 }
 sub set_readonly_on      { set_readonly('on') }
 sub set_readonly_off     { set_readonly('off') }

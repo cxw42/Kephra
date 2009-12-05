@@ -4,15 +4,18 @@ our $VERSION = '0.26';
 use strict;
 use warnings;
 
-sub _ID     { 'search_dialog' }
-sub _ref {
-	if (ref $_[0] eq 'Wx::Dialog'){ $Kephra::app{dialog}{search} = $_[0] }
-	else                          { $Kephra::app{dialog}{search} }
-}
+sub _ID  { 'search_dialog' }
+my $ref;
+sub _ref { $ref = ref $_[0] eq 'Wx::Dialog' ? $_[0] : $ref }
+my $highlight_search; # set 1 if searchbar turns red
+my %color = (
+	norm_fore => Wx::Colour->new( 0x00, 0x00, 0x55 ),
+	norm_back => Wx::Colour->new( 0xff, 0xff, 0xff ),
+	alert_fore => Wx::Colour->new( 0xff, 0x33, 0x33 ),
+	alert_back => Wx::Colour->new( 0xff, 0xff, 0xff ),
+);
 
-##########################
-# call as find dialog
-sub find {
+sub find    { # call as find dialog
 	my $d = ready();
 	my $selection = Kephra::App::EditPanel::_ref()->GetSelectedText;
 	if ($selection and not $d->{selection_radio}->GetValue ) {
@@ -22,9 +25,8 @@ sub find {
 	$d->{replace_input}->SetValue( Kephra::Edit::Search::get_replace_item() );
 	Wx::Window::SetFocus( $d->{find_input} );
 }
-##########################
-# call as replace dialog
-sub replace {
+
+sub replace { # call as replace dialog
 	my $d = ready();
 	my $selection = Kephra::App::EditPanel::_ref()->GetSelectedText;
 	if ( length $selection > 0 and not $d->{selection_radio}->GetValue ) {
@@ -36,16 +38,15 @@ sub replace {
 	$d->{find_input}->SetValue( $selection );
 	Wx::Window::SetFocus( $d->{replace_input} );
 }
-##########################
-# display find and replace dialog
-sub ready {
+
+sub ready   { # display find and replace dialog
 	if ( not $Kephra::temp{dialog}{search}{active} ) {
 
 		# prepare some internal var and for better handling
 		my $edit_panel      = Kephra::App::EditPanel::_ref();
-		my $attr            = $Kephra::config{search}{attribute};
-		my $dsettings       = $Kephra::config{dialog}{search};
-		my $l18n            = Kephra::Config::Localisation::strings();
+		my $attr            = Kephra::Edit::Search::_attributes();
+		my $dsettings       = Kephra::API::settings()->{dialog}{search};
+		my $l18n            = Kephra::API::localisation();
 		my $label           = $l18n->{dialog}{search}{label};
 		my $hint            = $l18n->{dialog}{search}{hint};
 		my @find_history    = ();
@@ -56,16 +57,16 @@ sub ready {
 		$dsettings->{position_x} = 10 if $dsettings->{position_x} < 0;
 		$dsettings->{position_y} = 10 if $dsettings->{position_y} < 0;
 		$dsettings->{width} = Wx::wxMSW() ? 436 : 466;
-		if ( $Kephra::config{search}{history}{use} ) {
-			@find_history = @{ $Kephra::config{search}{history}{find_item} };
-			@replace_history = @{ $Kephra::config{search}{history}{replace_item} };
+		if ( Kephra::Edit::Search::_history()->{use} ) {
+			@find_history = @{ Kephra::Edit::Search::_history()->{find_item} };
+			@replace_history = @{ Kephra::Edit::Search::_history()->{replace_item} };
 		}
 
 		# init search and replace dialog and release
 		Kephra::Edit::Search::_refresh_search_flags();
 		$Kephra::temp{dialog}{search}{active} = 1;
 		$Kephra::temp{dialog}{active}++;
-		$Kephra::temp{dialog}{search}{colored} = 1;
+		$highlight_search = 1;
 
 		# make dialog window and main panel
 		my $d = Wx::Dialog->new( 
@@ -78,6 +79,8 @@ sub ready {
 			('view-dialog-find', 'icon');
 		$icon->CopyFromBitmap($icon_bmp) if ref $icon_bmp eq 'Wx::Bitmap';
 		$d->SetIcon($icon);
+		$d->SetTransparent(int ($dsettings->{transparency} * 255)) 
+			if defined $dsettings->{transparency};
 		_ref($d);
 
 		# input boxes with labels
@@ -86,11 +89,11 @@ sub ready {
 		$d->{find_input} = Wx::ComboBox->new
 			($d, -1,'', [-1,-1], [324,22], [@find_history], &Wx::wxTE_PROCESS_ENTER );
 		$d->{find_input}->SetDropTarget
-			( SearchInputTarget->new($d->{find_input}, 'find'));
+			( Kephra::Edit::Search::InputTarget->new($d->{find_input}, 'find'));
 		$d->{replace_input} = Wx::ComboBox->new
 			($d, -1, '', [-1,-1], [324,22], [@replace_history], &Wx::wxTE_PROCESS_ENTER);
 		$d->{replace_input}->SetDropTarget
-			( SearchInputTarget->new($d->{replace_input}, 'replace'));
+			( Kephra::Edit::Search::InputTarget->new($d->{replace_input}, 'replace'));
 		$d->{sep_line} = Wx::StaticLine->new(
 			$d, -1, [0,0], [420,1], &Wx::wxLI_HORIZONTAL,);
 
@@ -334,15 +337,14 @@ sub ready {
 ##########################
 # dialog event functions
 
-
 # switch back from search in text selection to search in document
 # because if once looked in selection the finding is selected and this 
 # settings makes no longer sense
 sub no_sel_range {
-	my $dialog = $Kephra::app{dialog}{search};
+	my $dialog = _ref();
 	if ( $dialog->{selection_radio}->GetValue ) {
 		$dialog->{document_radio}->SetValue(1);
-		$Kephra::config{search}{attribute}{in} = 'document';
+		Kephra::Edit::Search::_attributes()->{in} = 'document';
 	}
 	#$dialog->Refresh; #$dialog->Layout();
 }
@@ -351,7 +353,7 @@ sub no_sel_range {
 # find input function
 sub find_input_keyfilter {
 	my ( $input, $event ) = @_;
-	my $dialog = $Kephra::app{dialog}{search};
+	my $dialog = _ref();
 	my $wx_frame = $dialog->GetParent;
 	my $key_code = $event->GetKeyCode;
 	if ($key_code == &Wx::WXK_RETURN) {
@@ -369,20 +371,13 @@ sub find_input_keyfilter {
 	$event->Skip;
 }
 
-my %color = (
-	norm_fore => Wx::Colour->new( 0x00, 0x00, 0x55 ),
-	norm_back => Wx::Colour->new( 0xff, 0xff, 0xff ),
-	alert_fore => Wx::Colour->new( 0xff, 0x33, 0x33 ),
-	alert_back => Wx::Colour->new( 0xff, 0xff, 0xff ),
-);
-
 sub colour_find_input {
-	my $input = $Kephra::app{dialog}{search}{find_input};
+	my $input = _ref()->{find_input};
 	my $pos   = $input->GetInsertionPoint;
-	my $found_something = $Kephra::temp{search}{item}{foundpos} > -1
+	my $found_something = Kephra::Edit::Search::_find_pos() > -1
 		? 1 : 0;
-	return if $Kephra::temp{dialog}{search}{colored} eq $found_something;
-	$Kephra::temp{dialog}{search}{colored} = $found_something;
+	return if $highlight_search eq $found_something;
+	$highlight_search = $found_something;
 	if ($found_something){
 			$input->SetForegroundColour( $color{norm_fore} );
 			$input->SetBackgroundColour( $color{norm_back} );
@@ -395,9 +390,9 @@ sub colour_find_input {
 }
 
 sub incremental_search {
-	if ( $Kephra::config{search}{attribute}{incremental}
+	if ( Kephra::Edit::Search::_attributes()->{incremental}
 		and not $Kephra::temp{dialog}{search}{control} ) {
-		my $input = $Kephra::app{dialog}{search}{find_input};
+		my $input = _ref()->{find_input};
 		Kephra::Edit::Search::set_find_item($input->GetValue);
 		Kephra::Edit::Search::first_increment();
 	}
@@ -406,7 +401,7 @@ sub incremental_search {
 # replace input function
 sub replace_input_keyfilter {
 	my ($input, $event) = @_;
-	my $dialog = $Kephra::app{dialog}{search};
+	my $dialog = _ref();
 	my $key_code = $event->GetKeyCode;
 	if ($key_code == &Wx::WXK_RETURN ) {
 		if ( $event->ControlDown ) {
@@ -428,7 +423,7 @@ sub replace_confirm { Kephra::Edit::Search::replace_confirm() }
 
 sub quit_search_dialog {
 	my ( $win, $event ) = @_;
-	my $config = $Kephra::config{dialog}{search};
+	my $config = Kephra::API::settings()->{dialog}{search};
 	($config->{position_x}, $config->{position_y} ) = $win->GetPositionXY
 		if $config->{save_position} == 1;
 

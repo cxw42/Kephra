@@ -1,10 +1,9 @@
 package Kephra::App::EditPanel::Margin;
-our $VERSION = '0.11';
-=pod
+our $VERSION = '0.12';
 
 =head1 NAME
 
-Kephra::App::EditPanel::Margin - left margin mouse binding, folding
+Kephra::App::EditPanel::Margin - managing margin visuals for marker, linenumber, folding & extra space
 
 =head1 DESCRIPTION
 
@@ -18,7 +17,8 @@ sub _ep_ref {
 }
 sub _all_ref { Kephra::Document::Data::get_all_ep() }
 
-sub _config        { $Kephra::config{editpanel}{margin}}
+sub _edit_config   { Kephra::App::EditPanel::_config() }
+sub _config        { _edit_config->{margin}}
 sub _line_config   { _config()->{linenumber}}
 sub _fold_config   { _config()->{fold}      }
 sub _marker_config { _config()->{marker}    }
@@ -94,6 +94,7 @@ sub refresh_changeable_settings {
 sub on_left_click {
 	my ($ep, $event) = @_;
 	my $nr = $event->GetMargin();
+	Kephra::Edit::Marker::toggle_marker_here(@_) if $nr == 0;
 	Kephra::App::EditPanel::Fold::toggle_here(@_) if $nr == 2;
 }
 sub on_middle_click {
@@ -107,6 +108,9 @@ sub on_right_click {
 		$event->LeftIsDown
 			? Kephra::App::EditPanel::Fold::toggle_all()
 			: Kephra::App::EditPanel::Fold::toggle_siblings($ep, $event);
+	}
+	elsif ($nr == 1){
+		print "\n";
 	}
 }
 
@@ -133,7 +137,7 @@ sub apply_line_number_width_here {
 			('line_nr_margin_width', $char_width, $doc_nr);
 	}
 	my $px_width = $config->{visible}
-		? $char_width * $Kephra::config{editpanel}{font}{size}
+		? $char_width * _edit_config()->{font}{size}
 		: 0;
 	$ep->SetMarginWidth( 1, $px_width );
 	if ($config->{autosize} and $config->{visible}) {

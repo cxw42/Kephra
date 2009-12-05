@@ -1,6 +1,12 @@
 package Kephra::Edit::Comment;
 our $VERSION = '0.07';
+=head1 NAME
 
+Kephra::App::Comment - 
+
+=head1 DESCRIPTION
+
+=cut
 use strict;
 use warnings;
 

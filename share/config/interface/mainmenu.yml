@@ -37,7 +37,7 @@ full_menubar:
       - item file-print#
       -
       -
-        menu file_close:
+        menu file_close file-close-current:
           - item file-close-current
           - item file-close-other
           - item file-close-all
@@ -171,6 +171,12 @@ full_menubar:
       - item goto-line
       - item goto-last-edit
       -
+      - item marker-goto-prev
+      - item marker-goto-next
+      - item marker-toggle-here
+      - item marker-del-doc
+      - item marker-del-all
+      -
       -
         menu bookmark_goto:
           - item bookmark-goto-1
@@ -201,10 +207,15 @@ full_menubar:
       - item tool-note
       - item tool-note-selection
       -
+      -
+        menu tool_output:
+          - item tool-output-selection-dec
+          - item tool-output-selection-hex
+          -
+          - item tool-output-env
+          - item tool-output-inc
       - item tool-interpreter-run-document
       - item tool-interpreter-stop-document
-      -
-      - item tool-output-inc
       -
       - item tool-choose-color
   -

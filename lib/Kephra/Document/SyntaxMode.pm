@@ -62,7 +62,7 @@ sub set {
 	}
 
 	# restore bracelight, bracebadlight indentguide colors
-	my $indicator = $Kephra::config{editpanel}{indicator};
+	my $indicator = Kephra::App::EditPanel::_config()->{indicator};
 	my $bracelight = $indicator->{bracelight};
 	if ( $bracelight->{visible} ) {
 		$ep->StyleSetBold( &Wx::wxSTC_STYLE_BRACELIGHT, 1 );
