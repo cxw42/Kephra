@@ -136,6 +136,7 @@ sub note {
 
 sub append_selection {
 	my $selection = Kephra::Edit::get_selection();
+	return unless defined $selection and $selection;
 	my $np = _ref();
 	my $size = $np->GetLength();
 	$selection = "\n".$selection if $size;

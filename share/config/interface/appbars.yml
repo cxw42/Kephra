@@ -34,8 +34,8 @@ searchbar:
  -
  - item goto-last-edit
  -
- - item marker-goto-prev
- - item marker-goto-next
+ - item marker-goto-prev-all
+ - item marker-goto-next-all
  -
  - item goto-line
  - item view-dialog-find

@@ -78,10 +78,10 @@ sub reset {   # restore once opened file from its settings
 	$ep->SetSavePoint;
 	Kephra::Document::Data::set_attributes_to_default($doc_nr, '');
 	Kephra::Document::Data::evaluate_attributes($doc_nr);
-	Kephra::Edit::Marker::restore_all();
 	Kephra::App::Window::refresh_title();
 	Kephra::App::TabBar::refresh_label($doc_nr);
 	Kephra::App::StatusBar::refresh_all_cells();
+	Kephra::Edit::Marker::delete_doc($doc_nr);
 	Kephra::App::EditPanel::Margin::autosize_line_number($ep, $doc_nr);
 }
 
@@ -100,8 +100,6 @@ sub restore { # add newly opened file from known settings
 		$file_settings{ep_ref} = Kephra::Document::Data::_ep($doc_nr);
 		Kephra::Document::Data::set_all_attributes(\%file_settings, $doc_nr);
 		_load_file_in_buffer($file, $doc_nr);
-		#$file_settings{file_changed}
-		#	= Kephra::Document::Data::get_attribute('file_changed', $doc_nr);
 		Kephra::Document::Data::set_current_nr($doc_nr);
 		Kephra::Document::Data::set_file_path($file, $doc_nr);
 		Kephra::Document::Data::evaluate_attributes($doc_nr);

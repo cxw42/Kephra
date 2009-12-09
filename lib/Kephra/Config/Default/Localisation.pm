@@ -37,6 +37,7 @@ sub get {
 					search_attributes => 'Attributes',
 					find_functions => 'Find Functions',
 					replace_functions => 'Replace Functions',
+					marker => 'Marker',
 					bookmark_goto => 'Goto Bookmark',
 					bookmark_toggle => 'Toggle Bookmark',
 					tools => 'Tools',
@@ -268,11 +269,13 @@ sub get {
 					line => 'Goto Line Number  ...',
 				},
 				marker => {
-					'goto-prev' => 'Goto Previous Marker',
-					'goto-next' => 'Goto Next Marker',
+					'goto-prev-doc' => 'Previous Marker in Doc',
+					'goto-next-doc' => 'Next Marker in Doc',
+					'goto-prev-all' => 'Goto Previous Marker',
+					'goto-next-all' => 'Goto Next Marker',
 					'toggle-here' => 'Toggle Marker Here',
-					'del-doc' => 'Delete Marker in Doc',
-					'del-all' => 'Delete All Marker',
+					'delete-doc' => 'Delete Marker in Doc',
+					'delete-all' => 'Delete All Marker',
 				},
 				bookmark => {
 					goto => {
@@ -299,7 +302,8 @@ sub get {
 						9 => 9,
 						'0' => 'O',
 					},
-					'delete-all' => 'Delete Bookmarks',
+					'delete-doc' => 'Delete Doc Bookmarks',
+					'delete-all' => 'Delete All Bookmarks',
 				},
 				tool => {
 					note => 'Note',
@@ -713,11 +717,13 @@ sub get {
 					line => 'jump to line with chosen number',
 				},
 				marker => {
-					'goto-prev' => 'go to the previous marker (upwards) in this document',
-					'goto-next' => 'go to the next marker (downwards) in this document',
+					'goto-prev-doc' => 'go to the previous marker (upwards) in this document',
+					'goto-next-doc' => 'go to the next marker (downwards) in this document',
+					'goto-prev-all' => 'go to the previous marker here or in some previous document',
+					'goto-next-all' => 'go to the next marker here or in some next document',
 					'toggle-here' => 'set a marker in current line or delete if already present',
-					'del-doc' => 'delete marker just in the current document',
-					'del-all' => 'delete marker in all open documents',
+					'delete-doc' => 'delete marker just in the current document',
+					'delete-all' => 'delete marker in all open documents',
 				},
 				bookmark => {
 					goto => {
@@ -744,7 +750,8 @@ sub get {
 						9 => 'set here or remove (if present) bookmark 9',
 						0 => 'set here or remove (if present) bookmark 0',
 					},
-					'delete-all' => 'delete all bookmarks',
+					'delete-doc' => 'delete bookmarks in the current document',
+					'delete-all' => 'delete bookmarks in all documents',
 				},
 				tool => {
 					note => 'jump to the notepad',

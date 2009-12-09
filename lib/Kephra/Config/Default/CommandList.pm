@@ -206,14 +206,17 @@ sub get {
 					9 => 'Kephra::Edit::Marker::toggle_bookmark(9)',
 					0 => 'Kephra::Edit::Marker::toggle_bookmark(0)',
 				},
+				'delete-doc' => 'Kephra::Edit::Marker::delete_all_bookmarks_in_doc()',
 				'delete-all' => 'Kephra::Edit::Marker::delete_all_bookmarks()',
 			},
 			marker => {
-				'goto-prev' => 'Kephra::Edit::Marker::goto_prev_marker()',
-				'goto-next' => 'Kephra::Edit::Marker::goto_next_marker()',
-				'toggle-here' => 'Kephra::Edit::Marker::toggle_marker()',
-				'del-doc' => 'Kephra::Edit::Marker::delete_all_marker_in_doc()',
-				'del-all' => 'Kephra::Edit::Marker::delete_all_marker()',
+				'goto-prev-doc' => 'Kephra::Edit::Marker::goto_prev_marker_in_doc()',
+				'goto-next-doc' => 'Kephra::Edit::Marker::goto_next_marker_in_doc()',
+				'goto-prev-all' => 'Kephra::Edit::Marker::goto_prev_marker()',
+				'goto-next-all' => 'Kephra::Edit::Marker::goto_next_marker()',
+				'toggle-here' => '&Kephra::Edit::Marker::toggle_marker',
+				'delete-doc' => 'Kephra::Edit::Marker::delete_all_marker_in_doc()',
+				'delete-all' => 'Kephra::Edit::Marker::delete_all_marker()',
 			},
 			tool => {
 				note => 'Kephra::App::Panel::Notepad::note()',
@@ -740,8 +743,8 @@ sub get {
 				line => 'goto-line.xpm',
 			},
 			marker => {
-				'goto-prev' => 'find-previous.xpm',
-				'goto-next' => 'find-next.xpm',
+				'goto-prev-all' => 'find-previous.xpm',
+				'goto-next-all' => 'find-next.xpm',
 			},
 			'bookmark-goto' => {
 				1 => 'bookmark1.xpm',
@@ -890,10 +893,13 @@ sub get {
 				line => 'ctrl+g',
 			},
 			marker => {
-				'goto-prev' => 'ctrl+shift+m',
-				'goto-next' => 'ctrl+m',
-				'toggle-here' => 'ctrl+alt+m',
-				'del-doc' => 'ctrl+alt+shift+m',
+				'goto-prev-doc' => 'shift+f2',
+				'goto-next-doc' => 'f2',
+				'goto-prev-all' => 'alt+shift+f2',
+				'goto-next-all' => 'alt+f2',
+				'toggle-here' => 'ctrl+f2',
+				'delete-doc' => 'ctrl+shift+f2',
+				'delete-all' => 'ctrl+alt+shift+f2',
 			},
 			bookmark => {
 				goto => {
@@ -926,6 +932,7 @@ sub get {
 				'note-selection' => 'shift+f4',
 				'interpreter-run-document' => 'f5',
 				'interpreter-stop-document' => 'shift+f5',
+				'output-selection-dec' => 'ctrl+shift+f5',
 			},
 			document => {
 				change => {

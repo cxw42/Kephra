@@ -88,7 +88,7 @@ sub apply_settings_here {
 sub connect_events {
 	my $ep = shift || _ref();
 	my $trigger = \&Kephra::EventTable::trigger;
-	my $config = _config ;
+	my $config = _config();
 
 	# override sci presets
 	Wx::Event::EVT_DROP_FILES       ($ep, \&Kephra::File::add_dropped);

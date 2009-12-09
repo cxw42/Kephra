@@ -29,6 +29,7 @@ sub get {
 					document_selection => 'textselection_contextmenu',
 					file_history => '&file_history',
 					file_insert_templates => '&insert_templates',
+					marker_margin => 'markermargin_contextmenu',
 					status_eol => 'status_lineendchar_contextmenu',
 					status_encoding => 'status_encoding_contextmenu',
 					status_info => 'status_info_contexmenu',
@@ -50,7 +51,7 @@ sub get {
 			},
 			panel => {
 				notepad => {
-					content_file => 'plugin/notepad/content.txt',
+					content_file => 'global/sub/panel/notepad/content.txt',
 					eval_with => 'eval',
 					font_family => 'Courier New',
 					font_size => 10,
@@ -147,6 +148,7 @@ sub get {
 				position_x    => 100,
 				tooltips      => 1,
 				transparency  => 0.7,  # 1 visible .. 0 unvisible
+				width         => 436,
 			},
 		},
 		editpanel => {
@@ -368,7 +370,7 @@ sub get {
 				match_whole_word => 0,
 				match_word_begin => 0,
 			},
-			data_file => 'search_data.yml',
+			data_file => 'sub/search_data.yml',
 			history => {
 				current_find_item => 'patch',
 				current_replace_item => '--',

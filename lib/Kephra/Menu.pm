@@ -98,7 +98,6 @@ sub create_dynamic { # create on runtime changeable menus
 			my @menu_data;
 			my $files = Kephra::File::History::get();
 			return unless ref $files eq 'ARRAY';
-print scalar @$files, " \n";
 			for my $file ( @$files ){
 				my %item;
 				$item{type} = 'item';

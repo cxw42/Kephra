@@ -1,6 +1,30 @@
 BUGS:
  !!! makefile.pl fails
 
+0.4.2.18
+ ~ expanded markermargin contextmenu
+ " repaired some issues in l18n and default global configs (due tools/confer.pl)
+ ! folding works again
+ ! global marker prev|next now can jump back to current doc if there more marker
+
+0.4.2.17
+ + goto next and previous marker in all docs
+ ~ global marker goto is now in search bar
+ ~ not appending empty selection on notepad text
+ ! fix marker save in session
+
+0.4.2.16
+ + set bookmarks directly by mouse middleclick
+ + save marked lines in the session file
+ [ switched move left and right in document > change menu
+ [ changed marker key binding to standard compliance
+ ] refined add/restore in Kephra::File::Session
+ 
+0.4.2.15
+ " move search data file into global/sub dir
+ [ contextmenu on markermargin
+ [ + marker menu
+
 0.4.2.14
  + output selection in dec and hex
  [ output menu

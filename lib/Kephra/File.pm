@@ -378,11 +378,15 @@ sub close_all     { close_current($_) for @{ Kephra::Document::Data::all_nr() } 
 sub close_unsaved { close_current_unsaved() }
 sub close_current_unsaved { close_nr_unsaved( Kephra::Document::Data::current_nr()) }
 sub close_nr_unsaved {
-	my $close_nr = shift;
-	my $current  = Kephra::Document::Data::current_nr();
-	my $ep       = Kephra::Document::Data::_ep($close_nr);
-	my $file     = Kephra::Document::Data::get_file_path($close_nr);
-	my $buffer   = Kephra::Document::Data::get_value('buffer');
+	my $doc_nr  = shift;
+	my $current = Kephra::Document::Data::current_nr();
+	my $ep      = Kephra::Document::Data::_ep($doc_nr);
+	my $file    = Kephra::Document::Data::get_file_path($doc_nr);
+	my $buffer  = Kephra::Document::Data::get_value('buffer');
+	if ($file){
+		Kephra::Edit::Marker::store_marker($doc_nr);
+		Kephra::File::History::add( $file );
+	}
 
 	# empty last document
 	if ( $buffer == 1 ) {
@@ -392,25 +396,24 @@ sub close_nr_unsaved {
 	# close document
 	elsif ( $buffer > 1 ) {
 		# select to which file nr to jump
-		my $close_last = $close_nr == Kephra::Document::Data::last_nr();
-		my $switch     = $close_nr == $current; 
+		my $close_last = $doc_nr == Kephra::Document::Data::last_nr();
+		my $switch     = $doc_nr == $current; 
 		if ($switch){
 			$close_last
-				? Kephra::Document::Change::to_number( $close_nr - 1 )
-				: Kephra::Document::Change::to_number( $close_nr + 1 );
+				? Kephra::Document::Change::to_number( $doc_nr - 1 )
+				: Kephra::Document::Change::to_number( $doc_nr + 1 );
 		}
 		Kephra::Document::Data::dec_value('buffer');
 		Kephra::Document::Data::dec_value('loaded')
-			if Kephra::Document::Data::get_file_path( $close_nr );
-		Kephra::App::TabBar::delete_tab_by_doc_nr( $close_nr );
-		Kephra::Document::Data::delete_slot( $close_nr );
-		Kephra::Document::Data::set_current_nr( $close_nr ) unless $close_last and $switch;
+			if Kephra::Document::Data::get_file_path( $doc_nr );
+		Kephra::App::TabBar::delete_tab_by_doc_nr( $doc_nr );
+		Kephra::Document::Data::delete_slot( $doc_nr );
+		Kephra::Document::Data::set_current_nr( $doc_nr ) unless $close_last and $switch;
 	}
 	Kephra::App::Window::refresh_title();
 	Kephra::App::EditPanel::gets_focus();
+
 	Kephra::EventTable::trigger('document.list');
-	# remember filepath in history
-	Kephra::File::History::add( $file );
 }
 
 sub close_all_unsaved { close_current_unsaved() for @{ Kephra::Document::Data::all_nr() } }

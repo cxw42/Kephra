@@ -18,6 +18,7 @@ sub get_value { $values{$_[0]} if defined $values{$_[0]} }
 sub set_value { $values{$_[0]} = $_[1] if defined $_[1]  }
 sub inc_value { $values{$_[0]}++ }
 sub dec_value { $values{$_[0]}-- }
+sub del_value { delete $values{$_[0]} if defined  $values{$_[0]}}
 
 # values per dos
 my @attributes;     # data per doc for all open docs
@@ -193,8 +194,7 @@ sub nr_from_file_path {
 
 sub file_already_open { 1 if nr_from_file_path(shift) > -1 }
 sub cursor_pos {
-	my $attr = $attributes[$current_nr];
-	$attr->{cursor_pos} if $values{loaded};
+	$attributes[$current_nr]{cursor_pos} if $values{loaded};
 }
 sub nr_from_ep {
 	my $ep = shift;
@@ -263,11 +263,12 @@ sub evaluate_attributes {
 			if $attr->{directory};
 	} 
 	else { $config->{current}{directory} = '' }
-	Kephra::Edit::_let_caret_visible();
+	Kephra::Edit::Marker::restore_marker($doc_nr);
 	Kephra::App::EditPanel::set_word_chars($ep);
 	Kephra::App::EditPanel::paint_bracelight($ep)
 		if Kephra::App::EditPanel::bracelight_visible();
 	Kephra::App::StatusBar::refresh_cursor();
+	Kephra::Edit::_let_caret_visible();
 }
 
 sub update_attributes { # was named save_properties

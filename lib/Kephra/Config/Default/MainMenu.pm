@@ -176,11 +176,15 @@ sub get {
 			'item goto-line',
 			'item goto-last-edit',
 			undef ,
-			'item marker-goto-prev',
-			'item marker-goto-next',
-			'item marker-toggle-here',
-			'item marker-del-doc',
-			'item marker-del-all',
+			{'menu marker' => [
+				'item marker-goto-prev-doc',
+				'item marker-goto-next-doc',
+				'item marker-goto-prev-all',
+				'item marker-goto-next-all',
+				'item marker-toggle-here',
+				'item marker-delete-doc',
+				'item marker-delete-all',
+			],},
 			undef ,
 			{'menu bookmark_goto' => [
 				'item bookmark-goto-1',
@@ -206,6 +210,7 @@ sub get {
 				'item bookmark-toggle-9',
 				'item bookmark-toggle-0',
 			],},
+			'item bookmark-delete-doc',
 			'item bookmark-delete-all',
 		],},
 		{'menu tools' => [
@@ -230,8 +235,8 @@ sub get {
 				'item document-change-next',
 				'item document-change-back',
 				undef ,
-				'item document-move-left',
 				'item document-move-right',
+				'item document-move-left',
 			],},
 			undef ,
 			{'menu document_syntaxmode' => [

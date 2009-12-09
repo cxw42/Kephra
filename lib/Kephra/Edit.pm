@@ -299,8 +299,8 @@ sub replace_current_line {
 }
 
 sub del_current_line{_ep_ref()->CmdKeyExecute(&Wx::wxSTC_CMD_LINEDELETE)}
-sub del_line_left   {_ep_ref()->CmdKeyExecute(&Wx::wxSTC_CMD_DELLINELEFT) }
-sub del_line_right  {_ep_ref()->CmdKeyExecute(&Wx::wxSTC_CMD_DELLINERIGHT)}
+sub del_line_left   {_ep_ref()->DelLineLeft() }
+sub del_line_right  {_ep_ref()->DelLineRight()}
 
 sub eval_newline_sub{}
 

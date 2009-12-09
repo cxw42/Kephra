@@ -171,11 +171,15 @@ full_menubar:
       - item goto-line
       - item goto-last-edit
       -
-      - item marker-goto-prev
-      - item marker-goto-next
-      - item marker-toggle-here
-      - item marker-del-doc
-      - item marker-del-all
+      -
+        menu marker:
+          - item marker-goto-prev-doc
+          - item marker-goto-next-doc
+          - item marker-goto-prev-all
+          - item marker-goto-next-all
+          - item marker-toggle-here
+          - item marker-delete-doc
+          - item marker-delete-all
       -
       -
         menu bookmark_goto:
@@ -201,6 +205,7 @@ full_menubar:
           - item bookmark-toggle-8
           - item bookmark-toggle-9
           - item bookmark-toggle-0
+      - item bookmark-delete-doc
       - item bookmark-delete-all
   -
     menu tools:
@@ -226,8 +231,8 @@ full_menubar:
           - item document-change-next 
           - item document-change-back
           -
-          - item document-move-left
           - item document-move-right
+          - item document-move-left
       -
       -
         menu document_syntaxmode:

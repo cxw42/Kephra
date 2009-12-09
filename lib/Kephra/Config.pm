@@ -1,13 +1,11 @@
 package Kephra::Config;
 our $VERSION = '0.34';
-=pod
 
 =head1 NAME
 
 Kephra::Config - low level config stuff and basics
 
 =head1 DESCRIPTION
-
 
 
 =cut

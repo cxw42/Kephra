@@ -94,13 +94,13 @@ sub create {
 	#Wx::Event::EVT_LEFT_UP( $notebook, sub {
 		#my ($tabs, $event) = @_; print "\n left up\n";
 		#Kephra::Document::Data::set_value('b4tabchange', $tabs->GetSelection);
-		#Kephra::App::EditPanel::gets_focus(); $event->Skip;
+		#$event->Skip;
 	#});
 	#Wx::Event::EVT_LEFT_DOWN( $notebook, sub {
 		#my ($tabs, $event) = @_; print "\n left down\n";
 		#Kephra::Document::Change::switch_back()
 			#if Kephra::Document::Data::get_value('b4tabchange')==$tabs->GetSelection;
-		#Kephra::App::EditPanel::gets_focus(); $event->Skip;
+		#$event->Skip;
 	#});
 	my $begin_drag_index;
 	Wx::Event::EVT_AUINOTEBOOK_BEGIN_DRAG($notebook, -1, sub {
@@ -261,7 +261,7 @@ sub refresh_label {
 		and Kephra::API::settings()->{file}{save}{reload_config}              ) {
 		$label = '$ ' . $label;
 	}
-	$label = ( $doc_nr + 1 ) . " $label" if $config->{number_tabs};
+	$label = ( $doc_nr + 1 ) . ' ' . $label if $config->{number_tabs};
 	Kephra::Document::Data::set_attribute('label', $label);
 	if ( $config->{info_symbol} ) {
 		$label .= ' #' if Kephra::Document::Data::get_attribute('editable');

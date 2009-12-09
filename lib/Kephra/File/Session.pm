@@ -1,6 +1,5 @@
 package Kephra::File::Session;
 our $VERSION = '0.15';
-=pod
 
 =head1 NAME
 
@@ -13,12 +12,11 @@ file session handling
 current session is the group of all opened files
 sessionfiles contain metadata like syntaxmode, tabsize, cursorpos, -NI codset
 =cut
+use strict;
+use warnings;
 #
 # intern API
 #
-use strict;
-use warnings;
-
 sub _config      { Kephra::API::settings()->{file}{session} }
 sub _dialog_l18n { Kephra::Config::Localisation::strings()->{dialog} }
 sub _forget_gone_files  {
@@ -74,20 +72,34 @@ sub _add {
 	# activate the starting document & some afterwork
 	Kephra::Document::Change::to_number($start_nr);
 	Kephra::Document::Data::set_previous_nr($prev_doc_nr);
-	Kephra::Edit::Marker::restore_all();
 	Kephra::App::Window::refresh_title();
 }
 #
 # extern API
 #
-sub restore   { add(shift, 1) }
+sub restore   {
+	my $file = shift;
+	Kephra::File::close_all();
+	add($file);
+	Kephra::Edit::Marker::restore_all();
+}
+
+sub restore_from { # 
+	my $file = Kephra::Dialog::get_file_open(
+			Kephra::App::Window::_ref(),
+			_dialog_l18n()->{file}{open_session},
+			Kephra::Config::filepath( _config->{directory}
+		), $Kephra::temp{file}{filterstring}{config}
+	);
+	restore($file);
+}
+
 sub add       {
 	my $file = shift;
 	my $restore = shift;
 	if (-r $file) {
 		my $session_def = Kephra::Config::File::load($file);
 		if (ref $session_def eq 'HASH'){
-			Kephra::File::close_all() if $restore;
 			_add($session_def);
 		} else {
 			Kephra::Dialog::warning_box
@@ -98,15 +110,7 @@ sub add       {
 			(undef, $file, _dialog_l18n()->{error}{file_read});
 	}
 }
-sub restore_from { # 
-	my $file = Kephra::Dialog::get_file_open(
-			Kephra::App::Window::_ref(),
-			_dialog_l18n()->{file}{open_session},
-			Kephra::Config::filepath( _config->{directory}
-		), $Kephra::temp{file}{filterstring}{config}
-	);
-	restore($file);
-}
+
 sub add_from  {
 	my $file = Kephra::Dialog::get_file_open(
 		Kephra::App::Window::_ref(),
@@ -121,9 +125,10 @@ sub save      {
 	my $file = shift;
 	return unless $file;
 
-	Kephra::Document::Data::update_attributes();
-	my @saved_properties = qw(EOL codepage cursor_pos edit_pos file_path readonly
-		syntaxmode tab_size tab_use);
+	Kephra::Config::Global::update();
+	my @saved_properties = qw(syntaxmode EOL codepage readonly tab_size tab_use
+			cursor_pos edit_pos file_path);
+	push @saved_properties, Kephra::Edit::Marker::_attribute();
 	my $doc2vis = \&Kephra::App::TabBar::_doc2vis_pos;
 	my $config = _config();
 	my %temp_config = %{ Kephra::Config::File::load($file) } if -r $file;

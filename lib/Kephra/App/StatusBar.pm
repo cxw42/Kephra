@@ -86,7 +86,7 @@ sub create {
 		my $field = _item( $index );
 		my $menu = \&Kephra::App::ContextMenu::get;
 		if    ($field eq 'syntaxmode'){$bar->PopupMenu( &$menu('status_syntaxmode'),$x,$y)}
-		elsif ($field eq 'codepage')  {$bar->PopupMenu( &$menu('document_encoding'),  $x,$y)}
+		elsif ($field eq 'codepage')  {$bar->PopupMenu( &$menu('document_encoding'),$x,$y)}
 		elsif ($field eq 'tab')       {$bar->PopupMenu( &$menu('status_tab'),       $x,$y)}
 		elsif ($field eq 'EOL')       {$bar->PopupMenu( &$menu('status_eol'),       $x,$y)}
 		elsif ($field eq 'message')   {$bar->PopupMenu( &$menu('status_info'),      $x,$y)}

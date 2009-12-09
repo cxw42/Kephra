@@ -139,7 +139,8 @@ sub OnInit {
 	print " glob cfg load:",
 		Benchmark::timestr( Benchmark::timediff( new Benchmark, $t1 ) ), "\n"
 		if $Kephra::BENCHMARK;
-	my $t2 = new Benchmark;
+	my $t2 = 
+	new Benchmark;
 	if (Kephra::Config::Global::load_autosaved()) {
 		Kephra::App::EditPanel::apply_settings_here($ep);
 		Kephra::EventTable::freeze_all();
@@ -164,7 +165,7 @@ sub OnInit {
 		print "app startet:",
 			Benchmark::timestr( Benchmark::timediff( new Benchmark, $t0 ) ), "\n"
 			if $Kephra::BENCHMARK;
-			1;                      # everything is good
+		1;                      # everything is good
 	} else {
 		$app->ExitMainLoop(1);
 	}
@@ -184,7 +185,6 @@ sub exit_unsaved {
 	Kephra::App::Window::_ref()->Show(0);
 	Kephra::EventTable::stop_timer();
 	Kephra::File::Session::autosave();
-	Kephra::Config::Global::update();
 	Kephra::Config::Global::save_autosaved();
 	Kephra::Config::set_xp_style(); #
 	Kephra::App::Window::destroy(); # close window

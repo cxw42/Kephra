@@ -13,12 +13,11 @@ use strict;
 use warnings;
 
 sub _ep_ref {
-	ref $_[0] eq 'Wx::StyledTextCtrl' ? $_[0] : Kephra::App::EditPanel::_ref()   
+	Kephra::App::EditPanel::is($_[0]) ? $_[0] : Kephra::App::EditPanel::_ref()   
 }
-sub _all_ref { Kephra::Document::Data::get_all_ep() }
-
+sub _all_ref       { Kephra::Document::Data::get_all_ep() }
 sub _edit_config   { Kephra::App::EditPanel::_config() }
-sub _config        { _edit_config->{margin}}
+sub _config        { _edit_config()->{margin}}
 sub _line_config   { _config()->{linenumber}}
 sub _fold_config   { _config()->{fold}      }
 sub _marker_config { _config()->{marker}    }
@@ -49,7 +48,7 @@ sub apply_settings_here {# eval view settings for the margin of this edit panel 
 	$ep->SetMarginMask( 1, 0 );
 	$ep->SetMarginMask( 2, &Wx::wxSTC_MASK_FOLDERS );
 	$ep->SetMarginSensitive( 0, 1 );
-	$ep->SetMarginSensitive( 1, 0 );
+	$ep->SetMarginSensitive( 1, 1 );
 	$ep->SetMarginSensitive( 2, 1 );
 
 	# setting folding markers
@@ -78,7 +77,7 @@ sub apply_settings_here {# eval view settings for the margin of this edit panel 
 
 	show_marker_here($ep);
 	Kephra::Document::Data::set_attribute('margin_linemax', 0);
-	apply_line_number_width_here($ep);
+	#apply_line_number_width_here($ep);
 	apply_line_number_color_here($ep);
 	show_fold_here($ep);
 	apply_text_width_here($ep);
@@ -94,24 +93,31 @@ sub refresh_changeable_settings {
 sub on_left_click {
 	my ($ep, $event) = @_;
 	my $nr = $event->GetMargin();
-	Kephra::Edit::Marker::toggle_marker_here(@_) if $nr == 0;
-	Kephra::App::EditPanel::Fold::toggle_here(@_) if $nr == 2;
+	if      ($nr < 2) {
+		Kephra::Edit::Marker::toggle_marker_here(@_);
+	} elsif ($nr == 2) {
+		Kephra::App::EditPanel::Fold::toggle_here(@_);
+	}
 }
 sub on_middle_click {
 	my ($ep, $event, $nr) = @_;
+	Kephra::Edit::Marker::toggle_bookmark_here(@_)                if $nr <  2;
 	Kephra::App::EditPanel::Fold::toggle_recursively($ep, $event) if $nr == 2;
-
 }
 sub on_right_click {
 	my ($ep, $event, $nr) = @_;
-	if ($nr == 2) {
+	my ($x, $y) = ($event->GetX, $event->GetY);
+	#Kephra::Document::Data::set_value('mouse_y', $event->GetPosition->y());
+
+	if ($nr < 2){
+		$ep->PopupMenu( Kephra::App::ContextMenu::get('marker_margin'), $x, $y);
+	}
+	elsif ($nr == 2) {
 		$event->LeftIsDown
 			? Kephra::App::EditPanel::Fold::toggle_all()
 			: Kephra::App::EditPanel::Fold::toggle_siblings($ep, $event);
 	}
-	elsif ($nr == 1){
-		print "\n";
-	}
+	#Kephra::Document::Data::del_value('mouse_y');
 }
 
 
@@ -160,6 +166,7 @@ sub needed_line_number_width {
 	my $width = length _ep_ref(shift)->GetLineCount;
 	my $min = _line_config()->{min_width};
 	$width = $min if defined $min and $min and $min > $width;
+	return $width;
 }
 sub autosize_line_number {
 	my $ep = _ep_ref(shift);
@@ -174,7 +181,8 @@ sub autosize_line_number {
 
 sub line_number_autosize_update {
 	my $line_max = Kephra::Document::Data::get_attribute('margin_linemax');
-	autosize_line_number() if _ep_ref->GetLineCount > $line_max;
+	my $ep = _ep_ref();
+	autosize_line_number($ep) if $ep->GetLineCount > $line_max;
 }
 
 sub apply_line_number_color { apply_line_number_color_here($_) for @{_all_ref()} }
