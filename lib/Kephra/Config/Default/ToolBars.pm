@@ -26,6 +26,7 @@ sub get {
 			'checkitem view-editpanel-line-wrap',
 			'checkitem view-window-stay-on-top',
 			undef,
+			'item tool-interpreter-run-document',
 			'checkitem view-panel-output',
 			'checkitem view-panel-notepad',
 			undef,
@@ -34,7 +35,7 @@ sub get {
 			'item view-dialog-keymap#',
 		],
 		searchbar => [
-			'item view-toolbar-search',
+			'item view-searchbar',
 			'combobox find 180',
 			'item find-prev',
 			'item find-next',

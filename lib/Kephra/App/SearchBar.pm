@@ -1,21 +1,13 @@
 package Kephra::App::SearchBar;
 our $VERSION = '0.14';
 
-=head1 NAME
-
-Kephra::App::SearchBar - 
-
-=head1 DESCRIPTION
-
-=cut
-
 use strict;
 use warnings;
 
-sub _ref           { Kephra::ToolBar::_ref('search', $_[0]) }
-sub _config        { Kephra::API::settings()->{app}{toolbar}{search} }
+sub _ID            { 'searchbar' }
+sub _ref           { Kephra::ToolBar::_ref( _ID(), $_[0]) }
+sub _config        { Kephra::API::settings()->{app}{ _ID() } }
 sub _search_config { Kephra::API::settings()->{search} }
-sub _ID            { 'search_bar' }
 my $highlight_search; # set 1 if searchbar turns red
 #
 sub create {
@@ -23,11 +15,11 @@ sub create {
 	my $bar_def = Kephra::Config::File::load_from_node_data( _config() );
 	unless ($bar_def) {
 		$bar_def = Kephra::Config::Tree::get_subtree
-			( Kephra::Config::Default::toolbars(), 'searchbar');
+			( Kephra::Config::Default::toolbars(), _ID() );
 	}
 
 	# create searchbar with buttons
-	my $rest_widgets = Kephra::ToolBar::create_new( 'search', $bar_def);
+	my $rest_widgets = Kephra::ToolBar::create_new( _ID(), $bar_def);
 	my $bar = _ref();
 	# apply special searchbar widgets
 	for my $item_data (@$rest_widgets){
@@ -42,9 +34,17 @@ sub create {
 			$find_input->SetValue( Kephra::Edit::Search::get_find_item() );
 			$find_input->SetSize($item_data->{size},-1) if $item_data->{size};
 			if ( _search_config()->{history}{use} ){
-				$find_input->Append($_) for @{_search_config()->{history}{find_item}}
+				$find_input->Append($_) for @{ Kephra::Edit::Search::get_find_history() }
 			}
 
+			
+			Wx::Event::EVT_RIGHT_DOWN ( $bar,  sub {
+				return unless get_contextmenu_visibility();
+				my ($widget, $event) = @_;
+				my ($x, $y) = ($event->GetX, $event->GetY);
+				my $menu = Kephra::App::ContextMenu::get(_config()->{contextmenu});
+				$bar->PopupMenu($menu, $x, $y) if Kephra::Menu::is($menu);
+			} );
 			Wx::Event::EVT_TEXT( $bar, $find_input, sub {
 				my ($bar, $event) = @_;
 				my $old = Kephra::Edit::Search::get_find_item();
@@ -149,7 +149,7 @@ sub create {
 			$replace_input->SetValue( Kephra::Edit::Search::get_replace_item() );
 			$replace_input->SetSize($item_data->{size},-1) if $item_data->{size};
 			if ( _search_config()->{history}{use} ){
-				$replace_input->Append($_) for @{_search_config()->{history}{replace_item}}
+				$replace_input->Append($_) for @{ Kephra::Edit::Search::get_replace_history() }
 			}
 			$ctrl = $replace_input;
 		}
@@ -163,7 +163,7 @@ sub create {
 }
 
 
-sub destroy{ Kephra::ToolBar::destroy ('search') }
+sub destroy{ Kephra::ToolBar::destroy ( _ID() ) }
 #
 sub connect_find_input {
 	my $find_input = shift;
@@ -179,7 +179,7 @@ sub connect_find_input {
 	&$add_call( 'find.item.history.changed', $ID.'_popupmenu', sub {
 			$find_input->Clear();
 			$find_input->Append($_) for @{ Kephra::Edit::Search::get_find_history() };
-			$find_input->SetValue(Kephra::Edit::Search::get_find_item());
+			$find_input->SetValue( Kephra::Edit::Search::get_find_item() );
 			$find_input->SetInsertionPointEnd;
 	}, $ID);
 	&$add_call( 'find', $ID.'_color_refresh', \&colour_find_input, $ID);
@@ -202,12 +202,12 @@ sub colour_find_input {
 	$find_input->Refresh;
 }
 
-sub enter_focus{
+sub enter_focus {
 	my $bar = _ref();
 	switch_visibility() unless get_visibility();
 	Wx::Window::SetFocus($bar->{find_input}) if defined $bar->{find_input};
 }
-sub leave_focus{ switch_visibility() if _config()->{autohide} }
+sub leave_focus { switch_visibility() if _config()->{autohide} }
 #
 sub give_editpanel_focus_back{
 	leave_focus();
@@ -228,4 +228,15 @@ sub show {
 sub get_visibility    { _config()->{visible} }
 sub switch_visibility { _config()->{visible} ^= 1; show(); }
 
+sub get_contextmenu_visibility    { _config()->{contextmenu_visible} }
+sub switch_contextmenu_visibility { _config()->{contextmenu_visible} ^= 1 }
+
 1;
+
+=head1 NAME
+
+Kephra::App::SearchBar - specialized toolbar for naviagtion related things
+
+=head1 DESCRIPTION
+
+=cut

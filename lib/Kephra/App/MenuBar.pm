@@ -1,23 +1,15 @@
 package Kephra::App::MenuBar;
-our $VERSION = 0.07;
-
-=head1 NAME
-
-Kephra::App::MenuBar - main menu of the app 
-
-=head1 DESCRIPTION
-
-=cut
+our $VERSION = 0.08;
 
 use strict;
 use warnings;
 
 my $bar;
-sub _ref { $bar = ref $_[0] eq 'Wx::MenuBar' ? $_[0] : $bar }
+sub _ref    { $bar = ref $_[0] eq 'Wx::MenuBar' ? $_[0] : $bar }
+sub _config { Kephra::API::settings()->{app}{menubar} }
 
 sub create {
-	my $menubar_def = Kephra::Config::File::load_from_node_data
-		( Kephra::API::settings()->{app}{menubar} );
+	my $menubar_def = Kephra::Config::File::load_from_node_data( _config() );
 	unless ($menubar_def) {
 		$menubar_def = Kephra::Config::Default::mainmenu();
 	}
@@ -42,8 +34,22 @@ sub create {
 			);
 		}
 	}
-	Kephra::App::Window::_ref()->SetMenuBar($menubar);
 	_ref($menubar);
+	show();
+}
+
+sub get_visibility    { _config()->{visible} }
+sub switch_visibility { _config()->{visible} ^= 1; show(); }
+sub show {
+	Kephra::App::Window::_ref()->SetMenuBar( get_visibility() ? _ref() : undef );
 }
 
 1;
+
+=head1 NAME
+
+Kephra::App::MenuBar - main menu of the app 
+
+=head1 DESCRIPTION
+
+=cut

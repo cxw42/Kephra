@@ -1,12 +1,6 @@
 package Kephra::Edit::Goto;
 our $VERSION = '0.10';
-=head1 NAME
 
-Kephra::App::Goto - 
-
-=head1 DESCRIPTION
-
-=cut
 use strict;
 use warnings;
 #
@@ -57,8 +51,8 @@ sub line    {
 	my $ep = _ep_ref();
 	my $l18n = Kephra::API::localisation()->{dialog}{edit};
 	my $line = Kephra::Dialog::get_number( 
-		Kephra::App::Window::_ref(),
-		$l18n->{goto_line_input}, $l18n->{goto_line_headline},
+		$l18n->{goto_line_input},
+		$l18n->{goto_line_headline},
 		$ep->GetCurrentLine + 1
 	);
 	line_nr( $line - 1) unless $line == &Wx::wxCANCEL;
@@ -146,3 +140,11 @@ sub next_related_brace{
 }
 
 1;
+
+=head1 NAME
+
+Kephra::App::Goto - 
+
+=head1 DESCRIPTION
+
+=cut

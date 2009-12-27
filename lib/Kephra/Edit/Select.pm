@@ -1,6 +1,12 @@
 package Kephra::Edit::Select;
 our $VERSION = '0.04';
+=head1 NAME
 
+Kephra::Edit::Select - calls to select  a word, a block or more
+
+=head1 DESCRIPTION
+
+=cut
 use strict;
 use warnings;
 

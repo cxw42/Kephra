@@ -29,8 +29,6 @@ textselection_contextmenu:
  - item edit-selection-convert-lowercase
 
 markermargin_contextmenu:
- - item goto-line
- -
  -
   menu marker:
     - item marker-toggle-here
@@ -67,6 +65,8 @@ markermargin_contextmenu:
      - item bookmark-goto-0
  - item bookmark-delete-doc
  - item bookmark-delete-all
+ -
+ - item goto-line
  -
  -
    menu view_text_fold:

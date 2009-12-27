@@ -142,7 +142,7 @@ sub get {
 			],},
 		],},
 		{'menu search' => [
-			'item view-toolbar-search-goto',
+			'item view-searchbar-goto',
 			'item view-dialog-find',
 			'item view-dialog-replace',
 			{'menu find_functions' => [
@@ -384,20 +384,23 @@ sub get {
 				'checkitem view-panel-notepad',
 				'checkitem view-panel-output',
 			],},
+			{'menu view_bars' => [
+				'checkitem view-menubar',
+				'checkitem view-toolbar',
+				'checkitem view-tabbar',
+				'checkitem view-searchbar',
+				'checkitem view-statusbar',
+			],},
 			{'menu view_contextmenu' => [
-				'checkitem view-tabbar-contexmenu',
+				#'checkitem view-tabbar-contexmenu',
 				{'menu view_editpanel_contexmenu' => [
 					'radioitem view-editpanel-contextmenu-custom',
 					'radioitem view-editpanel-contextmenu-default',
 					'radioitem view-editpanel-contextmenu-no',
 				],},
+				'checkitem view-editpanel-margin-contexmenu',
+				'checkitem view-searchbar-contexmenu',
 				'checkitem view-statusbar-contexmenu',
-			],},
-			{'menu view_bars' => [
-				'checkitem view-toolbar-main',
-				'checkitem view-tabbar',
-				'checkitem view-toolbar-search',
-				'checkitem view-statusbar',
 			],},
 			undef ,
 			'checkitem view-editpanel-margin-marker',
@@ -406,7 +409,7 @@ sub get {
 			{'menu view_text_fold' => [
 				'item view-editpanel-fold-toggle-here',
 				'item view-editpanel-fold-toggle-recursively',
-				'item view-editpanel-fold-toggle-siblings',
+				'item view-editpanel-fold-toggle-level',
 				'item view-editpanel-fold-toggle-all',
 			],},
 			{'menu view_textmargin' => [

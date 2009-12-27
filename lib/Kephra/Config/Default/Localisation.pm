@@ -138,6 +138,7 @@ sub get {
 						export => 'Export ...',
 						'backup-open' => 'Restore Backup',
 						'backup-save' => 'Save Backup',
+						'history-open-all' => 'Open All',
 					},
 				},
 				edit => {
@@ -308,8 +309,8 @@ sub get {
 				tool => {
 					note => 'Note',
 					'note-selection' => 'Note Selection',
-					'interpreter-run-document' => 'Run',
-					'interpreter-stop-document' => 'Stop',
+					'interpreter-run-document' => 'Run Script',
+					'interpreter-stop-document' => 'Stop Script',
 					'output' => {
 						'inc' => '@INC',
 						'env' => '%ENV',
@@ -429,8 +430,8 @@ sub get {
 						'fold-toggle' => {
 							all => 'All',
 							'here' => 'Here',
+							'level' => 'Level',
 							'recursively' => 'Recursively',
-							'siblings' => 'Siblings',
 						},
 						font => 'Font',
 						'indention-guide' => 'Indention Guide',
@@ -443,6 +444,7 @@ sub get {
 							no => 'No Menu',
 						},
 						margin => {
+							contexmenu => 'Left Margin',
 							marker => 'Marker Margin',
 							'line-number' => 'Line Number',
 							'text-fold' => 'Fold Margin',
@@ -463,6 +465,10 @@ sub get {
 						notepad => 'Notepad',
 						output => 'Output',
 					},
+					menubar => 'Main Menu',
+					searchbar => 'Searchbar',
+					'searchbar-goto' => 'Searchbar',
+					'searchbar-contexmenu' => 'Searchbar',
 					statusbar => 'Statusbar',
 					'statusbar-contexmenu' => 'Statuscontext',
 					'statusbar-info' => {
@@ -472,11 +478,7 @@ sub get {
 					},
 					tabbar => 'Tabbar',
 					'tabbar-contexmenu' => 'Tabbar',
-					toolbar => {
-						main => 'Main Toolbar',
-						search => 'Searchbar',
-						'search-goto' => 'Searchbar',
-					},
+					toolbar => 'Main Toolbar',
 					webpage => {
 						documentation => 'Online Docs',
 						forum => 'Perl Forum',
@@ -588,6 +590,7 @@ sub get {
 						export => 'save files session in another editors format',
 						'backup-open' => 'restore the backup session',
 						'backup-save' => 'remember current files as the backup session',
+						'history-open-all' => 'restore all listed closed files from history',
 					},
 				},
 				edit => {
@@ -877,8 +880,8 @@ sub get {
 						'fold-toggle' => {
 							all => 'fold or unfold all visible and not visible nodes',
 							here => 'fold or unfold only the node on selected position',
+							level => 'fold or unfold all nodes with same depth in hierarchy (amount of parents)',
 							recursively => 'fold or unfold this and all nodes below in hierarchy',
-							siblings => 'fold or unfold all nodes with same parent',
 						},
 						font => 'change font family, size, style etc.',
 						'indention-guide' => 'vertical dotted lines in intervals of tab width',
@@ -891,6 +894,7 @@ sub get {
 							no => 'deaktivate all editpanel context menu',
 						},
 						margin => {
+							contexmenu => 'enable or disable the context menu over the margin, left of the edit panel',
 							marker => 'margin for bookmarks, marker, debug steps ...',
 							'line-number' => 'sets line numbers visible',
 							text => {
@@ -911,6 +915,10 @@ sub get {
 						notepad => 'switch visibility of the Notepad panel',
 						output => 'switch visibility of the Output panel',
 					},
+					menubar => 'turn main menu on (visible) or off',
+					searchbar => 'toolbar with text seach and navigation functions',
+					'searchbar-goto' => 'goto searchbar and use find function',
+					'searchbar-contexmenu' => 'enable or disable the context menu over the searchbar',
 					statusbar => 'switch visibility of the statusbar on bottom of the window',
 					'statusbar-contexmenu' => 'enable or disable context menus on statusbar',
 					'statusbar-info' => {
@@ -920,11 +928,7 @@ sub get {
 					},
 					tabbar => 'switch visibility of the tabbar, toolbar for doc selection',
 					'tabbar-contexmenu' => 'enable or disable context menus on tabbar',
-					toolbar => {
-						main => 'switch visibility of the main toolbar',
-						search => 'toolbar with text seach and navigation functions',
-						'search-goto' => 'goto searchbar and use find function',
-					},
+					toolbar => 'switch visibility of the main toolbar',
 					webpage => {
 						documentation => 'open online documentation with your default browser',
 						forum => 'go to a perl web forum based on current language setting',

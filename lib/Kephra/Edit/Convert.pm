@@ -1,12 +1,5 @@
 package Kephra::Edit::Convert;
 our $VERSION = '0.10';
-=head1 NAME
-
-Kephra::App::Convert - 
-
-=head1 DESCRIPTION
-
-=cut
 
 use strict;
 use warnings;
@@ -142,3 +135,11 @@ sub chars2entities  { _tr('fore', @char2entity) }
 sub entities2chars  { _tr('back', @char2entity) }
 
 1;
+
+=head1 NAME
+
+Kephra::App::Convert - 
+
+=head1 DESCRIPTION
+
+=cut

@@ -42,6 +42,7 @@ sub get {
 					export => 'Kephra::File::Session::export_scite()',
 					'backup-open' => 'Kephra::File::Session::load_backup()',
 					'backup-save' => 'Kephra::File::Session::save_backup()',
+					'history-open-all' => 'Kephra::File::History::open_all()',
 				},
 			},
 			edit => {
@@ -345,11 +346,12 @@ sub get {
 					'right-margin' => 'Kephra::App::EditPanel::switch_LLI_visibility()',
 					whitespace => 'Kephra::App::EditPanel::switch_whitespace_visibility()',
 					contextmenu => {
-						custom => "Kephra::App::ContextMenu::set_editpanel('custom')",
-						no => "Kephra::App::ContextMenu::set_editpanel('none')",
-						default => "Kephra::App::ContextMenu::set_editpanel('default')",
+						custom => "Kephra::App::EditPanel::set_contextmenu('custom')",
+						no => "Kephra::App::EditPanel::set_contextmenu('none')",
+						default => "Kephra::App::EditPanel::set_contextmenu('default')",
 					},
 					margin => {
+						contexmenu => 'Kephra::App::EditPanel::Margin::switch_contextmenu_visibility()',
 						'line-number' => 'Kephra::App::EditPanel::Margin::switch_line_number()',
 						marker => 'Kephra::App::EditPanel::Margin::switch_marker()',
 						'text-fold' => 'Kephra::App::EditPanel::Margin::switch_fold()',
@@ -368,14 +370,18 @@ sub get {
 					'fold-toggle' => {
 						all => 'Kephra::App::EditPanel::Fold::toggle_all()',
 						here => 'Kephra::App::EditPanel::Fold::toggle_here()',
+						level => 'Kephra::App::EditPanel::Fold::toggle_level()',
 						recursively => 'Kephra::App::EditPanel::Fold::toggle_recursively()',
-						siblings => 'Kephra::App::EditPanel::Fold::toggle_siblings()',
 					},
 				},
 				panel => {
 					notepad => 'Kephra::App::Panel::Notepad::switch_visibility()',
 					output => 'Kephra::App::Panel::Output::switch_visibility()',
 				},
+				menubar => 'Kephra::App::MenuBar::switch_visibility()',
+				searchbar => 'Kephra::App::SearchBar::switch_visibility()',
+				'searchbar-goto' => 'Kephra::App::SearchBar::enter_focus()',
+				'searchbar-contexmenu' => 'Kephra::App::SearchBar::switch_contextmenu_visibility()',
 				statusbar => 'Kephra::App::StatusBar::switch_visibility()',
 				'statusbar-contexmenu' => 'Kephra::App::StatusBar::switch_contextmenu_visibility()',
 				'statusbar-info' => {
@@ -385,11 +391,7 @@ sub get {
 				},
 				tabbar => 'Kephra::App::TabBar::switch_visibility()',
 				'tabbar-contexmenu' => 'Kephra::App::TabBar::switch_contextmenu_visibility()',
-				toolbar => {
-					main => 'Kephra::App::MainToolBar::switch_visibility()',
-					'search-goto' => 'Kephra::App::SearchBar::enter_focus()',
-					search => 'Kephra::App::SearchBar::switch_visibility()',
-				},
+				toolbar => 'Kephra::App::MainToolBar::switch_visibility()',
 				'window-stay-on-top' => 'Kephra::App::Window::switch_on_top_mode()',
 				webpage => {
 					forum => 'Kephra::Help::forum_site()',
@@ -668,11 +670,12 @@ sub get {
 					'right-margin' => 'Kephra::App::EditPanel::LLI_visible()',
 					whitespace => 'Kephra::App::EditPanel::whitespace_visible()',
 					contextmenu => {
-						custom => "Kephra::App::ContextMenu::get_editpanel() eq 'custom';",
-						no => "Kephra::App::ContextMenu::get_editpanel() eq 'none';",
-						default => "Kephra::App::ContextMenu::get_editpanel() eq 'default';",
+						custom => "Kephra::App::EditPanel::get_contextmenu() eq 'custom';",
+						no => "Kephra::App::EditPanel::get_contextmenu() eq 'none';",
+						default => "Kephra::App::EditPanel::get_contextmenu() eq 'default';",
 					},
 					margin => {
+						contexmenu => 'Kephra::App::EditPanel::Margin::get_contextmenu_visibility()',
 						'line-number' => 'Kephra::App::EditPanel::Margin::line_number_visible()',
 						marker => 'Kephra::App::EditPanel::Margin::marker_visible()',
 						'text-fold' => 'Kephra::App::EditPanel::Margin::fold_visible()',
@@ -693,6 +696,7 @@ sub get {
 					notepad => 'Kephra::App::Panel::Notepad::get_visibility()',
 					output => 'Kephra::App::Panel::Output::get_visibility()',
 				},
+				menubar => 'Kephra::App::MenuBar::get_visibility()',
 				statusbar => 'Kephra::App::StatusBar::get_visibility()',
 				'statusbar-contexmenu' => 'Kephra::App::StatusBar::get_contextmenu_visibility()',
 				'statusbar-info' => {
@@ -700,10 +704,11 @@ sub get {
 					length => 'Kephra::App::StatusBar::info_msg_nr() == 1',
 					none => 'Kephra::App::StatusBar::info_msg_nr()  == 0',
 				},
+				'searchbar' => 'Kephra::App::SearchBar::get_visibility()',
+				'searchbar-contexmenu' => 'Kephra::App::SearchBar::get_contextmenu_visibility()',
 				tabbar => 'Kephra::App::TabBar::get_visibility()',
 				'tabbar-contexmenu' => 'Kephra::App::TabBar::get_contextmenu_visibility()',
-				'toolbar-search' => 'Kephra::App::SearchBar::get_visibility()',
-				'toolbar-main' => 'Kephra::App::MainToolBar::get_visibility()',
+				'toolbar' => 'Kephra::App::MainToolBar::get_visibility()',
 				'window-stay-on-top' => 'Kephra::App::Window::get_on_top_mode()',
 			},
 		},
@@ -743,8 +748,9 @@ sub get {
 				line => 'goto-line.xpm',
 			},
 			marker => {
-				'goto-prev-all' => 'find-previous.xpm',
-				'goto-next-all' => 'find-next.xpm',
+				'goto-prev-all' => 'marker-previous.xpm',
+				'goto-next-all' => 'marker-next.xpm',
+				'toggle-here' => 'marker.xpm',
 			},
 			'bookmark-goto' => {
 				1 => 'bookmark1.xpm',
@@ -770,6 +776,10 @@ sub get {
 				9 => 'bookmark9.xpm',
 				0 => 'bookmark0.xpm',
 			},
+			tool => {
+				'interpreter-run-document' => 'run-skript.xpm',
+				'choose-color' => 'colorpicker.xpm',
+			}
 			view => {
 				dialog => {
 					config => 'config-preferences.xpm',
@@ -781,7 +791,7 @@ sub get {
 				'editpanel-line-wrap' => 'line-wrap.xpm',
 				'panel-notepad' => 'note.xpm',
 				'panel-output' => 'output-panel.xpm',
-				'toolbar-search' => 'panel-close.xpm',
+				'searchbar' => 'panel-close.xpm',
 				'window-stay-on-top' => 'stay-on-top.xpm',
 			},
 		},
@@ -946,9 +956,7 @@ sub get {
 				},
 			},
 			view => {
-				toolbar => {
-					'search-goto' => 'ctrl+f',
-				},
+				'searchbar-goto' => 'ctrl+f',
 				dialog => {
 					config => 'alt+shift+c',
 					find => 'ctrl+shift+f',
@@ -959,8 +967,8 @@ sub get {
 				'editpanel-fold-toggle' => {
 					all => 'alt+shift+plus',
 					here => 'alt+minus',
+					level => 'alt+plus',
 					recursively => 'alt+shift+minus',
-					siblings => 'alt+plus',
 				},
 				'panel-notepad' => 'ctrl+f4',
 				'panel-output' => 'ctrl+f5',

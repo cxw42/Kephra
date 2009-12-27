@@ -19,6 +19,7 @@ main_toolbar:
  - checkitem view-editpanel-line-wrap
  - checkitem view-window-stay-on-top
  -
+ - item tool-interpreter-run-document
  - checkitem view-panel-output
  - checkitem view-panel-notepad
  -
@@ -27,7 +28,7 @@ main_toolbar:
  - item view-dialog-keymap#
 
 searchbar:
- - item view-toolbar-search
+ - item view-searchbar
  - combobox find 180
  - item find-prev
  - item find-next

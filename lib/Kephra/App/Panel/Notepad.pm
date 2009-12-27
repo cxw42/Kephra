@@ -1,5 +1,5 @@
 package Kephra::App::Panel::Notepad;
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 use strict;
 use warnings;
@@ -89,12 +89,14 @@ sub create {
 					$result = `$interpreter $code`;
 				}
 				Kephra::App::Panel::Output::say($result);
+			} elsif ($key == 70 and $event->ControlDown) {# F
+				Kephra::CommandList::run_cmd_by_id('view-searchbar-goto');
 			}
 			$event->Skip;
 	});	
 
-	Kephra::EventTable::add_call
-		( 'app.splitter.right.changed', 'panel_notepad', sub {
+	Kephra::EventTable::add_call (
+		'app.splitter.right.changed', 'panel_notepad', sub {
 			if ( get_visibility() and not _splitter()->IsSplit() ) {
 				show( 0 );
 				return;
@@ -138,9 +140,8 @@ sub append_selection {
 	my $selection = Kephra::Edit::get_selection();
 	return unless defined $selection and $selection;
 	my $np = _ref();
-	my $size = $np->GetLength();
-	$selection = "\n".$selection if $size;
-	$np->InsertText( $size, $selection );
+	$selection = "\n" . $selection if $np->GetLength();
+	$np->AddText( $selection );
 }
 
 sub save {
@@ -160,3 +161,11 @@ sub save_size {
 }
 
 1;
+
+=head1 NAME
+
+Kephra::App::Panel::Notepad - notepad panel
+
+=head1 DESCRIPTION
+
+=cut

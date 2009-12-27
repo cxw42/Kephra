@@ -36,8 +36,6 @@ sub get {
 			'item edit-selection-convert-lowercase',
 		],
 		'markermargin_contextmenu' => [
-			'item goto-line',
-			undef,
 			{'menu marker' => [
 				'item marker-toggle-here',
 				'item marker-goto-prev-doc',
@@ -74,6 +72,8 @@ sub get {
 			],},
 			'item bookmark-delete-doc',
 			'item bookmark-delete-all',
+			undef,
+			'item goto-line',
 			undef,
 			{'menu view_text_fold' => [
 				'item view-editpanel-fold-toggle-here',

@@ -1,13 +1,6 @@
 package Kephra::App::EditPanel;
 our $VERSION = '0.13';
 
-=head1 NAME
-
-Kephra::App::EditPanel - visual and event settings of the editing canvas
-
-=head1 DESCRIPTION
-
-=cut
 use strict;
 use warnings; 
 #
@@ -27,9 +20,8 @@ sub new {
 	return $ep;
 }
 sub gets_focus { Wx::Window::SetFocus( _ref() ) if is( _ref() ) }
-#
-# settings
-#
+
+# general settings
 sub apply_settings_here {
 	my $ep        = shift || _ref() || _create();
 	return unless is($ep);
@@ -52,7 +44,7 @@ sub apply_settings_here {
 		$ep->SetSelForeground
 			( 1, &$color( $indicator->{selection}{fore_color} ) );
 	}
-	$ep->SetSelBackground( 1,&$color( $indicator->{selection}{back_color}));
+	$ep->SetSelBackground( 1, &$color( $indicator->{selection}{back_color}));
 	apply_EOL_settings_here($ep);
 	apply_LLI_settings_here($ep);
 	apply_caret_line_settings_here($ep);
@@ -93,7 +85,6 @@ sub connect_events {
 	# override sci presets
 	Wx::Event::EVT_DROP_FILES       ($ep, \&Kephra::File::add_dropped);
 	Wx::Event::EVT_ENTER_WINDOW     ($ep,  sub {&$trigger('editpanel.focus')} );
-
 	Wx::Event::EVT_MIDDLE_DOWN      ($ep,  sub {
 		my ($ep, $event) = @_;
 		my $nr = Kephra::App::EditPanel::Margin::in_nr( $event->GetX, $ep );
@@ -113,17 +104,16 @@ sub connect_events {
 			} 
 		} else {Kephra::App::EditPanel::Margin::on_right_click($ep, $event, $nr)}
 	});
-	#Wx::EVT_SET_FOCUS		    ($ep, sub {});
+	#Wx::EVT_SET_FOCUS              ($ep,  sub {});
 	Wx::Event::EVT_STC_SAVEPOINTREACHED($ep, -1, \&Kephra::File::savepoint_reached);
 	Wx::Event::EVT_STC_SAVEPOINTLEFT($ep, -1, \&Kephra::File::savepoint_left);
 	Wx::Event::EVT_STC_MARGINCLICK  ($ep, -1, \&Kephra::App::EditPanel::Margin::on_left_click);
-	
-	Wx::Event::EVT_STC_CHANGE ($ep, -1, sub {
+	Wx::Event::EVT_STC_CHANGE       ($ep, -1, sub {
 		Kephra::Document::Data::attr('edit_pos', $_[0]->GetCurrentPos());
 		&$trigger('document.text.change');
 	});
 
-	Wx::Event::EVT_STC_UPDATEUI ($ep, -1, sub {
+	Wx::Event::EVT_STC_UPDATEUI     ($ep, -1, sub {
 		my ( $ep, $event) = @_;
 		my ( $sel_beg, $sel_end ) = $ep->GetSelection;
 		my $is_sel = $sel_beg != $sel_end;
@@ -133,7 +123,7 @@ sub connect_events {
 		&$trigger('caret.move');
 	});
 
-	Wx::Event::EVT_KEY_DOWN  ($ep, sub {
+	Wx::Event::EVT_KEY_DOWN         ($ep,     sub {
 		my ($ep, $event) = @_;
 		#$ep = _ref(); 
 		my $key = $event->GetKeyCode +
@@ -168,6 +158,18 @@ sub disconnect_events {
 	Wx::Event::EVT_STC_UPDATEUI($ep, -1, sub {});
 }
 
+sub set_contextmenu_custom  { set_contextmenu('custom') }
+sub set_contextmenu_default { set_contextmenu('default')}
+sub set_contextmenu_none    { set_contextmenu('none')   }
+sub set_contextmenu {
+	my $mode = shift;
+	$mode = 'custom' unless $mode;
+	my $ep = _ref();
+	$mode eq 'default' ? $ep->UsePopUp(1) : $ep->UsePopUp(0);
+	_config()->{contextmenu}{visible} = $mode;
+}
+sub get_contextmenu { _config()->{contextmenu}{visible} }
+#
 sub set_word_chars { set_word_chars_here($_) for @{_all_ref()} }
 sub set_word_chars_here { 
 	my $ep = shift || _ref();
@@ -179,9 +181,8 @@ sub set_word_chars_here {
 	}
 }
 
-#
+
 # line wrap
-#
 sub apply_autowrap_settings { apply_autowrap_settings_here($_) for @{_all_ref()} }
 sub apply_autowrap_settings_here {
 	my $ep = shift || _ref();
@@ -196,9 +197,8 @@ sub switch_autowrap_mode {
 		: &Wx::wxSTC_WRAP_WORD;
 	apply_autowrap_settings();
 }
-#
+
 # bracelight
-#
 sub bracelight_visible { _indicator_config()->{bracelight}{visible} }
 sub switch_bracelight {
 	bracelight_visible() ? set_bracelight_off() : set_bracelight_on();
@@ -254,9 +254,8 @@ sub paint_bracelight {
 			and $ep->GetTextRange( $pos, $pos + 1 ) =~ tr/{}()\[\]//;
 	}
 }
-#
+
 # indention guide
-#
 sub indention_guide_visible { 
 	_indicator_config()->{indent_guide}{visible} 
 }
@@ -271,9 +270,8 @@ sub switch_indention_guide_visibility {
 	_indicator_config()->{indent_guide}{visible} ^= 1;
 	apply_indention_guide_settings();
 }
-#
+
 # caret line
-#
 sub caret_line_visible {
 	_indicator_config()->{caret_line}{visible} 
 }
@@ -288,9 +286,8 @@ sub switch_caret_line_visibility {
 	_indicator_config()->{caret_line}{visible} ^= 1;
 	apply_caret_line_settings();
 }
-#
+
 # LLI = long line indicator = right margin
-#
 sub LLI_visible { 
 	_indicator_config()->{right_margin}{style} == &Wx::wxSTC_EDGE_LINE
 }
@@ -314,9 +311,8 @@ sub switch_LLI_visibility {
 		: &Wx::wxSTC_EDGE_LINE;
 	apply_LLI_settings($style);
 }
-#
+
 # EOL = end of line marker
-#
 sub EOL_visible { 
 	_indicator_config()->{end_of_line_marker}
 }
@@ -330,9 +326,8 @@ sub apply_EOL_settings_here {
 	$ep->SetViewEOL( EOL_visible() );
 
 }
-#
+
 # whitespace
-#
 sub whitespace_visible { 
 	_indicator_config()->{whitespace}{visible} 
 }
@@ -348,9 +343,8 @@ sub switch_whitespace_visibility {
 	apply_whitespace_settings();
 	return $v;
 }
-#
+
 # font settings
-#
 sub load_font {
 	my $ep = shift || _ref();
 	my ( $fontweight, $fontstyle ) = ( &Wx::wxNORMAL, &Wx::wxNORMAL );
@@ -372,7 +366,7 @@ sub change_font {
 	$fontstyle  = &Wx::wxITALIC if ( $$font_config{style}  eq 'italic' );
 	my $oldfont = Wx::Font->new( $$font_config{size}, &Wx::wxDEFAULT, $fontstyle,
 		$fontweight, 0, $$font_config{family} );
-	my $newfont = Kephra::Dialog::get_font( Kephra::App::Window::_ref(), $oldfont );
+	my $newfont = Kephra::Dialog::get_font( $oldfont );
 
 	if ( $newfont->Ok > 0 ) {
 		($fontweight, $fontstyle) = ($newfont->GetWeight, $newfont->GetStyle);
@@ -397,3 +391,11 @@ sub change_font {
 #$ep->StyleSetForeground (wxSTC_STYLE_CONTROLCHAR, Wx::Colour->new(0x55, 0x55, 0x55));
 #$ep->CallTipShow(3,"testtooltip\n next line"); #tips
 #SetSelectionMode(wxSTC_SEL_RECTANGLE);
+
+=head1 NAME
+
+Kephra::App::EditPanel - visual and event settings of the editing canvas
+
+=head1 DESCRIPTION
+
+=cut

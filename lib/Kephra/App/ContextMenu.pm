@@ -1,14 +1,6 @@
 package Kephra::App::ContextMenu;
 our $VERSION = '0.10';
 
-=head1 NAME
-
-Kephra::App::ContextMenu - 
-
-=head1 DESCRIPTION
-
-=cut
-
 use strict;
 use warnings;
 
@@ -46,14 +38,7 @@ sub create_all {
 
 
 # connect the static and build the dynamic
-sub connect_all {
-	connect_tabbar();
-	connect_widget(
-		Kephra::App::SearchBar::_ref(),
-		Kephra::App::SearchBar::_config()->{contextmenu}
-	);
-}
-
+sub connect_all {}
 # to editpanel can connect 2 menus, 
 sub connect_tabbar {
 	my $tabbar = Kephra::App::TabBar::_ref();
@@ -70,7 +55,7 @@ sub connect_widget {
 	Wx::Event::EVT_RIGHT_DOWN ($widget, sub {
 		my ($widget, $event) = @_;
 		my $menu = get($menu_id);
-		$widget->PopupMenu($menu, $event->GetX, $event->GetY) if $menu;
+		$widget->PopupMenu($menu, $event->GetX, $event->GetY) if Kephra::Menu::is($menu);
 	} );
 }
 
@@ -79,16 +64,12 @@ sub disconnect_widget{
 	Wx::Event::EVT_RIGHT_DOWN($widget, sub {} ) if substr(ref $widget, 0, 4) eq 'Wx::';
 }
 
-sub set_editpanel_custom  { set_editpanel('custom') }
-sub set_editpanel_default { set_editpanel('default')}
-sub set_editpanel_none    { set_editpanel('none')   }
-sub set_editpanel {
-	my $mode = shift;
-	$mode = 'custom' unless $mode;
-	my $ep = Kephra::App::EditPanel::_ref();
-	$mode eq 'default' ? $ep->UsePopUp(1) : $ep->UsePopUp(0);
-	Kephra::App::EditPanel::_config()->{contextmenu}{visible} = $mode;
-}
-sub get_editpanel { Kephra::App::EditPanel::_config()->{contextmenu}{visible} }
-
 1;
+
+=head1 NAME
+
+Kephra::App::ContextMenu - 
+
+=head1 DESCRIPTION
+
+=cut

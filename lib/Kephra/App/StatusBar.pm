@@ -1,13 +1,6 @@
 package Kephra::App::StatusBar;
 our $VERSION = '0.09';
 
-=head1 NAME
-
-Kephra::App::StatusBar - 
-
-=head1 DESCRIPTION
-
-=cut
 use strict;
 use warnings;
 
@@ -76,7 +69,7 @@ sub create {
 		elsif ($field eq 'message')    {next_file_info(); }
 	} );
 	Wx::Event::EVT_RIGHT_DOWN ( $bar, sub {
-		return unless get_interactive();
+		return unless get_contextmenu_visibility();
 		my ( $bar, $event ) = @_;
 		my $x = $event->GetX;
 		my $index = _index_from_mouse_pos( $x );
@@ -118,8 +111,8 @@ sub switch_visibility {
 }
 sub show { Kephra::App::Window::_ref()->GetStatusBar->Show( get_visibility() ) }
 sub get_interactive { _config()->{interactive} }
-sub get_contextmenu_visibility { &get_interactive }
-sub switch_contextmenu_visibility { _config()->{interactive} ^= 1 }
+sub get_contextmenu_visibility    { _config()->{contextmenu_visible} }
+sub switch_contextmenu_visibility { _config()->{contextmenu_visible} ^= 1 }
 #
 # update cell content
 #
@@ -280,3 +273,11 @@ sub _dotted_number {
 }
 
 1;
+
+=head1 NAME
+
+Kephra::App::StatusBar - 
+
+=head1 DESCRIPTION
+
+=cut

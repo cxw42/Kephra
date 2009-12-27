@@ -8,14 +8,15 @@ use warnings;
 # drag n drop target class
 
 # internal functions
+my ($find_item, $found_pos, $old_pos, $replace_item);
 my $flags;
-my $foundpos;
 my $history_refresh;
-my $old_pos;
+my @find_history;
+my @replace_history;
 sub _config    { Kephra::API::settings()->{search} }
 sub _attributes{ _config()->{attribute} }
 sub _history   { _config()->{history}   }
-sub _find_pos  { $foundpos }
+sub _find_pos  { $found_pos }
 
 sub _refresh_search_flags {
 	my $attr = _attributes();
@@ -33,80 +34,122 @@ sub _refresh_search_flags {
 		if defined $attr->{match_regex} and $attr->{match_regex};
 }
 
-sub _init_history {
+
+sub load_search_data {
+	my $file = Kephra::Config::filepath( _config()->{data_file} );
+	my $config_tree = Kephra::Config::File::load($file);
+
+	set_find_item( $config_tree->{find}{item}  || '' );
+	set_replace_item( $config_tree->{replace}{item}  || '' );
+	if (defined $config_tree->{find}{history}){
+		if (ref $config_tree->{find}{history} eq 'ARRAY'){
+				 @find_history = @{ $config_tree->{find}{history} };
+		} else { $find_history[0] = $config_tree->{find}{history} }
+	}
+	if (defined $config_tree->{replace}{history}){
+		if (ref $config_tree->{replace}{history} eq 'ARRAY'){
+				 @replace_history = @{ $config_tree->{replace}{history} };
+		} else { $replace_history[0] = $config_tree->{replace}{history} }
+	}
 	my $history = _history();
 
 	# remove dups and cut to the configured length
 	if ( $history->{use} ) {
 		my ( %seen1, %seen2 );
-		my @items = @{ Kephra::Config::Tree::_convert_node_2_AoS
-			( \$history->{find_item} ) };
-		my @uniq = grep { !$seen1{$_}++ } @items;
-		@{ $history->{find_item} } = splice @uniq, 0, $history->{length};
-		@items = @{ Kephra::Config::Tree::_convert_node_2_AoS
-				( \$history->{replace_item} ) };
-		@uniq = grep { !$seen2{$_}++ } @items;
-		@{ $history->{replace_item} } = splice @uniq, 0, $history->{length};
+		my @uniq = grep { !$seen1{$_}++ } @find_history;
+		@find_history = splice @uniq, 0, $history->{length};
+		@uniq = grep { !$seen2{$_}++ } @replace_history;
+		@replace_history = splice @uniq, 0, $history->{length};
 	} else {
-		@{ $history->{find_item} }    = ();
-		@{ $history->{replace_item} } = ();
+		@find_history    = ();
+		@replace_history = ();
 	}
 	# search item is findable
-	$foundpos = 0;
+	$found_pos = 0;
+	Kephra::EventTable::trigger
+		('find.item.history.changed', 'replace.item.history.changed');
+	Kephra::Edit::Marker::restore_bookmarks( $config_tree->{bookmark} );
 }
 
-sub refresh_find_history {
-	my $found_match       = shift;
-	my $current_find_item = get_find_item();
-	my $history           = _history();
-	my $refresh_needed;
-	return unless $history->{use};
-
-	# check if refresh needed
-	if ( $history->{remember_only_matched} ) {
-		$refresh_needed = 1 if defined $found_match and $found_match > 0;
-	} else { $refresh_needed = 1 }
-
-	# delete dups
-	if (    $refresh_needed
-		and _exist_find_item() 
-		and ($history->{find_item})[0] ne $current_find_item) {
-		my $item   = $history->{find_item};
-		my $length = $history->{length} - 1;
-		for ( 0 .. $#{$item} ) {
-			if ( $$item[$_] eq $current_find_item ) {
-				@{$item} = @{$item}[ 0 .. $_ - 1, $_ + 1 .. $#{$item} ];
-				last;
-			}
-			pop @{$item} if ( $_ == $length );
-		}
-		# new history item
-		unshift @{$item}, $current_find_item;
-		Kephra::EventTable::trigger('find.item.history.changed');
-		$history_refresh = 1;
-	} else {
-		$history_refresh = 0;
+sub save_search_data {
+	my $file = Kephra::Config::filepath( _config()->{data_file} );
+	my $config_tree = Kephra::Config::File::load($file);
+	$config_tree->{find}{item}       = get_find_item();
+	$config_tree->{find}{history}    = get_find_history();
+	$config_tree->{replace}{item}    = get_replace_item();
+	$config_tree->{replace}{history} = get_replace_history();
+	$config_tree->{bookmark}         = Kephra::Edit::Marker::get_bookmark_data();
+	Kephra::Config::File::store($file, $config_tree);
+	Kephra::Edit::Marker::store();
+}
+#
+sub get_find_item { $find_item  || ''}
+sub set_find_item {
+	my $old = $find_item;
+	my $new = shift;
+	if (defined $new and (not defined $old or $new ne $old)){
+		$find_item = $new;
+		$found_pos = -1;
+		Kephra::EventTable::trigger('find.item.changed');
 	}
 }
 
-sub get_find_history    { _history()->{find_item}    }
-sub get_replace_history { _history()->{replace_item} }
+sub set_selection_as_find_item {
+	set_find_item( Kephra::App::EditPanel::_ref()->GetSelectedText )
+}
 
-sub refresh_replace_history {
-	my $current_item = get_replace_item();
-	my $history      = _history();
+sub item_findable       { _exist_find_item() }
+sub _exist_find_item    { (defined $find_item and $find_item) ? 1 : 0 }
+sub _exist_replace_item { (defined $replace_item and $replace_item) ? 1 : 0 }
 
-	if ($current_item) {
-		my $item   = $history->{replace_item};
-		my $length = $history->{length} - 1;
-		for ( 0 .. $#{$item} ) {
-			if ( $$item[$_] eq $current_item ) {
-				@{$item} = @{$item}[ 0 .. $_ - 1, $_ + 1 .. $#{$item} ];
+sub get_replace_item { $replace_item || ''}
+sub set_replace_item {
+	my $old = $replace_item;
+	my $new = shift;
+	if (defined $new and (not defined $old or $new ne $old)){
+		$replace_item = $new;
+		Kephra::EventTable::trigger('replace.item.changed');
+	}
+}
+
+sub set_selection_as_replace_item {
+	set_replace_item( Kephra::App::EditPanel::_ref()->GetSelectedText )
+}
+sub get_find_history    { \@find_history    }
+sub get_replace_history { \@replace_history }
+sub refresh_find_history {
+	my $found_match = shift;
+	my $find_item   = get_find_item();
+	my $history     = _history();
+	return unless $history->{use};
+	# check if refresh needed
+	return if $history->{remember_only_matched} and not $found_match;
+
+	if ($find_item and $find_history[0] ne $find_item) {
+		for ( 0 .. $#find_history ) {      # delete the dup
+			if ( $find_history[$_] eq $find_item ) {
+				@find_history = @find_history[ 0 .. $_-1, $_+1 .. $#find_history ];
 				last;
 			}
-			pop @{$item} if ( $_ == $length );
+			pop @find_history if $_ == $history->{length} - 1;
 		}
-		unshift @{$item}, $current_item;
+		unshift @find_history, $find_item; # insert new history item
+		Kephra::EventTable::trigger('find.item.history.changed');
+	}
+}
+sub refresh_replace_history {
+	my $replace_item = get_replace_item();
+	my $history      = _history();
+
+	if ($replace_item) {
+		for ( 0 .. $#replace_history ) {
+			if ( $replace_history[$_] eq $replace_item ) {
+				@replace_history = @replace_history[ 0 .. $_-1, $_+1 .. $#replace_history ];
+				last;
+			}
+			pop @replace_history if $_ == $history->{length} - 1;
+		}
+		unshift @replace_history, $replace_item;
 		Kephra::EventTable::trigger('replace.item.history.changed');
 	}
 }
@@ -122,11 +165,6 @@ sub _caret_2_sel_end {
 	}
 }
 
-sub item_findable       { _exist_find_item() }
-sub _exist_find_item    { length( get_find_item() ) }
-sub _exist_replace_item { length( get_replace_item() ) }
-#
-#
 #
 sub set_range{ _attributes()->{in} = shift }
 sub get_range{ _attributes()->{in}         }
@@ -159,43 +197,6 @@ sub switch_attribute{
 }
 
 # find helper function
-sub get_find_item {
-	my $h = _history();
-	$h->{current_find_item} if defined $h->{current_find_item};
-}
-
-sub set_find_item {
-	my $old = get_find_item();
-	my $new = shift;
-	if (defined $new and $new ne $old){
-		_history()->{current_find_item} = $new;
-		$foundpos = -1;
-		Kephra::EventTable::trigger('find.item.changed');
-	}
-}
-
-sub set_selection_as_find_item {
-	set_find_item( Kephra::App::EditPanel::_ref()->GetSelectedText )
-}
-
-sub get_replace_item {
-	_history()->{current_replace_item}
-		if defined _history()->{current_replace_item}
-}
-
-sub set_replace_item {
-	my $old = _history()->{current_replace_item};
-	my $new = shift;
-	if (defined $new and $new ne $old){
-		_history()->{current_replace_item} = $new;
-		Kephra::EventTable::trigger('replace.item.changed');
-	}
-}
-
-sub set_selection_as_replace_item {
-	set_replace_item( Kephra::App::EditPanel::_ref()->GetSelectedText )
-}
-
 sub replace_selection  {
 	Kephra::App::EditPanel::_ref()->ReplaceSelection( get_replace_item() )
 }
@@ -203,17 +204,17 @@ sub replace_selection  {
 sub _find_next  {
 	my $ep = Kephra::App::EditPanel::_ref();
 	$ep->SearchAnchor;
-	$foundpos = $ep->SearchNext( $flags, get_find_item() );
+	$found_pos = $ep->SearchNext( $flags, get_find_item() );
 	Kephra::EventTable::trigger('find');
-	return $foundpos;
+	return $found_pos;
 }
 
 sub _find_prev {
 	my $ep = Kephra::App::EditPanel::_ref();
 	$ep->SearchAnchor;
-	$foundpos = $ep->SearchPrev( $flags, get_find_item() );
+	$found_pos = $ep->SearchPrev( $flags, get_find_item() );
 	Kephra::EventTable::trigger('find');
-	return $foundpos;
+	return $found_pos;
 }
 
 sub _find_first {
@@ -244,12 +245,12 @@ sub first_increment {
 #sub next_increment {}
 # find related menu calls
 sub find_all {
-#Kephra::Dialog::msg_box(undef, &Wx::wxUNICODE(), '');
+#Kephra::Dialog::msg_box(&Wx::wxUNICODE(), '');
 	my $ep = Kephra::App::EditPanel::_ref();
 	if ( _exist_find_item() ) {
 		my $search_result = _find_first();
 		my ($sel_start, $sel_end);
-		#Kephra::Dialog::msg_box(undef, , '');
+		#Kephra::Dialog::msg_box( , '');
 		#$ep->IndicatorSetStyle(0, &Wx::wxSTC_INDIC_TT );
 		#$ep->IndicatorSetForeground(0, &Wx::Colour->new(0xff, 0x00, 0x00));
 		$ep->IndicatorSetStyle(1, &Wx::wxSTC_INDIC_TT );
@@ -298,8 +299,7 @@ sub find_prev {
 						if ( Kephra::Document::Data::current_nr() == $begin_doc );
 				}
 				$Kephra::temp{dialog}{control} = 0;
-				Kephra::Dialog::Search::_ref()->Raise
-					if $Kephra::temp{dialog}{search}{active};
+				Kephra::Dialog::Search::raise_if_active();
 			}
 		}
 		if ( $return == -1 ) { Kephra::Edit::_restore_positions() }
@@ -335,8 +335,7 @@ sub find_next {
 					last if ( Kephra::Document::Data::current_nr() == $begin_doc );
 				}
 				$Kephra::temp{dialog}{control} = 0;
-				Kephra::Dialog::Search::_ref()->Raise
-					if $Kephra::temp{dialog}{search}{active};
+				Kephra::Dialog::Search::raise_if_active();
 			}
 		}
 		if ( $return == -1 ) { Kephra::Edit::_restore_positions() }
@@ -371,8 +370,7 @@ sub fast_back {
 						last if Kephra::Document::Data::current_nr() == $begin_doc;
 					}
 					$Kephra::temp{dialog}{control} = 0;
-					Kephra::Dialog::Search::_ref()->Raise
-						if $Kephra::temp{dialog}{search}{active};
+					Kephra::Dialog::Search::raise_if_active();
 				}
 			}
 			refresh_find_history($return) if ( $_ == 1 );
@@ -408,8 +406,7 @@ sub fast_fore {
 						last if Kephra::Document::Data::current_nr() == $begin_doc;
 					}
 					$Kephra::temp{dialog}{control} = 0;
-					Kephra::Dialog::Search::_ref()->Raise
-						if $Kephra::temp{dialog}{search}{active};
+					Kephra::Dialog::Search::raise_if_active();
 				}
 			}
 			refresh_find_history($return) if $_ == 1;
@@ -460,8 +457,7 @@ sub find_first {
 					last if ( Kephra::Document::Data::current_nr() == $begin_doc );
 				}
 				$Kephra::temp{dialog}{control} = 0;
-				Kephra::Dialog::Search::_ref()->Raise
-					if $Kephra::temp{dialog}{search}{active};
+				Kephra::Dialog::Search::raise_if_active();
 			}
 			if ( $return > -1 ) {
 				_caret_2_sel_end();
@@ -517,8 +513,7 @@ sub find_last {
 					last if ( Kephra::Document::Data::current_nr() == $begin_doc );
 				}
 				$Kephra::temp{dialog}{control} = 0;
-				Kephra::Dialog::Search::_ref()->Raise
-					if $Kephra::temp{dialog}{search}{active};
+				Kephra::Dialog::Search::raise_if_active();
 			}
 			if ( $return > -1 ) {
 				_caret_2_sel_end();
@@ -644,7 +639,7 @@ sub replace_confirm {
 			last if $ep->GetCurrentPos + $len >= $sel_end;
 			Kephra::Edit::_center_caret();
 			$answer = Kephra::Dialog::get_confirm_3
-				(undef, $l10n->{text}, $l10n->{title}, 100, 100);
+				($l10n->{text}, $l10n->{title}, 100, 100);
 			last if $answer == &Wx::wxCANCEL;
 			if ($answer == &Wx::wxYES) {replace_selection()}
 			else                    {$ep->SetCurrentPos( $ep->GetCurrentPos + 1 )}
@@ -659,3 +654,11 @@ sub replace_confirm {
 }
 
 1;
+
+=head1 NAME
+
+Kephra::Edit::Search - find and replace functions
+
+=head1 DESCRIPTION
+
+=cut

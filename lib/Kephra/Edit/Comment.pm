@@ -1,12 +1,6 @@
 package Kephra::Edit::Comment;
 our $VERSION = '0.07';
-=head1 NAME
 
-Kephra::App::Comment - 
-
-=head1 DESCRIPTION
-
-=cut
 use strict;
 use warnings;
 
@@ -174,3 +168,11 @@ sub add_c         { add_stream   ( '/*', '*/' ) }
 sub sub_c         { remove_stream( '/*', '*/' ) }
 
 1;
+
+=head1 NAME
+
+Kephra::App::Comment - 
+
+=head1 DESCRIPTION
+
+=cut

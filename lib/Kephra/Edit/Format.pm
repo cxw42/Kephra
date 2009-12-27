@@ -1,12 +1,5 @@
 package Kephra::Edit::Format;
 our $VERSION = '0.26';
-=head1 NAME
-
-Kephra::App::Format - 
-
-=head1 DESCRIPTION
-
-=cut
 
 use strict;
 use warnings;
@@ -195,7 +188,6 @@ sub blockformat_LLI{
 sub blockformat_custom {
 	my $l18n = Kephra::Config::Localisation::strings()->{dialog}{edit};
 	my $width = Kephra::Dialog::get_text(
-		Kephra::App::Window::_ref(),
 		$l18n->{wrap_width_input}, 
 		$l18n->{wrap_custom_headline}
 	);
@@ -225,8 +217,8 @@ sub line_break {
 
 sub linebreak_custom {
 	my $l10n = Kephra::Config::Localisation::strings()->{dialog}{edit};
-	my $width = Kephra::Dialog::get_text( Kephra::App::Window::_ref(),
-			$l10n->{wrap_width_input}, $l10n->{wrap_custom_headline} );
+	my $width = Kephra::Dialog::get_text
+			($l10n->{wrap_width_input}, $l10n->{wrap_custom_headline} );
 	line_break( $width ) if defined $width;
 }
 
@@ -238,9 +230,17 @@ sub linebreak_window {
 	my $app = Kephra::App::Window::_ref();
 	my $ep  = _ep_ref();
 	my ($width) = $app->GetSizeWH();
-	my $pos = $ep->GetColumn($ep->PositionFromPointClose(100, 67));
-	Kephra::Dialog::msg_box( $app, $pos, '' );
+	my $pos = $ep->GetColumn( $ep->PositionFromPointClose(100, 67) );
+	Kephra::Dialog::msg_box( $pos, '' );
 	#line_break($width);
 }
 
 1;
+
+=head1 NAME
+
+Kephra::App::Format - 
+
+=head1 DESCRIPTION
+
+=cut

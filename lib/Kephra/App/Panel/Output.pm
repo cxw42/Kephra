@@ -1,5 +1,5 @@
 package Kephra::App::Panel::Output;
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 use strict;
 use warnings;
@@ -12,9 +12,12 @@ use Wx::Perl::ProcessStream qw(
 use Wx::DND;
 
 my $output;
+my $proc;
 sub _ref { if (ref $_[0] eq 'Wx::TextCtrl') {$output = $_[0]} else {$output} }
 sub _config   { Kephra::API::settings()->{app}{panel}{output} }
 sub _splitter { $Kephra::app{splitter}{bottom} }
+sub _process  { $proc }
+sub is_process { 1 if ref $_[0] eq 'Wx::Perl::ProcessStream::Process' }
 
 sub create {
 	my $win = Kephra::App::Window::_ref();
@@ -66,7 +69,6 @@ sub create {
 	} );
 	Wx::Event::EVT_TEXT_ENTER( $win, $edit, sub {
 		my $selection = $edit->GetStringSelection();
-print " -- $selection \n";
 		return unless $selection;
 		wxTheClipboard->Open;
 		wxTheClipboard->SetData( Wx::TextDataObject->new( $selection ) );
@@ -155,7 +157,7 @@ sub run {
 	if ($doc) {
 		my $cwd = Cwd::cwd();
 		chdir $dir;
-		my $proc = _ref()->{process} = Wx::Perl::ProcessStream->OpenProcess
+		my $proc = Wx::Perl::ProcessStream->OpenProcess
 			(qq~"$cmd" "$doc"~ , 'Interpreter-Plugin', $win); # -I$dir
 		chdir $cwd;
 		new_output();
@@ -169,13 +171,13 @@ sub run {
 }
 
 sub is_running {
-	my $proc = _ref()->{process};
-	$proc->IsAlive if ref $proc eq 'Wx::Perl::ProcessStream::Process';
+	my $proc = _process();
+	$proc->IsAlive if is_process($proc);
 }
 
 sub stop {
-	my $proc = _ref()->{process};
-	if (ref $proc eq 'Wx::Perl::ProcessStream::Process') {
+	my $proc = _process();
+	if ( is_process($proc) ) {
 		$proc->KillProcess;
 		$proc->TerminateProcess;
 		Kephra::EventTable::trigger('panel.output.run');
@@ -183,3 +185,11 @@ sub stop {
 }
 
 1;
+
+=head1 NAME
+
+Kephra::App::Panel::Output - output panel
+
+=head1 DESCRIPTION
+
+=cut

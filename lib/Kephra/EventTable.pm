@@ -9,8 +9,8 @@ my %timer;
 my %table;
 my %group = (
 	edit       =>  [qw(document.text.change document.text.select caret.move)],
-	doc_change =>  [qw(document.current.number.changed document.savepoint 
-	                   document.text.change document.text.select)],
+	doc_change =>  [qw(document.current.number.changed 
+	                   document.savepoint document.text.select)],
 );
 sub _table { \%table }
 
@@ -40,9 +40,7 @@ sub stop_timer {
 	delete $timer{file_notify};
 }
 sub delete_all_timer {}
-
 #######################################################################
-
 sub add_call {
 	return until ref $_[2] eq 'CODE';
 	my $list = _table();

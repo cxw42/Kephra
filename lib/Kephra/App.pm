@@ -1,15 +1,6 @@
 package Kephra::App;
 our $VERSION = '0.12';
 
-=head1 NAME
-
-Kephra::App - main GUI class derived from Wx::App
-
-=head1 DESCRIPTION
-
-=cut
-
-
 use strict;
 use warnings;
 
@@ -18,6 +9,7 @@ my $obj;
 sub _ref { $obj = ref $_[0] eq __PACKAGE__ ? $_[0] : $obj }
 
 # main layout, main frame
+sub warn { Kephra::Dialog::warning_box(Kephra::App::Window::_ref(), @_, 'Warning') }
 sub splashscreen {
 	my $img_file = shift;
 	$img_file = Kephra::Config::filepath( $img_file );
@@ -141,7 +133,7 @@ sub OnInit {
 		if $Kephra::BENCHMARK;
 	my $t2 = 
 	new Benchmark;
-	if (Kephra::Config::Global::load_autosaved()) {
+	if (Kephra::Config::Global::autoload()) {
 		Kephra::App::EditPanel::apply_settings_here($ep);
 		Kephra::EventTable::freeze_all();
 		print " configs eval:",
@@ -149,13 +141,13 @@ sub OnInit {
 			if $Kephra::BENCHMARK;
 		my $t3 = new Benchmark;
 		Kephra::File::Session::autoload();
+		Kephra::EventTable::thaw_all();
+		Kephra::Edit::Search::load_search_data();
 		Kephra::Document::add($_) for @ARGV;
 		print " file session:",
 			Benchmark::timestr( Benchmark::timediff( new Benchmark, $t3 ) ), "\n"
 			if $Kephra::BENCHMARK;
 		my $t4 = new Benchmark;
-		Kephra::File::History::init();
-		Kephra::EventTable::thaw_all();
 		print " event table:",
 			Benchmark::timestr( Benchmark::timediff( new Benchmark, $t4 ) ), "\n"
 			if $Kephra::BENCHMARK;
@@ -182,11 +174,12 @@ sub exit {
 
 sub exit_unsaved {
 	my $t0 = new Benchmark;
-	Kephra::App::Window::_ref()->Show(0);
 	Kephra::EventTable::stop_timer();
 	Kephra::File::Session::autosave();
-	Kephra::Config::Global::save_autosaved();
+	Kephra::File::History::save();
+	Kephra::Config::Global::autosave();
 	Kephra::Config::set_xp_style(); #
+	Kephra::App::Window::_ref()->Show(0);
 	Kephra::App::Window::destroy(); # close window
 	Wx::wxTheClipboard->Flush;      # set copied text free to the global Clipboard
 	print "shut down in:",
@@ -199,3 +192,11 @@ sub raw_exit { Wx::Window::Destroy(shift) }
 # wxNullAcceleratorTable 
 
 1;
+
+=head1 NAME
+
+Kephra::App - main GUI class derived from Wx::App
+
+=head1 DESCRIPTION
+
+=cut

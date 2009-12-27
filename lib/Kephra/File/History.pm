@@ -1,55 +1,95 @@
 package Kephra::File::History;
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use strict;
 use warnings;
 
 my @session;
-
+my $menu_id = '&file_history';
+my $refresh_needed;
 # internal Module API
-sub _config { my %h; Kephra::API::settings()->{file}{history} || \%h  }
-#sub _config { $Kephra::config{file}{session}{history} }
-# file length node save = 1
-sub _get {
-	my $history = _config()->{path};
-	if (ref $history eq 'ARRAY') {                            $history }
-	elsif (defined $history)     { my @history = ($history); \@history }
-	else                         { my @history = ();         \@history }
-}
-sub _set { _config->{path} = shift }
-
+sub _config { Kephra::API::settings()->{file}{session}{history} }
 # external Appwide API
 sub init {
-	Kephra::EventTable::add_call( 
-		'document.list', 'file_history', sub {
-			my @history = @{ _get() };
-			my $path = Kephra::Document::Data::get_file_path();
-			return unless $path;
-			my @uniq = grep { $_ ne $path } @history;
-			_set(\@uniq);
-	} );
+	return if scalar @session;
+	my $subdir = Kephra::File::Session::_config()->{directory};
+	my $file = Kephra::Config::filepath( $subdir, _config()->{file} );
+	my $config_tree = Kephra::Config::File::load($file);
+	if (ref $config_tree->{document} eq 'ARRAY'){
+		@session = @{$config_tree->{document}};
+	}
+}
+
+sub save {
+	my $subdir = Kephra::File::Session::_config()->{directory};
+	my $file = Kephra::Config::filepath( $subdir, _config()->{file} );
+	my $config_tree;
+	@{$config_tree->{document}} = @session;
+	Kephra::Config::File::store( $file, $config_tree);
+}
+
+sub delete_gone {
+	my $length = @session;
+	my $file = Kephra::Document::Data::get_file_path();
+	@session = grep { $_->{file_path} ne $file } @session;
+	$refresh_needed = 1 if $length != @session;
 }
 
 sub get {
 	delete_gone();
-	_get();
+	\@session;
+}
+
+sub update {
+	delete_gone();
+	if ($refresh_needed){
+		$refresh_needed = 0;
+		return 1; 
+	}
 }
 
 sub add {
-	my $file    = shift;
-	my @history = @{ _get() };
+	my $doc_nr = Kephra::Document::Data::validate_doc_nr(shift);
+	return if $doc_nr < 0;
+	my $attr = Kephra::Document::Data::_hash($doc_nr);
+	my %saved_attr;
+	$saved_attr{$_} = $attr->{$_} for @{ Kephra::File::Session::_saved_properties() };
+	unshift @session, \%saved_attr;
 	my $length  = _config->{length} || 0;
-	return unless defined $file;
-	my %seen;
-	unshift @history, $file;
-	my @uniq = grep { !$seen{$_}++ } @history;
-	pop @uniq while @uniq > $length;
-	_set(\@uniq);
+	pop @session while @session > $length;
+	$refresh_needed = 1;
 }
 
-sub delete_gone {
-	my @exist = grep { -e $_ } @{ _get() };
-	_set(\@exist);
+sub open {
+	my $hist_nr = shift;
+	return if $hist_nr < 0 or $hist_nr > $#session;
+	my $doc_nr = Kephra::Document::Data::get_current_nr();
+	my $new_nr = Kephra::Document::restore( splice @session, $hist_nr , 1 );
+	Kephra::Document::Data::set_current_nr( $doc_nr );
+	Kephra::Document::Change::to_number( $new_nr );
+	$refresh_needed = 1;
+	Kephra::EventTable::trigger('document.list');
+}
+
+sub open_all {
+	my $new_nr;
+	my $doc_nr = Kephra::Document::Data::get_current_nr();
+	$new_nr = Kephra::Document::restore( $_ ) for @session;
+	Kephra::Document::Data::set_current_nr( $doc_nr );
+	Kephra::Document::Change::to_number( $new_nr );
+	@session = ();
+	$refresh_needed = 1;
+	Kephra::EventTable::trigger('document.list');
 }
 
 1;
+
+=head1 NAME 
+
+Kephra::File::History - managing a history of recently closed files
+
+=head1 DESCRIPTION
+
+Module Kephra::App::Menu - Menu handling for the main app
+
+=cut

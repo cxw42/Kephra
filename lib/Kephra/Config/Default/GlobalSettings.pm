@@ -48,10 +48,11 @@ sub get {
 				file => 'interface/mainmenu.yml',
 				node => 'full_menubar',
 				responsive => 1,                              # (0|1) 0 prevent menubar item shading
+				visible => 0,
 			},
 			panel => {
 				notepad => {
-					content_file => 'global/sub/panel/notepad/content.txt',
+					content_file => 'global/data/notepad_content.txt',
 					eval_with => 'eval',
 					font_family => 'Courier New',
 					font_size => 10,
@@ -69,7 +70,18 @@ sub get {
 					visible => 0,
 				},
 			},
+			searchbar => {
+				autofocus => 1,
+				autohide => 0,
+				contextmenu => 'toolbar_search',
+				contextmenu_visible => 1,
+				file => 'interface/appbars.conf',
+				node => 'searchbar',
+				position => 'below',        # (above|below|bottom)
+				visible => 1,
+			},
 			statusbar => {
+				contextmenu_visible => 1,
 				file => 'interface/appbars.yml',
 				interactive => 1,
 				node => 'statusbar',
@@ -80,7 +92,7 @@ sub get {
 				close_button => 'current'     ,# (all|current|active|one|right|no) current = active
 											   # one = right, on right border
 				contextmenu => 'document_list',# -NI id of connected context menu
-				contextmenu_use => 1,          # (0|1) enable conextmenu over tabbar
+				contextmenu_visible => 1,      # (0|1) enable conextmenu over tabbar
 				file_info => 'file_name',      # (file_name|firstname) which part of filename to show
 				info_symbol => 1,              # (0|1) show *(unsaved) and #(write protected) symbols on end of tabs
 				insert_new_tab => 'rightmost', # (left|right[most]) tab position of opened file
@@ -94,26 +106,12 @@ sub get {
 				visible => 1,                  # (0|1)
 			},
 			toolbar => {
-				all => {
-					defaultfile => 'interface/appbars.yml',
-					responsive => 1,
-				},
-				main => {
-					contextmenu => 0,
-					file => 'interface/appbars.yml',
-					node => 'main_toolbar',
-					size => 16,
-					visible => 1,
-				},
-				search => {
-					autofocus => 1,
-					autohide => 0,
-					contextmenu => 'toolbar_search',
-					file => 'interface/appbars.conf',
-					node => 'searchbar',
-					position => 'below',        # (above|below|bottom)
-					visible => 1,
-				},
+				contextmenu => 0,
+				file => 'interface/appbars.yml',
+				node => 'main_toolbar',
+				responsive => 1,
+				size => 16,
+				visible => 1,
 			},
 			window => {
 				icon => 'interface/icon/app/proton.xpm',
@@ -164,9 +162,11 @@ sub get {
 				indention => 1,    # indents new lines like previous
 			},
 			contextmenu => {
-				ID_selection => 'document_selection',
+				ID_margin => 'marker_margin',
 				ID_normal => 'document_context',
+				ID_selection => 'document_selection',
 				visible => 'custom',
+				margin => 1,
 			},
 			font => {
 				family => 'Courier New',
@@ -370,10 +370,8 @@ sub get {
 				match_whole_word => 0,
 				match_word_begin => 0,
 			},
-			data_file => 'sub/search_data.yml',
+			data_file => 'global/data/search.yml',
 			history => {
-				current_find_item => 'patch',
-				current_replace_item => '--',
 				length => 12,
 				remember_only_matched => 1,
 				save => 1,

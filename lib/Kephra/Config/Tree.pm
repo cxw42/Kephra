@@ -1,17 +1,17 @@
 package Kephra::Config::Tree;
 our $VERSION = '0.02';
+=head1 NAME
 
-use strict;
-use warnings;
-=pod
-# verbose config hash ops
+Kephra::Config::Tree - manipulation of config data
+
+=head1 DESCRIPTION
 
 =cut
-
-#############################
+use strict;
+use warnings;
+#
 # single node manipulation
-#############################
-
+#
 sub _convert_node_2_AoH {
 	my $node = shift;
 	if (ref $$node eq 'ARRAY') {

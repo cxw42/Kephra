@@ -1,6 +1,33 @@
 BUGS:
  !!! makefile.pl fails
 
+0.4.2.23
+ + autorecognition via encode::guess
+ + read and write utf
+
+0.4.2.22
+ + save and restore textfold state in sessions and file history
+ ~ change sibling to level fold
+ 
+0.4.2.21
+ + file history is now a session, restore file with all saved property
+ + switch menubar visibility
+ ] localize some of last temp var
+ ] simplify Dialog API
+
+0.4.2.20
+ [ new icons for search abr ops, marker, script run, color picker
+ ] starting dater due freezing text change event
+ ] event group doc_change_went smaller: docchanges now faster due less events fired
+ ! right linenumber margin size when starting with autosaved.conf as current doc
+
+0.4.2.19
+ [ update menu view > contextmenus and make 2 new calls vor it (markermargin searchbar)
+ ~ statusbar contextmenus have own switch, interactive means switch leftclick
+ ~ changed markermargin contextmenu acording the order of margins
+ " search date has own config file
+ " new dir for config data files: search.yml and notepad_content.txt
+
 0.4.2.18
  ~ expanded markermargin contextmenu
  " repaired some issues in l18n and default global configs (due tools/confer.pl)

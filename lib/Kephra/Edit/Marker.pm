@@ -1,39 +1,25 @@
 package Kephra::Edit::Marker;
 our $VERSION = '0.23';
 
-=head1 NAME
-
-Kephra::Edit::Marker - bookmark and marker functions
-
-=head1 DESCRIPTION
-
-Marker are position in the document, that are marked by symbols in the margin
-on the left side. Every document can have many Marker.
-
-But there are only 10 bookmarks numbered from 0 to 9.
-
-=cut
-
-
 use strict;
 use warnings;
-#
+
 # internal data handling subs
-#
+sub _ep     { Kephra::App::EditPanel::_ref() }
+sub _config { Kephra::API::settings()->{search}{marker} }
 my @bookmark;
 my @bookmark_nr = 0..9;
 my $marker_nr = 10;    # pos remembered by edit control
 sub _attribute      {'marked_lines'}
+sub _bookmarks      { @bookmark }
 sub bookmark_is_set {
 	my $nr = shift;
 	return if $nr < 0 or $nr > 9;
 	$bookmark[$nr]{set};
 }
-sub _ep    { Kephra::App::EditPanel::_ref() }
-sub _config{ Kephra::API::settings()->{search} }
 sub _marker_search_byte {
 	my $search_byte = 1 << $marker_nr;
-	$search_byte |=  (1 << scalar(@bookmark_nr) )-1 if _config()->{marker}{any};
+	$search_byte |=  (1 << scalar(@bookmark_nr) )-1 if _config()->{any};
 	$search_byte;
 }
 sub _refresh_bookmark_data { # checks if this bookmark is still valid
@@ -57,6 +43,7 @@ sub _refresh_bookmark_data { # checks if this bookmark is still valid
 	return $bm_data->{line} = $line;
 }
 
+sub _refresh_all_bookmarks { _refresh_bookmark_data($_) for @bookmark_nr }
 sub _delete_bookmark_data {
 	my $nr = shift;
 	return if $nr < 0 or $nr > 9;
@@ -67,26 +54,18 @@ sub _delete_bookmark_data {
 #
 sub define_marker {
 	my $ep = shift;
-	my $conf = Kephra::App::EditPanel::Margin::_config()->{marker};
-	my $color= \&Kephra::Config::color;
+	my $conf = Kephra::App::EditPanel::Margin::_marker_config();
+
+	my $color = \&Kephra::Config::color;
 	my $fore = &$color( $conf->{fore_color} );
 	my $back = &$color( $conf->{back_color} );
 	$ep->MarkerDefineBitmap
 		( $_, Kephra::CommandList::get_cmd_property
-			( 'bookmark-goto-'.$_, 'icon' ) ) for 0 .. 9;
-	$ep->MarkerDefine( $marker_nr, &Wx::wxSTC_MARK_CIRCLE, $fore, $back );
-# wxSTC_MARK_SHORTARROW wxSTC_MARK_ROUNDRECT wxSTC_MARK_CIRCLE
+			( 'bookmark-goto-'.$_, 'icon' ) ) for @bookmark_nr;
+	$ep->MarkerDefineBitmap( $marker_nr, 
+		Kephra::CommandList::get_cmd_property('marker-toggle-here', 'icon'));
 }
 
-sub save_all {
-	save_bookmarks();
-	store_marker($_) for @{Kephra::Document::Data::all_nr()};
-}
-
-sub restore_all {
-	restore_bookmarks();
-	restore_marker($_) for @{Kephra::Document::Data::all_nr()};
-}
 sub delete_doc {
 	my $doc_nr = shift;
 	delete_all_bookmarks_in_doc($doc_nr);
@@ -94,22 +73,18 @@ sub delete_doc {
 }
 # bookmarks
 sub restore_bookmarks {
-	my $file = Kephra::Config::filepath( 
-		Kephra::Config::Global::_sub_dir(),
-		_config()->{data_file},
-	);
-	my $config_tree = Kephra::Config::File::load($file);
+	my $bookmark_data = shift;
 	for my $nr (@bookmark_nr) {
-		if ( defined $config_tree->{bookmark}{$nr}){
-			my $bm_data = $config_tree->{bookmark}{$nr};
-			next unless ref $bm_data eq 'HASH' and $bm_data->{file} and $bm_data->{pos};
-			$bookmark[$nr]{file} = $bm_data->{file};
+		if ( defined $bookmark_data->{$nr}){
+			my $this_bm = $bookmark_data->{$nr};
+			next unless ref $this_bm eq 'HASH' and $this_bm->{file} and $this_bm->{pos};
+			$bookmark[$nr]{file} = $this_bm->{file};
 			my $bookmark = $bookmark[$nr];
 			my $doc_nr = $bookmark->{doc_nr} = 
-				Kephra::Document::Data::nr_from_file_path( $bm_data->{file} );
+				Kephra::Document::Data::nr_from_file_path( $this_bm->{file} );
 			next if $doc_nr < 0;
 			my $ep      = Kephra::Document::Data::_ep($doc_nr);
-			my $pos = $bookmark->{pos} = $bm_data->{pos};
+			my $pos = $bookmark->{pos} = $this_bm->{pos};
 			my $line = $bookmark->{line} = $ep->LineFromPosition( $pos );
 			$bookmark->{col} = $pos - $ep->PositionFromLine( $line );
 			$bookmark->{set} = 1 if $ep->MarkerAdd( $line, $nr ) > -1;
@@ -117,21 +92,17 @@ sub restore_bookmarks {
 	}
 }
 
-sub save_bookmarks {
+sub get_bookmark_data {
 	_refresh_bookmark_data($_) for @bookmark_nr;
-	my $file = Kephra::Config::filepath( 
-		Kephra::Config::Global::_sub_dir(),
-		Kephra::API::settings()->{search}{data_file},
-	);
-	my $config_tree = Kephra::Config::File::load($file);
-	$config_tree->{bookmark} = {};
+	my %bm_data;
 	for my $nr (@bookmark_nr) {
 		next unless bookmark_is_set($nr);
-		$config_tree->{bookmark}{$nr}{file} = $bookmark[$nr]{file};
-		$config_tree->{bookmark}{$nr}{pos} = $bookmark[$nr]{pos};
+		$bm_data{$nr}{file} = $bookmark[$nr]{file};
+		$bm_data{$nr}{pos} = $bookmark[$nr]{pos};
 	}
-	Kephra::Config::File::store($file, $config_tree);
+	\%bm_data;
 }
+
 sub toggle_bookmark_in_pos {
 	my $nr = shift;
 	my $pos = shift;
@@ -150,7 +121,7 @@ sub toggle_bookmark_in_pos {
 		$bookmark->{set}    = 1 if $ep->MarkerAdd( $line, $nr) > -1;
 	}
 }
-sub toggle_bookmark_here { # toggle triggered by margin middle click
+sub toggle_bookmark_here   { # toggle triggered by margin middle click
 	my ($ep, $event ) = @_;
 	return unless ref $event eq 'Wx::MouseEvent';
 
@@ -194,7 +165,7 @@ sub delete_all_bookmarks_in_doc {
 sub delete_all_bookmarks { delete_bookmark($_) for @bookmark_nr }
 
 # marker
-sub restore_marker {
+sub restore {
 	my $doc_nr = shift;
 	my $marker_pos = Kephra::Document::Data::get_attribute( _attribute(), $doc_nr);
 	return unless ref $marker_pos eq 'ARRAY';
@@ -202,15 +173,17 @@ sub restore_marker {
 	$ep->MarkerAdd( $_, $marker_nr) for @$marker_pos;
 }
 
-sub store_marker   {
-	my $doc_nr = shift;
-	my $ep = Kephra::Document::Data::_ep($doc_nr);
+sub store { # update marker pos in the file data, saved later in File:Session
+	# bookmarks are saved by Kephra::Edit::Search::save_search_data()
 	my $search_byte = 1 << $marker_nr;
-	my $line = 0;
-	my @marker_pos;
-	push @marker_pos, $line++ 
-		while -1 != ( $line = $ep->MarkerNext( $line, $search_byte ) );
-	Kephra::Document::Data::set_attribute( _attribute(), \@marker_pos, $doc_nr);
+	for my $doc_nr  (@{Kephra::Document::Data::all_nr()}) {
+		my $ep = Kephra::Document::Data::_ep($doc_nr);
+		my $line = 0;
+		my @marker_pos;
+		push @marker_pos, $line++ 
+			while -1 != ( $line = $ep->MarkerNext( $line, $search_byte ) );
+		Kephra::Document::Data::set_attribute( _attribute(), \@marker_pos, $doc_nr);
+	}
 }
 
 sub toggle_marker_in_line { # generic set / delete marker in line
@@ -234,7 +207,7 @@ sub toggle_marker         { # toggle triggered by keyboard / icon / contextmenu
 
 sub goto_prev_marker_in_doc {
 	my $ep = _ep();
-	my $do_wrap = _config()->{marker}{wrap};
+	my $do_wrap = _config()->{wrap};
 	my $search_byte = _marker_search_byte();
 	my $line = $ep->MarkerPrevious( $ep->GetCurrentLine - 1, $search_byte );
 	$line = $ep->MarkerPrevious( $ep->LineFromPosition( $ep->GetLineCount() ), $search_byte )
@@ -244,7 +217,7 @@ sub goto_prev_marker_in_doc {
 
 sub goto_next_marker_in_doc {
 	my $ep = _ep();
-	my $do_wrap = _config()->{marker}{wrap};
+	my $do_wrap = _config()->{wrap};
 	my $search_byte = _marker_search_byte();
 	my $line = $ep->MarkerNext( $ep->GetCurrentLine + 1, $search_byte );
 	$line = $ep->MarkerNext( 0, $search_byte )
@@ -259,7 +232,7 @@ sub goto_prev_marker {
 		$ep->MarkerPrevious( $ep->GetCurrentLine() - 1, $search_byte );
 	if ($line > -1) { Kephra::Edit::Goto::line_nr( $line ) }
 	else {
-		my $do_wrap = _config()->{marker}{wrap};
+		my $do_wrap = _config()->{wrap};
 		my $doc_nr = my $cur_doc = Kephra::Document::Data::current_nr();
 		while ( ($doc_nr = Kephra::Document::Data::next_nr(-1, $doc_nr)) != -1 ){
 			return if $cur_doc < $doc_nr and not $do_wrap;
@@ -282,14 +255,14 @@ sub goto_next_marker {
 		$ep->MarkerNext( $ep->GetCurrentLine() + 1, $search_byte );
 	if ($line > -1) { Kephra::Edit::Goto::line_nr( $line ) }
 	else {
-		my $do_wrap = _config()->{marker}{wrap};
+		my $do_wrap = _config()->{wrap};
 		my $doc_nr = my $cur_doc = Kephra::Document::Data::current_nr();
 		while ( ($doc_nr = Kephra::Document::Data::next_nr(-1, $doc_nr)) != -1 ){
 			return if $cur_doc > $doc_nr and not $do_wrap;
 			$ep = Kephra::Document::Data::_ep($doc_nr);
 			$line = $ep->MarkerNext( 0, $search_byte );
 			return if ($doc_nr == $cur_doc)
-				  and ($line == $cur_line or $line == -1);
+			      and ($line == $cur_line or $line == -1);
 			if ($line > -1) {
 				Kephra::Document::Change::to_number( $doc_nr );
 				return Kephra::Edit::Goto::line_nr( $line );
@@ -308,3 +281,17 @@ sub delete_all_marker {
 }
 
 1;
+
+=head1 NAME
+
+Kephra::Edit::Marker - bookmark and marker functions
+
+=head1 DESCRIPTION
+
+Marker are position in the document, that are marked by symbols in the margin
+on the left side. Every document can have many Marker. They can be navigated
+via [Alt+][Shift+]F2 or search bar.
+
+But there are only 10 bookmarks numbered from 0 to 9.
+
+=cut

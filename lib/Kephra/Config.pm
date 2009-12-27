@@ -1,14 +1,6 @@
 package Kephra::Config;
 our $VERSION = '0.34';
 
-=head1 NAME
-
-Kephra::Config - low level config stuff and basics
-
-=head1 DESCRIPTION
-
-
-=cut
 use strict;
 use warnings;
 
@@ -45,7 +37,7 @@ sub standartize_path_slashes { File::Spec->canonpath( shift ) }
 
 sub path_matches {
 	my $given = shift;
-	return unless defined $given and @_;
+	return unless defined $given and $given and @_;
 	for my $path (@_) { return 1 if $given eq standartize_path_slashes($path) }
 	return 0;
 }
@@ -171,3 +163,12 @@ sub _lc_utf {
 #pce:dialog::msg_box(undef,$mode,''); #Wx::wxUNICODE()
 
 1;
+
+=head1 NAME
+
+Kephra::Config - low level config stuff and basics
+
+=head1 DESCRIPTION
+
+
+=cut

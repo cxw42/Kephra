@@ -1,14 +1,6 @@
 package Kephra::Config::Global;
 our $VERSION = '0.26';
 
-=head1 NAME
-
-Kephra::Config::Global - loading and storing the config settings for the app
-
-=head1 DESCRIPTION
-
-=cut
-
 use strict;
 use warnings;
 
@@ -21,11 +13,11 @@ my ($auto_file, $current_file);
 sub current_file{ $current_file = defined $_[0] ? $_[0] : $current_file }
 sub auto_file   { $auto_file    = defined $_[0] ? $_[0] : $auto_file }
 
-sub load_autosaved {
+sub autoload {
 	my $autosave = auto_file();
 	current_file( $autosave );
 	my $backup = $autosave . '~';
-	#$main::logger->debug("load_autosaved");
+	#$main::logger->debug("autoload");
 
 	for my $file ($autosave, $backup) {
 		if ( -e $file ) {
@@ -36,12 +28,14 @@ sub load_autosaved {
 		}
 	}
 
+	Kephra::File::History::init();
+
 	%settings
 		? evaluate()
 		: load_defaults();
 }
 
-sub save_autosaved {
+sub autosave {
 	#$main::logger->debug("save_autosaved");
 	my $file_name = auto_file();
 	rename $file_name, $file_name . '~';
@@ -64,7 +58,6 @@ sub load_defaults {
 
 sub load_from {
 	my $file_name = Kephra::Dialog::get_file_open(
-		Kephra::App::Window::_ref(),
 		Kephra::Config::Localisation::strings()->{dialog}{config_file}{load},
 		Kephra::Config::dirpath( _sub_dir() ),
 		$Kephra::temp{file}{filterstring}{config}
@@ -76,7 +69,8 @@ sub load_from {
 sub update {
 	Kephra::App::Window::save_positions();
 	Kephra::Document::Data::update_attributes();
-	Kephra::Edit::Marker::save_all();
+	Kephra::Edit::Search::save_search_data();
+	Kephra::App::EditPanel::Fold::store();
 	Kephra::App::Panel::Notepad::save();
 	Kephra::App::Panel::Output::save();
 }
@@ -86,32 +80,30 @@ sub evaluate {
 	Kephra::EventTable::del_all();
 	Kephra::EventTable::stop_timer();
 
-
 	my $t1 = new Benchmark;
 print "  iface cnfg:", Benchmark::timestr( Benchmark::timediff( $t1, $t0 ) ), "\n"
-	if $Kephra::BENCHMARK;
+		if $Kephra::BENCHMARK;
 
 	# set interna to default
 	$Kephra::app{GUI}{masterID}     = 20;
 	$Kephra::temp{dialog}{control}  = 0;
 	Kephra::Document::SyntaxMode::_ID('none');
-	Kephra::Edit::Search::_init_history();
 	Kephra::Edit::Search::_refresh_search_flags();
 	my $t2 = new Benchmark;
 print "  prep. data:", Benchmark::timestr( Benchmark::timediff( $t2, $t1 ) ), "\n"
-	if $Kephra::BENCHMARK;
+		if $Kephra::BENCHMARK;
 
 	Kephra::Config::Interface::load();
 
 	my $t3 = new Benchmark;
 print "  create gui:", Benchmark::timestr( Benchmark::timediff( $t3, $t2 ) ), "\n"
-	if $Kephra::BENCHMARK;
+		if $Kephra::BENCHMARK;
 
 	# main window components
 	Kephra::App::Window::apply_settings();
 	Kephra::App::ContextMenu::create_all();
 	Kephra::App::MenuBar::create();
-	Kephra::App::MainToolBar::create();
+	Kephra::App::MainToolBar::show();
 	Kephra::App::SearchBar::create();
 	Kephra::App::TabBar::apply_settings();
 	Kephra::App::StatusBar::create();
@@ -124,7 +116,7 @@ print "  create gui:", Benchmark::timestr( Benchmark::timediff( $t3, $t2 ) ), "\
 
 	my $t4 = new Benchmark;
 print "  apply sets:", Benchmark::timestr( Benchmark::timediff( $t4, $t3 ) ), "\n"
-	if $Kephra::BENCHMARK;
+		if $Kephra::BENCHMARK;
 
 	Kephra::App::ContextMenu::connect_all();
 	Kephra::App::EditPanel::apply_settings_here();
@@ -154,8 +146,8 @@ sub reload {
 		}
 	} else {
 		my $err_msg = Kephra::Config::Localisation::strings()->{dialog}{error};
-		Kephra::Dialog::warning_box( undef, 
-			$err_msg->{file_find} . "\n $configfile", $err_msg->{config_read} );
+		Kephra::Dialog::warning_box
+			($err_msg->{file_find} . "\n $configfile", $err_msg->{config_read} );
 	}
 }
 
@@ -213,7 +205,6 @@ sub save {
 
 sub save_as {
 	my $file_name = Kephra::Dialog::get_file_save(
-		Kephra::App::Window::_ref(),
 		Kephra::Config::Localisation::strings()->{dialog}{config_file}{save},
 		Kephra::Config::dirpath( _sub_dir() ),
 		$Kephra::temp{file}{filterstring}{config}
@@ -226,7 +217,6 @@ sub save_current { save( current_file() ) }
 #
 sub merge_with {
 	my $filename = Kephra::Dialog::get_file_open( 
-		Kephra::App::Window::_ref(),
 		Kephra::Config::Localisation::strings()->{dialog}{config_file}{load},
 		Kephra::Config::dirpath( _sub_dir(), 'sub'),
 		$Kephra::temp{file}{filterstring}{config}
@@ -250,3 +240,11 @@ sub open_templates_file {
 }
 
 1;
+
+=head1 NAME
+
+Kephra::Config::Global - loading and storing the config settings for the app
+
+=head1 DESCRIPTION
+
+=cut

@@ -94,3 +94,12 @@ sub apply_color {}
 sub open_file  { Kephra::Config::open_file( 'syntaxhighlighter', "$_[0].pm") }
 
 1;
+
+=head1 NAME
+
+Kephra::Document::SyntaxMode - content language specific settings of a doc
+
+=head1 DESCRIPTION
+
+
+=cut

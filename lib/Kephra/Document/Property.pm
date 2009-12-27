@@ -1,16 +1,6 @@
 package Kephra::Document::Property;
 our $VERSION = '0.04';
 
-=head1 NAME
-
-Kephra::Document::Property - 
-
-=head1 DESCRIPTION
-
-change doc data and eval it.
-
-=cut
-
 use strict;
 use warnings;
 # some internal shortcut helper
@@ -59,21 +49,38 @@ sub set_file {
 #
 # property specific API
 #
+#
+# syntaxmode
+sub get_syntaxmode { _get_attr('syntaxmode') }
+sub set_syntaxmode { Kephra::Document::SyntaxMode::set(@_) }
+#
+#
 sub get_codepage { _get_attr('codepage', $_[0]) }
 sub set_codepage {
-	my ($value, $nr) = @_;
-	$nr = _doc_nr($nr);
-	return if $nr < 0 or not defined $value;
-	_set_attr('codepage', $value, $nr);
+	my ($new_value, $doc_nr) = @_;
+	$doc_nr = _doc_nr($doc_nr);
+	return if $doc_nr < 0 or not defined $new_value;
+	my $old_value = get_codepage($doc_nr);
+	my $ep = _ep_ref($doc_nr);
+	if    ($old_value eq '8bit' and $new_value eq 'utf8'){
+		Kephra::Document::Data::update_attributes($doc_nr);
+		$ep->SetText( Encode::decode('utf8', $ep->GetText()) );
+		Kephra::Document::Data::evaluate_attributes($doc_nr);
+	}
+	elsif ($old_value eq 'utf8' and $new_value eq '8bit') {
+		Kephra::Document::Data::update_attributes($doc_nr);
+		$ep->SetText( Encode::encode('utf8', $ep->GetText()) );
+		Kephra::Document::Data::evaluate_attributes($doc_nr);
+	}
+	_set_attr('codepage', $new_value, $doc_nr);
 	#_ep_ref()->SetCodePage( $value );
-	Kephra::App::StatusBar::codepage_info($value);
-}#use Wx::STC qw(&Wx::wxSTC_CP_UTF8); Wx::wxUNICODE()
+	Kephra::App::StatusBar::codepage_info($new_value);
+}
 sub switch_codepage {
 	set_codepage( get_codepage( _doc_nr() ) eq '8bit' ? 'utf8' : '8bit' );
 }
 #
 # tab size
-#
 sub get_tab_size { _get_attr('tab_size', $_[0]) }
 sub set_tab_size {
 	my ($size, $nr) = @_;
@@ -87,7 +94,6 @@ sub set_tab_size {
 }
 #
 # tab use
-#
 sub get_tab_mode { _get_attr('tab_use', $_[0]) }
 sub set_tab_mode {
 	my $mode = shift;
@@ -113,7 +119,6 @@ sub set_tabs_soft  { set_tab_mode(0) }
 sub switch_tab_mode{ get_tab_mode() ? set_tab_mode(0) : set_tab_mode(1) }
 #
 # EOL
-#
 sub EOL_length   { _get_attr('EOL_length') }
 sub get_EOL_mode { _get_attr('EOL') }
 sub set_EOL_mode {
@@ -170,7 +175,6 @@ sub detect_EOL_mode {
 
 #
 # auto indention
-#
 sub get_autoindention { Kephra::App::EditPanel::_config()->{auto}{indention} }
 sub set_autoindention {
 	Kephra::App::EditPanel::_config()->{auto}{indention} = shift;
@@ -179,10 +183,8 @@ sub set_autoindention {
 sub switch_autoindention { set_autoindention( get_autoindention() ^ 1 ) } 
 sub set_autoindent_on    { set_autoindention( 1 ) }
 sub set_autoindent_off   { set_autoindention( 0 ) }
-
 #
 # brace indention
-#
 sub get_braceindention { Kephra::App::EditPanel::_config()->{auto}{brace}{indention}}
 sub set_braceindention {
 	Kephra::App::EditPanel::_config()->{auto}{brace}{indention} = shift;
@@ -191,10 +193,8 @@ sub set_braceindention {
 sub switch_braceindention { set_braceindention( get_braceindention() ^ 1 ) }
 sub set_blockindent_on    { set_braceindention( 1 ) }
 sub set_blockindent_off   { set_braceindention( 0 ) }
-
 #
 # write protection
-#
 sub get_readonly { _get_attr('readonly') }
 sub set_readonly {
 	my $status = shift;
@@ -220,10 +220,15 @@ sub set_readonly {
 sub set_readonly_on      { set_readonly('on') }
 sub set_readonly_off     { set_readonly('off') }
 sub set_readonly_protect { set_readonly('protect') }
-#
-# syntaxmode
-#
-sub get_syntaxmode { _get_attr('syntaxmode') }
-sub set_syntaxmode { Kephra::Document::SyntaxMode::set(@_) }
 
 1;
+
+=head1 NAME
+
+Kephra::Document::Property - 
+
+=head1 DESCRIPTION
+
+change doc data and eval it.
+
+=cut

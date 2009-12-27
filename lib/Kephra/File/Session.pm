@@ -1,24 +1,16 @@
 package Kephra::File::Session;
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
-=head1 NAME
-
-Kephra::File::Session - 
-
-=head1 DESCRIPTION
-
-file session handling
-
-current session is the group of all opened files
-sessionfiles contain metadata like syntaxmode, tabsize, cursorpos, -NI codset
-=cut
 use strict;
 use warnings;
-#
+
 # intern API
-#
 sub _config      { Kephra::API::settings()->{file}{session} }
 sub _dialog_l18n { Kephra::Config::Localisation::strings()->{dialog} }
+sub _saved_properties {[ qw(
+		syntaxmode EOL codepage readonly tab_size tab_use
+		cursor_pos edit_pos file_path marked_lines folded_lines
+)]}
 sub _forget_gone_files  {
 	my @true_files = ();
 	my $node       = shift;
@@ -81,12 +73,10 @@ sub restore   {
 	my $file = shift;
 	Kephra::File::close_all();
 	add($file);
-	Kephra::Edit::Marker::restore_all();
 }
 
 sub restore_from { # 
 	my $file = Kephra::Dialog::get_file_open(
-			Kephra::App::Window::_ref(),
 			_dialog_l18n()->{file}{open_session},
 			Kephra::Config::filepath( _config->{directory}
 		), $Kephra::temp{file}{filterstring}{config}
@@ -102,18 +92,15 @@ sub add       {
 		if (ref $session_def eq 'HASH'){
 			_add($session_def);
 		} else {
-			Kephra::Dialog::warning_box
-				(undef, $file, _dialog_l18n()->{error}{config_parse});
+			Kephra::Dialog::warning_box($file, _dialog_l18n()->{error}{config_parse});
 		}
 	} else {
-		Kephra::Dialog::warning_box
-			(undef, $file, _dialog_l18n()->{error}{file_read});
+		Kephra::Dialog::warning_box($file, _dialog_l18n()->{error}{file_read});
 	}
 }
 
 sub add_from  {
 	my $file = Kephra::Dialog::get_file_open(
-		Kephra::App::Window::_ref(),
 		_dialog_l18n()->{file}{add_session},
 		Kephra::Config::filepath( _config->{directory} ),
 		$Kephra::temp{file}{filterstring}{config}
@@ -126,9 +113,6 @@ sub save      {
 	return unless $file;
 
 	Kephra::Config::Global::update();
-	my @saved_properties = qw(syntaxmode EOL codepage readonly tab_size tab_use
-			cursor_pos edit_pos file_path);
-	push @saved_properties, Kephra::Edit::Marker::_attribute();
 	my $doc2vis = \&Kephra::App::TabBar::_doc2vis_pos;
 	my $config = _config();
 	my %temp_config = %{ Kephra::Config::File::load($file) } if -r $file;
@@ -138,14 +122,14 @@ sub save      {
 	for my $nr (0 .. $#doc_list) {
 		my $vis_pos = $doc2vis->($nr);
 		$temp_config{document}[$vis_pos]{$_} = $doc_list[$nr]{$_}
-			for @saved_properties;
+			for @{ _saved_properties() };
 	}
 	@{ $temp_config{document} } = @{ _forget_gone_files( \$temp_config{document} ) };
 	Kephra::Config::File::store( $file, \%temp_config );
 }
 
 sub save_as   {
-	my $file_name = Kephra::Dialog::get_file_save( Kephra::App::Window::_ref(),
+	my $file_name = Kephra::Dialog::get_file_save(
 		_dialog_l18n()->{file}{save_session},
 		Kephra::Config::filepath( _config->{directory} ),
 		$Kephra::temp{file}{filterstring}{config}
@@ -186,9 +170,8 @@ sub save_backup {
 }
 # other session formats
 sub import_scite {
-	my $win = Kephra::App::Window::_ref();
 	my $err_msg = _dialog_l18n()->{error};
-	my $file = Kephra::Dialog::get_file_open( $win,
+	my $file = Kephra::Dialog::get_file_open (
 		_dialog_l18n()->{file}{open_session},
 		$Kephra::temp{path}{config},
 		$Kephra::temp{file}{filterstring}{scite}
@@ -214,18 +197,18 @@ sub import_scite {
 				Kephra::Document::Change::to_number($start_file_nr);
 				$Kephra::document{previous_nr} = $start_file_nr;
 			} else {
-				Kephra::Dialog::warning_box($win, $file, $err_msg->{config_parse});
+				Kephra::Dialog::warning_box($file, $err_msg->{config_parse});
 			}
 		} else {
 			Kephra::Dialog::warning_box 
-				($win, $err_msg->{file_read}." $file", $err_msg->{file});
+				($err_msg->{file_read}." $file", $err_msg->{file});
 		}
 	}
 }
 
 sub export_scite {
 	my $win = Kephra::App::Window::_ref();
-	my $file = Kephra::Dialog::get_file_save( $win,
+	my $file = Kephra::Dialog::get_file_save(
 		_dialog_l18n()->{file}{save_session},
 		$Kephra::temp{path}{config},
 		$Kephra::temp{file}{filterstring}{scite}
@@ -246,9 +229,21 @@ sub export_scite {
 		} else {
 			my $err_msg = _dialog_l18n()->{error};
 			Kephra::Dialog::warning_box
-				($win, $err_msg->{file_write}." $file", $err_msg->{file} );
+				($err_msg->{file_write}." $file", $err_msg->{file} );
 		}
 	}
 }
 
 1;
+
+=head1 NAME
+
+Kephra::File::Session - 
+
+=head1 DESCRIPTION
+
+file session handling
+
+current session is the group of all opened files
+sessionfiles contain metadata like syntaxmode, tabsize, cursorpos, -NI codset
+=cut

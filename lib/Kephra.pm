@@ -6,18 +6,21 @@ use strict;
 use warnings;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.4.2.18';      # version of entire app
+our $VERSION    = '0.4.2.23';      # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $LOGLEVEL;                     # flag for benchmark loggings
+our $BENCHMARK;
 
 # Configuration Phase
 sub load_modules {
 	require Cwd;
+	require Encode;
+	require Encode::Guess;
 	require File::Find;
 	require File::Spec::Functions;
 	require File::UserConfig;
-	require Config::General;
+	require Config::General;               # 
 	require YAML::Tiny;
 
 	require Wx;                            # Core wxWidgets Framework

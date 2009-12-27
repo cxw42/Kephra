@@ -1,15 +1,9 @@
 open Issues, known problems
 
 Technical Issues:
- - to many attr acess
  - file open clutter in Tabbar
 
 
-0.4.3 wishlist
- - coding handling
- - insert pos
- - file history as session
- - bookmarks reworked, loaded from extra config file
 
 
 0.5

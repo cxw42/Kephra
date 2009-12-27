@@ -4,9 +4,6 @@ our $VERSION = '0.08';
 use strict;
 use warnings;
 
-# central lib for gui toolbars
-# storing, fetching, assemble data, creating regular button items
-
 my %toolbar;
 sub _all { \%toolbar }
 sub _ref {
@@ -90,7 +87,7 @@ sub eval_data {
 		? $toolbar{$bar_id}{item_id}
 		: $Kephra::app{GUI}{masterID}++ * 100;
 	$toolbar{$bar_id}{item_id} = $bar_item_id;
-	my $respond = Kephra::API::settings()->{app}{toolbar}{all}{responsive};
+	my $respond = Kephra::API::settings()->{app}{toolbar}{responsive};
 
 	for my $item_data (@$bar_data){
 		if (not $item_data->{type} or $item_data->{type} eq 'separator'){
@@ -147,3 +144,11 @@ sub destroy {
 }
 
 1;
+
+=head1 NAME
+
+Kephra::ToolBar - general toolbar creation and handling
+
+=head1 DESCRIPTION
+
+=cut

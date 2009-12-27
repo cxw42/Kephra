@@ -1,14 +1,6 @@
 package Kephra::App::EditPanel::Margin;
 our $VERSION = '0.12';
 
-=head1 NAME
-
-Kephra::App::EditPanel::Margin - managing margin visuals for marker, linenumber, folding & extra space
-
-=head1 DESCRIPTION
-
-=cut
-
 use strict;
 use warnings;
 
@@ -87,6 +79,8 @@ sub refresh_changeable_settings {
 	apply_line_number_color_here($ep);
 	apply_fold_flag_color_here($ep);
 }
+sub get_contextmenu_visibility    { _edit_config()->{contextmenu}{margin} }
+sub switch_contextmenu_visibility { _edit_config()->{contextmenu}{margin} ^= 1 }
 #
 # deciding what to do when clicked on edit panel margin
 #
@@ -107,15 +101,15 @@ sub on_middle_click {
 sub on_right_click {
 	my ($ep, $event, $nr) = @_;
 	my ($x, $y) = ($event->GetX, $event->GetY);
-	#Kephra::Document::Data::set_value('mouse_y', $event->GetPosition->y());
-
-	if ($nr < 2){
-		$ep->PopupMenu( Kephra::App::ContextMenu::get('marker_margin'), $x, $y);
+	if ($nr > -1 and $nr < 2 and get_contextmenu_visibility() ){
+		$ep->PopupMenu( 
+			Kephra::App::ContextMenu::get( 
+				_edit_config()->{contextmenu}{ID_margin} ), $x, $y);
 	}
 	elsif ($nr == 2) {
 		$event->LeftIsDown
 			? Kephra::App::EditPanel::Fold::toggle_all()
-			: Kephra::App::EditPanel::Fold::toggle_siblings($ep, $event);
+			: Kephra::App::EditPanel::Fold::toggle_level($ep, $event);
 	}
 	#Kephra::Document::Data::del_value('mouse_y');
 }
@@ -254,3 +248,11 @@ sub apply_text_width_here {
 1;
 #wxSTC_MARK_MINUS wxSTC_MARK_PLUS wxSTC_MARK_CIRCLE wxSTC_MARK_SHORTARROW
 #wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED
+
+=head1 NAME
+
+Kephra::App::EditPanel::Margin - managing margin visuals for marker, linenumber, folding & extra space
+
+=head1 DESCRIPTION
+
+=cut

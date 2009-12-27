@@ -1,23 +1,10 @@
 package Kephra::App::TabBar;
 our $VERSION = '0.18';
 
-=head1 NAME
-
-Kephra::App::Tabbar - 
-
-=head1 DESCRIPTION
-
-Tabbar is the visual element in top area of the main window which displays
-       end enables selection between all curently opened documents
-       
-       this module manages the tab position handling because the nr of document
-       might be different from its postition in the tabbar
-=cut
 use strict;
 use warnings;
-#
+
 # internal data
-#
 my $notebook;
 sub _ref    { $notebook = ref $_[0] eq 'Wx::AuiNotebook' ? $_[0] : $notebook }
 sub _config { Kephra::API::settings()->{app}{tabbar} }
@@ -176,8 +163,10 @@ sub add_edit_tab  {
 	my $notebook = _ref();
 	#$notebook->InsertPage( $vis_pos, $stc, '', 0 );
 	$notebook->AddPage( $stc, '', 0 );
-	splice @tab2doc_pos, $doc_nr, 0, $doc_nr;   # splice @tab2doc_pos, $vis_pos, 0, $doc_nr;
-	splice @vis2doc_pos, $doc_nr, 0, $doc_nr;#splice @vis2doc_pos, $vis_pos, 0, $doc_nr;
+	$notebook->Layout();
+	$stc->Layout();
+	splice @tab2doc_pos, $doc_nr, 0, $doc_nr; # splice @tab2doc_pos, $vis_pos, 0, $doc_nr;
+	splice @vis2doc_pos, $doc_nr, 0, $doc_nr; # splice @vis2doc_pos, $vis_pos, 0, $doc_nr;
 	_update_doc_pos();
 	return $stc;
 }
@@ -299,3 +288,16 @@ sub switch_contextmenu_visibility {
 sub get_contextmenu_visibility { _config()->{contextmenu_use} }
 
 1;
+
+=head1 NAME
+
+Kephra::App::Tabbar - 
+
+=head1 DESCRIPTION
+
+Tabbar is the visual element in top area of the main window which displays
+       end enables selection between all curently opened documents
+       
+       this module manages the tab position handling because the nr of document
+       might be different from its postition in the tabbar
+=cut

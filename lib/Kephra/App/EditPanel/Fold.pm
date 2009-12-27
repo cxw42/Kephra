@@ -1,18 +1,20 @@
 package Kephra::App::EditPanel::Fold;
-our $VERSION = '0.01';
+our $VERSION = '0.03';
 
+use strict;
+use warnings;
 #
 sub _ep_ref {
-	ref $_[0] eq 'Wx::StyledTextCtrl' ? $_[0] : Kephra::App::EditPanel::_ref()   
+	Kephra::App::EditPanel::is($_[0]) ? $_[0] : Kephra::App::EditPanel::_ref()   
 }
 sub _config { Kephra::App::EditPanel::Margin::_config()->{fold} }
+sub _attribute { 'folded_lines' }
 #
-# is this the fold level of a head node ?
-sub _is_head {
+sub _is_head { # is this the fold level of a head node ?
 	my $level = shift;
 	return 1 if ($level % 1024) < (($level >> 16) % 1024);
 }
-sub _get_line {
+sub _get_line { # 
 	my ($ep, $event ) = @_;
 	$ep = _ep_ref();
 	my $line;
@@ -21,12 +23,31 @@ sub _get_line {
 		my ($y, $max_y) = ($event->GetY, $ep->GetSize->GetHeight);
 		my $pos = $ep->PositionFromPointClose($x, $y);
 		while ($pos < 0 and $y+10 < $max_y) {
-			$y += 10;
-			$pos = $ep->PositionFromPointClose($x, $y);
+			$pos = $ep->PositionFromPointClose($x, $y += 10);
 		}
 		$line = $ep->LineFromPosition($pos);
 	} else { $line = $ep->GetCurrentLine() }
 	return $line;
+}
+#
+sub store {
+	for my $doc_nr (@{Kephra::Document::Data::all_nr()}) {
+		my $ep = Kephra::Document::Data::_ep($doc_nr);
+		my @lines;
+		for (0 .. $ep->GetLineCount()-1) {
+			push @lines, $_ unless $ep->GetFoldExpanded( $_ );
+		}
+		Kephra::Document::Data::set_attribute( _attribute(), \@lines, $doc_nr);
+	}
+}
+
+sub restore {
+	my $doc_nr = Kephra::Document::Data::valid_or_current_doc_nr(shift);
+	my $ep     = Kephra::Document::Data::_ep($doc_nr);
+	return if $doc_nr < 0 or not ref $ep;
+	my $lines = Kephra::Document::Data::get_attribute( _attribute(), $doc_nr);
+	return unless ref $lines eq 'ARRAY';
+	$ep->ToggleFold($_) for @$lines;
 }
 #
 # folding functions
@@ -78,22 +99,22 @@ sub toggle_siblings_of_line {
 	                                       and not $xp;
 	$ep->EnsureCaretVisible;
 }
-sub show_folded_children {
+
+sub toggle_level {
 	my $ep = _ep_ref();
-	my $parent = _get_line(@_);
-	unless ( _is_head( $ep->GetFoldLevel($parent) ) ) {
-		$parent = $ep->GetFoldParent($parent);
-		return if $parent == -1;
+	my $line = _get_line(@_);
+	return if $line < 0 or $line > ($ep->GetLineCount()-1);
+	my $level = $ep->GetFoldLevel($line);
+	my $xp = not $ep->GetFoldExpanded($line);
+	for (0 .. $ep->GetLineCount()-1) {
+		$ep->ToggleFold($_) if $ep->GetFoldLevel($_) == $level
+		                    and ($ep->GetFoldExpanded($_) xor $xp);
 	}
-	$ep->ToggleFold($parent) unless $ep->GetFoldExpanded($parent);
-	my $cursor = $ep->GetLastChild( $parent, -1 );
-	my $level = $ep->GetFoldLevel($parent) >> 16;
-	while ($cursor > $parent) {
-		$ep->ToggleFold($cursor) if $ep->GetFoldLevel($cursor) % 2048 == $level
-		                         and $ep->GetFoldExpanded($cursor);
-		$cursor--;
-	}
+	Kephra::Edit::Goto::next_visible_pos() if _config()->{keep_caret_visible}
+	                                       and not $xp;
+	$ep->EnsureCaretVisible;
 }
+
 sub toggle_all {
 	my $ep = _ep_ref();
 	my $line = $ep->GetLineCount() - 1;
@@ -120,5 +141,29 @@ sub unfold_all {
 		$cursor--;
 	}
 }
+sub show_folded_children {
+	#my $ep = _ep_ref();
+	#my $parent = _get_line(@_);
+	#unless ( _is_head( $ep->GetFoldLevel($parent) ) ) {
+		#$parent = $ep->GetFoldParent($parent);
+		#return if $parent == -1;
+	#}
+	#$ep->ToggleFold($parent) unless $ep->GetFoldExpanded($parent);
+	#my $cursor = $ep->GetLastChild( $parent, -1 );
+	#my $level = $ep->GetFoldLevel($parent) >> 16;
+	#while ($cursor > $parent) {
+		#$ep->ToggleFold($cursor) if $ep->GetFoldLevel($cursor) % 2048 == $level
+		                         #and $ep->GetFoldExpanded($cursor);
+		#$cursor--;
+	#}
+}
 
 1;
+
+=head1 NAME
+
+Kephra::App::EditPanel::Fold - code folding functions
+
+=head1 DESCRIPTION
+
+=cut

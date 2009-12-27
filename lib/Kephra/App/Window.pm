@@ -1,14 +1,6 @@
 package Kephra::App::Window;    # Main application window
 our $VERSION = '0.09';
 
-=head1 NAME
-
-Kephra::App::Window - frame of the main window
-
-=head1 DESCRIPTION
-
-=cut
-
 use strict;
 use warnings;
 
@@ -146,3 +138,12 @@ sub OnQuit {
 sub destroy { _ref()->Destroy() }
 
 1;
+
+=head1 NAME
+
+Kephra::App::Window - frame of the main window
+
+=head1 DESCRIPTION
+
+=cut
+

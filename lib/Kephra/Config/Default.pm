@@ -90,7 +90,7 @@ sub drop_xp_style_file{
 EOD
 	my $l18n = Kephra::Config::Localisation::strings()->{dialogs}{error};
 	open my $FILE, '>', $file or Kephra::Dialog::warning_box
-			(undef, $l18n->{file_write}." $file", $l18n->{file});
+			($l18n->{file_write}." $file", $l18n->{file});
 	print $FILE $content;
 }
 

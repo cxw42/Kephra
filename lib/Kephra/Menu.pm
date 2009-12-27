@@ -1,15 +1,5 @@
 package Kephra::Menu;
-our $VERSION = '0.15';
-
-=head1 NAME 
-
-Kephra::App::Menu - Menu creation and storage
-
-=head1 DESCRIPTION
-
-Module Kephra::App::Menu - Menu handling for the main app
-
-=cut
+our $VERSION = '0.16';
 
 use strict;
 use warnings;
@@ -17,17 +7,17 @@ use warnings;
 my %menu;
 sub _all { \%menu }
 sub _ref {
-	if    (ref $_[1] eq 'Wx::Menu')  {$menu{$_[0]}{ref} = $_[1]}
-	elsif (exists $menu{$_[0]}{ref}) {$menu{$_[0]}{ref}}
+	if    ( is($_[1]) )                { $menu{$_[0]}{ref} = $_[1] }
+	elsif ( exists $menu{$_[0]}{ref} ) { $menu{$_[0]}{ref} }
 }
 sub _data        { $menu{$_[0]} if stored($_[0])  }
+sub is           { 1 if ref $_[0] eq 'Wx::Menu'   }
 sub stored       { 1 if ref $menu{$_[0]} eq 'HASH'}
 sub set_absolete { $menu{$_[0]}{absolete} = 1     }
 sub not_absolete { $menu{$_[0]}{absolete} = 0     }
 sub is_absolete  { $menu{$_[0]}{absolete}         }
 sub set_update   { $menu{$_[0]}{update} =  $_[1] if ref $_[1] eq 'CODE' }
 sub no_update    { delete $menu{$_[0]}{update} if stored($_[0]) }
-
 sub add_onopen_check {
 	return until ref $_[2] eq 'CODE';
 	$menu{ $_[0] }{onopen}{ $_[1] } = $_[2];
@@ -53,8 +43,9 @@ sub ready          { # make menu ready for display
 
 sub create_dynamic { # create on runtime changeable menus
 	my ( $menu_id, $menu_name ) = @_ ;
-	#
+
 	if ($menu_name eq '&insert_templates') {
+
 		set_update($menu_id, sub {
 			my $cfg = Kephra::API::settings()->{file}{templates}; 
 			my $file = Kephra::Config::filepath($cfg->{directory}, $cfg->{file});
@@ -63,17 +54,14 @@ sub create_dynamic { # create on runtime changeable menus
 			if (exists $tmp->{template}){
 				$tmp = Kephra::Config::Tree::_convert_node_2_AoH(\$tmp->{template});
 				my $untitled = Kephra::Config::Localisation::strings()->{app}{general}{untitled};
+				my $filepath = Kephra::Document::Data::get_file_path() || "<$untitled>";
+				my $filename = Kephra::Document::Data::file_name() || "<$untitled>";
+				my $firstname = Kephra::Document::Data::first_name() || "<$untitled>";
 				for my $template ( @{$tmp} ) {
 					my %item;
 					$item{type} = 'item';
 					$item{label}= $template->{name};
 					$item{call} = sub {
-						my $filepath =
-							Kephra::Document::Data::get_file_path() || "<$untitled>";
-						my $filename =
-							Kephra::Document::Data::file_name() || "<$untitled>";
-						my $firstname =
-							Kephra::Document::Data::first_name() || "<$untitled>";
 						my $content = $template->{content};
 						$content =~ s/\[\$\$firstname\]/$firstname/g;
 						$content =~ s/\[\$\$filename\]/$filename/g;
@@ -82,41 +70,41 @@ sub create_dynamic { # create on runtime changeable menus
 					};
 					$item{help} = $template->{description};
 					push @menu_data, \%item; 
+					eval_data($menu_id, \@menu_data);
+				}
+			}
+		});
+		set_absolete($menu_id);
+
+	} elsif ($menu_name eq '&file_history'){
+
+		set_update($menu_id, sub {
+			my @menu_data = @{assemble_data_from_def
+				( ['item file-session-history-open-all', undef] )};
+			my $history = Kephra::File::History::get();
+			if (ref $history eq 'ARRAY') {
+				my $nr = 0;
+				for ( @$history ) {
+					my $file = $_->{file_path};
+					push @menu_data, {
+						type => 'item',
+						label => ( File::Spec->splitpath( $file ) )[2],
+						help => $file,
+						call => eval 'sub {Kephra::File::History::open( '.$nr++.' )}',
+					};
 				}
 			}
 			eval_data($menu_id, \@menu_data);
 		});
-
 		set_absolete($menu_id);
 
-	} elsif ($menu_name eq '&file_history'){
 		Kephra::EventTable::add_call (
-			'document.list', 'menu_'.$menu_id, sub { set_absolete($menu_id); }
-		);
-
-		set_update($menu_id, sub {
-			my @menu_data;
-			my $files = Kephra::File::History::get();
-			return unless ref $files eq 'ARRAY';
-			for my $file ( @$files ){
-				my %item;
-				$item{type} = 'item';
-				$item{label}= ( File::Spec->splitpath( $file ) )[2];
-				$item{help}= $file;
-				my $cmd = 'sub {Kephra::Document::add(\''.$file.'\')}';
-				$item{call} = eval $cmd;
-				push @menu_data, \%item; 
+			'document.list', 'menu_'.$menu_id, sub {
+				set_absolete( $menu_id ) if Kephra::File::History::update(); 
 			}
-			eval_data($menu_id, \@menu_data);
-		});
-
-		set_absolete($menu_id);
-
-	} elsif ($menu_name eq '&document_change'){
-
-		Kephra::EventTable::add_call (
-			'document.list', 'menu_'.$menu_id, sub { set_absolete($menu_id) }
 		);
+	} 
+	elsif ($menu_name eq '&document_change') {
 
 		set_update( $menu_id, sub {
 			return unless exists $Kephra::temp{document}{buffer};
@@ -134,18 +122,17 @@ sub create_dynamic { # create on runtime changeable menus
 					: $space.($nr+1)." - <$untitled> \t -";
 				$item->{call} = eval 'sub {Kephra::Document::Change::to_nr('.$nr.')}';
 			}
-			eval_data($menu_id, \@menu_data);
 		});
 
-		add_onopen_check( $menu_id, 'select', sub {
-			my $menu = _ref($menu_id);
-			my $check_nr = Kephra::Document::Data::current_nr();
-			$menu->FindItemByPosition($check_nr)->Check(1) if $menu;
-		});
-
-		set_absolete($menu_id);
+		#add_onopen_check( $menu_id, 'select', sub {
+		#	my $menu = _ref($menu_id);
+		#	$menu->FindItemByPosition
+		#		( Kephra::Document::Data::current_nr() )->Check(1) if $menu;
+		#});
+		#Kephra::EventTable::add_call (
+		#	'document.list', 'menu_'.$menu_id, sub { set_absolete($menu_id) }
+		#);
 	}
-
 }
 
 
@@ -251,10 +238,10 @@ sub eval_data { # eval menu data structures (MDS) to wxMenus
 				? eval_data( $item_data->{id}, $item_data->{data} )
 				: ready( $item_data->{id} );
 			$item_data->{help} = '' unless defined $item_data->{help};
-			my $menu_item = Wx::MenuItem->new(
-				$menu, $item_id++, $item_data->{label}, $item_data->{help},
-				&Wx::wxITEM_NORMAL, $submenu
-			);
+			my @params = ( $menu, $item_id++, 
+				$item_data->{label}, $item_data->{help}, &Wx::wxITEM_NORMAL );
+			push @params, $submenu if is ($submenu);
+			my $menu_item = Wx::MenuItem->new( @params );
 			if (defined $item_data->{icon}) {
 				my $bmp = Kephra::CommandList::get_cmd_property
 					( $item_data->{icon}, 'icon' );
@@ -314,3 +301,13 @@ sub destroy {
 }
 
 1;
+
+=head1 NAME 
+
+Kephra::App::Menu - Menu creation and storage
+
+=head1 DESCRIPTION
+
+Module Kephra::App::Menu - Menu handling for the main app
+
+=cut

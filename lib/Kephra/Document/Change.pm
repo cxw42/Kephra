@@ -11,7 +11,6 @@ sub to_nr     { to_number(@_) }
 sub to_number {
 	my $new_doc = Kephra::Document::Data::validate_doc_nr(shift);
 	my $old_doc = Kephra::Document::Data::current_nr();
-
 	if ($new_doc != $old_doc and $new_doc > -1) {
 		Kephra::Document::Data::update_attributes($old_doc);
 		Kephra::File::save_current() if Kephra::File::_config()->{save}{change_doc};

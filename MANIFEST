@@ -118,6 +118,7 @@ share/config/interface/icon/set/jenne/bookmark7.xpm
 share/config/interface/icon/set/jenne/bookmark8.xpm
 share/config/interface/icon/set/jenne/bookmark9.xpm
 share/config/interface/icon/set/jenne/clean-up.xpm
+share/config/interface/icon/set/jenne/colorpicker.xpm
 share/config/interface/icon/set/jenne/config-mode-full.xpm
 share/config/interface/icon/set/jenne/config-mode-html.xpm
 share/config/interface/icon/set/jenne/config-mode-perl.xpm
@@ -131,6 +132,7 @@ share/config/interface/icon/set/jenne/edit-paste.xpm
 share/config/interface/icon/set/jenne/edit-redo.xpm
 share/config/interface/icon/set/jenne/edit-replace.xpm
 share/config/interface/icon/set/jenne/edit-undo.xpm
+share/config/interface/icon/set/jenne/editor-fullscreen.xpm
 share/config/interface/icon/set/jenne/empty.xpm
 share/config/interface/icon/set/jenne/favourite.xpm
 share/config/interface/icon/set/jenne/file-close.xpm
@@ -159,6 +161,9 @@ share/config/interface/icon/set/jenne/help-mail.xpm
 share/config/interface/icon/set/jenne/help-tip.xpm
 share/config/interface/icon/set/jenne/image.xpm
 share/config/interface/icon/set/jenne/line-wrap.xpm
+share/config/interface/icon/set/jenne/marker-next.xpm
+share/config/interface/icon/set/jenne/marker-previous.xpm
+share/config/interface/icon/set/jenne/marker.xpm
 share/config/interface/icon/set/jenne/note.xpm
 share/config/interface/icon/set/jenne/output-panel.xpm
 share/config/interface/icon/set/jenne/panel-close.xpm
@@ -167,6 +172,7 @@ share/config/interface/icon/set/jenne/reload.xpm
 share/config/interface/icon/set/jenne/replace-next.xpm
 share/config/interface/icon/set/jenne/replace-previous.xpm
 share/config/interface/icon/set/jenne/replace-start.xpm
+share/config/interface/icon/set/jenne/run-skript.xpm
 share/config/interface/icon/set/jenne/stay-on-top.xpm
 share/config/interface/icon/set/tango/app-exit.xpm
 share/config/interface/icon/set/tango/clean-up.xpm

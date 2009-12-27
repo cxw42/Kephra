@@ -1,15 +1,6 @@
 package Kephra::Document;
 our $VERSION = '0.53';
 
-=head1 NAME
-
-Kephra::Document - general doc functions
-
-=head1 DESCRIPTION
-
-
-=cut
-
 use strict;
 use warnings;
 
@@ -51,12 +42,14 @@ sub _load_file_in_buffer {
 	my $ep = Kephra::Document::Data::_ep($doc_nr);
 	return unless -r $file and Kephra::App::EditPanel::is( $ep );
 	$ep->ClearAll();
-	Kephra::File::IO::open_pipe($file, $ep);
-	Kephra::File::_remember_save_moment($doc_nr, $file);
-	$ep->EmptyUndoBuffer;
-	$ep->SetSavePoint;
+	# retrieve if utf is set
 	Kephra::Document::Data::set_file_path($file, $doc_nr);
-	Kephra::Document::Data::inc_value('loaded');
+	if (Kephra::File::IO::open_buffer($doc_nr) ){
+		Kephra::File::_remember_save_moment($doc_nr);
+		$ep->EmptyUndoBuffer;
+		$ep->SetSavePoint;
+		Kephra::Document::Data::inc_value('loaded');
+	}
 }
 #
 sub new   {   # make document empty and reset all document properties to default
@@ -103,7 +96,10 @@ sub restore { # add newly opened file from known settings
 		Kephra::Document::Data::set_current_nr($doc_nr);
 		Kephra::Document::Data::set_file_path($file, $doc_nr);
 		Kephra::Document::Data::evaluate_attributes($doc_nr);
+		Kephra::App::TabBar::raise_tab_by_doc_nr($doc_nr);
+		return $doc_nr;
 	}
+	return -1;
 }
 
 
@@ -114,7 +110,7 @@ sub add {     # create a new document if settings allow it
 	if ( defined $file and -e $file ) {
 		$file = Kephra::Config::standartize_path_slashes( $file );
 		# open only text files and empty files
-		return if -B $file and $config->{open}{only_text} == 1;
+		# return if -B $file and $config->{open}{only_text} == 1;
 		# check if file is already open and goto this already opened
 		my $other_nr = Kephra::Document::Data::nr_from_file_path($file);
 		return Kephra::Document::Change::to_nr( $other_nr )
@@ -147,7 +143,12 @@ sub convert_spaces2tabs   { _edit( \&Kephra::Edit::Convert::spaces2tabs  )}
 sub convert_tabs2spaces   { _edit( \&Kephra::Edit::Convert::tabs2spaces  )}
 sub del_trailing_spaces   { _edit( \&Kephra::Edit::Format::del_trailing_spaces)}
 
-sub _edit{
+sub save_state {
+}
+sub restore_styte {
+}
+#
+sub _edit {
 	my $coderef = shift;
 	return unless ref $coderef eq 'CODE';
 	Kephra::Edit::_save_positions();
@@ -172,3 +173,11 @@ sub do_with_all {
 }
 
 1;
+
+=head1 NAME
+
+Kephra::Document - general doc functions
+
+=head1 DESCRIPTION
+
+=cut

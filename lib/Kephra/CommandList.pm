@@ -46,7 +46,6 @@ sub assemble_data {
 
 sub eval_data { eval_cmd_data( keys %list ) }
 
-
 sub _copy_values_of_nested_list {
 	my $root_node = shift;                # source
 	no strict;
@@ -135,9 +134,9 @@ sub eval_cmd_data {
 }
 
 
-########################################
+#
 # external API - getting cmd date, manipulating content
-########################################
+#
 sub new_cmd { replace_cmd(@_) unless exists $list{ $_[0] } }
 sub new_cmd_list {
 	for (@_) {

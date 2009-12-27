@@ -1,5 +1,5 @@
 package Kephra::Dialog::Search;
-our $VERSION = '0.26';
+our $VERSION = '0.27';
 
 use strict;
 use warnings;
@@ -8,6 +8,7 @@ sub _ID  { 'search_dialog' }
 my $ref;
 sub _ref { $ref = ref $_[0] eq 'Wx::Dialog' ? $_[0] : $ref }
 my $highlight_search; # set 1 if searchbar turns red
+my $active;
 my %color = (
 	norm_fore => Wx::Colour->new( 0x00, 0x00, 0x55 ),
 	norm_back => Wx::Colour->new( 0xff, 0xff, 0xff ),
@@ -40,7 +41,7 @@ sub replace { # call as replace dialog
 }
 
 sub ready   { # display find and replace dialog
-	if ( not $Kephra::temp{dialog}{search}{active} ) {
+	if ( not $active ) {
 
 		# prepare some internal var and for better handling
 		my $edit_panel      = Kephra::App::EditPanel::_ref();
@@ -58,13 +59,13 @@ sub ready   { # display find and replace dialog
 		$dsettings->{position_y} = 10 if $dsettings->{position_y} < 0;
 		$dsettings->{width} = Wx::wxMSW() ? 436 : 466;
 		if ( Kephra::Edit::Search::_history()->{use} ) {
-			@find_history = @{ Kephra::Edit::Search::_history()->{find_item} };
-			@replace_history = @{ Kephra::Edit::Search::_history()->{replace_item} };
+			@find_history = @{ Kephra::Edit::Search::get_find_history() };
+			@replace_history = @{ Kephra::Edit::Search::get_replace_history() };
 		}
 
 		# init search and replace dialog and release
 		Kephra::Edit::Search::_refresh_search_flags();
-		$Kephra::temp{dialog}{search}{active} = 1;
+		$active = 1;
 		$Kephra::temp{dialog}{active}++;
 		$highlight_search = 1;
 
@@ -420,6 +421,7 @@ sub replace_input_keyfilter {
 
 sub replace_all { Kephra::Edit::Search::replace_all() }
 sub replace_confirm { Kephra::Edit::Search::replace_confirm() }
+sub raise_if_active { _ref()->Raise if $active }
 
 sub quit_search_dialog {
 	my ( $win, $event ) = @_;
@@ -427,7 +429,7 @@ sub quit_search_dialog {
 	($config->{position_x}, $config->{position_y} ) = $win->GetPositionXY
 		if $config->{save_position} == 1;
 
-	$Kephra::temp{dialog}{search}{active} = 0;
+	$active = 0;
 	$Kephra::temp{dialog}{active}--;
 
 	Kephra::EventTable::del_own_subscriptions( _ID() );

@@ -1,5 +1,5 @@
 package Kephra::Config::File;
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 use strict;
 use warnings;
@@ -111,12 +111,12 @@ sub load_conf {
 	$Kephra::app{config}{parser}{conf} = Config::General->new(%opt);
 	if ( -e $configfilename ) {
 		eval { %config = $Kephra::app{config}{parser}{conf}->getall };
-		Kephra::Dialog::warning_box (undef,
-			"$configfilename: \n $@", $error_msg->{config_read})
+		Kephra::Dialog::warning_box 
+			("$configfilename: \n $@", $error_msg->{config_read})
 				if $@ or !%config;
 	} else {
-		Kephra::Dialog::warning_box (undef,
-			$error_msg->{config_read}."-".$configfilename, $error_msg->{file});
+		Kephra::Dialog::warning_box
+			($error_msg->{config_read}."-".$configfilename, $error_msg->{file});
 	}
 	\%config;
 }
@@ -127,3 +127,11 @@ sub store_conf {
 }
 
 1;
+
+=head1 NAME
+
+Kephra::Config::File - IO of config files
+
+=head1 DESCRIPTION
+
+=cut

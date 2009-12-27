@@ -1,31 +1,37 @@
-0.4.3 (0.4.2.13)
+0.4.3 (0.4.2.21)
  * new document property: encoding
    [ added encoding menu under document > encoding
    + status field codepage
  * Marker
-   + goto, set/unset or delete marker
-   + set marker by mouse
+   + goto prev|next [global], set/unset or delete marker
+   + set/unset marker and bookmarks by mouse
+   + session file stores marker positions
    [ marker nav in searchbar
    [ new bookmark icons (jenne++)
  + new tools
    + color picker
+   + output selection in dec and hex
    + output %ENV 
    + notepad has line move
- + loading statusbar from config
-   + statusbar has context help while mouse hover
-   " added keys app > statusbar > file and app > statusbar > node
-   [ contextmenus are more visually synced with statusbar
- + set search dialo transparency unter dialog > search > transparency
- + can assign icons to menus
- ~ autoconverts of EOL are now visible
+ + reworked UI
+   + loading statusbar from config
+     + statusbar has context help while mouse hover
+     " added keys app > statusbar > file and app > statusbar > node
+     [ contextmenus are more visually synced with statusbar
+   + editpanel margin context menu
+   + all context menu now are optional
+   + switch menubar visibility
+   + can assign icons to menus (currently on file open and close )
+   + set search dialog transparency unter dialog > search > transparency
+   + run script icon in main toolbar
+   [ some icons reworked (jenne++)
+   [ rearranged file and tools menu
+   [ splitter are now without live update, has lot less flicker
+   ~ autoconverts of EOL are now visible and easy to undo
  ~ line_nr margin width autosize works now per doc
  ~ current dir is now always synched with current file
  ' updated german help-forum link
  " different defaultsettings for new and opened files
- [ some icons reworked (jenne++)
- [ bookmarks have now individual icons (jenne++)
- [ splitter are now without live update, has lot less flicker
- [ rearranged file menu
  ! crash while folding
  ! all visual settings work global again
  ! all event react on selection correct again
@@ -66,7 +72,7 @@
  * folding changes
    + fold all (alt+shift+plus)
    + fold recursively (alt+shift+minus)
-   + key binding for fold ops: fold => alt+minus, fold siblings => alt+shift+minus
+   + key binding for fold ops: fold => alt+minus, fold siblings => alt+plus
    ~ fold mouse binding: left => here, midd => recursive, right => siblings, l+f => all
    + optional flagline shows where text is folded
    + option for keeping caret visible while folding

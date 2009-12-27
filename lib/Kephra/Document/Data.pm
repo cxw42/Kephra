@@ -1,13 +1,6 @@
 package Kephra::Document::Data;
 our $VERSION = '0.08';
 
-=head1 NAME
-
-Kephra::Document::Data - API for all data assotiated with all opened documents
-
-=head1 DESCRIPTION
-
-=cut
 use strict;
 use warnings;
 
@@ -248,8 +241,10 @@ sub evaluate_attributes {
 	my $attr = $attributes[$doc_nr];
 	my $ep = Kephra::App::EditPanel::_ref();
 
+	Kephra::EventTable::freeze('document.text.change');
 	Kephra::Document::Property::set( {$_ => $attr->{$_} } )
 		for qw(codepage tab_use tab_size EOL readonly syntaxmode);
+	Kephra::EventTable::freeze('document.text.change');
 
 	# setting selection and caret position
 	if ($attr->{selstart} and $attr->{selstart}) {
@@ -263,22 +258,34 @@ sub evaluate_attributes {
 			if $attr->{directory};
 	} 
 	else { $config->{current}{directory} = '' }
-	Kephra::Edit::Marker::restore_marker($doc_nr);
 	Kephra::App::EditPanel::set_word_chars($ep);
 	Kephra::App::EditPanel::paint_bracelight($ep)
 		if Kephra::App::EditPanel::bracelight_visible();
+	Kephra::App::EditPanel::Margin::autosize_line_number();
+	Kephra::App::EditPanel::Fold::restore($doc_nr);
 	Kephra::App::StatusBar::refresh_cursor();
+	Kephra::Edit::Marker::restore($doc_nr);
 	Kephra::Edit::_let_caret_visible();
 }
 
 sub update_attributes { # was named save_properties
 	my $doc_nr = valid_or_current_doc_nr(shift);
 	return if $doc_nr < 0;
-	my $attr = $attributes[$doc_nr];
+	my $attr = _hash($doc_nr);
 	my $ep = _ep($doc_nr);
 	$attr->{cursor_pos}= $ep->GetCurrentPos;
 	$attr->{selstart}  = $ep->GetSelectionStart;
 	$attr->{selend}    = $ep->GetSelectionEnd;
+	Kephra::App::EditPanel::Fold::store($doc_nr);
+	Kephra::Edit::Marker::store($doc_nr);
 }
 
 1;
+
+=head1 NAME
+
+Kephra::Document::Data - API for all data assotiated with all opened documents
+
+=head1 DESCRIPTION
+
+=cut
