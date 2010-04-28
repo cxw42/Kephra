@@ -84,10 +84,10 @@ SUPPORT
 AUTHORS
     * Herbert Breunung <lichtkind@cpan.org> (main author)
 
-    * Andreas Kaschner 
-    
-    * Jens Neuwerk <jenne@gmxpro.net> (author of icons, GUI advisor)
+    * Jens Neuwerk (author of icons, GUI advisor)
 
+    * Andreas Kaschner (linux and mac ports)
+    
     * Adam Kennedy <adamk@cpan.org> (cpanification)
  
     * Gabor Szabo E<lt>szabgab@cpan.orgE<gt>

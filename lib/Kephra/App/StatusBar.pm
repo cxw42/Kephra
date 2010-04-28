@@ -179,7 +179,7 @@ sub style_info {
 	my $style = shift
 		|| Kephra::Document::Data::attr('syntaxmode')
 		|| _none_string();
-	_set_text( ' ' . $style, $index{syntaxmode} );
+	_set_text( '' . $style, $index{syntaxmode} );
 }
 sub codepage_info {
 	my $codepage = shift || Kephra::Document::Data::attr('codepage');
@@ -187,7 +187,7 @@ sub codepage_info {
 		? Kephra::CommandList::get_cmd_property
 			( 'document-encoding-'.$codepage, 'label' )
 		: _none_string();
-	_set_text( ' ' . $msg, $index{codepage} );
+	_set_text( '' . $msg, $index{codepage} );
 }
 sub tab_info {
 	my $mode  = Kephra::App::EditPanel::_ref()->GetUseTabs || 0;

@@ -334,7 +334,8 @@ sub get {
 						'next' => 'Next Tab',
 					},
 					encoding => {
-						'8bit' => '8 Bit',
+						'ascii' => 'ASCII',
+						'latin1' => 'Latin 1',
 						'utf8' => 'UTF-8',
 					},
 					move => {
@@ -784,7 +785,8 @@ sub get {
 						next => 'changes the current document one tab to the right',
 					},
 					encoding => {
-						'8bit' => 'converts document encoding into 8 Bit',
+						'ascii' => 'converts document encoding into ASCII 8 Bit',
+						'latin1' => 'converts document encoding into iso-8859-1',
 						'utf8' => 'converts document encoding into UTF-8',
 					},
 					move => {

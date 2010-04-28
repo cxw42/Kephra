@@ -351,7 +351,8 @@ sub get {
 				],},
 			],},
 			{'menu document_encoding' => [
-				'radioitem document-encoding-8bit',
+				'radioitem document-encoding-ascii',
+				'radioitem document-encoding-latin1',
 				'radioitem document-encoding-utf8',
 			],},
 			'checkitem document-brace-indention',

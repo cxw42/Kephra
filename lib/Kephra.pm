@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.4.2.23';      # version of entire app
+our $VERSION    = '0.4.2.24';      # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $LOGLEVEL;                     # flag for benchmark loggings
@@ -287,7 +287,7 @@ by category in main menu:
 
 =item File
 
-file sessions, recents, simple templates, open all of a dir, insert,
+file sessions, history, simple templates, open all of a dir, insert,
 autosave by timer, save copy as, rename, close all other, detection if
 file where changed elsewhere
 
@@ -305,11 +305,11 @@ rich search, incremental search, searchbar and search dialog
 
 =item Tools
 
-run script (integrated output panel), notepad panel
+run script (integrated output panel), notepad panel, color picker
 
 =item Doc Property
 
-syntax mode, tab use, tab width, EOL, write protection
+syntax mode, codepage, tab use, tab width, EOL, write protection
 
 =item View
 
@@ -344,40 +344,50 @@ things we missed, but config dialog was delayed.
 
 =item  Testing 0.4.1
 
-folding, test suite, and new hotpluggable localisation system that also
-does some UTF semi-automatically, initian czech and norwegian translation
+- folding, 
+- test suite
+- new hotpluggable localisation system that also does some UTF semi-automatically
+  - initial czech and norwegian translation
 
 =item Testing 0.4.2
 
-new tabbar and doc ref handling
-partial test suite fix 
+- new tabbar and doc ref handling
+- partial test suite fix 
+
+=item Testing 0.4.3
+
+- codings and right UTF handling
+- code marker
+- better, richer UI
+- more tools
 
 =head2 Future
 
 =item To Do
 
-fix config install under linux and mac
-
-fix test suite
-
-=item Testing 0.4.3
-
-codings and right UTF handling
+- fix and extend test suite
 
 =item Testing 0.4.4
 
-plugin API 
+- fix config install under linux and mac
+- config dialog
+- plugin API 
+- file browser or tree lib extension
+
 
 =item Testing 0.4.5
 
-config dialog?, stability for 0.5
+- config dialog
+- stability for 0.5
 
 =head2 Plans up to Stable 0.6
 
 Coding support like L<Perl::Tidy>, outlining, help integration, 
 autocompletition and so on will be the goals for the next round.
 Not all of them but some. Because 0.5 is mainly about a stable
-plugin API also some of the first Plugins should 
+plugin API also some of the first Plugins should appear.
+Main theme for 0.6 is language specific tools and syntax rich
+modes replacing just bare bone syntax styles.
 
 =head1 SUPPORT
 
@@ -395,9 +405,9 @@ L<http://kephra.sourceforge.net>
 
 =item * Herbert Breunung E<lt>lichtkind@cpan.orgE<gt> (main author)
 
-=item * Andreas Kaschner 
+=item * Jens Neuwerk (author of icons, GUI advisor)
 
-=item * Jens Neuwerk E<lt>jenne@gmxpro.netE<gt> (author of icons, GUI advisor)
+=item * Andreas Kaschner (linux and mac ports)
 
 =item * Adam Kennedy E<lt>adamk@cpan.orgE<gt> (cpanification)
 
@@ -417,5 +427,4 @@ under the terms of the GNU GPL.
 
 The full text of the license can be found in the LICENSE file included
 with this module.
-
 =cut

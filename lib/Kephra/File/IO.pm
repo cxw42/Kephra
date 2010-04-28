@@ -42,8 +42,8 @@ sub open_buffer {
 			my $codepage = Kephra::Document::Data::get_attribute('codepage', $doc_nr);
 			if ($codepage eq 'auto'){
 				binmode $FH;
-				read $FH, my $probe, 1000;
-				my $enc = Encode::Guess::guess_encoding( $probe );
+				read $FH, my $probe, 20000;
+				my $enc = Encode::Guess::guess_encoding( $probe, 'latin1' );
 				seek $FH, 0, 0;
 				$codepage = $enc =~ /utf8/ ? 'utf8' : '8bit';
 				Kephra::Document::Data::set_attribute('codepage', $codepage, $doc_nr);

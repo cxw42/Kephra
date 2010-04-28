@@ -247,7 +247,8 @@ sub get {
 					lf => "Kephra::Document::Property::convert_EOL('lf')",
 				},
 				encoding => {
-					'8bit' => "Kephra::Document::Property::set_codepage('8bit')",
+					'ascii' => "Kephra::Document::Property::set_codepage('ascii')",
+					'latin1' => "Kephra::Document::Property::set_codepage('latin1')",
 					'utf8' => "Kephra::Document::Property::set_codepage('utf8')",
 				},
 				move => {

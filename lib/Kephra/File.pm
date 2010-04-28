@@ -148,7 +148,7 @@ sub reload_current  {
 		Kephra::Document::Data::update_attributes($doc_nr);
 		$ep->BeginUndoAction;
 		$ep->SetText("");
-		Kephra::File::IO::open_pipe( $file_path );
+		Kephra::File::IO::open_buffer( $doc_nr );
 		$ep->EndUndoAction;
 		$ep->SetSavePoint;
 		_remember_save_moment();
@@ -163,16 +163,12 @@ sub reload_current  {
 sub reload_all      { Kephra::Document::do_with_all( sub { reload_current() } ) }
 
 sub insert {
-	my $insertfilename = Kephra::Dialog::get_file_open( 
+	my $file = Kephra::Dialog::get_file_open (
 		_dialog_l18n()->{file}{insert},
 		_dir(),
 		$Kephra::temp{file}{filterstring}{all}
 	);
-	if ( -e $insertfilename ) {
-		my $ep = Kephra::App::EditPanel::_ref();
-		my $text = Kephra::File::IO::open_buffer($insertfilename);
-		$ep->InsertText( $ep->GetCurrentPos, $text );
-	}
+	Kephra::File::IO::open_buffer( Kephra::Document::Data::current_nr(), $file);
 }
 #
 sub _save_nr {

@@ -1,6 +1,10 @@
 BUGS:
  !!! makefile.pl fails
 
+0.4.2.24
+ + add support for latin 1 coding (codepage property)
+ ! reload and and insert file works again
+
 0.4.2.23
  + autorecognition via encode::guess
  + read and write utf

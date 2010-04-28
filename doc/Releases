@@ -1,7 +1,8 @@
-0.4.3 (0.4.2.21)
+0.4.3 (0.4.2.24)
  * new document property: encoding
-   [ added encoding menu under document > encoding
+   + autodetect, read and write utf files
    + status field codepage
+   [ added encoding menu under document > encoding
  * Marker
    + goto prev|next [global], set/unset or delete marker
    + set/unset marker and bookmarks by mouse
@@ -12,7 +13,7 @@
    + color picker
    + output selection in dec and hex
    + output %ENV 
-   + notepad has line move
+   + notepad has line move and goto search bar
  + reworked UI
    + loading statusbar from config
      + statusbar has context help while mouse hover
@@ -24,10 +25,12 @@
    + can assign icons to menus (currently on file open and close )
    + set search dialog transparency unter dialog > search > transparency
    + run script icon in main toolbar
+   ~ change sibling to level fold
    [ some icons reworked (jenne++)
    [ rearranged file and tools menu
    [ splitter are now without live update, has lot less flicker
    ~ autoconverts of EOL are now visible and easy to undo
+ + save and restore textfold state in sessions and file history
  ~ line_nr margin width autosize works now per doc
  ~ current dir is now always synched with current file
  ' updated german help-forum link
@@ -44,7 +47,7 @@
 
 0.5 {0.4.2.8}
  * code folding support
-   + 4 toggle functions: fold here, recursice, siblings, all
+   + 4 toggle functions: fold here, recursive, level, all
    + usable with mouse (fold margin) and keys (<alt>[+<shift>]+(<+>|<->))
    + 2 styles for folding marker: boxes and arrows
    + optional flagline shows where text is folded
@@ -60,6 +63,7 @@
  + new tools
    + color picker
    + display @INC and %ENV
+   + output selection in dec and hex
    + note selection on shift+f4
  + changeable interpreter path
  + convert HTML enteties
