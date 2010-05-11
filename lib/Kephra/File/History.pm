@@ -4,7 +4,7 @@ our $VERSION = '0.05';
 use strict;
 use warnings;
 
-my @session;
+my @session = ();
 my $menu_id = '&file_history';
 my $refresh_needed;
 # internal Module API
@@ -12,7 +12,10 @@ sub _config { Kephra::API::settings()->{file}{session}{history} }
 # external Appwide API
 sub init {
 	return if scalar @session;
-	my $subdir = Kephra::File::Session::_config()->{directory};
+	my $config = Kephra::File::Session::_config();
+	return unless defined $config;
+
+	my $subdir = $config->{directory};
 	my $file = Kephra::Config::filepath( $subdir, _config()->{file} );
 	my $config_tree = Kephra::Config::File::load($file);
 	if (ref $config_tree->{document} eq 'ARRAY'){

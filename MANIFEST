@@ -233,6 +233,7 @@ share/config/localisation/cesky.conf
 share/config/localisation/deutsch.conf
 share/config/localisation/english.conf
 share/config/localisation/norsk.conf
+share/config/localisation/romanian.conf
 share/config/macro/test.macro
 share/config/plugin/installed.conf
 share/config/syntaxhighlighter/ada.pm

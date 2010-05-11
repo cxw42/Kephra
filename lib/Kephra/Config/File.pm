@@ -74,11 +74,10 @@ sub store {
 #
 # API 2 YAML
 #
-sub load_yaml  {
-	if ($^O=~/(?:linux|darwin)/i) {
-		YAML::Tiny::Load( Kephra::File::IO::lin_load_file($_[0]) )
-	} 
-	else { &YAML::Tiny::LoadFile }
+sub load_yaml  { &YAML::Tiny::LoadFile
+	#if ($^O=~/(?:linux|darwin)/i) {
+		#YAML::Tiny::Load( Kephra::File::IO::lin_load_file($_[0]) )
+	#} else {  }
 }
 sub store_yaml { &YAML::Tiny::DumpFile }
 #
@@ -102,12 +101,8 @@ sub load_conf {
 		-SaveSorted            => 1,
 		-UTF8                  => $utf,
 	);
-	if ($^O=~/(?:linux|darwin)/i) {
-		$opt{'-String'} = Kephra::File::IO::lin_load_file($configfilename);
-	}
-	else {
-		$opt{'-ConfigFile'} = $configfilename;
-	}
+	$opt{'-ConfigFile'} = $configfilename;
+	#if ($^O=~/(?:linux|darwin)/i) {$opt{'-String'} = Kephra::File::IO::lin_load_file($configfilename);}else {}
 	$Kephra::app{config}{parser}{conf} = Config::General->new(%opt);
 	if ( -e $configfilename ) {
 		eval { %config = $Kephra::app{config}{parser}{conf}->getall };

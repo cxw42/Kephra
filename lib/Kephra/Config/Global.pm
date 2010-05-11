@@ -28,11 +28,14 @@ sub autoload {
 		}
 	}
 
-	Kephra::File::History::init();
-
 	%settings
 		? evaluate()
 		: load_defaults();
+
+	Kephra::File::History::init();
+
+	# are settings loaded, hist init will produce one
+	keys %settings > 1;
 }
 
 sub autosave {

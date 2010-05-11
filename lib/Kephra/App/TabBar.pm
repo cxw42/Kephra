@@ -7,7 +7,7 @@ use warnings;
 # internal data
 my $notebook;
 sub _ref    { $notebook = ref $_[0] eq 'Wx::AuiNotebook' ? $_[0] : $notebook }
-sub _config { Kephra::API::settings()->{app}{tabbar} }
+sub _config { my $cfg = Kephra::API::settings(); $cfg->{app}{tabbar} if keys %$cfg }
 
 my @doc2tab_pos; # tab index numbers in doc order
 my @tab2doc_pos; # doc numbers in tab index order
@@ -143,7 +143,7 @@ sub add_edit_tab  {
 	my $current_nr = Kephra::Document::Data::current_nr();
 	my $doc_nr = shift || $current_nr;
 	my $config = _config();
-	my $mode = (defined $config and defined $config->{insert_new_tab})
+	my $mode = (ref $config and defined $config->{insert_new_tab})
 		? $config->{insert_new_tab}
 		: 'rightmost';
 	my $vis_pos;

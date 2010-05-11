@@ -131,8 +131,8 @@ sub OnInit {
 	print " glob cfg load:",
 		Benchmark::timestr( Benchmark::timediff( new Benchmark, $t1 ) ), "\n"
 		if $Kephra::BENCHMARK;
-	my $t2 = 
-	new Benchmark;
+	my $t2 = new Benchmark;
+
 	if (Kephra::Config::Global::autoload()) {
 		Kephra::App::EditPanel::apply_settings_here($ep);
 		Kephra::EventTable::freeze_all();
