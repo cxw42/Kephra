@@ -194,8 +194,8 @@ sub eval_config_file {
 	my $cfg = $settings{file}{templates};
 	my $path = File::Spec->catfile( $cfg->{directory}, $cfg->{file} );
 	if ( substr($file_path, - length $path) eq $path ) {
-		Kephra::App::Menu::set_absolete('file_insert_templates');
-		Kephra::App::Menu::ready('file_insert_templates');
+		Kephra::Menu::set_absolete('file_insert_templates');
+		Kephra::Menu::ready('file_insert_templates');
 	}
 }
 

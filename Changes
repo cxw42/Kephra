@@ -1,6 +1,16 @@
 BUGS:
  !!! makefile.pl fails
 
+0.4.2.26
+ + writes fiels also in missing dirs
+ ! new Kephra::Dialog API fix
+ ! redo comment function calls in commands.conf to older less flexible but working way
+ 
+0.4.2.25
+ + romanian localisation
+ " bad config: invisible main menu
+ ! old API uses
+
 0.4.2.24
  + add support for latin 1 coding (codepage property)
  ! reload and and insert file works again

@@ -47,7 +47,7 @@ sub simple {
 		. "";
 	my $title = "$info->{title} $Kephra::NAME $Kephra::VERSION";
 	$title .=  ' pl ' . $Kephra::PATCHLEVEL if $Kephra::PATCHLEVEL;
-	Kephra::Dialog::msg_box( Kephra::App::Window::_ref(), $content, $title );
+	Kephra::Dialog::msg_box( $content, $title );
 }
 
 1;

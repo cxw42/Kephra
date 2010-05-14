@@ -8,7 +8,7 @@ sub _default {
 	my $action = shift;
 	return until ref $action eq 'CODE';
 	my $ep = Kephra::App::EditPanel::_ref();
-	Kephra::API::EventTable::freeze_group('edit');
+	Kephra::EventTable::freeze_group('edit');
 	my ($begin, $end) = $ep->GetSelection;
 	Kephra::Edit::_save_positions();
 	$ep->BeginUndoAction;
@@ -16,7 +16,7 @@ sub _default {
 	&$action( $ep );
 	$ep->EndUndoAction;
 	Kephra::Edit::_restore_positions();
-	Kephra::API::EventTable::thaw_group('edit');
+	Kephra::EventTable::thaw_group('edit');
 }
 
 # perform regexes on selection

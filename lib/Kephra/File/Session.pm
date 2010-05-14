@@ -71,6 +71,7 @@ sub _add {
 #
 sub restore   {
 	my $file = shift;
+	return unless -e $file;
 	Kephra::File::close_all();
 	add($file);
 }

@@ -48,7 +48,7 @@ sub get {
 				file => 'interface/mainmenu.yml',
 				node => 'full_menubar',
 				responsive => 1,                              # (0|1) 0 prevent menubar item shading
-				visible => 0,
+				visible => 1,
 			},
 			panel => {
 				notepad => {
