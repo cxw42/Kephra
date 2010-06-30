@@ -129,6 +129,7 @@ sub connect_events {
 		my $key = $event->GetKeyCode +
 			1000 * ($event->ShiftDown + $event->ControlDown*2 + $event->AltDown*4);
 		# reacting on shortkeys that are defined in the Commanlist
+
 		return if Kephra::CommandList::run_cmd_by_keycode($key);
 		# reacting on Enter
 		if ($key ==  &Wx::WXK_RETURN) {

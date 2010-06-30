@@ -12,7 +12,7 @@ use Test::NoWarnings;
 #my @files;
 #my @default_subs;
 #
-#BEGIN {
+BEGIN {
     #if (opendir my $dh, "lib/Kephra/Config/Default/") {
         #@files = grep {$_ ne '.' and $_ ne '..'} readdir $dh;
     #}
@@ -25,7 +25,7 @@ use Test::NoWarnings;
         #contextmenus
         #toolbars
     #);
-#}
+}
 #
 # TODO: Kephra::Config::Default::drop_xp_style_file
 #

@@ -240,8 +240,8 @@ sub save_copy_as {
 		_dir(),
 		$Kephra::temp{file}{filterstring}{all}
 	);
-	Kephra::File::IO::write_buffer
-		( $file, Kephra::App::EditPanel::_ref()->GetText )
+print "---",$file,"\n";
+	Kephra::File::IO::write_buffer(Kephra::Document::Data::current_nr(), $file)
 		if $file and check_b4_overwite($file);
 }
 

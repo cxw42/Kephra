@@ -1,5 +1,5 @@
 package Kephra::EventTable;
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 use strict;
 use warnings;
@@ -74,7 +74,8 @@ sub freeze {
 	my $list = _table();
 	for my $event (@_){
 		if (ref $list->{active}{$event} eq 'HASH'){
-			$list->{frozen}{$event} = $list->{active}{$event};
+			$list->{frozen}{$event}{$_} = $list->{active}{$event}{$_}
+				for keys %{$list->{active}{$event}};
 			delete $list->{active}{$event};
 		}
 	}
@@ -85,23 +86,15 @@ sub freeze_group {
 	return unless $group_name and ref $group{$group_name} eq 'ARRAY';
 	freeze( @{$group{$group_name}} );
 }
-sub freeze_all {
-	my $list = _table();
-	my $active = $list->{active};
-	for my $event (keys %$active) {
-		if (ref $active->{$event} eq 'HASH'){
-			$list->{frozen}{$event} = $active->{$event};
-			delete $active->{$event};
-		}
-	}
-}
+sub freeze_all { freeze($_) for keys %{_table()->{active}} }
 
 
 sub thaw {
 	my $list = _table();
 	for my $event (@_){
 		if (ref $list->{frozen}{$event} eq 'HASH'){
-			$list->{active}{$event} = $list->{frozen}{$event};
+			$list->{active}{$event}{$_} = $list->{frozen}{$event}{$_}
+				for keys %{$list->{frozen}{$event}};
 			delete $list->{frozen}{$event};
 		}
 	}
@@ -111,16 +104,7 @@ sub thaw_group {
 	return unless $group_name and ref $group{$group_name} eq 'ARRAY';
 	thaw( @{$group{$group_name}} );
 }
-sub thaw_all {
-	my $list = _table();
-	my $frozen = _table()->{frozen};
-	for my $event (keys %$frozen ){
-		if (ref $frozen->{$event} eq 'HASH'){
-			$list->{active}{$event} = $frozen->{$event};
-			delete $frozen->{$event};
-		}
-	}
-}
+sub thaw_all   { thaw($_) for keys %{_table()->{frozen}} }
 
 sub del_call {
 	return until $_[1];

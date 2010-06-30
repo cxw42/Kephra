@@ -1,8 +1,31 @@
 BUGS:
  !!! makefile.pl fails
 
+
+0.4.2.29
+ + safety belt for window modes on esc key
+ [ +key code for hide tab bar at ctrl+alt+t
+ ! new docs show correct codepage
+
+0.4.2.28
+ + fullscreen mode
+ + max editpanel mode (disables all bars)
+ + transparent mode
+ + you can combine stay on top and transparent mode with Ctrl+Alt+F11
+ [ new menu: view > main window; 
+ [ move cmd view-window-stay-on-top there
+ [ created commands view-window-fullscreen, view-window-transparent, view-editpanel-maximize
+ " changed default font of output panel to arial , 10 px
+
+0.4.2.27
+ ] finer event freeze and thaw
+ ! delete unnecessary ecaping of vars in title content definition
+ ! save copy as ... works again
+ ! fixed eventhandling in Kephra::Document::Data::evaluate_attributes
+ ! fixed test suite
+
 0.4.2.26
- + writes fiels also in missing dirs
+ + writes files also in missing dirs
  ! new Kephra::Dialog API fix
  ! redo comment function calls in commands.conf to older less flexible but working way
  

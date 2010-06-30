@@ -57,7 +57,7 @@ sub ready   { # display find and replace dialog
 		$d_style |= &Wx::wxSTAY_ON_TOP if $Kephra::config{app}{window}{stay_on_top};
 		$dsettings->{position_x} = 10 if $dsettings->{position_x} < 0;
 		$dsettings->{position_y} = 10 if $dsettings->{position_y} < 0;
-		$dsettings->{width} = Wx::wxMSW() ? 436 : 466;
+		$dsettings->{width} = Wx::wxMSW() ? 436 : 496;
 		if ( Kephra::Edit::Search::_history()->{use} ) {
 			@find_history = @{ Kephra::Edit::Search::get_find_history() };
 			@replace_history = @{ Kephra::Edit::Search::get_replace_history() };
@@ -320,6 +320,7 @@ sub ready   { # display find and replace dialog
 		$d_sizer->Add($button_sizer,    0, &Wx::wxTOP | &Wx::wxBOTTOM | &Wx::wxGROW        ,  9);
 
 		$d->SetSizer($d_sizer);
+		$d_sizer->Fit($d);
 		$d->SetAutoLayout(1);
 		#$d->Fit;
 

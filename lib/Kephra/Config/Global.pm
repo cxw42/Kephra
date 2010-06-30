@@ -1,5 +1,5 @@
 package Kephra::Config::Global;
-our $VERSION = '0.26';
+our $VERSION = '0.27';
 
 use strict;
 use warnings;
@@ -35,7 +35,7 @@ sub autoload {
 	Kephra::File::History::init();
 
 	# are settings loaded, hist init will produce one
-	keys %settings > 1;
+	keys %settings;
 }
 
 sub autosave {
@@ -92,6 +92,9 @@ print "  iface cnfg:", Benchmark::timestr( Benchmark::timediff( $t1, $t0 ) ), "\
 	$Kephra::temp{dialog}{control}  = 0;
 	Kephra::Document::SyntaxMode::_ID('none');
 	Kephra::Edit::Search::_refresh_search_flags();
+	# delete unnecessary ecaping of vars
+	Kephra::API::settings()->{app}{window}{title}=~ s/\\\$/\$/g;
+
 	my $t2 = new Benchmark;
 print "  prep. data:", Benchmark::timestr( Benchmark::timediff( $t2, $t1 ) ), "\n"
 		if $Kephra::BENCHMARK;

@@ -1,5 +1,5 @@
 package Kephra::Config::File;
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 use strict;
 use warnings;
@@ -65,11 +65,14 @@ sub load {
 sub store {
 	my $file_name = shift;
 	my $config = shift;
+
+	# if want to write into nonexisting dir, create it 
 	unless (-w $file_name){
 		my ($volume,$dir,$file) = File::Spec->splitpath( $file_name );
 		$dir = File::Spec->catdir( $volume, $dir );
 		mkdir $dir unless -e $dir;
 	}
+
 	my $type = _get_type($file_name);
 	if    ($type eq 'conf') { store_conf($file_name, $config) }
 	elsif ($type eq 'yaml') { store_yaml($file_name, $config) }

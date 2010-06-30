@@ -62,7 +62,7 @@ sub get {
 				output => {
 					append => 0,
 					back_color => '000022',
-					font_family => 'Terminal',
+					font_family => 'Arial',
 					font_size => 10,
 					fore_color => 'ffffff',
 					interpreter_path => 'perl',
@@ -114,8 +114,10 @@ sub get {
 				visible => 1,
 			},
 			window => {
+				fullscreen => 0,
 				icon => 'interface/icon/app/proton.xpm',
 				max_number => 1,
+				maximize_editpanel => 0,
 				position_x => 10,
 				position_y => 10,
 				save_position => 1,
@@ -129,6 +131,8 @@ sub get {
 										# $doccount - nr of all opened files
 										# $appname - name of this programm
 										# $version - version of this programm
+				transparency => 0.3,	# how much transparent if active, 1 = 100% = invisible
+				transparent => 0,		# (0|1) trancparency active ?
 			},
 			xp_style => 1,
 		},
@@ -247,7 +251,7 @@ sub get {
 			defaultsettings => {
 				new => {                  # defaults for new docs
 					EOL      => 'OS',     # (OS|auto|cr|lf|cr+lf) end of line character, OS means current OS standart -NI auto means take setting of the last touched file
-					codepage => '8bit',   # UTF codepage, used for charset
+					codepage => 'ascii',  # (ascii|utf8) codepage, used for charset
 					cursor_pos => 0,
 					readonly => 'no',     # (0|1|2|on|off|protect) if =1 it set a write protection on readonly files
 					syntaxmode => 'perl', # (auto|none|lang_id) which syntaxstyle on new files
@@ -257,7 +261,7 @@ sub get {
 				open => {                 # defaults for opened files
 					EOL         => 'auto',# (auto|cr+lf|cr|lf) EOL of opened files, if not set to auto, 
 				                          # the file automaticly will converted to set value
-					codepage    => 'auto',# (8bit|utf8) codepage, used for charset
+					codepage    => 'auto',# (ascii|utf8) codepage, used for charset
 					cursor_pos  => 0,
 					readonly    => 'protect', # (0|1|2|on|off|protect) if =1 it set a write protection on readonly files
 					syntaxmode  => 'auto',    # (auto|none|lang_id) which syntaxstyle on new files

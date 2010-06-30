@@ -1,5 +1,5 @@
 package Kephra::Config::Default::CommandList;
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use strict;
 use warnings;
@@ -374,6 +374,7 @@ sub get {
 						level => 'Kephra::App::EditPanel::Fold::toggle_level()',
 						recursively => 'Kephra::App::EditPanel::Fold::toggle_recursively()',
 					},
+					maximize => 'Kephra::App::Window::switch_max_editpanel_mode()',
 				},
 				panel => {
 					notepad => 'Kephra::App::Panel::Notepad::switch_visibility()',
@@ -393,7 +394,14 @@ sub get {
 				tabbar => 'Kephra::App::TabBar::switch_visibility()',
 				'tabbar-contexmenu' => 'Kephra::App::TabBar::switch_contextmenu_visibility()',
 				toolbar => 'Kephra::App::MainToolBar::switch_visibility()',
-				'window-stay-on-top' => 'Kephra::App::Window::switch_on_top_mode()',
+				window => {
+					fullscreen => 'Kephra::App::Window::switch_fullscreen_mode()',
+					restore => 'Kephra::App::Window::restore_normal_mode()',
+					'stay-on-top' => 'Kephra::App::Window::switch_on_top_mode()',
+					transparent => 'Kephra::App::Window::switch_transparency_mode()',
+					'top-transparent' => 'Kephra::App::Window::switch_top_and_transparency_mode()',
+
+				},
 				webpage => {
 					forum => 'Kephra::Help::forum_site()',
 					documentation => 'Kephra::Help::online_documentation()',
@@ -692,6 +700,7 @@ sub get {
 							12 => 'Kephra::App::EditPanel::Margin::get_text_width() == 12',
 						},
 					},
+					maximize => 'Kephra::App::Window::get_max_editpanel_mode()',
 				},
 				panel => {
 					notepad => 'Kephra::App::Panel::Notepad::get_visibility()',
@@ -703,14 +712,18 @@ sub get {
 				'statusbar-info' => {
 					date => 'Kephra::App::StatusBar::info_msg_nr() == 2',
 					length => 'Kephra::App::StatusBar::info_msg_nr() == 1',
-					none => 'Kephra::App::StatusBar::info_msg_nr()  == 0',
+					none => 'Kephra::App::StatusBar::info_msg_nr() == 0',
 				},
 				'searchbar' => 'Kephra::App::SearchBar::get_visibility()',
 				'searchbar-contexmenu' => 'Kephra::App::SearchBar::get_contextmenu_visibility()',
 				tabbar => 'Kephra::App::TabBar::get_visibility()',
 				'tabbar-contexmenu' => 'Kephra::App::TabBar::get_contextmenu_visibility()',
 				'toolbar' => 'Kephra::App::MainToolBar::get_visibility()',
-				'window-stay-on-top' => 'Kephra::App::Window::get_on_top_mode()',
+				window => {
+					fullscreen => 'Kephra::App::Window::get_fullscreen_mode()',
+					'stay-on-top' => 'Kephra::App::Window::get_on_top_mode()',
+					transparent => 'Kephra::App::Window::get_transparency_mode()', 
+				},
 			},
 		},
 		state_event => {
@@ -780,7 +793,7 @@ sub get {
 			tool => {
 				'interpreter-run-document' => 'run-skript.xpm',
 				'choose-color' => 'colorpicker.xpm',
-			}
+			},
 			view => {
 				dialog => {
 					config => 'config-preferences.xpm',
@@ -965,15 +978,25 @@ sub get {
 					info => 'alt+shift+i',
 					keymap => 'alt+shift+k',
 				},
-				'editpanel-fold-toggle' => {
-					all => 'alt+shift+plus',
-					here => 'alt+minus',
-					level => 'alt+plus',
-					recursively => 'alt+shift+minus',
+				editpanel => {
+					'fold-toggle' => {
+						all => 'alt+shift+plus',
+						here => 'alt+minus',
+						level => 'alt+plus',
+						recursively => 'alt+shift+minus',
+					},
+					maximize => 'shift+f11',
 				},
 				'panel-notepad' => 'ctrl+f4',
 				'panel-output' => 'ctrl+f5',
-				'window-stay-on-top' => 'ctrl+t',
+				tabbar => 'ctrl+alt+t',
+				window => {
+					fullscreen => 'f11',
+					restore => 'esc',
+					'stay-on-top' => 'ctrl+f11',
+					'top-transparent' => 'ctrl+alt+f11', 
+					transparent => 'alt+f11', 
+				},
 			},
 		},
 	},

@@ -244,7 +244,7 @@ sub evaluate_attributes {
 	Kephra::EventTable::freeze('document.text.change');
 	Kephra::Document::Property::set( {$_ => $attr->{$_} } )
 		for qw(codepage tab_use tab_size EOL readonly syntaxmode);
-	Kephra::EventTable::freeze('document.text.change');
+	Kephra::EventTable::thaw('document.text.change');
 
 	# setting selection and caret position
 	if ($attr->{selstart} and $attr->{selstart}) {

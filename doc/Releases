@@ -1,4 +1,4 @@
-0.4.3 (0.4.2.24)
+0.4.3 (0.4.2.26)
  * new document property: encoding
    + autodetect, read and write utf files
    + status field codepage
@@ -15,6 +15,7 @@
    + output %ENV 
    + notepad has line move and goto search bar
  + reworked UI
+   + romanian localisation
    + loading statusbar from config
      + statusbar has context help while mouse hover
      " added keys app > statusbar > file and app > statusbar > node
@@ -31,6 +32,7 @@
    [ splitter are now without live update, has lot less flicker
    ~ autoconverts of EOL are now visible and easy to undo
  + save and restore textfold state in sessions and file history
+ + writes files also in missing dirs
  ~ line_nr margin width autosize works now per doc
  ~ current dir is now always synched with current file
  ' updated german help-forum link

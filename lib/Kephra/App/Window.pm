@@ -1,5 +1,5 @@
 package Kephra::App::Window;    # Main application window
-our $VERSION = '0.09';
+our $VERSION = '0.11';
 
 use strict;
 use warnings;
@@ -35,7 +35,10 @@ sub apply_settings {
 	my $icon_file = Kephra::Config::existing_filepath( _config()->{icon} );
 	load_icon( $win, $icon_file );
 	restore_positions();
+	eval_fullscreen_flag();
 	eval_on_top_flag();
+	eval_transparency_flag();
+	eval_max_editpanel_flag();
 }
 
 sub load_icon {
@@ -68,6 +71,18 @@ sub refresh_title {
 	set_title( eval qq/"$title"/ );
 }
 
+sub get_fullscreen_mode { _config()->{fullscreen} }
+sub switch_fullscreen_mode {
+	_config()->{fullscreen} ^= 1;
+	eval_fullscreen_flag();
+}
+
+sub eval_fullscreen_flag {
+	_ref->ShowFullScreen( 
+		get_fullscreen_mode(), 
+		&Wx::wxFULLSCREEN_NOCAPTION | &Wx::wxFULLSCREEN_NOBORDER
+	);
+}
 
 sub get_on_top_mode { _config()->{stay_on_top} }
 sub switch_on_top_mode {
@@ -83,8 +98,48 @@ sub eval_on_top_flag {
 	Kephra::EventTable::trigger('app.window.ontop');
 }
 
+sub get_transparency_mode { _config()->{transparent} }
+sub switch_transparency_mode {
+	_config()->{transparent} ^= 1;
+	eval_transparency_flag();
+}
+sub eval_transparency_flag {
+	_ref->SetTransparent( 
+		255 - int( _config()->{transparency} * 255 * get_transparency_mode() ) 
+	);
+}
+sub switch_top_and_transparency_mode {
+	switch_transparency_mode();
+	switch_on_top_mode if get_on_top_mode() != get_transparency_mode();
+}
 
-sub save_positions{
+sub get_max_editpanel_mode { _config()->{maximize_editpanel} }
+sub switch_max_editpanel_mode {
+	_config()->{maximize_editpanel} ^= 1;
+	eval_max_editpanel_flag();
+}
+sub eval_max_editpanel_flag {
+	my $v = get_max_editpanel_mode;
+	Kephra::App::MenuBar::switch_visibility()
+		if Kephra::App::MenuBar::get_visibility == $v;
+	Kephra::App::MainToolBar::switch_visibility()
+		if Kephra::App::MainToolBar::get_visibility == $v;
+	Kephra::App::TabBar::switch_visibility()
+		if Kephra::App::TabBar::get_visibility == $v and not $v;
+	Kephra::App::SearchBar::switch_visibility() 
+		if Kephra::App::SearchBar::get_visibility == $v;
+	Kephra::App::StatusBar::switch_visibility() 
+		if Kephra::App::StatusBar::get_visibility == $v;
+}
+
+sub restore_normal_mode {
+	switch_fullscreen_mode if _config()->{fullscreen};
+	switch_on_top_mode if _config()->{stay_on_top};
+	switch_transparency_mode if _config()->{transparent};
+	switch_max_editpanel_mode if _config()->{maximize_editpanel};
+}
+
+sub save_positions {
 	my $app_win = Kephra::App::Window::_ref();
 	my $config  = _config();
 	if ($config->{save_position}){
@@ -92,7 +147,7 @@ sub save_positions{
 		($config->{size_x},    $config->{size_y})     = $app_win->GetSizeWH;
 	}
 }
-sub restore_positions{
+sub restore_positions {
 	# main window: resize when its got lost
 	my $config  = _config();
 	my $default  = $config->{default};

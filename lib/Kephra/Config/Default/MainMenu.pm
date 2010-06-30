@@ -379,8 +379,12 @@ sub get {
 			],},
 		],},
 		{'menu view' => [
-			'checkitem view-window-stay-on-top',
-			undef,
+			{'menu view_window' => [
+				'checkitem view-window-fullscreen',
+				'checkitem view-editpanel-maximize',
+				'checkitem view-window-stay-on-top',
+				'checkitem view-window-transparent',
+			],},
 			{'menu view_panel' => [
 				'checkitem view-panel-notepad',
 				'checkitem view-panel-output',

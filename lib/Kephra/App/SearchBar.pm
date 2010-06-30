@@ -220,6 +220,7 @@ sub position { _config()->{position} }
 sub show {
 	my $visible = shift || get_visibility();
 	my $bar = _ref();
+	return unless $bar;
 	my $sizer = $bar->GetParent->GetSizer;
 	$sizer->Show( $bar, $visible );
 	$sizer->Layout();

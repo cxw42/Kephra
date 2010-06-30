@@ -59,6 +59,7 @@ sub get {
 					document_lineendchar => 'Lineendchars',
 					document_readonly => 'Write Protection',
 					view => 'View',
+					view_window => 'Main Window',
 					view_bars => 'App Bars',
 					view_panel => 'Panel',
 					view_contextmenu => 'Context Menus',
@@ -461,6 +462,7 @@ sub get {
 								12 => 12,
 							},
 						},
+						
 					},
 					panel => {
 						notepad => 'Notepad',
@@ -912,6 +914,7 @@ sub get {
 							},
 							'text-fold' => 'switch Margin for the text folding icons',
 						},
+						maximize => 'toggle all panels and bars to enlarge the edit area',
 					},
 					panel => {
 						notepad => 'switch visibility of the Notepad panel',
@@ -935,8 +938,11 @@ sub get {
 						documentation => 'open online documentation with your default browser',
 						forum => 'go to a perl web forum based on current language setting',
 					},
-
-					'window-stay-on-top' => 'application window remains always visible',
+					window => {
+						fullscreen => 'use maximum screen space',
+						'stay-on-top' => 'application window cant be overlapped by other windows',
+						'transparent' => 'make main window translucent',
+					},
 				},
 				config => {
 					'app-lang' => 'change user interface language to',

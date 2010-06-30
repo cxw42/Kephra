@@ -176,7 +176,7 @@ sub add_panel_tab {
 	my $panel = shift;
 	return unless defined $panel and substr(ref $panel, 0, 4) eq 'Wx::';
 	$panel->Reparent($notebook);
-	$notebook->InsertPage( $panel, '', 0 );
+	$notebook->InsertPage($panel, '', 0 ); # attention no $pos yet
 	return $panel;
 }
 

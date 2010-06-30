@@ -299,7 +299,6 @@ sub find_prev {
 						if ( Kephra::Document::Data::current_nr() == $begin_doc );
 				}
 				$Kephra::temp{dialog}{control} = 0;
-				Kephra::Dialog::Search::raise_if_active();
 			}
 		}
 		if ( $return == -1 ) { Kephra::Edit::_restore_positions() }
@@ -335,7 +334,6 @@ sub find_next {
 					last if ( Kephra::Document::Data::current_nr() == $begin_doc );
 				}
 				$Kephra::temp{dialog}{control} = 0;
-				Kephra::Dialog::Search::raise_if_active();
 			}
 		}
 		if ( $return == -1 ) { Kephra::Edit::_restore_positions() }
@@ -370,7 +368,6 @@ sub fast_back {
 						last if Kephra::Document::Data::current_nr() == $begin_doc;
 					}
 					$Kephra::temp{dialog}{control} = 0;
-					Kephra::Dialog::Search::raise_if_active();
 				}
 			}
 			refresh_find_history($return) if ( $_ == 1 );
@@ -406,7 +403,6 @@ sub fast_fore {
 						last if Kephra::Document::Data::current_nr() == $begin_doc;
 					}
 					$Kephra::temp{dialog}{control} = 0;
-					Kephra::Dialog::Search::raise_if_active();
 				}
 			}
 			refresh_find_history($return) if $_ == 1;
@@ -457,7 +453,6 @@ sub find_first {
 					last if ( Kephra::Document::Data::current_nr() == $begin_doc );
 				}
 				$Kephra::temp{dialog}{control} = 0;
-				Kephra::Dialog::Search::raise_if_active();
 			}
 			if ( $return > -1 ) {
 				_caret_2_sel_end();
@@ -513,7 +508,6 @@ sub find_last {
 					last if ( Kephra::Document::Data::current_nr() == $begin_doc );
 				}
 				$Kephra::temp{dialog}{control} = 0;
-				Kephra::Dialog::Search::raise_if_active();
 			}
 			if ( $return > -1 ) {
 				_caret_2_sel_end();

@@ -2,20 +2,28 @@
 #
 # Compile Testing for Kephra
 #
-use strict;
-use warnings;
+
 BEGIN {
+	chdir '..' if -d '../t';
 	$| = 1;
 	unshift @INC, './lib', '../lib';
 }
 
+use strict;
+use warnings;
+
+use lib 'lib';
+use blib;
 use Test::More;
 use Test::Script;
 use Test::NoWarnings;
-#use Test::Exception;
 
 use File::Find qw(find);
-my @required_modules = qw(Cwd File::Find File::Spec::Functions Config::General YAML::Tiny);
+my @required_modules = qw(
+	Cwd File::Find File::Spec::Functions 
+	Config::General YAML::Tiny Wx Wx::Perl::ProcessStream
+);
+my $modules = 65;
 my @kephra_modules;
 find( sub {
     return if not -f $_ or $_ !~ /\.pm$/;
@@ -23,22 +31,24 @@ find( sub {
     $module =~ s{lib/}{};
     $module =~ s{\.pm}{};
     $module =~ s{/}{::}g;
-    return if $module eq 'Kephra::Edit::Search';
+    #return if $module eq 'Kephra::Edit::Search';
     push @kephra_modules, $module;
 }, 'lib'); # print "@modules"; #use Data::Dumper; # diag Dumper \@modules;
 
-my $tests = 4 + @required_modules + @kephra_modules;
+my $tests = 5 + @required_modules + @kephra_modules;
 plan tests => $tests;
 
 ok( $] >= 5.006, 'Your perl is new enough' );
-use_ok('Kephra', 'main module compiles');
+
 require_ok($_) for @required_modules, @kephra_modules;
-cmp_ok( scalar(@kephra_modules), '>', 61, 'more then 61 Kephra modules found' );
 
-# check the starter
-# script_compiles_ok('bin/kephra');
+cmp_ok( scalar(@kephra_modules), '==', $modules, "$modules Kephra modules found" );
+use_ok('Kephra', 'main module compiles');
 
-#SKIP: {  #skip(2);    #skip(1);  #}
-#TODO: {    #ok( 0, 'todo' );  #}
 
+TODO:{
+	# check the starter
+	local $TODO = '"todo header"';
+	script_compiles_ok('bin/kephra','starter compiles');
+}
 exit(0);

@@ -63,21 +63,21 @@ sub set_codepage {
 	my $old_value = get_codepage($doc_nr);
 	my $ep = _ep_ref($doc_nr);
 	if    ($old_value eq 'ascii' and $new_value eq 'utf8'){
-		#unless (Encode::is_utf8($ep->GetText())) {
-			#Kephra::Document::Data::update_attributes($doc_nr);
-			#eval {
+		unless (Encode::is_utf8($ep->GetText())) {
+			Kephra::Document::Data::update_attributes($doc_nr);
+			eval {
 				#Encode::encode('ascii');
-			#	$ep->SetText( Encode::decode('utf8', $ep->GetText()) );
-			#};
+				$ep->SetText( Encode::decode('utf8', $ep->GetText()) );
+			};
 			#print "$@\n";
-			#Kephra::Document::Data::evaluate_attributes($doc_nr);
-		#}
+			Kephra::Document::Data::evaluate_attributes($doc_nr);
+		}
 		#print Encode::is_utf8($ep->GetText())."\n";
 	}
 	elsif ($old_value eq 'utf8' and $new_value eq 'ascii') {
-		#Kephra::Document::Data::update_attributes($doc_nr);
-		#$ep->SetText( Encode::encode('utf8', $ep->GetText()) );
-		#Kephra::Document::Data::evaluate_attributes($doc_nr);
+		Kephra::Document::Data::update_attributes($doc_nr);
+		$ep->SetText( Encode::encode('utf8', $ep->GetText()) );
+		Kephra::Document::Data::evaluate_attributes($doc_nr);
 	}
 	#$ep->SetCodePage( &Wx::wxSTC_CP_UTF8 );
 	_set_attr('codepage', $new_value, $doc_nr);
