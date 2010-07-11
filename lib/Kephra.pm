@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.4.2.29';      # version of entire app
+our $VERSION    = '0.4.2.32';      # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $LOGLEVEL;                     # flag for benchmark loggings
@@ -90,9 +90,9 @@ sub load_modules {
 	require Kephra::Edit::Goto;            # editpanel textcursor navigation
 	require Kephra::Edit::Marker;          # doc spanning bookmarks
 	require Kephra::Edit::Search;          # search menu functions
-	require Kephra::Edit::Search::InputTarget;
+	require Kephra::Edit::Search::InputTarget; # enables darg n drob for comboboxes
 	require Kephra::Edit::Select;          # text selection
-	require Kephra::EventTable;       # internal app API
+	require Kephra::EventTable;            # internal app API
 	require Kephra::File;                  # file menu functions
 	require Kephra::File::History;         # list of recent used Files
 	require Kephra::File::IO;              # API 2 FS, read write files

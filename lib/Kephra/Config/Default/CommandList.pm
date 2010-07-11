@@ -862,8 +862,8 @@ sub get {
 					comment => {
 						'add-perl' => 'ctrl+k',
 						'del-perl' => 'ctrl+shift+k',
-						'add-xml' => 'ctrl+h',
-						'del-xml' => 'ctrl+shift+h',
+						'add-xml' => 'ctrl+i',
+						'del-xml' => 'ctrl+shift+i',
 					},
 					format => {
 						'block-on-right-margin' => 'ctrl+shift+b',
@@ -981,9 +981,9 @@ sub get {
 				editpanel => {
 					'fold-toggle' => {
 						all => 'alt+shift+plus',
-						here => 'alt+minus',
+						here => 'ctrl+plus',
 						level => 'alt+plus',
-						recursively => 'alt+shift+minus',
+						recursively => 'ctrl+shift+plus',
 					},
 					maximize => 'shift+f11',
 				},

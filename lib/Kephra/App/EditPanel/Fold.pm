@@ -1,5 +1,5 @@
 package Kephra::App::EditPanel::Fold;
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use strict;
 use warnings;
@@ -10,9 +10,13 @@ sub _ep_ref {
 sub _config { Kephra::App::EditPanel::Margin::_config()->{fold} }
 sub _attribute { 'folded_lines' }
 #
-sub _is_head { # is this the fold level of a head node ?
+sub _is_head_level { # is this the fold level of a head node ?
 	my $level = shift;
 	return 1 if ($level % 1024) < (($level >> 16) % 1024);
+}
+sub _is_node {
+	my $line = shift;
+	return 1 if _ep_ref()->GetFoldParent($line+1) == $line;
 }
 sub _get_line { # 
 	my ($ep, $event ) = @_;
@@ -66,18 +70,19 @@ sub toggle_here {
 sub toggle_recursively {
 	my $ep = _ep_ref();
 	my $line = _get_line(@_);
-	my $level = $ep->GetFoldLevel($line);
-	unless ( _is_head( $ep->GetFoldLevel($line) ) ) {
+
+	unless ( _is_node( $line ) ) {
 		$line = $ep->GetFoldParent($line);
 		return if $line == -1;
 	}
-	my $xp = not $ep->GetFoldExpanded($line);
+
+	my $node_xpanded = not $ep->GetFoldExpanded($line);
 	my $cursor = $ep->GetLastChild($line, -1);
 	while ($cursor >= $line) {
-		$ep->ToggleFold($cursor) if $ep->GetFoldExpanded($cursor) xor $xp;
+		$ep->ToggleFold($cursor) if $ep->GetFoldExpanded($cursor) xor $node_xpanded;
 		$cursor--;
 	}
-	Kephra::Edit::Goto::next_visible_pos() if _config()->{keep_caret_visible};
+	Kephra::Edit::Goto::next_visible_pos() if _config()->{keep_caret_visible} and not $node_xpanded;
 }
 sub toggle_siblings         { toggle_siblings_of_line( _get_line(@_) ) }
 sub toggle_siblings_of_line {
@@ -117,13 +122,16 @@ sub toggle_level {
 
 sub toggle_all {
 	my $ep = _ep_ref();
-	my $line = $ep->GetLineCount() - 1;
+	my $newline = my $oldline = $ep->GetLineCount();
 	# looking for the head of heads // capi di capi
-	$line = $ep->GetFoldParent($line) while $ep->GetFoldParent($line) > -1;
-	my $xp = $ep->GetFoldExpanded($line);
-	$xp ? fold_all() : unfold_all();
+	while ($oldline == $newline and $oldline > 0){
+		$newline = --$oldline;
+		$newline = $ep->GetFoldParent($newline) while $ep->GetFoldParent($newline) > -1;
+	}
+	my $root_unfolded = $ep->GetFoldExpanded($newline);
+	$root_unfolded ? fold_all() : unfold_all();
 	Kephra::Edit::Goto::next_visible_pos() if _config()->{keep_caret_visible}
-	                                       and $xp;
+	                                       and $root_unfolded;
 }
 sub fold_all {
 	my $ep  = _ep_ref();
@@ -144,7 +152,7 @@ sub unfold_all {
 sub show_folded_children {
 	#my $ep = _ep_ref();
 	#my $parent = _get_line(@_);
-	#unless ( _is_head( $ep->GetFoldLevel($parent) ) ) {
+	#unless ( _is_head_level( $ep->GetFoldLevel($parent) ) ) {
 		#$parent = $ep->GetFoldParent($parent);
 		#return if $parent == -1;
 	#}

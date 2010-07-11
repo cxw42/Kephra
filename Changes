@@ -1,6 +1,19 @@
 BUGS:
- !!! makefile.pl fails
+! fold all doesn't work
 
+0.4.2.32
+ ! fold all nodes works now even if caret is in area without folding
+ ! fixed function and cursor visibility of toggle recursive code folding
+ ! remerged forgotten win default settings
+
+0.4.2.31
+ + refresh autosaved configs after cpan update
+ ~ changed folding keybinding 
+   ~ fold here: ctrl+plus, level: alt+plus, recursively: alt+shift+plus
+
+0.4.2.30
+ ~ xml formater keybinding is now Ctrl[+Shift]+I
+ ! unified logic behind both transparency settings - 0 = no transparency
 
 0.4.2.29
  + safety belt for window modes on esc key

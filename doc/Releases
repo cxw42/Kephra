@@ -1,4 +1,4 @@
-0.4.3 (0.4.2.26)
+0.4.3 (0.4.2.30)
  * new document property: encoding
    + autodetect, read and write utf files
    + status field codepage
@@ -20,6 +20,12 @@
      + statusbar has context help while mouse hover
      " added keys app > statusbar > file and app > statusbar > node
      [ contextmenus are more visually synced with statusbar
+   + new main window modes 
+     + fullscreen mode
+     + max editpanel mode (disables all bars)
+     + transparent mode
+     + you can combine stay on top and transparent mode with Ctrl+Alt+F11
+     + end all modes with esc key
    + editpanel margin context menu
    + all context menu now are optional
    + switch menubar visibility
@@ -46,6 +52,7 @@
  ! tab info chat in wrong tab
  ! bookmarks work again
  ! splashscreen works again
+ ! fixed test suite
 
 0.5 {0.4.2.8}
  * code folding support

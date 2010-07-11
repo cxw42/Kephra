@@ -1,5 +1,5 @@
 package Kephra::Config::Global;
-our $VERSION = '0.27';
+our $VERSION = '0.28';
 
 use strict;
 use warnings;
@@ -23,6 +23,16 @@ sub autoload {
 		if ( -e $file ) {
 			my $config_tree = Kephra::Config::File::load($file);
 			%settings = %$config_tree if ref $config_tree eq 'HASH';
+			if (exists $settings{about}{version} 
+			and $settings{about}{version} ne $Kephra::VERSION){
+				rename $file, $file . '.old';
+				%settings = %{ Kephra::Config::Tree::update(
+					\%settings,
+					Kephra::Config::Default::global_settings()
+				) };
+				$settings{about}{version} = $Kephra::VERSION;
+			}
+
 			last if %settings;
 			rename $file, $file . '.failed';
 		}

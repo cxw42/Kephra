@@ -74,13 +74,13 @@ sub ready   { # display find and replace dialog
 			Kephra::App::Window::_ref(), -1, 
 			$l18n->{dialog}{search}{title},
 			[ $dsettings->{position_x}, $dsettings->{position_y} ],
-			[ $dsettings->{width}     , 268                      ], $d_style );
+			[ -1    , 268                      ], $d_style );
 		my $icon = Wx::Icon->new;
 		my $icon_bmp = Kephra::CommandList::get_cmd_property
 			('view-dialog-find', 'icon');
 		$icon->CopyFromBitmap($icon_bmp) if ref $icon_bmp eq 'Wx::Bitmap';
 		$d->SetIcon($icon);
-		$d->SetTransparent(int ($dsettings->{transparency} * 255)) 
+		$d->SetTransparent(1 - int ($dsettings->{transparency} * 255)) 
 			if defined $dsettings->{transparency};
 		_ref($d);
 
@@ -320,9 +320,8 @@ sub ready   { # display find and replace dialog
 		$d_sizer->Add($button_sizer,    0, &Wx::wxTOP | &Wx::wxBOTTOM | &Wx::wxGROW        ,  9);
 
 		$d->SetSizer($d_sizer);
-		$d_sizer->Fit($d);
-		$d->SetAutoLayout(1);
-		#$d->Fit;
+		$d->Fit();
+		#$d->SetAutoLayout(1);
 
 		# go
 		$d->Show(1);

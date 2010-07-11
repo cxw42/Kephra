@@ -1,5 +1,5 @@
 package Kephra::Config::Default::GlobalSettings;
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 use strict;
 use warnings;
@@ -39,7 +39,7 @@ sub get {
 				},
 			},
 			error_output => 'panel',                         # (dialog|console|panel|none)
-			iconset_path => 'interface/icon/set/jenne',                # rootpath for all icons
+			iconset_path => 'interface/icon/set/jenne',      # rootpath for all icons
 			localisation => {
 				directory => 'localisation',
 				file => 'english.conf',                                # file relative to the localisation directory, defines language of the texts in the program
@@ -114,6 +114,12 @@ sub get {
 				visible => 1,
 			},
 			window => {
+				default => {
+					position_x => 0,
+					position_y => 0,
+					size_x => 800,
+					size_y => 600,
+				},
 				fullscreen => 0,
 				icon => 'interface/icon/app/proton.xpm',
 				max_number => 1,
@@ -149,7 +155,7 @@ sub get {
 				position_y    => 100,
 				position_x    => 100,
 				tooltips      => 1,
-				transparency  => 0.7,  # 1 visible .. 0 unvisible
+				transparency  => 0.3,  # 0 - full visible .. 1 - invisible
 				width         => 436,
 			},
 		},

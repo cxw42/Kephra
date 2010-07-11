@@ -291,8 +291,10 @@ sub replace_current_line {
 	$ep->BeginUndoAction;
 	$ep->GotoLine($line);
 	$ep->Paste;
-	$ep->SetSelection( $ep->GetSelectionEnd,
-		$ep->GetLineEndPosition( $ep->GetCurrentLine ) );
+	$ep->SetSelection( 
+		$ep->GetSelectionEnd,
+		$ep->GetLineEndPosition( $ep->GetCurrentLine )
+	);
 	$ep->Cut;
 	$ep->GotoLine($line);
 	$ep->EndUndoAction;

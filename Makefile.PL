@@ -4,7 +4,13 @@ use inc::Module::Install;
 
 use 5.006;
 
+#eval {};
+#BEGIN {};
+
 name           'Kephra';
+license        'gpl';
+author         'Herbert Breunung';
+
 all_from       'lib/Kephra.pm';
 requires       'Cwd';
 requires       'Encode::Guess'         => 0;
@@ -21,6 +27,9 @@ build_requires 'Test::NoWarnings';
 build_requires 'Test::Exception';
 install_share  'share';
 install_script 'bin/kephra';
+
+no_index 'directory' => qw{ t xt share inc };
+homepage 'http://kephra.sourceforge.net/';
 
 
 WriteAll;

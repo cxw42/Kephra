@@ -3,6 +3,7 @@ our $VERSION = '0.04';
 
 use strict;
 use base qw(Wx::TextDropTarget);
+use Wx;
 use Wx::DND;
 
 sub new {
@@ -21,7 +22,7 @@ sub OnDropText {
 	$self->{kind} eq 'replace'
 		? Kephra::Edit::Search::set_replace_item($text)
 		: Kephra::Edit::Search::set_find_item($text);
-	0; #dont skip event
+	0; #don't skip event
 }
 
 1;

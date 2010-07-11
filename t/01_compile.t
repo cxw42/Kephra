@@ -13,7 +13,7 @@ use strict;
 use warnings;
 
 use lib 'lib';
-use blib;
+#use blib;
 use Test::More;
 use Test::Script;
 use Test::NoWarnings;
@@ -23,7 +23,7 @@ my @required_modules = qw(
 	Cwd File::Find File::Spec::Functions 
 	Config::General YAML::Tiny Wx Wx::Perl::ProcessStream
 );
-my $modules = 65;
+my $modules = 64;
 my @kephra_modules;
 find( sub {
     return if not -f $_ or $_ !~ /\.pm$/;
@@ -31,7 +31,7 @@ find( sub {
     $module =~ s{lib/}{};
     $module =~ s{\.pm}{};
     $module =~ s{/}{::}g;
-    #return if $module eq 'Kephra::Edit::Search';
+    return if $module eq 'Kephra::Edit::Search::InputTarget';
     push @kephra_modules, $module;
 }, 'lib'); # print "@modules"; #use Data::Dumper; # diag Dumper \@modules;
 
