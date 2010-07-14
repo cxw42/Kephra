@@ -1,6 +1,9 @@
 BUGS:
 ! fold all doesn't work
 
+0.4.2.33
+ ! release tool now does tgz with the right rights
+
 0.4.2.32
  ! fold all nodes works now even if caret is in area without folding
  ! fixed function and cursor visibility of toggle recursive code folding

@@ -239,7 +239,10 @@ sub eval_data { # eval menu data structures (MDS) to wxMenus
 				: ready( $item_data->{id} );
 			$item_data->{help} = '' unless defined $item_data->{help};
 			my @params = ( $menu, $item_id++, 
-				$item_data->{label}, $item_data->{help}, &Wx::wxITEM_NORMAL );
+				Encode::decode('utf-8', $item_data->{label}),
+				Encode::decode('utf-8', $item_data->{help}), 
+				&Wx::wxITEM_NORMAL
+			);
 			push @params, $submenu if is ($submenu);
 			my $menu_item = Wx::MenuItem->new( @params );
 			if (defined $item_data->{icon}) {
