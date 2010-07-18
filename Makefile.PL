@@ -10,6 +10,9 @@ use 5.006;
 name           'Kephra';
 license        'gpl';
 author         'Herbert Breunung';
+homepage       'http://kephra.sourceforge.net/';
+bugtracker     'http://sourceforge.net/tracker/?group_id=169747&atid=851590';
+
 
 all_from       'lib/Kephra.pm';
 requires       'Cwd';
@@ -25,11 +28,10 @@ build_requires 'Test::More'            => 0.47;
 build_requires 'Test::Script'          => 0.01;
 build_requires 'Test::NoWarnings';
 build_requires 'Test::Exception';
-install_share  'share';
-install_script 'bin/kephra';
 
 no_index 'directory' => qw{ t xt share inc };
-homepage 'http://kephra.sourceforge.net/';
 
+install_share  'share';
+install_script 'bin/kephra';
 
 WriteAll;

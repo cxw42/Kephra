@@ -1,5 +1,8 @@
 BUGS:
 
+0.4.2.35
+ ! bug in makefile
+
 0.4.2.34
  ! utf labels now work on windows too (linux did it automaticlly right)
 
