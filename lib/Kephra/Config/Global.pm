@@ -109,6 +109,7 @@ print "  iface cnfg:", Benchmark::timestr( Benchmark::timediff( $t1, $t0 ) ), "\
 print "  prep. data:", Benchmark::timestr( Benchmark::timediff( $t2, $t1 ) ), "\n"
 		if $Kephra::BENCHMARK;
 
+	# loading interface data (localisation, menus and bar defs)
 	Kephra::Config::Interface::load();
 
 	my $t3 = new Benchmark;

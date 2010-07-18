@@ -67,7 +67,7 @@ sub create {
 		$event->GetProcess->Destroy;
 		Kephra::EventTable::trigger('panel.output.run');
 	} );
-	Wx::Event::EVT_TEXT_ENTER( $win, $edit, sub {
+	Wx::Event::EVT_TEXT_ENTER( $edit, -1, sub {
 		my $selection = $edit->GetStringSelection();
 		return unless $selection;
 		wxTheClipboard->Open;

@@ -29,7 +29,8 @@ sub set_lang_by_file { $language = $index{ _config()->{file} }{ language } }
 #
 sub load {
 	my $file = file();
-	my $l = Kephra::Config::File::load( $file ) if defined $file;
+	# can only be conf because yaml tine doesnt support utf, 1 activates utf
+	my $l = Kephra::Config::File::load_conf( $file, 1 ) if defined $file;
 	$l = Kephra::Config::Default::localisation() unless $l and %$l;
 	%strings = %$l;
 	set_lang_by_file();

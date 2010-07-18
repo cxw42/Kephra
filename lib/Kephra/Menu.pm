@@ -143,6 +143,30 @@ sub create_static  { # create solid, not on runtime changeable menus
 	eval_data($menu_id, assemble_data_from_def($menu_def));
 }
 
+sub create_menubar {
+	#my $menubar    = Wx::MenuBar->new();
+	#my $m18n = Kephra::Config::Localisation::strings()->{app}{menu};
+	#my ($pos, $menu_name);
+	#for my $menu_def ( @$menubar_def ){
+		#for my $menu_id (keys %$menu_def){
+			# removing the menu command if there is one
+			#$pos = index $menu_id, ' ';
+			#if ($pos > -1){
+				#if ('menu' eq substr $menu_id, 0, $pos ){
+					#$menu_name = substr ($menu_id, $pos+1);
+				# ignoring menu structure when command other that menu or blank
+				#} else { next }
+			#} else { 
+				#$menu_name = $menu_id;
+			#}
+			#$menubar->Append(
+				#Kephra::Menu::create_static( $menu_name, $menu_def->{$menu_id}),
+				#$m18n->{label}{$menu_name}
+			#);
+		#}
+	#}
+}
+
 # create menu data structures (MDS) from menu skeleton definitions (command list)
 sub assemble_data_from_def {
 	my $menu_def = shift;
@@ -233,14 +257,15 @@ sub eval_data { # eval menu data structures (MDS) to wxMenus
 	for my $item_data (@$menu_data){
 		if (not $item_data->{type} or $item_data->{type} eq 'separator'){
 			$menu->AppendSeparator;
-		} elsif ($item_data->{type} eq 'menu'){
+		}
+		elsif ($item_data->{type} eq 'menu'){
 			my $submenu = ref $item_data->{data} eq 'ARRAY'
-				? eval_data( $item_data->{id}, $item_data->{data} )
+				? eval_data( $menu_id.'-'.$item_data->{id}, $item_data->{data} )
 				: ready( $item_data->{id} );
 			$item_data->{help} = '' unless defined $item_data->{help};
-			my @params = ( $menu, $item_id++, 
-				Encode::decode('utf-8', $item_data->{label}),
-				Encode::decode('utf-8', $item_data->{help}), 
+			my @params = ( $menu, $item_id++, $item_data->{label},$item_data->{help},
+				#Encode::decode('utf-8', $item_data->{label}),
+				#Encode::decode('utf-8', $item_data->{help}), 
 				&Wx::wxITEM_NORMAL
 			);
 			push @params, $submenu if is ($submenu);
@@ -255,7 +280,8 @@ sub eval_data { # eval menu data structures (MDS) to wxMenus
 			#	Kephra::App::StatusBar::info_msg( $item_data->{help} )
 			#});
 			$menu->Append($menu_item);
-		} else {
+		} 
+		else { # create normal items
 			if    ($item_data->{type} eq 'checkitem'){$kind = &Wx::wxITEM_CHECK}
 			elsif ($item_data->{type} eq 'radioitem'){$kind = &Wx::wxITEM_RADIO}
 			elsif ($item_data->{type} eq 'item')     {$kind = &Wx::wxITEM_NORMAL}

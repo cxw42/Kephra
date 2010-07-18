@@ -1,5 +1,7 @@
 BUGS:
-! fold all doesn't work
+
+0.4.2.34
+ ! utf labels now work on windows too (linux did it automaticlly right)
 
 0.4.2.33
  ! release tool now does tgz with the right rights
