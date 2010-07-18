@@ -1,5 +1,8 @@
 BUGS:
 
+0.4.2.36
+ ! update of module::install to 1.0
+
 0.4.2.35
  ! bug in makefile
 
