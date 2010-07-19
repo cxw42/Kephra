@@ -63,7 +63,7 @@ sub create {
 		my ( $bar,    $event )  = @_;
 		my $field = _item( _index_from_mouse_pos( $event->GetX ) );
 		if    ($field eq 'syntaxmode') {Kephra::Document::SyntaxMode::switch_auto()}
-		elsif ($field eq 'codepage')   {Kephra::Document::Property::switch_codepage()}
+		#elsif ($field eq 'codepage')   {Kephra::Document::Property::switch_codepage()}
 		elsif ($field eq 'tab')        {Kephra::Document::Property::switch_tab_mode()}
 		elsif ($field eq 'EOL')        {Kephra::App::EditPanel::switch_EOL_visibility()}
 		elsif ($field eq 'message')    {next_file_info(); }
@@ -79,7 +79,7 @@ sub create {
 		my $field = _item( $index );
 		my $menu = \&Kephra::App::ContextMenu::get;
 		if    ($field eq 'syntaxmode'){$bar->PopupMenu( &$menu('status_syntaxmode'),$x,$y)}
-		elsif ($field eq 'codepage')  {$bar->PopupMenu( &$menu('document_encoding'),$x,$y)}
+		elsif ($field eq 'codepage')  {$bar->PopupMenu( &$menu('status_encoding'),  $x,$y)}
 		elsif ($field eq 'tab')       {$bar->PopupMenu( &$menu('status_tab'),       $x,$y)}
 		elsif ($field eq 'EOL')       {$bar->PopupMenu( &$menu('status_eol'),       $x,$y)}
 		elsif ($field eq 'message')   {$bar->PopupMenu( &$menu('status_info'),      $x,$y)}
@@ -187,7 +187,7 @@ sub codepage_info {
 		? Kephra::CommandList::get_cmd_property
 			( 'document-encoding-'.$codepage, 'label' )
 		: _none_string();
-	_set_text( '' . $msg, $index{codepage} );
+	_set_text( '' . $codepage, $index{codepage} );
 }
 sub tab_info {
 	my $mode  = Kephra::App::EditPanel::_ref()->GetUseTabs || 0;

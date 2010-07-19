@@ -71,7 +71,7 @@ sub get {
 				},
 			},
 			searchbar => {
-				autofocus => 1,
+				autofocus => 0,
 				autohide => 0,
 				contextmenu => 'toolbar_search',
 				contextmenu_visible => 1,

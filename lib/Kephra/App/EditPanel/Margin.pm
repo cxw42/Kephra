@@ -102,16 +102,17 @@ sub on_right_click {
 	my ($ep, $event, $nr) = @_;
 	my ($x, $y) = ($event->GetX, $event->GetY);
 	if ($nr > -1 and $nr < 2 and get_contextmenu_visibility() ){
+		Kephra::Document::Data::set_value('fold_mouse_y', $event->GetY);
 		$ep->PopupMenu( 
 			Kephra::App::ContextMenu::get( 
 				_edit_config()->{contextmenu}{ID_margin} ), $x, $y);
+		Kephra::Document::Data::del_value('fold_mouse_y');
 	}
 	elsif ($nr == 2) {
 		$event->LeftIsDown
 			? Kephra::App::EditPanel::Fold::toggle_all()
 			: Kephra::App::EditPanel::Fold::toggle_level($ep, $event);
 	}
-	#Kephra::Document::Data::del_value('mouse_y');
 }
 
 

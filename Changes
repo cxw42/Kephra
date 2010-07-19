@@ -1,4 +1,9 @@
-BUGS:
+
+0.4.2.37
+ + folding per context menu on mouse position (idea my murphy++)
+ " item view-editpanel-fold-toggle-level in markermargin_contextmenu was missing
+ " searchbar autofocus no longer default
+ ! cripple searchbar to make it save for now
 
 0.4.2.36
  ! update of module::install to 1.0

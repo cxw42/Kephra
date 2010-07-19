@@ -78,7 +78,7 @@ sub get {
 			{'menu view_text_fold' => [
 				'item view-editpanel-fold-toggle-here',
 				'item view-editpanel-fold-toggle-recursively',
-				'item view-editpanel-fold-toggle-siblings',
+				'item view-editpanel-fold-toggle-level',
 				'item view-editpanel-fold-toggle-all',
 			],},
 			undef,

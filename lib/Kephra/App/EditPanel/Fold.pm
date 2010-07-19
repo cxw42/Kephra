@@ -22,15 +22,22 @@ sub _get_line { #
 	my ($ep, $event ) = @_;
 	$ep = _ep_ref();
 	my $line;
-	if (defined $event) {
-		my $x = Kephra::App::EditPanel::Margin::width($ep)+5;
-		my ($y, $max_y) = ($event->GetY, $ep->GetSize->GetHeight);
+	# save position where context menu poped so we can fold there
+	my $mouse_y_hint = Kephra::Document::Data::get_value('fold_mouse_y');
+	if ($mouse_y_hint or (defined $event and ref $event eq 'Wx::MouseEvent')) {
+		my $x = Kephra::App::EditPanel::Margin::width($ep) + 5;
+		my $y = $mouse_y_hint? $mouse_y_hint : $event->GetY;
+		my $max_y = $ep->GetSize->GetHeight;
 		my $pos = $ep->PositionFromPointClose($x, $y);
 		while ($pos < 0 and $y+10 < $max_y) {
 			$pos = $ep->PositionFromPointClose($x, $y += 10);
 		}
 		$line = $ep->LineFromPosition($pos);
-	} else { $line = $ep->GetCurrentLine() }
+	}
+	elsif (defined $event and ref $event eq 'Wx::StyledTextEvent'){
+		$line = $ep->LineFromPosition( $event->GetPosition() );
+	}
+	else { $line = $ep->GetCurrentLine() }
 	return $line;
 }
 #
@@ -57,12 +64,8 @@ sub restore {
 # folding functions
 #
 sub toggle_here {
-	# params you get if triggered by mouse click
-	my ($ep, $event ) = @_;
-	$ep = _ep_ref();
-	my $line = defined $event
-		? $ep->LineFromPosition( $event->GetPosition() )
-		: $ep->GetCurrentLine();
+	my $ep = _ep_ref();
+	my $line = _get_line(@_);
 	$ep->ToggleFold($line);
 	Kephra::Edit::Goto::next_visible_pos() if _config()->{keep_caret_visible}
 	                                       and not $ep->GetFoldExpanded($line);
@@ -70,6 +73,7 @@ sub toggle_here {
 sub toggle_recursively {
 	my $ep = _ep_ref();
 	my $line = _get_line(@_);
+
 
 	unless ( _is_node( $line ) ) {
 		$line = $ep->GetFoldParent($line);
