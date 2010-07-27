@@ -1,5 +1,5 @@
 package Kephra::Edit::Marker;
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 
 use strict;
 use warnings;
@@ -48,6 +48,16 @@ sub _delete_bookmark_data {
 	my $nr = shift;
 	return if $nr < 0 or $nr > 9;
 	$bookmark[$nr] = {};
+}
+
+sub _get_pos {# switch: was command triggered from context menu or key/main menu
+	my $ep = _ep();
+	my $line = Kephra::App::EditPanel::Margin::clicked_on_line();
+	return $line > -1 ? $ep->PositionFromLine($line) : $ep->GetCurrentPos();
+}
+sub _get_line {# switch: was command triggered from context menu or key/main menu
+	my $line = Kephra::App::EditPanel::Margin::clicked_on_line();
+	return $line > -1 ? $line : _ep()->GetCurrentLine();
 }
 #
 # external API
@@ -137,7 +147,9 @@ sub toggle_bookmark_here   { # toggle triggered by margin middle click
 		}
 	}
 }
-sub toggle_bookmark   { toggle_bookmark_in_pos(shift, _ep()->GetCurrentPos() ) }
+sub toggle_bookmark   {    # toggle command, triggered from macro, key, [context] menu
+	toggle_bookmark_in_pos(shift, _get_pos() );
+}
 sub goto_bookmark     {
 	my $nr = shift;
 	if ( _refresh_bookmark_data($nr) ) {
@@ -201,8 +213,7 @@ sub toggle_marker_here    { # toggle triggered by margin left click
 }
 
 sub toggle_marker         { # toggle triggered by keyboard / icon / contextmenu
-	#my ($ep, $event ) = @_;
-	toggle_marker_in_line( _ep()->GetCurrentLine );
+	toggle_marker_in_line(  _get_line() );
 }
 
 sub goto_prev_marker_in_doc {

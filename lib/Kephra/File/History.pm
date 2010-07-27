@@ -7,6 +7,7 @@ use warnings;
 my @session = ();
 my $menu_id = '&file_history';
 my $refresh_needed;
+my $loaded;
 # internal Module API
 sub _config { Kephra::API::settings()->{file}{session}{history} }
 # external Appwide API
@@ -21,7 +22,9 @@ sub init {
 	if (ref $config_tree->{document} eq 'ARRAY'){
 		@session = @{$config_tree->{document}};
 	}
+	$loaded = 1;
 }
+sub had_init {$loaded}
 
 sub save {
 	my $subdir = Kephra::File::Session::_config()->{directory};

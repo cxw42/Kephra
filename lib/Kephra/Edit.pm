@@ -1,12 +1,6 @@
 package Kephra::Edit;
 our $VERSION = '0.34';
-=head1 NAME
 
-Kephra::Edit - basic edit menu calls and internals for editing
-
-=head1 DESCRIPTION
-
-=cut
 use strict;
 use warnings;
 #
@@ -83,15 +77,14 @@ sub _select_all_if_none {
     return $ep->GetTextRange( $start, $end );
 }
 
-sub can_paste { _ep_ref()->CanPaste }
-sub can_copy  { Kephra::Document::Data::attr('text_selected') }
+sub can_paste   { _ep_ref()->CanPaste }
+sub can_copy    { Kephra::Document::Data::attr('text_selected') }
 
 # simple textedit
-sub cut       { _ep_ref()->Cut }
-sub copy      { _ep_ref()->Copy }
-sub paste     { _ep_ref()->Paste }
-
-sub replace {
+sub cut         { _ep_ref()->Cut }
+sub copy        { _ep_ref()->Copy }
+sub paste       { _ep_ref()->Paste }
+sub replace     {
 	my $ep = _ep_ref();
 	my $length = ( $ep->GetSelectionEnd - $ep->GetSelectionStart );
 	$ep->BeginUndoAction;
@@ -102,7 +95,7 @@ sub replace {
 	$ep->EndUndoAction;
 }
 
-sub clear { _ep_ref()->Clear; }
+sub clear       { _ep_ref()->Clear }
 
 sub del_back_tab{
 	my $ep = _ep_ref();
@@ -161,7 +154,7 @@ sub selection_move_left {
 	}
 }
 
-sub selection_move_right {
+sub selection_move_right{
 	my $ep = _ep_ref();
 	if ( $ep->GetSelectionEnd < $ep->GetTextLength ) {
 		my $text = $ep->GetSelectedText;
@@ -178,7 +171,7 @@ sub selection_move_right {
 	}
 }
 
-sub selection_move_up {
+sub selection_move_up   {
 	my $ep = shift || _ep_ref();
 	if ( $ep->LineFromPosition( $ep->GetSelectionStart ) > 0 ) {
 		if ( $ep->GetSelectionStart == $ep->GetSelectionEnd ) {
@@ -215,7 +208,7 @@ sub selection_move_down {
 	}
 }
 
-sub selection_move_page_up {
+sub selection_move_page_up   {
 	my $ep = _ep_ref();
 	my $linedelta = $ep->LinesOnScreen;
 	if ( $ep->LineFromPosition( $ep->GetSelectionStart ) > 0 ) {
@@ -257,7 +250,7 @@ sub selection_move_page_down {
 }
 
 #
-sub insert_text {
+sub insert {
 	my ($text, $pos) = @_;
 	return unless $text;
 	my $ep = _ep_ref();
@@ -265,11 +258,30 @@ sub insert_text {
 	else              { $ep->AddText( $text ) }
 }
 
-sub insert_at_pos {
-	my ($text, $pos) = @_;
-	_ep_ref()->InsertText( $pos, $text);
-}
+sub insert_at_pos { _ep_ref()->InsertText( @_ ) }
 
+#
+# Edit String (surrounding string encapsulated by "" or '')
+#
+sub string_copy {
+	my $ep = _ep_ref();
+	my $pos  = $ep->GetCurrentPos;
+	my $line = $ep->GetCurrentLine;
+	my $lpos = $ep->PositionFromLine($line);
+	my $befor_text = $ep->GetTextRange($lpos, $pos);
+	my $after_text = $ep->GetTextRange($pos+1, $ep->GetLineEndPosition($line));
+	my $sq_start = rindex $befor_text, '\'';
+	my $sq_stop  = index $after_text, '\'';
+	my $dq_start = rindex $befor_text, '"';
+	my $dq_stop  = index $after_text, '"';
+	return if  ($sq_start == -1 or $sq_stop == -1) 
+	       and ($dq_start == -1 or $dq_stop == -1);
+	_save_positions();
+	if ($sq_start > $dq_start){$ep->SetSelection($lpos+$sq_start+1, $pos+$sq_stop+1)}
+	else                      {$ep->SetSelection($lpos+$dq_start+1, $pos+$dq_stop+1)}
+	copy();
+	_restore_positions();
+}
 #
 # Edit Line
 #
@@ -307,3 +319,11 @@ sub del_line_right  {_ep_ref()->DelLineRight()}
 sub eval_newline_sub{}
 
 1;
+
+=head1 NAME
+
+Kephra::Edit - basic edit menu calls and internals for editing
+
+=head1 DESCRIPTION
+
+=cut

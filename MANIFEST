@@ -8,8 +8,9 @@ doc/interna/sketch.txt
 doc/patches/current-fixes.txt
 doc/patches/outline_parser.pl
 doc/patches/print-draft.pl
-doc/Releases
 doc/Roadmap
+doc/StableReleases
+doc/TestingReleases
 doc/Todo
 inc/Module/Install.pm
 inc/Module/Install/Base.pm

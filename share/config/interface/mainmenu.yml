@@ -4,7 +4,6 @@ full_menubar:
     menu file:
       - item file-new
       -
-      - menu file_insert_templates
       -
         menu file_open file-open:
           - item file-open
@@ -222,6 +221,7 @@ full_menubar:
       - item tool-interpreter-run-document
       - item tool-interpreter-stop-document
       -
+      - menu insert_templates
       - item tool-choose-color
   -
     menu document:

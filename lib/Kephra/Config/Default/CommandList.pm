@@ -76,6 +76,7 @@ sub get {
 						'page-down' => 'Kephra::Edit::selection_move_page_down()',
 					}
 				},
+				'string-copy' => 'Kephra::Edit::string_copy()',
 				selection => {
 					convert => {
 						uppercase => 'Kephra::Edit::Convert::upper_case()',
@@ -858,6 +859,7 @@ sub get {
 						'page-down' => 'ctrl+alt+pgdn',
 					},
 				},
+				'string-copy' => 'ctrl+alt+c',
 				selection => {
 					comment => {
 						'add-perl' => 'ctrl+k',

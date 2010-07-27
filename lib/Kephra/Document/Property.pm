@@ -62,7 +62,7 @@ sub set_codepage {
 	return if $doc_nr < 0 or not defined $new_value;
 	my $old_value = get_codepage($doc_nr);
 	my $ep = _ep_ref($doc_nr);
-	if    ($old_value eq 'ascii' and $new_value eq 'utf8'){
+	if    ($old_value eq '8bit' and $new_value eq 'utf8'){
 		#unless (Encode::is_utf8($ep->GetText())) {
 			Kephra::Document::Data::update_attributes($doc_nr);
 			eval {
@@ -74,17 +74,18 @@ sub set_codepage {
 		#}
 		#print Encode::is_utf8($ep->GetText())."\n";
 	}
-	elsif ($old_value eq 'utf8' and $new_value eq 'ascii') {
+	elsif ($old_value eq 'utf8' and $new_value eq '8bit') {
 		Kephra::Document::Data::update_attributes($doc_nr);
 		$ep->SetText( Encode::encode('utf8', $ep->GetText()) );
 		Kephra::Document::Data::evaluate_attributes($doc_nr);
 	}
+#print "ask auto $mode\n";
 	#$ep->SetCodePage( &Wx::wxSTC_CP_UTF8 );
 	_set_attr('codepage', $new_value, $doc_nr);
 	Kephra::App::StatusBar::codepage_info($new_value);
 }
 sub switch_codepage {
-	set_codepage( get_codepage( _doc_nr() ) eq 'utf8' ? 'ascii' : 'utf8' );
+	set_codepage( get_codepage( _doc_nr() ) eq 'utf8' ? '8bit' : 'utf8' );
 }
 #
 # tab size
@@ -108,13 +109,18 @@ sub set_tab_mode {
 	return if $nr < 0;
 	my $ep = _ep_ref();
 	if ($mode eq 'auto') {
-		my $line;
-		for my $lnr (0 .. $ep->GetLineCount()-1){
-			$line = $ep->GetLine($lnr);
-			if ($line =~ /^( |\t)/) {
-				$mode = $1 eq ' ' ? 0 : 1;
-				last;
+		if ($ep->GetTextLength){
+			my $line;
+			for my $lnr (0 .. $ep->GetLineCount()-1){
+				$line = $ep->GetLine($lnr);
+				if ($line =~ /^( |\t)/) {
+					$mode = $1 eq ' ' ? 0 : 1;
+					last;
+				}
 			}
+		}
+		else {
+			$mode = Kephra::File::_config()->{defaultsettings}{new}{tab_use};
 		}
 	}
 	$ep->SetUseTabs($mode);

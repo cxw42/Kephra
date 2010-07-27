@@ -1,9 +1,10 @@
 package Kephra::App::EditPanel::Margin;
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 use strict;
 use warnings;
 
+my $mouse_y_pos;
 sub _ep_ref {
 	Kephra::App::EditPanel::is($_[0]) ? $_[0] : Kephra::App::EditPanel::_ref()   
 }
@@ -52,9 +53,9 @@ sub apply_settings_here {# eval view settings for the margin of this edit panel 
 		$ep->MarkerDefine(&Wx::wxSTC_MARKNUM_FOLDEREND,    &Wx::wxSTC_MARK_ARROW,    $b,$f);
 		$ep->MarkerDefine(&Wx::wxSTC_MARKNUM_FOLDEROPEN,   &Wx::wxSTC_MARK_ARROWDOWN,$b,$f);
 		$ep->MarkerDefine(&Wx::wxSTC_MARKNUM_FOLDEROPENMID,&Wx::wxSTC_MARK_ARROWDOWN,$b,$f);
-		$ep->MarkerDefine(&Wx::wxSTC_MARKNUM_FOLDERSUB,    &Wx::wxSTC_MARK_EMPTY,    $b,$f);
 		$ep->MarkerDefine(&Wx::wxSTC_MARKNUM_FOLDERMIDTAIL,&Wx::wxSTC_MARK_EMPTY,    $b,$f);
 		$ep->MarkerDefine(&Wx::wxSTC_MARKNUM_FOLDERTAIL,   &Wx::wxSTC_MARK_EMPTY,    $b,$f);
+		$ep->MarkerDefine(&Wx::wxSTC_MARKNUM_FOLDERSUB,    &Wx::wxSTC_MARK_EMPTY,    $b,$f);
 	}
 	else {
 		$ep->MarkerDefine(&Wx::wxSTC_MARKNUM_FOLDER,       &Wx::wxSTC_MARK_BOXPLUS,  $b,$f);
@@ -102,11 +103,11 @@ sub on_right_click {
 	my ($ep, $event, $nr) = @_;
 	my ($x, $y) = ($event->GetX, $event->GetY);
 	if ($nr > -1 and $nr < 2 and get_contextmenu_visibility() ){
-		Kephra::Document::Data::set_value('fold_mouse_y', $event->GetY);
+		$mouse_y_pos = $event->GetY;
 		$ep->PopupMenu( 
 			Kephra::App::ContextMenu::get( 
 				_edit_config()->{contextmenu}{ID_margin} ), $x, $y);
-		Kephra::Document::Data::del_value('fold_mouse_y');
+		undef $mouse_y_pos;
 	}
 	elsif ($nr == 2) {
 		$event->LeftIsDown
@@ -115,6 +116,20 @@ sub on_right_click {
 	}
 }
 
+sub clicked_on_line {
+	my $event = shift;
+	return -1 unless defined $mouse_y_pos or ref $event eq 'Wx::MouseEvent';
+	my $ep = _ep_ref();
+	my $x = width($ep) + 5;
+	# $mouse_y_pos is saved position where context menu poped so we can fold there
+	my $y = defined $mouse_y_pos ? $mouse_y_pos : $event->GetY;
+	my $max_y = $ep->GetSize->GetHeight;
+	my $pos = $ep->PositionFromPointClose($x, $y);
+	while ($pos < 0 and $y+10 < $max_y) {
+		$pos = $ep->PositionFromPointClose($x, $y += 10);
+	}
+	return $ep->LineFromPosition($pos);
+}
 
 
 #

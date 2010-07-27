@@ -1,5 +1,5 @@
 package Kephra::App::EditPanel::Fold;
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use strict;
 use warnings;
@@ -19,25 +19,16 @@ sub _is_node {
 	return 1 if _ep_ref()->GetFoldParent($line+1) == $line;
 }
 sub _get_line { # 
-	my ($ep, $event ) = @_;
+	my ($ep, $event) = @_;
 	$ep = _ep_ref();
-	my $line;
+	my $line = Kephra::App::EditPanel::Margin::clicked_on_line($event);
 	# save position where context menu poped so we can fold there
-	my $mouse_y_hint = Kephra::Document::Data::get_value('fold_mouse_y');
-	if ($mouse_y_hint or (defined $event and ref $event eq 'Wx::MouseEvent')) {
-		my $x = Kephra::App::EditPanel::Margin::width($ep) + 5;
-		my $y = $mouse_y_hint? $mouse_y_hint : $event->GetY;
-		my $max_y = $ep->GetSize->GetHeight;
-		my $pos = $ep->PositionFromPointClose($x, $y);
-		while ($pos < 0 and $y+10 < $max_y) {
-			$pos = $ep->PositionFromPointClose($x, $y += 10);
+	if ($line == -1){
+		if (defined $event and ref $event eq 'Wx::StyledTextEvent'){
+			$line = $ep->LineFromPosition( $event->GetPosition() );
 		}
-		$line = $ep->LineFromPosition($pos);
+		else { $line = $ep->GetCurrentLine() }
 	}
-	elsif (defined $event and ref $event eq 'Wx::StyledTextEvent'){
-		$line = $ep->LineFromPosition( $event->GetPosition() );
-	}
-	else { $line = $ep->GetCurrentLine() }
 	return $line;
 }
 #

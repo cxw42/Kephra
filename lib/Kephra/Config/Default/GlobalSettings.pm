@@ -28,7 +28,7 @@ sub get {
 					document_list => '&document_change',
 					document_selection => 'textselection_contextmenu',
 					file_history => '&file_history',
-					file_insert_templates => '&insert_templates',
+					insert_templates => '&insert_templates',
 					marker_margin => 'markermargin_contextmenu',
 					status_eol => 'status_lineendchar_contextmenu',
 					status_encoding => 'status_encoding_contextmenu',
@@ -257,7 +257,7 @@ sub get {
 			defaultsettings => {
 				new => {                  # defaults for new docs
 					EOL      => 'OS',     # (OS|auto|cr|lf|cr+lf) end of line character, OS means current OS standart -NI auto means take setting of the last touched file
-					codepage => 'ascii',  # (ascii|utf8) codepage, used for charset
+					codepage => '8bit',   # (8bit|utf8) codepage, used for charset
 					cursor_pos => 0,
 					readonly => 'no',     # (0|1|2|on|off|protect) if =1 it set a write protection on readonly files
 					syntaxmode => 'perl', # (auto|none|lang_id) which syntaxstyle on new files

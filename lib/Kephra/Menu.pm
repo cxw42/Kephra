@@ -17,6 +17,7 @@ sub set_absolete { $menu{$_[0]}{absolete} = 1     }
 sub not_absolete { $menu{$_[0]}{absolete} = 0     }
 sub is_absolete  { $menu{$_[0]}{absolete}         }
 sub set_update   { $menu{$_[0]}{update} =  $_[1] if ref $_[1] eq 'CODE' }
+sub get_update   { $menu{$_[0]}{update} }
 sub no_update    { delete $menu{$_[0]}{update} if stored($_[0]) }
 sub add_onopen_check {
 	return until ref $_[2] eq 'CODE';
@@ -32,8 +33,8 @@ sub ready          { # make menu ready for display
 	my $id = shift;
 	if ( stored($id) ){
 		my $menu = _data($id);
-		if ($menu->{absolete} and $menu->{update})
-			{ $menu->{absolete} = 0 if $menu->{update}() }
+		if ($menu->{absolete} and $menu->{update}) {
+			 $menu->{absolete} = 0 if $menu->{update}() }
 		if (ref $menu->{onopen} eq 'HASH')
 			{ $_->() for values %{$menu->{onopen}} }
 		_ref($id);
@@ -46,6 +47,7 @@ sub create_dynamic { # create on runtime changeable menus
 
 	if ($menu_name eq '&insert_templates') {
 
+		set_absolete($menu_id);
 		set_update($menu_id, sub {
 			my $cfg = Kephra::API::settings()->{file}{templates}; 
 			my $file = Kephra::Config::filepath($cfg->{directory}, $cfg->{file});
@@ -72,12 +74,13 @@ sub create_dynamic { # create on runtime changeable menus
 					push @menu_data, \%item; 
 					eval_data($menu_id, \@menu_data);
 				}
+				return 1;
 			}
 		});
-		set_absolete($menu_id);
 
 	} elsif ($menu_name eq '&file_history'){
 
+		set_absolete($menu_id);
 		set_update($menu_id, sub {
 			my @menu_data = @{assemble_data_from_def
 				( ['item file-session-history-open-all', undef] )};
@@ -95,8 +98,9 @@ sub create_dynamic { # create on runtime changeable menus
 				}
 			}
 			eval_data($menu_id, \@menu_data);
+			return Kephra::File::History::had_init() ? 1 : 0;
+			1; # it was successful
 		});
-		set_absolete($menu_id);
 
 		Kephra::EventTable::add_call (
 			'document.list', 'menu_'.$menu_id, sub {
@@ -260,12 +264,10 @@ sub eval_data { # eval menu data structures (MDS) to wxMenus
 		}
 		elsif ($item_data->{type} eq 'menu'){
 			my $submenu = ref $item_data->{data} eq 'ARRAY'
-				? eval_data( $menu_id.'-'.$item_data->{id}, $item_data->{data} )
+				? eval_data( $item_data->{id}, $item_data->{data} )
 				: ready( $item_data->{id} );
 			$item_data->{help} = '' unless defined $item_data->{help};
 			my @params = ( $menu, $item_id++, $item_data->{label},$item_data->{help},
-				#Encode::decode('utf-8', $item_data->{label}),
-				#Encode::decode('utf-8', $item_data->{help}), 
 				&Wx::wxITEM_NORMAL
 			);
 			push @params, $submenu if is ($submenu);
@@ -317,6 +319,7 @@ sub eval_data { # eval menu data structures (MDS) to wxMenus
 	}
 
 	Kephra::EventTable::add_call('menu.open', 'menu_'.$menu, sub {ready($menu_id)});
+#print "did  $menu_id \n";
 	_ref($menu_id, $menu);
 	return $menu;
 }

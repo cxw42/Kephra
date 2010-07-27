@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 our $NAME       = __PACKAGE__;     # name of entire application
-our $VERSION    = '0.4.2.37';      # version of entire app
+our $VERSION    = '0.4.2.39';      # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $LOGLEVEL;                     # flag for benchmark loggings
@@ -160,11 +160,11 @@ sub start {
 				if (!-d $dir->{configdir}) { mkdir($dir->{configdir}); }
 				File::Copy::Recursive::dircopy
 					("$dir->{sharedir}*", $dir->{configdir}) || warn("$!");
-				File::Find::find(sub{
-						if    (-d $_) { chmod(0750,$_) }
-						elsif (-f $_) { chmod(0640,$_) }
-					},$dir->{configdir}
-				);
+				#File::Find::find(sub{
+						#if    (-d $_) { chmod(0750,$_) }
+						#elsif (-f $_) { chmod(0640,$_) }
+					#},$dir->{configdir}
+				#);
 				#foreach (sort keys %$dir) {print "$_ : $dir->{$_}\n";} exit;
 			}
 		}

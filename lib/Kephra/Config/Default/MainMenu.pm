@@ -9,7 +9,6 @@ sub get {
 		{'menu file' => [
 			'item file-new',
 			undef ,
-			'menu file_insert_templates',
 			{'menu file_open file-open' => [
 				'item file-open',
 				'item file-open-dir',
@@ -227,6 +226,7 @@ sub get {
 			'item tool-interpreter-run-document',
 			'item tool-interpreter-stop-document',
 			undef ,
+			'menu insert_templates',
 			'item tool-choose-color',
 		],},
 		{'menu document' => [

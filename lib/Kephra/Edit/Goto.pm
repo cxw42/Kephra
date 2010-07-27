@@ -143,7 +143,7 @@ sub next_related_brace{
 
 =head1 NAME
 
-Kephra::App::Goto - 
+Kephra::App::Goto - caret jump functions
 
 =head1 DESCRIPTION
 

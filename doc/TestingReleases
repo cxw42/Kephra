@@ -1,4 +1,10 @@
+release notes of all Kephra testing versions
+
 0.4.3 (0.4.2.30)
+ * utf handling
+   + open, change and save utf files
+   ! conversion may still be problem
+   ! utf menu label work again
  * new document property: encoding
    + autodetect, read and write utf files
    + status field codepage
@@ -26,13 +32,16 @@
      + transparent mode
      + you can combine stay on top and transparent mode with Ctrl+Alt+F11
      + end all modes with esc key
+   ~ code folding changes
+     ~ fold function from context menu respond to clicked location
+     ~ change sibling to level fold
+     ~ chenges key binding, all function are now <strg|alt> [+ <shift>] + <+>
    + editpanel margin context menu
    + all context menu now are optional
    + switch menubar visibility
    + can assign icons to menus (currently on file open and close )
    + set search dialog transparency unter dialog > search > transparency
    + run script icon in main toolbar
-   ~ change sibling to level fold
    [ some icons reworked (jenne++)
    [ rearranged file and tools menu
    [ splitter are now without live update, has lot less flicker
@@ -54,32 +63,6 @@
  ! splashscreen works again
  ! fixed test suite
 
-0.5 {0.4.2.8}
- * code folding support
-   + 4 toggle functions: fold here, recursive, level, all
-   + usable with mouse (fold margin) and keys (<alt>[+<shift>]+(<+>|<->))
-   + 2 styles for folding marker: boxes and arrows
-   + optional flagline shows where text is folded
- * new tabbar
-   + move tabs with mouse and keys
-   + close icons on each tab
-   + document menu in the right corner
- * new document property: encoding (8bit/utf-8)
- * marker added
- + improved stausbar
-   + created from a config file
-   + context help
- + new tools
-   + color picker
-   + display @INC and %ENV
-   + output selection in dec and hex
-   + note selection on shift+f4
- + changeable interpreter path
- + convert HTML enteties
- + open online doc and native lang forum URL in default browser
- + file missing dialog
- ~ end of line chars of new docs depends now on the running OS
- [ on splitters can now be clicked
 
 0.4.2
  * folding changes
@@ -145,54 +128,6 @@
  - removed stupid restrictions not to open emty files
  ! 14 bugfixes
  
-
-0.4
- * Searchbar
- * notepad panel extension
- * output panel extension for perl programs
- * new contextmenus: (on selected text, on searchbar, on tabbar, on statusbar)
- * customizable mainmenu, toolbars, contextmenus
- * File history menu
- * 10 doc spanning bookmarks
- * 8 new lexer: avennue BAAN .bat diff errorlist makefile matlab property
- * german with umlauts
- * files directories and can now be dragged into editpanel
- + new file with a template menu
- + open all files from a dir
- + rename files through file menu
- + load and store a backup file session
- + delete back tab, <shift>+<back> deletes now to next indention level
- + brace navigation with <alt>+<arrow keys>
- + goto last edit (<Ctrl>+<Shift>+<G>)
- + search dialog now quicker, less flicker and with drag n drop in 
- + customizable title bar
- + optional new and close icon in tabbar
- + rectangular selection with keyboard (<alt>+<shift>)
- + number of selected lines are displayed in statusbar
- + blockformat <ctrl>+<shift>+<b>, menu edit > format
- + line wrap under menu edit > format
- + firstname: new document property holds filname without ending
- + can use [$$firstname] as template variable too
- + reload templates on save
- + move document line and page wise from searchbar input
- + tabbar tabs numbering optional config key: app > tabbar > number_tabs
- + tabbar filename ending optional: app > tabbar > file_info = [first]name
- + autonotify (conf key file > open > auto_notify )
- + autosave (conf key file > save > auto_save )
- + Perl 5.10 keywords in the perl lexer
- + doc navigation from searchbar (hold <ctrl>)
- ~ changed statusbar onclick behaviour
- ~ better goto line dialog
- ~ format and convert function much faster
- ~ block navigation now on <Alt>+<PgUp>|<PgDown>
- ~ document switch back now on <Ctrl>+<back>
- ~ much less flicker in toolbar and tabbar
- ~ menu und toolbar items can now disable, be checked by internal events
- [ checkable and disable menu items
- [ shown pathes now OS compatibel
- ] runs with newest Wx and newest Perl
- ] added and removed dependencies
-
 
 0.3.10
  * notepad panel extension
@@ -378,7 +313,6 @@
  ] remember directory of session file
  ! php lexer fixed
  ! over 35 bugfixes
-
 
 0.2.3
  ? feature enhancement and bug fix
