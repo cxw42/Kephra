@@ -1,3 +1,6 @@
+0.4.3.2
+ ^ rerelease as CPAN stable version
+
 0.4.3.1
  ] xp mode for boot sequence
  " tool-output-selection-hex now on key alt+shift+f5
@@ -1563,7 +1566,7 @@
 
 
 Legend:
- " purpose
+ ^ purpose
  * big new feature
  + new feature
  ~ change
