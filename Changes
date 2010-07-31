@@ -1,12 +1,17 @@
+0.4.3.1
+ ] xp mode for boot sequence
+ " tool-output-selection-hex now on key alt+shift+f5
 
+0.4.3
+ ' update credits
+ 
 0.4.2.39
- + copy surrounding quoted string
+ + copy surrounding quoted string with <strg>+<alt>+<C>
  " getting default settings of new files when opening empty files
  [ moving insert templates into tools menu
  ! file history menu works again
  ! crash when open empty files
 
-0.4.3
  
 0.4.2.38
  + marker function do also from context menu pos
@@ -15,7 +20,7 @@
  + folding per context menu on mouse position (idea my murphy++)
  " item view-editpanel-fold-toggle-level in markermargin_contextmenu was missing
  " searchbar autofocus no longer default
- ! cripple searchbar to make it save for now
+ ! cripple statusbarbar coding field to make it save for now
 
 0.4.2.36
  ! update of module::install to 1.0

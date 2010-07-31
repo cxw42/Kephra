@@ -959,6 +959,7 @@ sub get {
 				'interpreter-run-document' => 'f5',
 				'interpreter-stop-document' => 'shift+f5',
 				'output-selection-dec' => 'ctrl+shift+f5',
+				'output-selection-hex' => 'alt+shift+f5',
 			},
 			document => {
 				change => {

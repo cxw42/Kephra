@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 our $NAME        = __PACKAGE__;    # name of entire application
-our $VERSION     = '0.4.3';        # version of entire app
+our $VERSION     = '0.4.3.1';        # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $LOGLEVEL;                     # flag for benchmark loggings
@@ -143,31 +143,31 @@ sub start {
 				                   or $config_tree->{about}{version} ne $Kephra::VERSION;
 			}
 		}
-		if ($copy_defaults) {
-			my $dir = File::UserConfig->new();
-			if ($^O =~ /(?:linux|darwin)/i) {
-				for (@INC) {
-					if (!-d File::Spec->catdir($_, $dir->dist())) { next; }
-					$dir->{sharedir_} = $_;
-					last;
-				}
-				File::Find::find( sub { 
-						$dir->{sharedir} = $File::Find::dir 
-						if ($File::Find::dir =~ /$dir->{dist}.+$config_sub_dir$/)
-					}, $dir->{sharedir_}
-				);
-				$dir->{sharedir} =~ s/$config_sub_dir$//;
-				if (!-d $dir->{configdir}) { mkdir($dir->{configdir}); }
-				File::Copy::Recursive::dircopy
-					("$dir->{sharedir}*", $dir->{configdir}) || warn("$!");
+		#if ($copy_defaults) {
+			#my $dir = File::UserConfig->new();
+			#if ($^O =~ /(?:linux|darwin)/i) {
+				#for (@INC) {
+					#if (!-d File::Spec->catdir($_, $dir->dist())) { next; }
+					#$dir->{sharedir_} = $_;
+					#last;
+				#}
+				#File::Find::find( sub { 
+						#$dir->{sharedir} = $File::Find::dir 
+						#if ($File::Find::dir =~ /$dir->{dist}.+$config_sub_dir$/)
+					#}, $dir->{sharedir_}
+				#);
+				#$dir->{sharedir} =~ s/$config_sub_dir$//;
+				#if (!-d $dir->{configdir}) { mkdir($dir->{configdir}); }
+				#File::Copy::Recursive::dircopy
+					#("$dir->{sharedir}*", $dir->{configdir}) || warn("$!");
 				#File::Find::find(sub{
 						#if    (-d $_) { chmod(0750,$_) }
 						#elsif (-f $_) { chmod(0640,$_) }
 					#},$dir->{configdir}
 				#);
 				#foreach (sort keys %$dir) {print "$_ : $dir->{$_}\n";} exit;
-			}
-		}
+			#}
+		#}
 	}
 	my $config_dir = File::Spec->catdir($basedir, $config_sub_dir);
 	Kephra::Config::_dir( $config_dir );
@@ -329,7 +329,7 @@ and some help texts to be opened as normal files
 
 =head2 Past
 
-A more comlete roadmap you can find L<here|../doc/Roadmap>.
+A more comlete roadmap you can find L<here|/../doc/Roadmap>.
 
 =item  Stable 0.4
 
@@ -365,19 +365,12 @@ things we missed, but config dialog was delayed.
 
 =item To Do
 
-- fix and extend test suite
-
-=item Testing 0.4.4
-
-- fix config install under linux and mac
+- command line
+- tree lib tool
 - config dialog
+- panel API
 - plugin API 
 - file browser or tree lib extension
-
-
-=item Testing 0.4.5
-
-- config dialog
 - stability for 0.5
 
 =head2 Plans up to Stable 0.6

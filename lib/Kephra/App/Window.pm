@@ -119,17 +119,17 @@ sub switch_max_editpanel_mode {
 	eval_max_editpanel_flag();
 }
 sub eval_max_editpanel_flag {
-	my $v = get_max_editpanel_mode;
+	my $v = get_max_editpanel_mode();
 	Kephra::App::MenuBar::switch_visibility()
-		if Kephra::App::MenuBar::get_visibility == $v;
+		if Kephra::App::MenuBar::get_visibility() == $v;
 	Kephra::App::MainToolBar::switch_visibility()
-		if Kephra::App::MainToolBar::get_visibility == $v;
+		if Kephra::App::MainToolBar::get_visibility() == $v;
 	Kephra::App::TabBar::switch_visibility()
-		if Kephra::App::TabBar::get_visibility == $v and not $v;
+		if Kephra::App::TabBar::get_visibility() == $v and not $v;
 	Kephra::App::SearchBar::switch_visibility() 
-		if Kephra::App::SearchBar::get_visibility == $v;
+		if Kephra::App::SearchBar::get_visibility() == $v;
 	Kephra::App::StatusBar::switch_visibility() 
-		if Kephra::App::StatusBar::get_visibility == $v;
+		if Kephra::App::StatusBar::get_visibility() == $v;
 }
 
 sub restore_normal_mode {

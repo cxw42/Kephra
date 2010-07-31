@@ -1,15 +1,16 @@
 --- #YAML:1.0
 name: Kephra
-version: 0.4.3
+version: 0.3.0.1
 abstract: crossplatform GUI Text-Editor
 author: lichtkind@cpan.org
 license: gpl
 distribution_type: module
-generated_by: Module::Install version 0.77
+generated_by: Module::Install version 1.00
 no_index: 
   directory: 
     - doc
     - inc
+    - lib/Kephra
     - share
     - t
     - xt
@@ -26,6 +27,7 @@ requires:
   Wx:   0.91
   Wx-Perl-ProcessStream: 0
 resources:
-    homepage: http://kephra.sf.net
-    repository: http://kephra.svn.sourceforge.net/viewvc/kephra/dev/base/
-    MailingList: http://lists.sourceforge.net/lists/listinfo/kephra-tester
+  homepage: http://kephra.sf.net
+  repository: http://kephra.svn.sourceforge.net/viewvc/kephra/dev/base/
+  mailinglist: http://lists.sourceforge.net/lists/listinfo/kephra-tester
+  license: http://www.gnu.org/licenses/gpl-2.0.html

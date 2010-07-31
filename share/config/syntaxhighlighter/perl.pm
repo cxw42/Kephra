@@ -1,11 +1,9 @@
 package syntaxhighlighter::perl;
-$VERSION = '0.04';
+$VERSION = '0.05';
 
 sub load {
-    use Wx qw(wxSTC_LEX_PERL wxSTC_H_TAG);
-
-    $_[0]->SetLexer( wxSTC_LEX_PERL );         # Set Lexers to use
-    $_[0]->SetKeyWords(0,'NULL 
+    $_[0]->SetLexer( &Wx::wxSTC_LEX_PERL );         # Set Lexers to use
+    $_[0]->SetKeyWords(0, 'NULL 
 __FILE__ __LINE__ __PACKAGE__ __DATA__ __END__ __WARN__ __DIE__
 AUTOLOAD BEGIN CHECK CORE DESTROY END EQ GE GT INIT LE LT NE UNITCHECK 
 abs accept alarm and atan2 bind binmode bless break
@@ -36,7 +34,7 @@ tell telldir tie tied time times tr truncate
 uc ucfirst umask undef unless unlink unpack unshift untie until use utime 
 values vec wait waitpid wantarray warn when while write x xor y');
 # Add new keyword.
-# $_[0]->StyleSetSpec( wxSTC_H_TAG, "fore:#000055" ); # Apply tag style for selected lexer (blue)
+# $_[0]->StyleSetSpec( &Wx::wxSTC_H_TAG, "fore:#000055" ); # Apply tag style for selected lexer (blue)
 
  $_[0]->StyleSetSpec(1,"fore:#ff0000");                                     # Error
  $_[0]->StyleSetSpec(2,"fore:#aaaaaa");                                     # Comment

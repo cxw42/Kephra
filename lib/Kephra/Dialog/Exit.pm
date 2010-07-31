@@ -36,7 +36,7 @@ sub save_on_exit {
 		my ( $x_size,     $y_size );
 		my ( $file_name,  $check_label );
 		my $align_lc = &Wx::wxLEFT | &Wx::wxALIGN_CENTER_VERTICAL;
-		my $l10n = Kephra::Config::Localisation::strings->{dialog}{general};
+		my $l10n = Kephra::Config::Localisation::strings()->{dialog}{general};
 
 		# generating checkbox list of unsaved files
 		for ( @{ Kephra::Document::Data::all_nr() } ) {

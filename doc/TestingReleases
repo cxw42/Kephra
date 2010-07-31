@@ -1,14 +1,14 @@
 release notes of all Kephra testing versions
 
-0.4.3 (0.4.2.30)
+0.4.3
  * utf handling
    + open, change and save utf files
-   ! conversion may still be problem
-   ! utf menu label work again
- * new document property: encoding
+   + new document property: encoding
    + autodetect, read and write utf files
    + status field codepage
    [ added encoding menu under document > encoding
+   ! conversion may still be problem
+   ! utf menu label work again
  * Marker
    + goto prev|next [global], set/unset or delete marker
    + set/unset marker and bookmarks by mouse
@@ -20,6 +20,7 @@ release notes of all Kephra testing versions
    + output selection in dec and hex
    + output %ENV 
    + notepad has line move and goto search bar
+   ~ templates moved into tools folder
  + reworked UI
    + romanian localisation
    + loading statusbar from config
@@ -35,7 +36,7 @@ release notes of all Kephra testing versions
    ~ code folding changes
      ~ fold function from context menu respond to clicked location
      ~ change sibling to level fold
-     ~ chenges key binding, all function are now <strg|alt> [+ <shift>] + <+>
+     ~ changed key binding, all function are now <strg|alt> [+ <shift>] + <+>
    + editpanel margin context menu
    + all context menu now are optional
    + switch menubar visibility
@@ -48,6 +49,7 @@ release notes of all Kephra testing versions
    ~ autoconverts of EOL are now visible and easy to undo
  + save and restore textfold state in sessions and file history
  + writes files also in missing dirs
+ + refresh autosaved configs after cpan update
  ~ line_nr margin width autosize works now per doc
  ~ current dir is now always synched with current file
  ' updated german help-forum link
