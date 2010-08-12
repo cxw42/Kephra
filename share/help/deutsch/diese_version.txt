@@ -1,6 +1,6 @@
 
        --------------------
-      | Kephra Version 0.4 |
+      | Kephra Version 0.5 |
        --------------------
 
 
@@ -16,31 +16,26 @@
 
  - Willkommen bei Kephra. Dieser Editor wird entwickelt um deine Vorstellungen
    zu Verwirklichen. Für Anregung, Dank und Änderungswünsche besuch unsere Seite
-   kephra.sf.net . Mehr Willkommen und über dieses Projekt finest du am Menü-
+   kephra.sf.net . Mehr Willkommen und über dieses Projekt findest du am Menü-
    punkt Hilfe > Willkommen.
 
- - Dies ist eine sogenannte, stabile Version für den täglichen gebrauch. Sie
+ - Dies ist eine sogenannte stabile Version für den täglichen Gebrauch. Sie
    enthält nur gut getestete Funktionen und Fehler werden meist schnellstmöglich
    mit dem nächsten Patchlever behoben. Wenn du aber neuere Funktionen gleich
-   verwenden willst oder mit testen helfen möchtest, verwende Bitte Testversionen
-   mit dreistellige Versionsnummern. Tägliche Versionen mit 4 sind nur für ganz
-   mutige.
+   verwenden willst oder beim Testen dieser mithelfen möchtest, verwende Bitte
+   Testversionen mit dreistellige Versionsnummern. Tägliche Entwicklerversionen
+   mit 4 sind nur für ganz mutige.
 
 
  2. Zusammenfassung der Neuheiten
-    + Suchzeile am unteren Ende
-    + die ersten 2 Erweiterungen
-    + wesentlich bessere drag'n drop-Unterstützung
-    + 10 dateiübergreifende Lesezeichen und Geh zur letzten Änderung
-    + Kontexmenüs über markiertem Text und der Reiterleiste, die nun 2 optionale
-      Knöpfe und bewegliche Reiter hat.
-    + Menüs für zuletzt geschloßene Dateien und Templates
-    + alle Menüs und Leisten haben Einträge die Zustände kennen oder Häkchen und
-      können auf Ereignisse und Informationen reagieren
-    + alle Menüs und Werkzeugleisten sind mit einfachen yaml-Dateien angepassbar
-    + Menülabels haben Umlaute
-    + autosave, autonotify and blockformat
-    + Dateien umbenennen und alle Dateien eines Verzeichnisses öffnen
+    * lesen und schreiben von Unicode-Dateien
+    * Code falten
+    * Installation über CPAN für Linux, Win und Mac
+    + bewegliche Reiter
+    + 7 neue Werkzeuge
+    + 3 neue Hauptfenstermodi
+    + Verbindungen zu Netzhilfen im Menü
+    + vieles mehr
 
 
  3. NEU in dieser Version (ausführlich)

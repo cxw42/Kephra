@@ -4,27 +4,33 @@
    ----------------------------------
 
 Key Order :
- + simpel keys, Shift+, 
- + Ctrl+, Ctrl+Shift+, 
- + Alt+, Alt+Shift+, 
- + Ctrl+Alt+, Ctrl+Alt+Shift+
+ simpel keys, Shift+, Ctrl+, Ctrl+Shift+, Alt+, Alt+Shift+, Ctrl+Alt+, Ctrl+Alt+Shift+
 
+     F2                    jump to next marker of this document
+     F3                    find next
+     F4                    jump into notepad
+     F5                    run Perl program
+     F11                   toggle full screen mode
      Ins                   switch between insert and overwrite mode
      Del                   delete selection
      Pos1                  jump to line begin or first wordcharacter(push twice)
      End                   jump to line end
      PgUp                  move page up
      PgDown                move page down
-     F3                    find next
-     F4                    jump into notepad
-     F5                    run Perl program
 
+     Shift+F2              jump to previous marker of this document
      Shift+F3              find previous
      Shift+F5              stop Perl program
+     Shift+F11             toggle max edit panel mode
      Shift+Back            tabweise einrücken
      Shift+PageUp          expand selection 1 page down
      Shift+PageDown        expand selection 1 page up
 
+     Ctrl+F2               toggle marker here
+     Ctrl+F3               save selection as find item
+     Ctrl+F4               toggle notepad
+     Ctrl+F5               toggle output panel
+     Ctrl+F11              toggle stay on top mode
      Ctrl+Space            indent selection a space
      Ctrl+Back             jump to last selected file
      Ctrl+Tab              indent selection a tab
@@ -37,14 +43,14 @@ Key Order :
      Ctrl+End              goto text end
      Ctrl+PageUp           select previous open document
      Ctrl+PageDown         select next open document
-     Ctrl+ +               make font larger (zoom)
-     Ctrl+ -               make font smaller (zoom)
+     Ctrl+ +               toggle fold here
+     Ctrl+1..9             go to bookmark 1..9
      Ctrl+A                select all text of the document
      Ctrl+C                copy selection
      Ctrl+D                double selection/line
      Ctrl+F                search bar
      Ctrl+G                goto line
-     Ctrl+H                stream comment (<!-- HTML -->)
+     Ctrl+I                add stream comment (<!-- HTML -->)
      Ctrl+K                block comment (# perl, ruby, python, php)
      Ctrl+L                delete line
      Ctrl+N                new file
@@ -57,8 +63,10 @@ Key Order :
      Ctrl+W                replace (clipboard & selection)
      Ctrl+X                cut selection
      Ctrl+Z                undo
-     Ctrl+1..9             go to bookmark 1..9
 
+     Ctrl+Shift+F2         delete all marker in this document
+     Ctrl+Shift+F3         save selection as replace item
+     Ctrl+Shift+F5         show selection as decimal in output panel
      Ctrl+Shift+Space      dedent selection a space
      Ctrl+Shift+Tab        dedent selection a tab
      Ctrl+Shift+Del        delete line
@@ -67,12 +75,16 @@ Key Order :
      Ctrl+Shift+Right      expand selection 1 word right
      Ctrl+Shift+BildUp     move tab right
      Ctrl+Shift+PageDown   move tab left
-     Ctrl+Shift+B          stream uncomment
+     Ctrl+Shift+F5         show selection as hexadecimal in output panel
+     Ctrl+Shift+ +         toggle fold here recursive
+     Ctrl+Shift+1..9       toggle bookmark 1..9
+     Ctrl+Shift+B          block format on right margin
      Ctrl+Shift+C          copy line
      Ctrl+Shift+D          double line
      Ctrl+Shift+F          search dialog
      Ctrl+Shift+G          goto last edit
-     Strg+Shift+J          join lines
+     Ctrl+Shift+I          remove stream comment (<!-- HTML -->)
+     Ctrl+Shift+J          join lines
      Ctrl+Shift+L          delete line left from cursor
      Ctrl+Shift+O          reopen file
      Ctrl+Shift+P          block uncomment (perl, php, python)
@@ -82,17 +94,24 @@ Key Order :
      Ctrl+Shift+W          replace current line with clipboard
      Ctrl+Shift+X          cut line
      Ctrl+Shift+Z          redo
-     Ctrl+Shift+1..9       toggle bookmark 1..9
 
+     Alt+F2                jump to previous marker in all documents
+     Alt+F3                replace and goto next findig
+     Alt+F11               toggle transparency mode
      Alt+Left              jump to previous brace
      Alt+Right             jump to next brace
      Alt+Up                jump to previous brace of same kind
      Alt+Down              jump to next brace of same kind
      Alt+PgUp              jumps to the begin of block or paragraph
      Alt+PgDown            jumps to the next block or paragraph
+     Alt+ +                toggle fold level   
      Alt+Q                 quit program
      Alt+Z                 fast undo
 
+     Alt+Shift+F3          replace and goto previous findig
+     Alt+Shift+F2          jump to next marker in all documents
+     Alt+Shift+F5          show selection as hexadecimal in output panel
+     Alt+Shift+ +          toggle fold all
      Alt+Shift+I           show Info dialog
      Alt+Shift+K           show keyboard map
      Alt+Shift+O           reopen file
@@ -100,6 +119,7 @@ Key Order :
      Alt+Shift+S           save file copy under ...
      Alt+Shift+Z           fast redo
 
+     Ctrl+Alt+F3           goto first findig
      Ctrl+Alt+Up           move selection up (or current row nothing selected)
      Ctrl+Alt+Down         move selection or line down
      Ctrl+Alt+PgUp         move selection or line page up
@@ -108,14 +128,19 @@ Key Order :
      Ctrl+Alt+Right        move selection right
      Ctrl+Alt+O            reload all open files
      Ctrl+Alt+Q            close all open files
+     Ctrl+Alt+R            replace all but ask every time
+     Ctrl+Alt+M            toggle menu bar
      Ctrl+Alt+S            save all open files
+     Ctrl+Alt+T            toggle tab bar
      Ctrl+Alt+Z            undo history begin
 
-     Ctrl+Alt+Shift+R      replace all without confirm
+     Ctrl+Alt+Shift+F2     delete all marker
+     Ctrl+Alt+Shift+F3     goto last finding     
+     Ctrl+Alt+Shift+R      replace all without asking
      Ctrl+Alt+Shift+S      rename file and document
      Ctrl+Alt+Shift+Z      undo history end
 
-
+================================================================================
 
 Thematical Order:
  - File Operation
@@ -168,20 +193,42 @@ Thematical Order:
      Alt+PgDown            jumps to the next block or paragraph
 
 
+ - Text Folding
+ 
+     Ctrl+ +               toggle fold here
+     Ctrl+Shift+ +         toggle fold here recursive
+     Alt+ +                toggle fold level
+     Alt+Shift+ +          toggle fold all
+
+
  - Search and Replace
 
-     F3                    goto next findig
      Shift+F3              goto previous finding
+     F3                    goto next findig
      Ctrl+Alt+F3           goto first findig
      Ctrl+Alt+Shift+F3     goto last finding
 
      Ctrl+F3               save selection as find item
      Ctrl+Shift+F3         save selection as replace item
 
-     Alt+F3                replace and goto next findig
      Alt+Shift+F3          replace and goto previous findig
-     Ctrl+Alt+R            replace all but ask every time
-     Ctrl+Alt+Shift+R      replace all without asking
+     Alt+F3                replace and goto next findig
+     Ctrl+Alt+R            replace all
+     Ctrl+Alt+Shift+R      replace all but ask each team
+
+
+ - Marker and Bookmarks
+
+     Shift+F2              jump to previous marker of this document
+     F2                    jump to next marker of this document
+     Alt+F2                jump to previous marker in all documents
+     Alt+Shift+F2          jump to next marker in all documents
+     Ctrl+F2               toggle marker here
+     Ctrl+Shift+F2         delete all marker in this document
+     Ctrl+Alt+Shift+F2     delete all marker
+
+     Ctrl+1..9             jump to this bookmark
+     Ctrl+Shift+<1..9>     toggle bookmark 1..9 on caret
 
 
  - Select Operation
@@ -211,7 +258,7 @@ Thematical Order:
      Ctrl+W                replace (clipboard & selection)
      Ctrl+X                cut selection
 
-     Strg+Shift+J          join lines
+     Ctrl+Shift+J          join lines
      Ctrl+Alt+cursor key   move selection or line
 
 
@@ -234,8 +281,11 @@ Thematical Order:
  - Tools
 
      F4                    jump into notepad
-     F5                    run Perl program
+     Shift+F4              add selection to notepad
+     F5                    run Perl program, show result in output panel
      Shift+F5              stop Perl program
+     Ctrl+Shift+F5         show selection as decimal in output panel
+     Alt+Shift+F5          show selection as hexadecimal in output panel
 
 
  - Dialogs
@@ -245,3 +295,15 @@ Thematical Order:
      Ctrl+R                replace dialog
      Ctrl+G                goto line
      Alt+Shift+I           show Info dialog
+
+
+ - View
+
+     F11                   toggle full screen mode
+     Shift+F11             toggle max edit panel mode
+     Ctrl+F11              toggle stay on top mode
+     Alt+F11               toggle transparency mode
+     Ctrl+Alt+M            toggle menu bar
+     Ctrl+Alt+T            toggle tab bar
+     Ctrl+F4               toggle notepad
+     Ctrl+F5               toggle output panel

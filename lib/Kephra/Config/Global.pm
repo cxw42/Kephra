@@ -1,5 +1,5 @@
 package Kephra::Config::Global;
-our $VERSION = '0.28';
+our $VERSION = '0.29';
 
 use strict;
 use warnings;
@@ -7,6 +7,26 @@ use warnings;
 # handling main config files under /config/global/
 my %settings;
 sub settings { \%settings }
+sub _settings {
+	my $conf = shift;
+	%settings = %$conf  if ref $conf eq 'HASH';
+	\%settings;
+}
+
+sub merge_hash_into_settings {
+	my $conf = shift;
+	return unless ref $conf eq 'HASH';
+	_settings( Kephra::Config::Tree::update( $conf, settings() ) );
+}
+
+sub merge_subfile_into_settings {
+	my $file = shift;
+	return unless $file;
+	$file = Kephra::Config::filepath( _sub_dir(), 'sub', $file );
+	return unless -r $file;
+	merge_hash_into_settings( Kephra::Config::File::load($file) );
+}
+
 
 sub _sub_dir {'global'}
 my ($auto_file, $current_file);

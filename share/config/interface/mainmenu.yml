@@ -223,6 +223,9 @@ full_menubar:
       -
       - menu insert_templates
       - item tool-choose-color
+      -
+      - item tool-perl-copy-string
+      - item tool-perl-insert-last-var
   -
     menu document:
       -

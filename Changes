@@ -1,3 +1,15 @@
+
+0.4.3.3
+ + insert_last_perl_var
+ ~ replace to nothing again
+ ? added t/04_config_data_tree.t
+ " advanced czech localisation
+ " added keyword default to perl lexer def 
+ ' updated keymap
+ ' updated navigation
+ [ added tool-perl-copy-string and tool-perl-insert-last-var to tool menu
+ ! doc lang selection
+
 0.4.3.2
  ^ rerelease as CPAN stable version
 

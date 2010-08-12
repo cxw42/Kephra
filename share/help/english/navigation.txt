@@ -21,13 +21,14 @@ Toolbar:
  the mouse.
 
 Tabbar:
- shows which files are currently open and some information if the files are 
- unsaved or readonly. You can select the active or even close files(currently 
- only the selected) via tabbar.
+ shows which files are currently open and if the file is unsaved (*),
+ readonly (#) or an activ config file($). Tabs can be selected, moved and closed.
 
 Context menu: 
  opens with a click of the right mouse button and provides most important 
- functions that stay in connection with the place the menu is called. 
+ functions that stay in connection with the place the menu is called. This
+ menus are connected with the edit panel, selected text, left margin and most
+ status panels.
  
 Status bar: 
  Is located at the bottom line of the main window. It provides

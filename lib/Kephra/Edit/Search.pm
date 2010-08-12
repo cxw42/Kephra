@@ -547,7 +547,7 @@ sub replace_all {
 	my $line           = $ep->GetCurrentLine;
 	my $len            = _exist_find_item();
 	my $replace_string = get_replace_item();
-	if ($len) {
+	#if ($len) { # forbid replace with nothing
 		if (    $menu_call
 		    and $sel_begin != $sel_end 
 			and $sel_end - $sel_begin > $len ) {
@@ -586,7 +586,7 @@ sub replace_all {
 		$ep->GotoLine($line);
 		refresh_replace_history;
 		Kephra::Edit::_keep_focus();
-	}
+	#} # end of don't replace nothing
 }
 
 sub replace_confirm {

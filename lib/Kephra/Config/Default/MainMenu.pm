@@ -228,6 +228,9 @@ sub get {
 			undef ,
 			'menu insert_templates',
 			'item tool-choose-color',
+			undef ,
+			'item tool-perl-copy-string',
+			'item tool-perl-insert-last-var',
 		],},
 		{'menu document' => [
 			{'menu document_change' => [

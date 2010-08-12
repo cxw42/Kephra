@@ -1,6 +1,7 @@
 #!/usr/bin/perl -w
 #
-# Compile Testing for Kephra
+# Compile Testing for Kephra:
+#     looking if all expected Modules are there and do compile
 #
 
 BEGIN {

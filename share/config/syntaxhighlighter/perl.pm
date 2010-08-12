@@ -9,7 +9,7 @@ AUTOLOAD BEGIN CHECK CORE DESTROY END EQ GE GT INIT LE LT NE UNITCHECK
 abs accept alarm and atan2 bind binmode bless break
 caller chdir chmod chomp chop chown chr chroot close closedir cmp connect
 continue cos crypt
-dbmclose dbmopen defined delete die do dump
+dbmclose dbmopen default defined delete die do dump
 each else elsif endgrent endhostent endnetent endprotoent endpwent endservent 
 eof eq eval exec exists exit exp 
 fcntl fileno flock for foreach fork format formline 

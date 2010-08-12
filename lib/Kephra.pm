@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 our $NAME        = __PACKAGE__;    # name of entire application
-our $VERSION     = '0.4.3.2';        # version of entire app
+our $VERSION     = '0.4.3.3';      # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $LOGLEVEL;                     # flag for benchmark loggings
@@ -217,7 +217,7 @@ My ideal is a balance of:
 
 =item * low entrance / easy to use
 
-=item * rich feature set (CPAN IDE)
+=item * rich feature set
 
 =item * highly configurable / adaptable to personal preferences
 

@@ -1,5 +1,5 @@
 package Kephra::Config::Localisation;
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use strict;
 use warnings;
@@ -47,17 +47,6 @@ sub change_to {
 
 # open localisation file in the editor
 sub open_file { Kephra::Config::open_file( _sub_dir(), $_[0]) }
-
-sub set_documentation_lang {
-	my $lang = shift;
-	return until $lang;
-	$lang = 'deutsch' if $lang eq 'de';
-	$lang = 'english' unless $lang eq 'deutsch';
-	my $sb = Kephra::Config::Global::_sub_dir();
-	my $file = Kephra::Config::filepath( $sb, 'sub/documentation', $lang.'.conf' );
-	%Kephra::config = %{ Kephra::Config::Tree::merge
-			(Kephra::Config::File::load($file), \%Kephra::config) };
-}
 
 # create menus for l18n selection nd opening l18n files
 sub create_menus {
@@ -114,9 +103,10 @@ sub refresh_index {
 			$new_index{$file_name} = $old_index{$file_name};
 			return;
 		}
-		open $FH, '<', $_ ;
+		open $FH, "<", $_ ;#:encoding(UTF-8)
 		binmode($FH, ":raw:crlf");
 		$line = <$FH>;
+print ":::: $line -\n";
 		chomp $line;
 		if ($line =~ m|<about>|){
 			while (<$FH>){
@@ -125,6 +115,7 @@ sub refresh_index {
 				($k, $v) = split /=/;
 				$k =~ tr/ \t//d;
 				$v =~ /\s*(.+)\s*/;
+print ":::: value : $v\n";
 				$new_index{$file_name}{$k} = $1;
 			}
 		}
@@ -136,6 +127,16 @@ sub refresh_index {
 	YAML::Tiny::DumpFile($index_file, \%new_index);
 	_index(\%new_index);
 	\%new_index;
+}
+
+
+sub set_documentation_lang {
+	my $lang = shift;
+	return until $lang;
+	$lang = $lang eq 'de' ? 'deutsch' : 'english';
+	Kephra::Config::Global::merge_subfile_into_settings (
+		Kephra::Config::filepath('documentation', $lang.'.conf')
+	);
 }
 
 1;

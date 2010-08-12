@@ -152,9 +152,9 @@ sub show_folded_children {
 		#return if $parent == -1;
 	#}
 	#$ep->ToggleFold($parent) unless $ep->GetFoldExpanded($parent);
-	#my $cursor = $ep->GetLastChild( $parent, -1 );
+	#my $cursöor = $ep->GetLastChild( $parent, -1 );
 	#my $level = $ep->GetFoldLevel($parent) >> 16;
-	#while ($cursor > $parent) {
+	#while (@cursor > $parent) {
 		#$ep->ToggleFold($cursor) if $ep->GetFoldLevel($cursor) % 2048 == $level
 		                         #and $ep->GetFoldExpanded($cursor);
 		#$cursor--;

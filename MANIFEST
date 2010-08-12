@@ -310,6 +310,7 @@ share/help/english/welcome.txt
 t/01_compile.t
 t/02_config.t
 t/03_config_default.t
+t/04_config_data_tree.t
 t/10_new.t
 xt/90-pod.t
 xt/91-pod-coverage.t

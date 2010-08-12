@@ -259,29 +259,6 @@ sub insert {
 }
 
 sub insert_at_pos { _ep_ref()->InsertText( @_ ) }
-
-#
-# Edit String (surrounding string encapsulated by "" or '')
-#
-sub string_copy {
-	my $ep = _ep_ref();
-	my $pos  = $ep->GetCurrentPos;
-	my $line = $ep->GetCurrentLine;
-	my $lpos = $ep->PositionFromLine($line);
-	my $befor_text = $ep->GetTextRange($lpos, $pos);
-	my $after_text = $ep->GetTextRange($pos+1, $ep->GetLineEndPosition($line));
-	my $sq_start = rindex $befor_text, '\'';
-	my $sq_stop  = index $after_text, '\'';
-	my $dq_start = rindex $befor_text, '"';
-	my $dq_stop  = index $after_text, '"';
-	return if  ($sq_start == -1 or $sq_stop == -1) 
-	       and ($dq_start == -1 or $dq_stop == -1);
-	_save_positions();
-	if ($sq_start > $dq_start){$ep->SetSelection($lpos+$sq_start+1, $pos+$sq_stop+1)}
-	else                      {$ep->SetSelection($lpos+$dq_start+1, $pos+$dq_stop+1)}
-	copy();
-	_restore_positions();
-}
 #
 # Edit Line
 #
@@ -318,6 +295,40 @@ sub del_line_right  {_ep_ref()->DelLineRight()}
 
 sub eval_newline_sub{}
 
+#
+# special edit functions
+#
+sub copy_surrounding_string { # Edit String (surrounding string encapsulated by "" or '')
+	my $ep = _ep_ref();
+	my $pos  = $ep->GetCurrentPos;
+	my $line = $ep->GetCurrentLine;
+	my $lpos = $ep->PositionFromLine($line);
+	my $befor_text = $ep->GetTextRange($lpos, $pos);
+	my $after_text = $ep->GetTextRange($pos+1, $ep->GetLineEndPosition($line));
+	my $sq_start = rindex $befor_text, '\'';
+	my $sq_stop  = index $after_text, '\'';
+	my $dq_start = rindex $befor_text, '"';
+	my $dq_stop  = index $after_text, '"';
+	return if  ($sq_start == -1 or $sq_stop == -1) 
+	       and ($dq_start == -1 or $dq_stop == -1);
+	_save_positions();
+	if ($sq_start > $dq_start){$ep->SetSelection($lpos+$sq_start+1, $pos+$sq_stop+1)}
+	else                      {$ep->SetSelection($lpos+$dq_start+1, $pos+$dq_stop+1)}
+	copy();
+	_restore_positions();
+}
+
+sub insert_last_perl_var {
+	my $ep = _ep_ref();
+	my $lnr = $ep->GetCurrentLine;
+	return unless $lnr;
+	my $pos  = $ep->GetCurrentPos;
+	my $line = $ep->GetLine($lnr - 1);
+	my $result = $line =~ /([\$@%]\w+)[ -=\(\r\n]/;
+	return unless $1;
+	$ep->InsertText( $pos, $1);
+	$ep->GotoPos($pos + length $1);
+}
 1;
 
 =head1 NAME

@@ -7,7 +7,7 @@
 Any developer of our team is pleased to bring you this program. Please enjoy
 and visit our website for news, help or updates:
 
-                       http://kephra.sourceforge.net   
+                       http://kephra.sf.net   
 
 In case you have questions or comments feel invited to send us them. But please 
 be careful, your suggestions may already be fulfilled or part of our roadmap.

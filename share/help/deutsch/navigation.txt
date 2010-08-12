@@ -42,23 +42,24 @@
 
     Liegt wiederum direkt unterhalb der Werkzeugleiste und zeigt an, welche 
     Dateien grad offen sind und ermöglicht die direkte Wahl der aktuellen Datei
-    mit der Maus. Die Reiter zeigen auch an ob eine Datei gespeichert wurde oder
-    ob sie schreibgeschützt ist. Seit der Version 0.3.1 kann am linken Rand ein
-    Knopf zum erstellen eines neuen leeren Dokuments und am rechten Rand ein 
-    Knopf zum schliessen des aktuellen Dokuments aktiviert werden.
+    mit der Maus. Sie können auch mit Maus oder Tastur verschoben, oder auch
+    direkt geschloßen werden. Die Reiter zeigen auch an ob eine Datei nicht
+    gespeichert ist (*), ob sie schreibgeschützt ist (#) oder ob es eine aktive 
+    Einstellungsdatei ($) ist.
 
 
  Kontextmenü:
 
-    Wird meisst mit einem Rechts-Klick gerufen und öffnet ein Menü dort wo sich 
-    der Mauszeiger befindet. Der Inhalt den Menüs bezieht sich auch meisst auf 
-    das angeklickte Bedienelement (daher der Name). Der Zweck eines Kontextmenüs
-    ist ähnlich dem der Werzeugleiste, man häufig gebrauchtes "schnell bei der
+    Wird meisst mit einem Rechts-Klick gerufen und öffnet wo sich der Mauszeiger
+    befindet ein Menü. Der Inhalt des Menüs bezieht sich auch meißt auf das
+    angeklickte Bedienelement (daher der Name). Der Zweck eines Kontextmenüs ist
+    ähnlich dem der Werzeugleiste, man hat häufig gebrauchtes "schnell bei der
     Hand", auch wenn hier Icon, Name und Tastaturkürzel eines Befehles angezeigt
     wird. Vorteile zur Werkzeugleiste: man muss den Mauszeiger nichts zur
-    Werkzeugleiste bewegen und vieles wird auch verständlicher wenn man es
-    "anfassen" und direkt "verändern" kann. Derzeit gibt es Kontextmenüs nur zum
-    aktuellen Dokument und über einigen Feldern der Statuszeile.
+    Werkzeugleiste oder Menüü bewegen und vieles wird auch verständlicher wenn
+    man es "anfassen" und direkt "verändern" kann. Derzeit gibt es Kontextmenüs
+    nur zum aktuellen Dokument, dem markierten Text, dem linken Rand und über
+    den meisten Feldern der Statuszeile.
 
 
  Statusleiste:

@@ -1,33 +1,35 @@
 release notes of all Kephra stable versions
 
 0.5 {0.4.2.8}
+ * new document property: encoding (8bit/utf-8)
+   + utf works now
  * code folding support
    + 4 toggle functions: fold here, recursive, level, all
-   + usable with mouse (fold margin) and keys (<alt>[+<shift>]+(<+>|<->))
+   + usable with mouse (fold margin) and keys ((<alt>|<ctrl>)[+<shift>]+<+>)
    + 2 styles for folding marker: boxes and arrows
    + optional flagline shows where text is folded
  * new tabbar
    + move tabs with mouse and keys
    + close icons on each tab
    + document menu in the right corner
- * new document property: encoding (8bit/utf-8)
- * marker added
- + improved stausbar
-   + created from a config file
-   + context help
+ * marker added (F2+ or Searchbar or Left Click in Marker margin)
  + new tools
    + color picker
    + display @INC and %ENV
    + output selection in dec and hex
    + note selection on shift+f4
+ + 3 new main window modes: fullscreen, max edit, transparent
+ + improved stausbar, from a config file, with context help
+ + save and restore textfold state in sessions and file history
  + changeable interpreter path
  + convert HTML enteties
  + open online doc and native lang forum URL in default browser
  + file missing dialog
+ + writes files also in missing dirs
  ~ end of line chars of new docs depends now on the running OS
  [ on splitters can now be clicked
  
- 0.4
+0.4
  * Searchbar
  * notepad panel extension
  * output panel extension for perl programs

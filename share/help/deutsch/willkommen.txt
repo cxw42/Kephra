@@ -7,7 +7,7 @@ Alle beteiligten Entwickler sind begeistert daß Du diesen Editor probierst oder
 benutzt. Hab Freude damit und besuch auch unsere Internetseite für Neuigkeiten,
 Hilfe und Updates zu bekommen:
 
-                           http://kephra.sourceforge.net
+                           http://kephra.sf.net
 
 Anregungen und Kritik sind immer erwünscht. Wenn du dir sicher bist das deine
 Vorschläge nicht bereits in der neusten Version umgesetzt wurden oder wir nicht 

@@ -76,7 +76,6 @@ sub get {
 						'page-down' => 'Kephra::Edit::selection_move_page_down()',
 					}
 				},
-				'string-copy' => 'Kephra::Edit::string_copy()',
 				selection => {
 					convert => {
 						uppercase => 'Kephra::Edit::Convert::upper_case()',
@@ -230,6 +229,10 @@ sub get {
 					'env' => 'Kephra::App::Panel::Output::display_env()',
 					'selection-dec' => 'Kephra::App::Panel::Output::display_selection_dec()',
 					'selection-hex' => 'Kephra::App::Panel::Output::display_selection_hex()',
+				},
+				perl => {
+					'insert-last-var' => 'Kephra::Edit::insert_last_perl_var()',
+					'copy-string' => 'Kephra::Edit::copy_surrounding_string()',
 				},
 				'choose-color' => 'Kephra::Dialog::choose_color()',
 			},
@@ -859,7 +862,6 @@ sub get {
 						'page-down' => 'ctrl+alt+pgdn',
 					},
 				},
-				'string-copy' => 'ctrl+alt+c',
 				selection => {
 					comment => {
 						'add-perl' => 'ctrl+k',
@@ -960,6 +962,8 @@ sub get {
 				'interpreter-stop-document' => 'shift+f5',
 				'output-selection-dec' => 'ctrl+shift+f5',
 				'output-selection-hex' => 'alt+shift+f5',
+				'perl-insert-last-var' => 'ctrl+shift+v',
+				'perl-copy-string' => 'alt+shift+c',
 			},
 			document => {
 				change => {
