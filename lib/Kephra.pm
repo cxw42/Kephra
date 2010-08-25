@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 our $NAME        = __PACKAGE__;    # name of entire application
-our $VERSION     = '0.4.3.3';      # version of entire app
+our $VERSION     = '0.4.3.6';      # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $LOGLEVEL;                     # flag for benchmark loggings
@@ -192,7 +192,8 @@ Kephra - crossplatform, GUI-Texteditor along Perl alike Paradigms
 
 =head1 SYNOPSIS
 
-	> kephra [<files>]   # start with certain files open
+	> kephra [<files>]   # 
+certain files open
 
 =head1 DESCRIPTION
 
@@ -217,7 +218,7 @@ My ideal is a balance of:
 
 =item * low entrance / easy to use
 
-=item * rich feature set
+=item * rich feature set (CPAN IDE)
 
 =item * highly configurable / adaptable to personal preferences
 
@@ -256,6 +257,8 @@ but also more than one way use an editor. You could:
 
 =back
 
+=back
+
 So the question should not be vi or emacs, but how to combine the different
 strengths (command input field and optional emacs-like keymap possibilities).
 Perl was also a combination of popular tools and concepts into a single
@@ -284,6 +287,8 @@ From the beginning Kephra was a useful programm and will continue so.
 
 Beside all the basic stuff that you would expect I listed here some features
 by category in main menu:
+
+=over
 
 =item File
 
@@ -325,11 +330,15 @@ localisation (translate just one file to transelate the app), syntaxmodes
 
 and some help texts to be opened as normal files
 
+=back
+
 =head1 ROADMAP
 
 =head2 Past
 
-A more comlete roadmap you can find L<here|/../doc/Roadmap>.
+A more comlete roadmap you can find L<here|../doc/Roadmap>.
+
+=over
 
 =item  Stable 0.4
 
@@ -361,17 +370,30 @@ things we missed, but config dialog was delayed.
 - better, richer UI
 - more tools
 
+=back
+
 =head2 Future
+
+=over
 
 =item To Do
 
-- command line
-- tree lib tool
+- fix and extend test suite
+
+=item Testing 0.4.4
+
+- fix config install under linux and mac
 - config dialog
-- panel API
 - plugin API 
 - file browser or tree lib extension
+
+
+=item Testing 0.4.5
+
+- config dialog
 - stability for 0.5
+
+=back
 
 =head2 Plans up to Stable 0.6
 
@@ -396,6 +418,8 @@ L<http://kephra.sourceforge.net>
 
 =head1 AUTHORS
 
+=over
+
 =item * Herbert Breunung E<lt>lichtkind@cpan.orgE<gt> (main author)
 
 =item * Jens Neuwerk (author of icons, GUI advisor)
@@ -407,6 +431,8 @@ L<http://kephra.sourceforge.net>
 =item * Gabor Szabo E<lt>szabgab@cpan.orgE<gt> 
 
 =item * Renee Bäcker E<lt>module@renee-baecker.deE<gt> (color picker)
+
+=back
 
 =head1 COPYRIGHT AND LICENSE
 

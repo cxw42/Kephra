@@ -2,22 +2,23 @@
 #
 # Test various miscellaneous configurationh functions
 #
-use strict;
-use warnings;
 BEGIN {
 	$| = 1;
 	push @INC, 'lib';
 }
 
-use Test::More tests => 1;
+use strict;
+use warnings;
+use lib 'lib';
+
+use Test::More tests => 17;
 use Test::NoWarnings;
-#use Test::Exception;
+use Test::Exception;
 #my $tests;
 #
 #plan tests => $tests + 1;
-#
-#
 #use Data::Dumper qw(Dumper);
+use Wx;
 use Kephra::Config;
 #
 #
@@ -32,15 +33,15 @@ sub is_color {
 	is( $it->Blue,  $b, "$name: ->Blue ok"  );
 }
 #
-#SCOPE: {
-	#my $black1 = Kephra::Config::color('000000');
-	#my $white1 = Kephra::Config::color('FFFFFF');
-	#my $black2 = Kephra::Config::color('0,0,0');
-	#my $white2 = Kephra::Config::color('255,255,255');
-	#is_color( $black1, 0, 0, 0, 'hex black' );
-	#is_color( $black2, 0, 0, 0, 'dec black' );
-	#is_color( $white1, 255, 255, 255, 'hex white' );
-	#is_color( $white2, 255, 255, 255, 'dec white' );
+SCOPE: {
+	my $black1 = Kephra::Config::color('000000');
+	my $white1 = Kephra::Config::color('FFFFFF');
+	my $black2 = Kephra::Config::color('0,0,0');
+	my $white2 = Kephra::Config::color('255,255,255');
+	is_color( $black1, 0, 0, 0, 'hex black' );
+	is_color( $black2, 0, 0, 0, 'dec black' );
+	is_color( $white1, 255, 255, 255, 'hex white' );
+	is_color( $white2, 255, 255, 255, 'dec white' );
 #
 	# Check errors
 	#eval {
@@ -52,12 +53,8 @@ sub is_color {
 	#};
 	#like( $@, qr/Unknown color string/, 'Caught bad-string error' );
     #BEGIN { $tests += 4*4 + 2; }
-#}
-#
-#
-#
-#
-#
+}
+
 #####################################################################
 # Kephra::Config::icon_bitmap
 #

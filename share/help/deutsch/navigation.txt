@@ -23,7 +23,8 @@
     umfangreich und verlangt bei der Benutzung manchmal einige Klicks mehr als
     andere Teile der Bedieoberfläche, deswegen sollte man sich häufig gebrauchte
     Funktion an leichter erreichbare Orte auslagern oder man auch unerwünschte
-    Funktionen und Menüs herausnehmen.
+    Funktionen und Menüs herausnehmen. <Strg>+<Alt>+<M> schaltet Sichtbarkeit
+    ein oder aus.
 
 
  Werkzeugleiste(Toolbar):
@@ -45,12 +46,12 @@
     mit der Maus. Sie können auch mit Maus oder Tastur verschoben, oder auch
     direkt geschloßen werden. Die Reiter zeigen auch an ob eine Datei nicht
     gespeichert ist (*), ob sie schreibgeschützt ist (#) oder ob es eine aktive 
-    Einstellungsdatei ($) ist.
+    Einstellungsdatei ($) ist. <Strg>+<Alt>+<T> die Sichtbarkeit ein oder aus.
 
 
  Kontextmenü:
 
-    Wird meisst mit einem Rechts-Klick gerufen und öffnet wo sich der Mauszeiger
+    Wird meist mit einem Rechts-Klick gerufen und öffnet wo sich der Mauszeiger
     befindet ein Menü. Der Inhalt des Menüs bezieht sich auch meißt auf das
     angeklickte Bedienelement (daher der Name). Der Zweck eines Kontextmenüs ist
     ähnlich dem der Werzeugleiste, man hat häufig gebrauchtes "schnell bei der
@@ -58,8 +59,8 @@
     wird. Vorteile zur Werkzeugleiste: man muss den Mauszeiger nichts zur
     Werkzeugleiste oder Menüü bewegen und vieles wird auch verständlicher wenn
     man es "anfassen" und direkt "verändern" kann. Derzeit gibt es Kontextmenüs
-    nur zum aktuellen Dokument, dem markierten Text, dem linken Rand und über
-    den meisten Feldern der Statuszeile.
+    nur zum aktuellen Dokument, dem markierten Text, dem linken Rand, 
+    der Suchzeile und über den meisten Feldern der Statuszeile.
 
 
  Statusleiste:

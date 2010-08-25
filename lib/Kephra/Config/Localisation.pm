@@ -92,22 +92,23 @@ sub refresh_index {
 	my %new_index;
 
 	my ($FH, $file_name, $age, $line, $k, $v);
-	$File::Find::prune = 1;
+	$File::Find::prune = 0;
 	File::Find::find( sub {
 		# don't check directories
 		return if -d $_; 
 		$file_name = $_;
 		$age = Kephra::File::IO::get_age($file_name);
-		# if file is know and unrefreshed just copy loaded <about> data
-		if (exists $old_index{$_} and $age == $old_index{$_}{age}) {
-			$new_index{$file_name} = $old_index{$file_name};
-			return;
-		}
-		open $FH, "<", $_ ;#:encoding(UTF-8)
-		binmode($FH, ":raw:crlf");
+		# if file is known and not refreshed just copy loaded <about> data
+		#if (exists $old_index{$file_name} and $age == $old_index{$file_name}{age}) {
+			#$new_index{$file_name} = $old_index{$file_name};
+			#return;
+		#}
+		open $FH, "<", $file_name ;#:encoding(UTF-8)
+		binmode($FH, ":raw:crlf");#
 		$line = <$FH>;
-print ":::: $line -\n";
 		chomp $line;
+print "$file_name \n";
+print ":::: $line -\n";
 		if ($line =~ m|<about>|){
 			while (<$FH>){
 				chomp;
@@ -115,8 +116,8 @@ print ":::: $line -\n";
 				($k, $v) = split /=/;
 				$k =~ tr/ \t//d;
 				$v =~ /\s*(.+)\s*/;
-print ":::: value : $v\n";
-				$new_index{$file_name}{$k} = $1;
+#print ":::: value : $v\n";
+				#$new_index{$file_name}{$k} = $1;
 			}
 		}
 		$new_index{$file_name}{age} = $age;

@@ -40,7 +40,9 @@ sub _convert_node_2_AoS {
 		}
 	}
 }
-
+#
+# single node manipulation
+#
 sub get_subtree { &subtree }
 sub subtree {
 	my $config = shift;
@@ -52,10 +54,30 @@ sub subtree {
 	return $config;
 }
 
-#############################
-# tree operations
-#############################
+sub flat_keys {
+	my $config = shift;
+	return unless ref $config eq 'HASH';
+	my %flathash;
+	for ( keys %$config ){
+		
+	}
+}
+#sub _parse_and_copy_node {
+	#my ($parent_node, $parent_id) = @_;
+	#no strict;
+	#for ( keys %$parent_node ){
+		#$cmd_id = $parent_id . $_;
+		#$leaf_type = ref $parent_node->{$_};
+		#if (not $leaf_type) {
+			#$list{$cmd_id}{$target_leafe} = $parent_node->{$_}
+				#if $parent_node->{$_};
+		#} elsif ($leaf_type eq 'HASH'){
+			#_parse_and_copy_node($parent_node->{$_}, $cmd_id . '-')
+		#}
 
+#
+# tree operations
+#
 my %copy = (
 	''     => sub {          $_[0]    },
 	SCALAR => sub {       \${$_[0]}   },
@@ -63,7 +85,6 @@ my %copy = (
 	ARRAY  => sub { [map {copy($_)} @{$_[0]} ] },
 	HASH   => sub { my %copy = map { copy($_) } %{$_[0]}; \%copy; },
 );
-
 my %merge = (
 	''     => sub { $_[0] },
 	SCALAR => sub { \${$_[0]} },
@@ -76,22 +97,20 @@ my %merge = (
 			\%copy;
 	},
 );
-
 my %update = (
-	''     => sub { $_[0] },
-	SCALAR => sub { \${$_[0]} },
+	''     => sub { $_[1] },
+	SCALAR => sub { \${$_[1]} },
 	REF    => sub { \update( ${$_[0]}, ${$_[1]} ) },
-	ARRAY  => sub { [map { copy($_) } ( @{$_[0]} ) ] },
+	ARRAY  => sub { [map { copy($_) } ( @{$_[1]} ) ] },
 	HASH   => sub {
 			my %copy = map {
-				$_, exists $_[0]{$_}
+				$_, exists $_[1]{$_}
 					? update( $_[0]{$_}, $_[1]{$_} )
-					: copy( $_[1]{$_} ) 
-				} keys %{$_[1]} ;
+					: copy( $_[0]{$_} ) 
+				} keys %{$_[0]} ;
 			\%copy;
 	},
 );
-
 my %diff = (
 	''     => sub { $_[0] ne $_[1] ? $_[0] : undef },
 	SCALAR => sub { ${$_[0]} ne ${$_[1]} ? \${$_[0]} : undef },
@@ -112,7 +131,6 @@ my %diff = (
 			return scalar keys %diff > 0 ? \%diff : undef;
 	},
 );
-
 sub copy { $copy{ ref $_[0] }( $_[0] ) }
 sub merge {
 	my ($lref, $rref) = (ref $_[0], ref $_[1]);
@@ -123,11 +141,11 @@ sub merge {
 			: $copy{ $rref }( $_[1] )
 	;
 }
-sub update {
+sub update { # left dictates the content, right the structure
 	my ($lref, $rref) = (ref $_[0], ref $_[1]);
 	$lref eq $rref
 		? $update{ $lref }( $_[0], $_[1] )
-		: $copy{ $rref }( $_[1] )
+		: $copy{ $rref }( $_[0] )
 	;
 }
 sub diff {
@@ -137,10 +155,5 @@ sub diff {
 		: $copy{ $lref }( $_[0] ) # undef
 	;
 }
-
-#############################
-# single node manipulation
-#############################
-
 
 1;

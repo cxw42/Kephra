@@ -1,5 +1,5 @@
 package Kephra::Help;
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use strict;
 use warnings;
@@ -34,4 +34,7 @@ sub forum_site {
 		: 'http://www.perlmonks.org'; 
 	_web_page($url);
 }
+
+sub bug_tracker { _web_page('http://sourceforge.net/tracker/?func=add&group_id=169747&atid=851590') }
+sub feature_wish { _web_page('http://sourceforge.net/tracker/?func=add&group_id=169747&atid=851593') }
 1;

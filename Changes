@@ -1,3 +1,35 @@
+todo:
+l18n menu gen
+l18n version update
+l18n compare tool
+Config::Tree join & split keys
+only recent l18n file open with *
+conf reload
+
+automate meta.yml gen
+new zip release
+
+0.4.3.6
+ + left click on selection does copy
+ + middle click inserts selection
+ ~ middle click on searchbar finds next / goto last edit
+ ' improved docs: this version, all functions
+ ! acme unselect selected half document
+
+0.4.3.5
+ + acme like mouse control: cut (left+middle) and paste (left+right)
+ + acme like mouse control: search (middle) or goto last edit (if no text selected)
+ ~ color picker understands now comma seperated decimal values too
+ " switch position of last 2 tool menu item
+ " new command ID: tool insert date time
+ ' improved docs: navigation and this version
+
+0.4.3.4
+ + bug and request tracker links in help menu
+ ~ search in all current block for last_perl_var
+ ? implemented 7 tests for t/04_config_data_tree.t
+ ? uncommented 17 tests for t/02_config.t
+ ' pod fixed by kristian++
 
 0.4.3.3
  + insert_last_perl_var

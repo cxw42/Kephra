@@ -7,7 +7,7 @@
 BEGIN {
 	chdir '..' if -d '../t';
 	$| = 1;
-	unshift @INC, './lib', '../lib';
+	#unshift @INC, './lib', '../lib';
 }
 
 use strict;
@@ -36,7 +36,7 @@ find( sub {
     push @kephra_modules, $module;
 }, 'lib'); # print "@modules"; #use Data::Dumper; # diag Dumper \@modules;
 
-my $tests = 5 + @required_modules + @kephra_modules;
+my $tests = 4 + @required_modules + @kephra_modules;
 plan tests => $tests;
 
 ok( $] >= 5.006, 'Your perl is new enough' );
@@ -49,7 +49,7 @@ use_ok('Kephra', 'main module compiles');
 
 TODO:{
 	# check the starter
-	local $TODO = '"todo header"';
-	script_compiles_ok('bin/kephra','starter compiles');
+	local $TODO = '"todo header"'; # tells what to do
+	#script_compiles_ok('bin/kephra','starter compiles');
 }
 exit(0);

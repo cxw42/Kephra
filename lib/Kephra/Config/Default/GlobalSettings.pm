@@ -1,5 +1,5 @@
 package Kephra::Config::Default::GlobalSettings;
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 use strict;
 use warnings;
@@ -177,6 +177,16 @@ sub get {
 				ID_selection => 'document_selection',
 				visible => 'custom',
 				margin => 1,
+			},
+			control => {custom
+				mouse_function => {
+					'left_middle' => 'edit-cut',
+					'left-right' => 'edit-paste',
+					'middle-selection' => 'find-selection, find-next',
+					'middle' => 'goto-last-edit',
+					},
+				},
+				use_mouse_function => 1,
 			},
 			font => {
 				family => 'Courier New',

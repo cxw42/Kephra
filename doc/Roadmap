@@ -3,21 +3,22 @@
  - tools: outline, tidy, debugger
 
 
-0.6 Toolintegration
- + tidy
+0.7 Toolintegration
  + error highlighting/simple debugger
  + App::Ack
 
-0.5 Plugin API
- + code folding
- + new nicer tabbar with moveable tabs
- + UTF save
- + more converter
- 
-0.4.4 config dialog, real logging
-0.4.3 Plugin API, text encodings, debug tests 
-0.4.2 new tabbar, better folding
+0.6 Plugin API
+ + commandline and tree tool extention
+ + simple file browser
+ + tidy
 
+0.5 polish for daily use
+
+0.4.5 
+0.4.4 fresh docs, about dialog, more localisations
+
+0.4.3 utf safe, cpan install, marker
+0.4.2 new tabbar, better folding
 0.4.1 folding, more converter
 
 0.4 fully configurable

@@ -228,9 +228,10 @@ sub get {
 			undef ,
 			'menu insert_templates',
 			'item tool-choose-color',
+			'item tool-insert-time-date',
 			undef ,
-			'item tool-perl-copy-string',
 			'item tool-perl-insert-last-var',
+			'item tool-perl-copy-string',
 		],},
 		{'menu document' => [
 			{'menu document_change' => [
@@ -526,6 +527,8 @@ sub get {
 			undef ,
 			'item view-webpage-documentation',
 			'item view-webpage-forum',
+			'item view-webpage-bug-tracker',
+			'item view-webpage-feature-wish',
 			undef ,
 			'item view-dialog-keymap',
 			'item view-dialog-info',

@@ -16,7 +16,7 @@ sub _settings {
 sub merge_hash_into_settings {
 	my $conf = shift;
 	return unless ref $conf eq 'HASH';
-	_settings( Kephra::Config::Tree::update( $conf, settings() ) );
+	_settings( Kephra::Config::Tree::update(  settings(), $conf ) );
 }
 
 sub merge_subfile_into_settings {
@@ -47,8 +47,8 @@ sub autoload {
 			and $settings{about}{version} ne $Kephra::VERSION){
 				rename $file, $file . '.old';
 				%settings = %{ Kephra::Config::Tree::update(
+					Kephra::Config::Default::global_settings(),
 					\%settings,
-					Kephra::Config::Default::global_settings()
 				) };
 				$settings{about}{version} = $Kephra::VERSION;
 			}
@@ -265,8 +265,7 @@ sub merge_with {
 sub load_subconfig {
 	my $file = shift;
 	if ( -e $file ) {
-		%settings = %{ Kephra::Config::Tree::merge
-			(Kephra::Config::File::load($file), \%settings) };
+		merge_hash_into_settings( Kephra::Config::File::load($file) );
 		reload_tree();
 	}
 }
@@ -277,6 +276,8 @@ sub open_templates_file {
 }
 
 1;
+
+__END__
 
 =head1 NAME
 

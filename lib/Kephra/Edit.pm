@@ -1,5 +1,5 @@
 package Kephra::Edit;
-our $VERSION = '0.34';
+our $VERSION = '0.35';
 
 use strict;
 use warnings;
@@ -323,11 +323,23 @@ sub insert_last_perl_var {
 	my $lnr = $ep->GetCurrentLine;
 	return unless $lnr;
 	my $pos  = $ep->GetCurrentPos;
-	my $line = $ep->GetLine($lnr - 1);
-	my $result = $line =~ /([\$@%]\w+)[ -=\(\r\n]/;
-	return unless $1;
-	$ep->InsertText( $pos, $1);
-	$ep->GotoPos($pos + length $1);
+	my $var;     # store catched var name into that scalar
+	my $nl = ''; # namespace level, how nested is current ns?
+	while (1){
+		# go up and get me the conent of the line
+		my $line = $ep->GetLine(--$lnr);
+		# catch the perl var
+		my $result = $line =~ /([\$@%]\w+)[\[{ -=\(\r\n]/;
+		$nl++ if $line =~ /^\s*\}/;
+		$nl-- if $line =~ /\{\s*(#.*)?$/;
+		$var = $nl ? '' : $1;
+		# exit loop if found something in this , no subnamespace,
+		# or reached end of file or end of block
+		last if $var or $lnr == 0 or ($nl and $nl < 0);
+	}
+	return unless $var;
+	$ep->InsertText( $pos, $var);
+	$ep->GotoPos($pos + length $var);
 }
 1;
 

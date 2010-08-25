@@ -1,6 +1,6 @@
 release notes of all Kephra stable versions
 
-0.5 {0.4.2.8}
+0.5 {0.4.3}
  * new document property: encoding (8bit/utf-8)
    + utf works now
  * code folding support
@@ -14,16 +14,18 @@ release notes of all Kephra stable versions
    + document menu in the right corner
  * marker added (F2+ or Searchbar or Left Click in Marker margin)
  + new tools
-   + color picker
    + display @INC and %ENV
    + output selection in dec and hex
+   + color picker, displays also selected color value
    + note selection on shift+f4
+   + changeable interpreter path-conf key: app > panel > output > interpreter_path
  + 3 new main window modes: fullscreen, max edit, transparent
  + improved stausbar, from a config file, with context help
  + save and restore textfold state in sessions and file history
- + changeable interpreter path
  + convert HTML enteties
- + open online doc and native lang forum URL in default browser
+ + new help menu items open default browser with
+   + online doc, native lang forum
+   + bug tracker, feature wish tracker
  + file missing dialog
  + writes files also in missing dirs
  ~ end of line chars of new docs depends now on the running OS

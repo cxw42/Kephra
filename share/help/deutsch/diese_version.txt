@@ -4,27 +4,19 @@
        --------------------
 
 
- 1. Vorbemerkungen
- 2. Zusammenfassung der Neuheiten
- 3. Neu in dieser Version
- 4. bekannte Fehler und Probleme
- 5. Hinweise
- 6. Geplantes
-
-
- 1. Vorbemerkungen:
+ 1.  1. Vorbemerkungen:
 
  - Willkommen bei Kephra. Dieser Editor wird entwickelt um deine Vorstellungen
-   zu Verwirklichen. Für Anregung, Dank und Änderungswünsche besuch unsere Seite
-   kephra.sf.net . Mehr Willkommen und über dieses Projekt findest du am Menü-
-   punkt Hilfe > Willkommen.
+   zu Verwirklichen. Für Anregung, Dank und Änderungswünsche besuch unsere Seite.
+   Die Verknüpfungen dazu und ein vollständiges Willkommen findest du im Hilfe-Menü.
+
 
  - Dies ist eine sogenannte stabile Version für den täglichen Gebrauch. Sie
-   enthält nur gut getestete Funktionen und Fehler werden meist schnellstmöglich
-   mit dem nächsten Patchlever behoben. Wenn du aber neuere Funktionen gleich
-   verwenden willst oder beim Testen dieser mithelfen möchtest, verwende Bitte
-   Testversionen mit dreistellige Versionsnummern. Tägliche Entwicklerversionen
-   mit 4 sind nur für ganz mutige.
+   enthält nur gut getestete Funktionen und Fehler werden schnellstmöglich
+   mit dem nächsten Patchlevel behoben, welches keine neue Funktionen einführt.
+   Wenn du aber neuere Funktionen gleich verwenden willst oder beim Testen dieser
+   mithelfen möchtest, verwende Bitte Testversionen mit dreistellige Nummern.
+   Tägliche Entwicklerversionen mit 4 Stellen sind nur für ganz mutige.
 
 
  2. Zusammenfassung der Neuheiten
@@ -186,11 +178,9 @@
       zu finden.
 
 
-
  4. bekannte Fehler und Probleme
 
-    + Installation aus der CPAN-Shell derzeit nur mit force und manchmal ist es 
-      auch noch nötig die configs manuell zu kopieren.
+    Derzeit bitte nicht die Kodierung der Datei wechseln.
 
 
  5. Hinweise
@@ -203,10 +193,8 @@
       denn sie ist auskommentiert, wenn auch bloß englisch.
 
 
- 6. Geplantes
+ 6. Plan für nächste Versionen
 
-    + Jaja die ungelegten Eier. Aber zu 0.5 hätten wir gerne Funktionen die eher
-      für Programmier sind wie Templatebibliohteken, Dateimanager, Befehlszeile,
-      Debugger, Text falten oder Outline (Liste aller Variablen und Routinen).
-
-    + Und drucken sowie UTF-Uterstuetzung wäre natürlich auch nicht schlecht.
+    + Plugin API
+    + Baumerweiterung für Codeschnipsel und selbst definierte Werkzeuge
+    + Kommandozeilenerweiterung für eine Benutzung wie im Vi

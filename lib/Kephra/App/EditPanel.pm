@@ -85,22 +85,55 @@ sub connect_events {
 	# override sci presets
 	Wx::Event::EVT_DROP_FILES       ($ep, \&Kephra::File::add_dropped);
 	Wx::Event::EVT_ENTER_WINDOW     ($ep,  sub {&$trigger('editpanel.focus')} );
+	Wx::Event::EVT_LEFT_DOWN        ($ep,  sub {
+		my ($ep, $event) = @_;
+		my $nr = Kephra::App::EditPanel::Margin::in_nr( $event->GetX, $ep );
+		if ($nr == -1) {
+			Kephra::Edit::copy() if clicked_on_selection($event);
+		}
+		$event->Skip;
+	});
 	Wx::Event::EVT_MIDDLE_DOWN      ($ep,  sub {
 		my ($ep, $event) = @_;
 		my $nr = Kephra::App::EditPanel::Margin::in_nr( $event->GetX, $ep );
-		$nr == -1 ? $event->Skip
-		          : Kephra::App::EditPanel::Margin::on_middle_click($ep, $event, $nr);
+		if ($nr == -1) {
+			if ($event->LeftIsDown){
+				Kephra::Edit::paste();
+				set_caret_on_cursor($event);
+			} else {
+				my $txt = $ep->GetSelectedText();
+				if ($txt){
+					my $pos = $ep->PositionFromPointClose($event->GetX, $event->GetY);
+					$pos = $ep->GetLineEndPosition(
+						$ep->LineFromPosition(
+							$ep->PositionFromPointClose(
+								Kephra::App::EditPanel::Margin::width() + 2,
+								$event->GetY
+					))) if $pos == -1;
+					$ep->InsertText($pos, $txt) if $pos > -1;
+				} else {
+					
+				}
+			}
+		} else {
+			Kephra::App::EditPanel::Margin::on_middle_click($ep, $event, $nr)
+		}
 	});
 	Wx::Event::EVT_RIGHT_DOWN       ($ep,  sub {
 		my ($ep, $event) = @_;
 		my $nr = Kephra::App::EditPanel::Margin::in_nr( $event->GetX, $ep );
 		if ($nr == -1) {
-			my $mconf = $config->{contextmenu};
-			if ($mconf->{visible} eq 'custom'){
-				my $menu_id = Kephra::Document::Data::attr('text_selected')
-					? $mconf->{ID_selection} : $mconf->{ID_normal};
-				my $menu = Kephra::App::ContextMenu::get($menu_id);
-				$ep->PopupMenu($menu, $event->GetX, $event->GetY) if $menu;
+			if ($event->LeftIsDown){
+				Kephra::Edit::cut();
+				set_caret_on_cursor($event);
+			} else {
+				my $mconf = $config->{contextmenu};
+				if ($mconf->{visible} eq 'custom'){
+					my $menu_id = Kephra::Document::Data::attr('text_selected')
+						? $mconf->{ID_selection} : $mconf->{ID_normal};
+					my $menu = Kephra::App::ContextMenu::get($menu_id);
+					$ep->PopupMenu($menu, $event->GetX, $event->GetY) if $menu;
+				}
 			} 
 		} else {Kephra::App::EditPanel::Margin::on_right_click($ep, $event, $nr)}
 	});
@@ -137,9 +170,9 @@ sub connect_events {
 				my $pos  = $ep->GetCurrentPos - 1;
 				my $char = $ep->GetCharAt($pos);
 				if      ($char == 123) {
-					Kephra::Edit::Format::blockindent_open($pos) ; return;
+					return Kephra::Edit::Format::blockindent_open($pos);
 				} elsif ($char == 125) {
-					Kephra::Edit::Format::blockindent_close($pos); return;
+					return Kephra::Edit::Format::blockindent_close($pos);
 				}
 			}
 			$config->{auto}{indention}
@@ -151,6 +184,22 @@ sub connect_events {
 		#SCI_SETSELECTIONMODE
 		#($key == 350){use Kephra::Ext::Perl::Syntax; Kephra::Ext::Perl::Syntax::check()};
 	});
+}
+sub set_caret_on_cursor {
+	my $event = shift;
+	my $ep = shift || _ref();
+	return unless ref $event eq 'Wx::MouseEvent' and is($ep);
+	my $pos = $ep->PositionFromPointClose($event->GetX, $event->GetY);
+	$pos = $ep->GetCurrentPos() if $pos == -1;
+	$ep->SetSelection( $pos, $pos );
+}
+sub clicked_on_selection {
+	my $event = shift;
+	my $ep = shift || _ref();
+	return unless ref $event eq 'Wx::MouseEvent' and is($ep);
+	my ($start, $end) = $ep->GetSelection();
+	my $pos = $ep->GetCurrentPos;
+	return 1 if $start != $end and $pos >= $start and $pos <= $end;
 }
 
 sub disconnect_events {

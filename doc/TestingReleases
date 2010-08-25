@@ -1,6 +1,20 @@
 release notes of all Kephra testing   versions
 
-0.4.3
+0.4.4 Acme {0.4.3.4}
+ * acme like mouse control
+   + cut (left+middle)
+   + paste (left+right)
+   + search (middle) or goto last edit (if no text selected)
+ + edit tools: tool-perl-copy-string and tool-perl-insert-last-var
+ + bug and request tracker links in help menu
+ ~ replace to nothing enabled again
+ ? 7 new tests, 17 reactivated
+ " added keyword default to perl lexer def 
+ ' updated keymap and navigation
+ ' pod fixed by kristian++
+
+
+0.4.3 SciTe
  * utf handling
    + open, change and save utf files
    + new document property: encoding
@@ -66,7 +80,7 @@ release notes of all Kephra testing   versions
  ! fixed test suite
 
 
-0.4.2
+0.4.2 Phase 5
  * folding changes
    + fold all (alt+shift+plus)
    + fold recursively (alt+shift+minus)
@@ -97,7 +111,7 @@ release notes of all Kephra testing   versions
  " some locale strings were translated to wrong language
  ! countless fixes, many from Andreas Kaschner++:
 
-0.4.1
+0.4.1 Kommodo Edit
  * code folding support
  + fold sibling nodes
  + intial norsk localisation
@@ -131,7 +145,7 @@ release notes of all Kephra testing   versions
  ! 14 bugfixes
  
 
-0.3.10
+0.3.10 Padre
  * notepad panel extension
  * output panel extension for perl programs
  + added Menu: Tools
@@ -254,7 +268,7 @@ release notes of all Kephra testing   versions
  ~ format and convert function much faster
  ! many bug fixes
 
-0.3.3
+0.3.3 
  ? new configurable GUI, commands and event system
  + rebuild mainmenu
  + new reaktiv toolbar
@@ -268,7 +282,7 @@ release notes of all Kephra testing   versions
  ~ search dialog quicker and with less flicker
  ! several bugfixes
 
-0.3.2
+0.3.2 Firefox
  ? beginning new configurable GUI system, rebuild contexmenus
  * brace navigation with <alt>+<arrow keys>
  * new contextmenu on selected text
@@ -280,7 +294,7 @@ release notes of all Kephra testing   versions
  ~ goto last edit now on <Ctrl>+<Shift>+<G>
  ! some bug fixes and internal cleanups
 
-0.3.1
+0.3.1 Nedit
  ? bigger core changes, some new features
  * searchbar with incremental search and 3 buttons (fore, back, goto last edit)
  + 10 doc spanning bookmarks
@@ -512,12 +526,15 @@ PRE
 
 
 Legend:
- ? testing
+ ^ purpose
+ * big new feature
  + new feature
  ~ change
  - remove
+ ? tests
  ! bugfix
  [ interface
  ] internals
+ " configs
  ' help/docu
  / comment

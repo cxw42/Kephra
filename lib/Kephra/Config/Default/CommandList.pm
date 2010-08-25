@@ -398,18 +398,19 @@ sub get {
 				tabbar => 'Kephra::App::TabBar::switch_visibility()',
 				'tabbar-contexmenu' => 'Kephra::App::TabBar::switch_contextmenu_visibility()',
 				toolbar => 'Kephra::App::MainToolBar::switch_visibility()',
+				webpage => {
+					'bug-tracker' => 'Kephra::Help::bug_tracker()',
+					documentation => 'Kephra::Help::online_documentation()',
+					'feature-wish' => 'Kephra::Help::feature_wish()',
+					forum => 'Kephra::Help::forum_site()',
+				},
 				window => {
 					fullscreen => 'Kephra::App::Window::switch_fullscreen_mode()',
 					restore => 'Kephra::App::Window::restore_normal_mode()',
 					'stay-on-top' => 'Kephra::App::Window::switch_on_top_mode()',
 					transparent => 'Kephra::App::Window::switch_transparency_mode()',
 					'top-transparent' => 'Kephra::App::Window::switch_top_and_transparency_mode()',
-
 				},
-				webpage => {
-					forum => 'Kephra::Help::forum_site()',
-					documentation => 'Kephra::Help::online_documentation()',
-				}
 			},
 			config => {
 				file => {

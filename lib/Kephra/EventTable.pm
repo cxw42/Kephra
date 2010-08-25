@@ -143,6 +143,11 @@ sub del_all_active { $table{active} = () }
 sub del_all_frozen { $table{frozen} = () }
 sub del_all        { %table         = () }
 
+
+1;
+
+__END__
+
 =head1 NAME
 
 Kephra::API::EventTable - API to internal events
@@ -162,6 +167,8 @@ Names of Events contain dots as separator of of namespaces.
 
 =head2 add_call
 
+=over
+
 =item * EvenID
 
 =item * CallbackID
@@ -175,6 +182,8 @@ a Coderef.
 =item * Owner
 
 for removing all callbacks of that owner.
+
+=back
 
 =head1 List of all Events
 
@@ -199,5 +208,3 @@ for removing all callbacks of that owner.
 =back
 
 =cut
-
-1;

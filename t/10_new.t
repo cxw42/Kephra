@@ -9,8 +9,9 @@ BEGIN {
 	unshift @INC, './lib', '../lib';
 }
 
+use Test::NoWarnings;
 use Test::More tests => 1;
-ok( 1 == 1, '' );
+
 #use Test::NoWarnings;
 #use Test::Exception;
 #use Kephra::App;

@@ -1,5 +1,5 @@
 package Kephra::App::SearchBar;
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 use strict;
 use warnings;
@@ -37,14 +37,6 @@ sub create {
 				$find_input->Append($_) for @{ Kephra::Edit::Search::get_find_history() }
 			}
 
-			
-			Wx::Event::EVT_RIGHT_DOWN ( $bar,  sub {
-				return unless get_contextmenu_visibility();
-				my ($widget, $event) = @_;
-				my ($x, $y) = ($event->GetX, $event->GetY);
-				my $menu = Kephra::App::ContextMenu::get(_config()->{contextmenu});
-				$bar->PopupMenu($menu, $x, $y) if Kephra::Menu::is($menu);
-			} );
 			Wx::Event::EVT_TEXT( $bar, $find_input, sub {
 				my ($bar, $event) = @_;
 				my $old = Kephra::Edit::Search::get_find_item();
@@ -157,6 +149,24 @@ sub create {
 			$bar->InsertControl( $item_data->{pos}, $ctrl );
 		}
 	}
+
+	Wx::Event::EVT_MIDDLE_DOWN( $bar,  sub {
+		my ($widget, $event) = @_;
+		my $ep = Kephra::App::EditPanel::_ref();
+		if ($ep->GetSelectedText){
+			Kephra::Edit::Search::set_selection_as_find_item();
+			Kephra::Edit::Search::find_next();
+		} else {
+			Kephra::Edit::Goto::last_edit();
+		}
+	} );
+	Wx::Event::EVT_RIGHT_DOWN ( $bar,  sub {
+		return unless get_contextmenu_visibility();
+		my ($widget, $event) = @_;
+		my ($x, $y) = ($event->GetX, $event->GetY);
+		my $menu = Kephra::App::ContextMenu::get(_config()->{contextmenu});
+		$bar->PopupMenu($menu, $x, $y) if Kephra::Menu::is($menu);
+	} );
 	Wx::Event::EVT_LEAVE_WINDOW($bar, \&leave_focus);
 	$bar->Realize;
 	$bar;

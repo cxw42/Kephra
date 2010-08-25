@@ -14,15 +14,15 @@
 
  1. Preliminary note
 
- - Welcome to Kephra. This text editor is made to match your individual needs.
-   If you have any comments, suggestions ans thanks, please visit our site at
-   kephra.sf.net. More welcome you find in the main menu under Help > Welcome.
+ - Welcome to Kephra. This text editor is made to fullfill your individual wishes.
+   If you have any comments, suggestions ans thanks, please use the links to our
+   website in the help menu. There you find also a longer welcome text.
 
- - This is a so called stable version for the daily use. It contains mostly well
+ - This is a so called stable version for the daily use. It contains only well
    tested features and bugs will be fixed as soon as possible with the next patch
-   level, which will add no new features. If you like to help us or / and use 
+   level, which will add no new features. If you like to help us and/or use 
    always the freshest features, please consider to use test versions, which have
-   a three digit version number. Four digits mark nightly versions, in case you
+   a three digit version number. Four digits mark developer versions, in case you
    really believe in: "no risk no fun".
 
 
@@ -165,8 +165,7 @@
 
  4. Known bugs and issues
 
-    + Installation from CPAN shell works only with force and copy configs by 
-      hand is sometimes needed.
+    Please don't try to change file encoding.
 
 
  5. Hints
@@ -179,10 +178,8 @@
     you about possible settings.
 
 
- 6. Plans
+ 6. Plans for next releases
  
-    + We have man wishes. For instance we would like to have Modules (Extensions)
-    like snippet libraries, file manager, command line, debugger, text folding or
-    outlining (a link list of all variables and subroutines).
-
-    + Print and UTF support would also be good.
+    + Plugin API
+    + tree extention for text snipptets and self defined tools
+    + commandline extention for vi like usage
