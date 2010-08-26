@@ -1,19 +1,25 @@
 todo:
-l18n menu gen
-l18n version update
-l18n compare tool
-Config::Tree join & split keys
-only recent l18n file open with *
-conf reload
+   l18n menu gen
+   l18n version update
+   l18n compare tool
+   Config::Tree join & split keys
+   only recent l18n file open with *
+   conf reload
 
-automate meta.yml gen
-new zip release
+   automate meta.yml gen
+   new zip release
+
+0.4.3.7
+ ~ refined editpanel mouse control
+ ' improved docs: this version, all functions
+ [ start Kephra::Macro.pm
+ ! open toolbar file works again
+ ! templates works again
 
 0.4.3.6
  + left click on selection does copy
  + middle click inserts selection
  ~ middle click on searchbar finds next / goto last edit
- ' improved docs: this version, all functions
  ! acme unselect selected half document
 
 0.4.3.5

@@ -178,13 +178,14 @@ sub get {
 				visible => 'custom',
 				margin => 1,
 			},
-			control => {custom
+			control => {
 				mouse_function => {
-					'left_middle' => 'edit-cut',
-					'left-right' => 'edit-paste',
+					'left-selection' => 'edit-copy',
+					'left-middle' => 'edit-paste',
+					'left-right' => 'edit-cut',
+					'middle-selected' => 'edit-insert-selection-at-cursor',
 					'middle-selection' => 'find-selection, find-next',
 					'middle' => 'goto-last-edit',
-					},
 				},
 				use_mouse_function => 1,
 			},

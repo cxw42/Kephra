@@ -1,5 +1,5 @@
 package Kephra::Config::Interface;
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use strict;
 use warnings;
@@ -74,7 +74,7 @@ sub open_file {
 	return unless exists $config->{$item};
 	my $file = $config->{$item}{file};
 	$file = $config->{$item}{defaultfile} if $item eq 'contextmenu';
-	$file = $config->{toolbar}{all}{defaultfile} if $item eq 'toolbar';
+	$file = $config->{$item}{file} if $item eq 'toolbar';
 	Kephra::Config::open_file( $file );
 }
 

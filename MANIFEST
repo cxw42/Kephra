@@ -85,6 +85,7 @@ lib/Kephra/File/IO.pm
 lib/Kephra/File/Session.pm
 lib/Kephra/Help.pm
 lib/Kephra/Log.pm
+lib/Kephra/Macro.pm
 lib/Kephra/Menu.pm
 lib/Kephra/Plugin.pm
 lib/Kephra/Plugin/Demo.pm

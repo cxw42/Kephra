@@ -10,7 +10,6 @@
    zu Verwirklichen. Für Anregung, Dank und Änderungswünsche besuch unsere Seite.
    Die Verknüpfungen dazu und ein vollständiges Willkommen findest du im Hilfe-Menü.
 
-
  - Dies ist eine sogenannte stabile Version für den täglichen Gebrauch. Sie
    enthält nur gut getestete Funktionen und Fehler werden schnellstmöglich
    mit dem nächsten Patchlevel behoben, welches keine neue Funktionen einführt.
@@ -22,10 +21,12 @@
  2. Zusammenfassung der Neuheiten
     * lesen und schreiben von Unicode-Dateien
     * Code falten
+    * neue Maussteuerung
     * Installation über CPAN für Linux, Win und Mac
     + bewegliche Reiter
     + 7 neue Werkzeuge
     + 3 neue Hauptfenstermodi
+    + definierbare Statuszeile
     + Verbindungen zu Netzhilfen im Menü
     + vieles mehr
 

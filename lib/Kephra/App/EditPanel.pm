@@ -96,28 +96,25 @@ sub connect_events {
 	Wx::Event::EVT_MIDDLE_DOWN      ($ep,  sub {
 		my ($ep, $event) = @_;
 		my $nr = Kephra::App::EditPanel::Margin::in_nr( $event->GetX, $ep );
+		# click is above text area
 		if ($nr == -1) {
 			if ($event->LeftIsDown){
 				Kephra::Edit::paste();
 				set_caret_on_cursor($event);
-			} else {
-				my $txt = $ep->GetSelectedText();
-				if ($txt){
-					my $pos = $ep->PositionFromPointClose($event->GetX, $event->GetY);
-					$pos = $ep->GetLineEndPosition(
-						$ep->LineFromPosition(
-							$ep->PositionFromPointClose(
-								Kephra::App::EditPanel::Margin::width() + 2,
-								$event->GetY
-					))) if $pos == -1;
-					$ep->InsertText($pos, $txt) if $pos > -1;
-				} else {
-					
-				}
 			}
-		} else {
-			Kephra::App::EditPanel::Margin::on_middle_click($ep, $event, $nr)
-		}
+			# just middle clicked
+			else {
+				if ($ep->GetSelectedText){
+					if (clicked_on_selection($event)) {
+						Kephra::Edit::Search::set_selection_as_find_item();
+						Kephra::Edit::Search::find_next();
+					} 
+					else {Kephra::Edit::insert_selection_at_cursor($event, $ep)}
+				} 
+				else { Kephra::Edit::Goto::last_edit() }
+			}
+		} 
+		else { Kephra::App::EditPanel::Margin::on_middle_click($ep, $event, $nr) }
 	});
 	Wx::Event::EVT_RIGHT_DOWN       ($ep,  sub {
 		my ($ep, $event) = @_;

@@ -24,7 +24,7 @@ my @required_modules = qw(
 	Cwd File::Find File::Spec::Functions 
 	Config::General YAML::Tiny Wx Wx::Perl::ProcessStream
 );
-my $modules = 64;
+my $modules = 65;
 my @kephra_modules;
 find( sub {
     return if not -f $_ or $_ !~ /\.pm$/;

@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 our $NAME        = __PACKAGE__;    # name of entire application
-our $VERSION     = '0.4.3.6';      # version of entire app
+our $VERSION     = '0.4.3.7';      # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $LOGLEVEL;                     # flag for benchmark loggings
@@ -98,9 +98,10 @@ sub load_modules {
 	require Kephra::File::IO;              # API 2 FS, read write files
 	require Kephra::File::Session;         # file session handling
 	require Kephra::Help;                  # help docs system
+	require Kephra::Macro;                 # macro recorder
 	require Kephra::Menu;                  # base menu builder
-	require Kephra::Plugin;
-	require Kephra::Plugin::Demo;
+	require Kephra::Plugin;                # plugin manager
+	require Kephra::Plugin::Demo;          # cookbook for plugin authors
 	require Kephra::ToolBar;               # base toolbar builder
 }
 

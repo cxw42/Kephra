@@ -254,11 +254,24 @@ sub insert {
 	my ($text, $pos) = @_;
 	return unless $text;
 	my $ep = _ep_ref();
-	if (defined $pos) { $ep->InsertText( $pos, $text) }
-	else              { $ep->AddText( $text ) }
+	$pos = $ep->GetCurrentPos unless defined $pos;
+	$ep->InsertText($pos, $text);
 }
-
-sub insert_at_pos { _ep_ref()->InsertText( @_ ) }
+sub insert_text   { insert(@_) }
+sub insert_at_pos { insert(@_) }
+sub insert_selection_at_cursor {
+	my $event = shift;
+	my $ep = shift || _ref();
+	return unless ref $event eq 'Wx::MouseEvent' and Kephra::App::EditPanel::is($ep);
+	my $pos = $ep->PositionFromPointClose($event->GetX, $event->GetY);
+	$pos = $ep->GetLineEndPosition(
+		$ep->LineFromPosition(
+			$ep->PositionFromPointClose(
+				Kephra::App::EditPanel::Margin::width() + 2,
+				$event->GetY
+	))) if $pos == -1;
+	$ep->InsertText($pos, $ep->GetSelectedText()) if $pos > -1;
+}
 #
 # Edit Line
 #
