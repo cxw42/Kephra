@@ -8,8 +8,9 @@ use warnings;
 sub _config      { Kephra::API::settings()->{file}{session} }
 sub _dialog_l18n { Kephra::Config::Localisation::strings()->{dialog} }
 sub _saved_properties {[ qw(
-		syntaxmode EOL codepage readonly tab_size tab_use
-		cursor_pos edit_pos file_path marked_lines folded_lines
+	syntaxmode EOL codepage readonly tab_size tab_use
+	cursor_pos edit_pos marked_lines folded_lines
+	file_path config_file
 )]}
 sub _forget_gone_files  {
 	my @true_files = ();

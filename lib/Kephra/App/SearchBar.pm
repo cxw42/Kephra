@@ -64,7 +64,7 @@ sub create {
 						? Kephra::Edit::Search::find_prev()
 						: Kephra::Edit::Search::find_next();
 				} elsif ($key == &Wx::WXK_ESCAPE) {
-					give_editpanel_focus_back()
+					give_editpanel_focus_back(); switch_visibility();
 				} elsif ($key == 65 and $event->ControlDown) {# A
 					$bar->{find_input}->SetSelection
 						(0, $bar->{find_input}->GetLastPosition);

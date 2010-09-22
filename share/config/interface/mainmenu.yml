@@ -67,15 +67,6 @@ full_menubar:
       - item edit-replace
       - item edit-delete
       -
-      - item select-document
-      -
-        menu selection:
-          - item edit-selection-move-char-left
-          - item edit-selection-move-char-right
-          - item edit-selection-move-line-up
-          - item edit-selection-move-line-down
-          - item edit-selection-move-page-up
-          - item edit-selection-move-page-down
       -
         menu current_line:
           - item edit-line-cut
@@ -91,7 +82,19 @@ full_menubar:
           - item edit-line-move-line-down
           - item edit-line-move-page-up
           - item edit-line-move-page-down
-      - menu navigation:#
+      -
+        menu select:
+          - item select-toggle
+          - item select-content
+          - item select-document
+      -
+        menu selection:
+          - item edit-selection-move-char-left
+          - item edit-selection-move-char-right
+          - item edit-selection-move-line-up
+          - item edit-selection-move-line-down
+          - item edit-selection-move-page-up
+          - item edit-selection-move-page-down
       -
       -
         menu selection_format:
@@ -208,9 +211,8 @@ full_menubar:
       - item bookmark-delete-all
   -
     menu tools:
-      - item tool-note
-      - item tool-note-selection
-      -
+      - item tool-interpreter-run-document
+      - item tool-interpreter-stop-document
       -
         menu tool_output:
           - item tool-output-selection-dec
@@ -218,8 +220,6 @@ full_menubar:
           -
           - item tool-output-env
           - item tool-output-inc
-      - item tool-interpreter-run-document
-      - item tool-interpreter-stop-document
       -
       - menu insert_templates
       - item tool-choose-color
@@ -227,6 +227,13 @@ full_menubar:
       -
       - item tool-perl-insert-last-var
       - item tool-perl-copy-string
+      -
+      - item tool-note
+      - item tool-note-selection
+      -
+      - checkitem tool-auto-indention
+      - checkitem tool-brace-indention
+      - checkitem tool-brace-completion
   -
     menu document:
       -
@@ -354,8 +361,6 @@ full_menubar:
           - radioitem document-encoding-ascii
           - radioitem document-encoding-latin1#
           - radioitem document-encoding-utf8
-      - checkitem document-brace-indention
-      - checkitem document-auto-indention
       - checkitem document-tabs-use
       -
         menu document_tab_width:
@@ -386,8 +391,8 @@ full_menubar:
           - checkitem view-window-transparent
       -
         menu view_panel:
-          - checkitem view-panel-notepad
           - checkitem view-panel-output
+          - checkitem view-panel-notepad
       -
         menu view_bars:
           - checkitem view-menubar
@@ -429,13 +434,18 @@ full_menubar:
           - radioitem view-editpanel-margin-text-12
       -
       - checkitem view-editpanel-right-margin
-      - checkitem view-editpanel-indention-guide
-      - checkitem view-editpanel-brace-light
-      - checkitem view-editpanel-caret-line
       - checkitem view-editpanel-line-wrap
-      - checkitem view-editpanel-EOL
-      - checkitem view-editpanel-whitespace
+      - checkitem view-editpanel-indicator-indention-guide
+      - checkitem view-editpanel-indicator-brace-light
+      - checkitem view-editpanel-indicator-caret-line
+      - checkitem view-editpanel-indicator-EOL
+      - checkitem view-editpanel-indicator-whitespace
       - item view-editpanel-font
+      -
+        menu view_zoom:
+          - item view-editpanel-zoom-in
+          - item view-editpanel-zoom-out
+          - item view-editpanel-zoom-normal
   -
     menu config:
       - item view-dialog-config#

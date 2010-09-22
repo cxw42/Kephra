@@ -256,11 +256,11 @@ sub evaluate_attributes {
 	if ($config->{open}{in_current_dir}){
 		$config->{current}{directory} = $attr->{directory}
 			if $attr->{directory};
-	} 
+	}
 	else { $config->{current}{directory} = '' }
 	Kephra::App::EditPanel::set_word_chars($ep);
-	Kephra::App::EditPanel::paint_bracelight($ep)
-		if Kephra::App::EditPanel::bracelight_visible();
+	Kephra::App::EditPanel::Indicator::paint_bracelight($ep)
+		if Kephra::App::EditPanel::Indicator::bracelight_visible();
 	Kephra::App::EditPanel::Margin::autosize_line_number();
 	Kephra::App::EditPanel::Fold::restore($doc_nr);
 	Kephra::App::StatusBar::refresh_cursor();
@@ -284,7 +284,7 @@ sub update_attributes { # was named save_properties
 
 =head1 NAME
 
-Kephra::Document::Data - API for all data assotiated with all opened documents
+Kephra::Document::Data - API for data assotiated with opened documents
 
 =head1 DESCRIPTION
 

@@ -124,8 +124,8 @@ sub get {
 			'checkitem document-syntaxmode-none',
 		],
 		'status_whitespace_contextmenu' => [
-			'checkitem document-auto-indention',
-			'checkitem document-brace-indention',
+			'checkitem tool-auto-indention',
+			'checkitem tool-brace-indention',
 			undef,
 			'checkitem view-editpanel-whitespace',
 			{'menu document_tab_width' => [
@@ -151,7 +151,7 @@ sub get {
 			'radioitem document-tabs-hard',
 		],
 		'status_lineendchar_contextmenu' => [
-			'checkitem view-editpanel-EOL',
+			'checkitem view-editpanel-indicator-EOL',
 			undef,
 			'item document-EOL-auto',
 			undef,

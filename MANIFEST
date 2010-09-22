@@ -30,10 +30,12 @@ lib/Kephra/App.pm
 lib/Kephra/App/ContextMenu.pm
 lib/Kephra/App/EditPanel.pm
 lib/Kephra/App/EditPanel/Fold.pm
+lib/Kephra/App/EditPanel/Indicator.pm
 lib/Kephra/App/EditPanel/Margin.pm
 lib/Kephra/App/MainToolBar.pm
 lib/Kephra/App/MenuBar.pm
 lib/Kephra/App/Panel.pm
+lib/Kephra/App/Panel/CommandLine.pm
 lib/Kephra/App/Panel/Library.pm
 lib/Kephra/App/Panel/Notepad.pm
 lib/Kephra/App/Panel/Output.pm
@@ -78,6 +80,7 @@ lib/Kephra/Edit/Marker.pm
 lib/Kephra/Edit/Search.pm
 lib/Kephra/Edit/Search/InputTarget.pm
 lib/Kephra/Edit/Select.pm
+lib/Kephra/Edit/Special.pm
 lib/Kephra/EventTable.pm
 lib/Kephra/File.pm
 lib/Kephra/File/History.pm
@@ -284,7 +287,7 @@ share/config/syntaxhighlighter/vbs.pm
 share/config/syntaxhighlighter/xml.pm
 share/config/syntaxhighlighter/yaml.pm
 share/config/syntaxmode/perl.conf
-share/config/templates/perl.conf
+share/config/template/perl.conf
 share/help/cesky/navigace.txt
 share/help/cesky/tahle_verse.txt
 share/help/cesky/vitejte.txt

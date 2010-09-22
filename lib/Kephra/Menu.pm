@@ -1,5 +1,5 @@
 package Kephra::Menu;
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 use strict;
 use warnings;
@@ -319,7 +319,6 @@ sub eval_data { # eval menu data structures (MDS) to wxMenus
 	}
 
 	Kephra::EventTable::add_call('menu.open', 'menu_'.$menu, sub {ready($menu_id)});
-#print "did  $menu_id \n";
 	_ref($menu_id, $menu);
 	return $menu;
 }

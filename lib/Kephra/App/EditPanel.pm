@@ -1,5 +1,5 @@
 package Kephra::App::EditPanel;
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 use strict;
 use warnings; 
@@ -7,14 +7,14 @@ use warnings;
 # internal API to config und app pointer
 #
 my $ref;
+my %mouse_commands;
 sub _ref     { $ref }
 sub _set_ref { $ref = $_[0] if is($_[0]) }
 sub _all_ref { Kephra::Document::Data::get_all_ep() }
 sub is       { 1 if ref $_[0] eq 'Wx::StyledTextCtrl'}
 sub _config  { Kephra::API::settings()->{editpanel} }
-sub _indicator_config { _config()->{indicator} }
 
-sub new { 
+sub new {
 	my $ep = Wx::StyledTextCtrl->new( Kephra::App::Window::_ref() );
 	$ep->DragAcceptFiles(1) if Wx::wxMSW();
 	return $ep;
@@ -26,29 +26,11 @@ sub apply_settings_here {
 	my $ep        = shift || _ref() || _create();
 	return unless is($ep);
 	my $conf      = _config();
-	my $indicator = _indicator_config();
-	my $color     = \&Kephra::Config::color;
 
-	# text visuals: font whitespaces
 	load_font($ep);
-	apply_whitespace_settings_here($ep);
-	$ep->SetWhitespaceForeground
-		( 1, &$color( $indicator->{whitespace}{color} ) );
 
-	# indicators: caret, selection, ...
-	$ep->SetCaretLineBack( &$color( $indicator->{caret_line}{color} ) );
-	$ep->SetCaretPeriod( $indicator->{caret}{period} );
-	$ep->SetCaretWidth( $indicator->{caret}{width} );
-	$ep->SetCaretForeground( &$color( $indicator->{caret}{color} ) );
-	if ( $indicator->{selection}{fore_color} ne '-1' ) {
-		$ep->SetSelForeground
-			( 1, &$color( $indicator->{selection}{fore_color} ) );
-	}
-	$ep->SetSelBackground( 1, &$color( $indicator->{selection}{back_color}));
-	apply_EOL_settings_here($ep);
-	apply_LLI_settings_here($ep);
-	apply_caret_line_settings_here($ep);
-	apply_indention_guide_settings_here($ep);
+	# indicators: caret, selection, whitespaces...
+	Kephra::App::EditPanel::Indicator::apply_all_here($ep);
 
 	# Margins on left side
 	Kephra::App::EditPanel::Margin::apply_settings_here($ep);
@@ -58,23 +40,25 @@ sub apply_settings_here {
 
 	$ep->SetScrollWidth($conf->{scroll_width})
 		unless $conf->{scroll_width} eq 'auto';
+
 	#wxSTC_CP_UTF8 Wx::wxUNICODE()
 	$ep->SetCodePage(65001);#
 	set_word_chars_here($ep);
-	apply_bracelight_settings_here();
 
 	# internal
 	$ep->SetLayoutCache(&Wx::wxSTC_CACHE_PAGE);
 	$ep->SetBufferedDraw(1);
-	$conf->{contextmenu}{visible} eq 'default'
-		? $ep->UsePopUp(1) : $ep->UsePopUp(0);
+	$conf->{contextmenu}{visible} eq 'default' ? $ep->UsePopUp(1) : $ep->UsePopUp(0);
 
 	Kephra::Edit::eval_newline_sub();
 	Kephra::Edit::Marker::define_marker($ep);
 	connect_events($ep);
-	Kephra::EventTable::add_call ( 'editpanel.focus', 'editpanel', sub { 
-		Wx::Window::SetFocus( $ep ) unless $Kephra::temp{dialog}{active};
-	} ) if $conf->{auto}{focus};
+	Kephra::EventTable::add_call ( 'editpanel.focus', 'editpanel', sub {
+		Wx::Window::SetFocus( _ref() ) unless $Kephra::temp{dialog}{active};
+	}, 'editpanel' ) if $conf->{auto}{focus};
+	Kephra::EventTable::add_call( 'document.text.change', 'update_edit_pos', sub {
+		Kephra::Document::Data::attr('edit_pos', _ref()->GetCurrentPos());
+	},'editpanel');
 }
 
 sub connect_events {
@@ -105,11 +89,11 @@ sub connect_events {
 			# just middle clicked
 			else {
 				if ($ep->GetSelectedText){
-					if (clicked_on_selection($event)) {
+					if (clicked_on_selection($event, $ep)) {
 						Kephra::Edit::Search::set_selection_as_find_item();
 						Kephra::Edit::Search::find_next();
 					} 
-					else {Kephra::Edit::insert_selection_at_cursor($event, $ep)}
+					else { insert_selection_at_cursor($event, $ep) }
 				} 
 				else { Kephra::Edit::Goto::last_edit() }
 			}
@@ -126,7 +110,7 @@ sub connect_events {
 			} else {
 				my $mconf = $config->{contextmenu};
 				if ($mconf->{visible} eq 'custom'){
-					my $menu_id = Kephra::Document::Data::attr('text_selected')
+					my $menu_id = $ep->GetSelectedText
 						? $mconf->{ID_selection} : $mconf->{ID_normal};
 					my $menu = Kephra::App::ContextMenu::get($menu_id);
 					$ep->PopupMenu($menu, $event->GetX, $event->GetY) if $menu;
@@ -138,11 +122,7 @@ sub connect_events {
 	Wx::Event::EVT_STC_SAVEPOINTREACHED($ep, -1, \&Kephra::File::savepoint_reached);
 	Wx::Event::EVT_STC_SAVEPOINTLEFT($ep, -1, \&Kephra::File::savepoint_left);
 	Wx::Event::EVT_STC_MARGINCLICK  ($ep, -1, \&Kephra::App::EditPanel::Margin::on_left_click);
-	Wx::Event::EVT_STC_CHANGE       ($ep, -1, sub {
-		Kephra::Document::Data::attr('edit_pos', $_[0]->GetCurrentPos());
-		&$trigger('document.text.change');
-	});
-
+	Wx::Event::EVT_STC_CHANGE       ($ep, -1,sub {&$trigger('document.text.change')} );
 	Wx::Event::EVT_STC_UPDATEUI     ($ep, -1, sub {
 		my ( $ep, $event) = @_;
 		my ( $sel_beg, $sel_end ) = $ep->GetSelection;
@@ -182,11 +162,23 @@ sub connect_events {
 		#($key == 350){use Kephra::Ext::Perl::Syntax; Kephra::Ext::Perl::Syntax::check()};
 	});
 }
+sub create_mouse_binding {
+	my @cmd = qw(left-middle left-right left-selection 
+	             middle middle-selected middle-selection
+	);
+
+	if (_config()->{control}{use_mouse_function}) {
+		my $config = _config()->{control}{mouse_function};
+		$mouse_commands{$_} = Kephra::Macro::create_from_cmd_list($config->{$_})
+				for @cmd
+	}
+	else { $mouse_commands{$_} = sub {} for @cmd }
+}
 sub set_caret_on_cursor {
 	my $event = shift;
 	my $ep = shift || _ref();
 	return unless ref $event eq 'Wx::MouseEvent' and is($ep);
-	my $pos = $ep->PositionFromPointClose($event->GetX, $event->GetY);
+	my $pos = cursor_2_caret_pos($event, $ep);
 	$pos = $ep->GetCurrentPos() if $pos == -1;
 	$ep->SetSelection( $pos, $pos );
 }
@@ -195,8 +187,40 @@ sub clicked_on_selection {
 	my $ep = shift || _ref();
 	return unless ref $event eq 'Wx::MouseEvent' and is($ep);
 	my ($start, $end) = $ep->GetSelection();
-	my $pos = $ep->GetCurrentPos;
+	my $pos = cursor_2_caret_pos($event, $ep);
 	return 1 if $start != $end and $pos >= $start and $pos <= $end;
+}
+sub insert_selection_at_cursor {
+	my $event = shift;
+	my $ep = shift || _ref();
+	my $pos = cursor_2_caret_pos($event, $ep);
+	Kephra::Edit::insert_text($ep->GetSelectedText(), $pos) if $pos > -1;
+}
+sub cursor_2_caret_pos {
+	my $event = shift;
+	my $ep = shift || _ref();
+	return -1 unless ref $event eq 'Wx::MouseEvent' and is($ep);
+	my $pos = $ep->PositionFromPointClose($event->GetX, $event->GetY);
+	if ($pos == -1) {
+		my $width = Kephra::App::EditPanel::Margin::width($ep)
+		          + Kephra::App::EditPanel::Margin::get_text_width();
+		my $y = $event->GetY;
+		my $line = $ep->LineFromPosition( $ep->PositionFromPointClose($width, $y) );
+		$pos = $ep->GetLineEndPosition ($line);
+		my $font_size = _config()->{font}{size};
+		if ($line == 0 and $y > $font_size + 12) {
+			my $lcc = 0;
+			$pos = $ep->PositionFromPointClose($width-1, $y);
+			while ($pos == -1 and $lcc < $ep->GetLineCount() ){
+				$lcc++; # line counter
+				$y += $font_size;
+				$pos = $ep->PositionFromPointClose($width, $y);
+			}
+			return -1 if $pos == -1;
+			return $ep->PositionFromLine(  $ep->LineFromPosition($pos) - $lcc );
+		}
+	}
+	$pos;
 }
 
 sub disconnect_events {
@@ -245,152 +269,6 @@ sub switch_autowrap_mode {
 	apply_autowrap_settings();
 }
 
-# bracelight
-sub bracelight_visible { _indicator_config()->{bracelight}{visible} }
-sub switch_bracelight {
-	bracelight_visible() ? set_bracelight_off() : set_bracelight_on();
-}
-sub set_bracelight_on {
-	_indicator_config()->{bracelight}{visible} = 1;
-	apply_bracelight_settings()
-}
-sub set_bracelight_off {
-	_indicator_config()->{bracelight}{visible} = 0;
-	apply_bracelight_settings()
-}#{bracelight}{mode} = 'adjacent'|'surround';
-
-sub apply_bracelight_settings { 
-	apply_bracelight_settings_here($_) for @{_all_ref()}
-}
-sub apply_bracelight_settings_here {
-	my $ep = shift || _ref();
-	if (bracelight_visible()){
-		Kephra::EventTable::add_call
-			('caret.move', 'bracelight', \&paint_bracelight);
-		paint_bracelight($ep);
-	} else {
-		Kephra::EventTable::del_call('caret.move', 'bracelight');
-		$ep->BraceHighlight( -1, -1 );
-	}
-}
-
-sub paint_bracelight {
-	my $ep       = shift || _ref();
-	my $pos      = $ep->GetCurrentPos;
-	my $tab_size = Kephra::Document::Data::get_attribute('tab_size');
-	my $matchpos = $ep->BraceMatch(--$pos);
-	$matchpos = $ep->BraceMatch(++$pos) if $matchpos == -1;
-
-	$ep->SetHighlightGuide(0);
-	if ( $matchpos > -1 ) {
-		# highlight braces
-		$ep->BraceHighlight($matchpos, $pos);
-		# asign pos to opening brace
-		$pos = $matchpos if $matchpos < $pos;
-		my $indent = $ep->GetLineIndentation( $ep->LineFromPosition($pos) );
-		# highlighting indenting guide
-		$ep->SetHighlightGuide($indent)
-			if $indent and $tab_size and $indent % $tab_size == 0;
-	} else {
-		# disbale all highlight
-		$ep->BraceHighlight( -1, -1 );
-		$ep->BraceBadLight($pos-1)
-			if $ep->GetTextRange($pos-1,$pos) =~ /{|}|\(|\)|\[|\]/;
-		$ep->BraceBadLight($pos)
-			if $pos < $ep->GetTextLength
-			and $ep->GetTextRange( $pos, $pos + 1 ) =~ tr/{}()\[\]//;
-	}
-}
-
-# indention guide
-sub indention_guide_visible { 
-	_indicator_config()->{indent_guide}{visible} 
-}
-sub apply_indention_guide_settings {
-	apply_indention_guide_settings_here($_) for @{_all_ref()}
-}
-sub apply_indention_guide_settings_here {
-	my $ep = shift || _ref();
-	$ep->SetIndentationGuides( indention_guide_visible() )
-}
-sub switch_indention_guide_visibility {
-	_indicator_config()->{indent_guide}{visible} ^= 1;
-	apply_indention_guide_settings();
-}
-
-# caret line
-sub caret_line_visible {
-	_indicator_config()->{caret_line}{visible} 
-}
-sub apply_caret_line_settings_here {
-	my $ep = shift || _ref();
-	$ep->SetCaretLineVisible( caret_line_visible() );
-}
-sub apply_caret_line_settings {
-	apply_caret_line_settings_here($_) for @{_all_ref()}
-}
-sub switch_caret_line_visibility {
-	_indicator_config()->{caret_line}{visible} ^= 1;
-	apply_caret_line_settings();
-}
-
-# LLI = long line indicator = right margin
-sub LLI_visible { 
-	_indicator_config()->{right_margin}{style} == &Wx::wxSTC_EDGE_LINE
-}
-sub apply_LLI_settings_here {
-	my $ep = shift || _ref();
-	my $config = _indicator_config()->{right_margin};
-	my $color   = \&Kephra::Config::color;
-	$ep->SetEdgeColour( &$color( $config->{color} ) );
-	$ep->SetEdgeColumn( $config->{position} );
-	show_LLI( $config->{style}, $ep);
-}
-sub show_LLI {
-	my $style = shift;
-	my $ep = shift || _ref();
-	$ep->SetEdgeMode( $style );
-}
-sub apply_LLI_settings { apply_LLI_settings_here($_) for @{_all_ref()} }
-sub switch_LLI_visibility {
-	my $style = _indicator_config()->{right_margin}{style} = LLI_visible()
-		? &Wx::wxSTC_EDGE_NONE
-		: &Wx::wxSTC_EDGE_LINE;
-	apply_LLI_settings($style);
-}
-
-# EOL = end of line marker
-sub EOL_visible { 
-	_indicator_config()->{end_of_line_marker}
-}
-sub switch_EOL_visibility {
-	_config()->{indicator}{end_of_line_marker} ^= 1;
-	apply_EOL_settings();
-}
-sub apply_EOL_settings { apply_EOL_settings_here($_) for @{_all_ref()} }
-sub apply_EOL_settings_here {
-	my $ep = shift || _ref();
-	$ep->SetViewEOL( EOL_visible() );
-
-}
-
-# whitespace
-sub whitespace_visible { 
-	_indicator_config()->{whitespace}{visible} 
-}
-sub apply_whitespace_settings_here {
-	my $ep = shift || _ref();
-	$ep->SetViewWhiteSpace( whitespace_visible() )
-}
-sub apply_whitespace_settings { 
-	apply_whitespace_settings_here($_) for @{_all_ref()}
-}
-sub switch_whitespace_visibility {
-	my $v = _indicator_config()->{whitespace}{visible} ^= 1;
-	apply_whitespace_settings();
-	return $v;
-}
-
 # font settings
 sub load_font {
 	my $ep = shift || _ref();
@@ -429,9 +307,47 @@ sub change_font {
 		Kephra::App::EditPanel::Margin::apply_line_number_width();
 	}
 }
-
+#
+sub zoom_in {
+	my $ep = shift || _ref();
+	$ep->SetZoom( $ep->GetZoom()+1 ) if $ep->GetZoom() < 45;
+}
+sub zoom_out {
+	my $ep = shift || _ref();
+	$ep->SetZoom( $ep->GetZoom()-1 ) if $ep->GetZoom() > -10;
+}
+sub zoom_normal {
+	my $ep = shift || _ref();
+	$ep->SetZoom( 0 ) ;
+}
+#
+# auto indention
+sub get_autoindention { Kephra::App::EditPanel::_config()->{auto}{indention} }
+sub set_autoindention {
+	Kephra::App::EditPanel::_config()->{auto}{indention} = shift;
+	Kephra::Edit::eval_newline_sub();
+}
+sub switch_autoindention { set_autoindention( get_autoindention() ^ 1 ) } 
+sub set_autoindent_on    { set_autoindention( 1 ) }
+sub set_autoindent_off   { set_autoindention( 0 ) }
+#
+# brace indention
+sub get_braceindention { Kephra::App::EditPanel::_config()->{auto}{brace}{indention}}
+sub set_braceindention {
+	Kephra::App::EditPanel::_config()->{auto}{brace}{indention} = shift;
+	Kephra::Edit::eval_newline_sub();
+}
+sub switch_braceindention { set_braceindention( get_braceindention() ^ 1 ) }
+sub set_braceindent_on    { set_braceindention( 1 ) }
+sub set_braceindent_off   { set_braceindention( 0 ) }
+#
+#
+sub get_bracecompletion { Kephra::App::EditPanel::_config()->{auto}{brace}{make} }
+sub set_bracecompletion {
+	Kephra::App::EditPanel::_config()->{auto}{brace}{make} = shift;
+}
+sub switch_bracecompletion{  set_bracecompletion( get_bracecompletion() ^ 1 ) }
 1;
-
 #EVT_STC_CHARADDED EVT_STC_MODIFIED
 #wxSTC_CP_UTF8 wxSTC_CP_UTF16 Wx::wxUNICODE()
 #wxSTC_WS_INVISIBLE wxSTC_WS_VISIBLEALWAYS

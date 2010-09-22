@@ -1,9 +1,10 @@
 package Kephra::App::Panel::Output;
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 use strict;
 use warnings;
 use Cwd();
+use Wx qw(wxTheClipboard);
 use Wx::Perl::ProcessStream qw( 
 	EVT_WXP_PROCESS_STREAM_STDOUT
 	EVT_WXP_PROCESS_STREAM_STDERR
@@ -67,13 +68,33 @@ sub create {
 		$event->GetProcess->Destroy;
 		Kephra::EventTable::trigger('panel.output.run');
 	} );
-	Wx::Event::EVT_TEXT_ENTER( $edit, -1, sub {
-		my $selection = $edit->GetStringSelection();
-		return unless $selection;
-		wxTheClipboard->Open;
-		wxTheClipboard->SetData( Wx::TextDataObject->new( $selection ) );
-		wxTheClipboard->Close;
-	} );
+	Wx::Event::EVT_LEFT_DOWN($output, sub {
+		my ($op, $event) = @_;
+		unless ($^O =~ /darwin/i) {
+			my ($beside, $col, $row) = $op->HitTest( Wx::Point->new($event->GetX, $event->GetY) );
+			my ($begin, $end) = $op->GetSelection;
+			if ($beside !=  &Wx::wxTE_HT_UNKNOWN and $begin != $end) {
+				my $pos = $op->XYToPosition($col, $row);
+				copy_selection() if $pos >= $begin and $pos <= $end;
+			}
+		}
+		$event->Skip;
+	});
+	Wx::Event::EVT_MIDDLE_DOWN($output,  sub {
+		my ($op, $event) = @_;
+		Kephra::Edit::Search::set_find_item( $op->GetStringSelection() );
+		Kephra::Edit::Search::find_next();
+	});
+	Wx::Event::EVT_KEY_DOWN( $output, sub {
+		my ( $op, $event ) = @_;
+		my $key = $event->GetKeyCode;
+		if ($key ==  &Wx::WXK_RETURN) {
+			copy_selection();
+		} elsif ($key == &Wx::WXK_F12) {
+			Kephra::App::Panel::Notepad::append( $output->GetStringSelection() )
+				if $event->ShiftDown;
+		}
+	});
 
 	$output->Show( get_visibility() );
 	$output;
@@ -129,6 +150,14 @@ sub new_output {
 	&print( @_ );
 }
 
+sub copy_selection {
+	my $selection = _ref()->GetStringSelection();
+	return unless $selection;
+	wxTheClipboard->Open;
+	wxTheClipboard->SetData( Wx::TextDataObject->new( $selection ) );
+	wxTheClipboard->Close;
+
+}
 # 
 sub display_inc { new_output('@INC:'."\n"); &say("  -$_") for @INC }
 sub display_env { 

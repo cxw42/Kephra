@@ -8,9 +8,9 @@ Key Order :
 
      F2                    jump to next marker of this document
      F3                    find next
-     F4                    jump into notepad
      F5                    run Perl program
      F11                   toggle full screen mode
+     F12                   jump into notepad
      Ins                   switch between insert and overwrite mode
      Del                   delete selection
      Pos1                  jump to line begin or first wordcharacter(push twice)
@@ -20,17 +20,17 @@ Key Order :
 
      Shift+F2              jump to previous marker of this document
      Shift+F3              find previous
-     Shift+F5              stop Perl program
      Shift+F11             toggle max edit panel mode
+     Shift+F12              stop Perl program
      Shift+Back            tabweise einrücken
      Shift+PageUp          expand selection 1 page down
      Shift+PageDown        expand selection 1 page up
 
      Ctrl+F2               toggle marker here
      Ctrl+F3               save selection as find item
-     Ctrl+F4               toggle notepad
      Ctrl+F5               toggle output panel
      Ctrl+F11              toggle stay on top mode
+     Ctrl+F12              toggle notepad
      Ctrl+Space            indent selection a space
      Ctrl+Back             jump to last selected file
      Ctrl+Tab              indent selection a tab
@@ -62,6 +62,7 @@ Key Order :
      Ctrl+V                insert from clipboard
      Ctrl+W                replace (clipboard & selection)
      Ctrl+X                cut selection
+     Ctrl+Y                toggle selection between word, line, block or nothing
      Ctrl+Z                undo
 
      Ctrl+Shift+F2         delete all marker in this document
@@ -91,8 +92,10 @@ Key Order :
      Ctrl+Shift+Q          close all other files
      Ctrl+Shift+R          delete line right from cursor
      Ctrl+Shift+S          file save as
+     Ctrl+Shift+V          insert last used Perl variable of this block
      Ctrl+Shift+W          replace current line with clipboard
      Ctrl+Shift+X          cut line
+     Ctrl+Shift+Y          toggle selection between contents of braces or quoting marks
      Ctrl+Shift+Z          redo
 
      Alt+F2                jump to previous marker in all documents
@@ -108,8 +111,8 @@ Key Order :
      Alt+Q                 quit program
      Alt+Z                 fast undo
 
-     Alt+Shift+F3          replace and goto previous findig
      Alt+Shift+F2          jump to next marker in all documents
+     Alt+Shift+F3          replace and goto previous findig
      Alt+Shift+F5          show selection as hexadecimal in output panel
      Alt+Shift+ +          toggle fold all
      Alt+Shift+I           show Info dialog
@@ -240,6 +243,8 @@ Thematical Order:
      Shift+PageUp          expand selection 1 page down
      Shift+PageDown        expand selection 1 page up
      Ctrl+A                select all text of the document
+     Ctrl+Y                toggle selection between word, line, block or nothing
+     Ctrl+Shift+Y          toggle selection between contents of braces or quoting marks
  
  
  - Edit Operation
@@ -280,12 +285,15 @@ Thematical Order:
 
  - Tools
 
-     F4                    jump into notepad
-     Shift+F4              add selection to notepad
      F5                    run Perl program, show result in output panel
      Shift+F5              stop Perl program
+     Ctrl+F5               toggle output panel
      Ctrl+Shift+F5         show selection as decimal in output panel
      Alt+Shift+F5          show selection as hexadecimal in output panel
+     F12                   jump into notepad
+     Shift+F12             add selection to notepad
+     Ctrl+F12              toggle notepad
+
 
 
  - Dialogs

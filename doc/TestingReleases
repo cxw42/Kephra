@@ -1,18 +1,30 @@
 release notes of all Kephra testing   versions
 
-0.4.4 Acme {0.4.3.4}
+0.4.4 Acme {0.4.3.13}
  * acme like mouse control
-   + cut (left+middle)
-   + paste (left+right)
-   + search (middle) or goto last edit (if no text selected)
- + edit tools: tool-perl-copy-string and tool-perl-insert-last-var
+   + paste (left+middle)
+   + cut (left+right)
+   + search (middle on slection) or goto last edit (if no text selected)
+   + middle (insert slection) inspired by from emacs
+ * new tools: 
+   + copy surrounding quoted string
+   + insert last used perl var in that block
+   + insert time and date
+   ~ moved to tools menu: autoindention, braceindention, bracecompletion
  + bug and request tracker links in help menu
+ + toggle selection with ctrl+y
+ + select content with ctrl+shift+y
+ + zoom in, out and back with <ctrl>+<shift>+<+>,<ctrl>+<shift>+<-> and <ctrl>+<shift>+<#>
+ + works also in output panel
+   + note slection (shift+f12)
+   + copy with left click on selection 
+   + search selection with middle click
+ + copy selection in output panel with <enter>
  ~ replace to nothing enabled again
  ? 7 new tests, 17 reactivated
  " added keyword default to perl lexer def 
  ' updated keymap and navigation
  ' pod fixed by kristian++
-
 
 0.4.3 SciTe
  * utf handling
@@ -179,7 +191,7 @@ release notes of all Kephra testing   versions
  ! toolbar appeared in wrong status bar cell
  ! wordchar settings where missing
 
-0.3.9
+0.3.9 Firefox 
  + now complete embedded configs making Kephra selfhosting without config files
  + added pbp.conf according perl best practices
  + added replace selection into context menu over selected text in editpanel 
@@ -247,7 +259,7 @@ release notes of all Kephra testing   versions
  ! file first names now correct when it has no file ending
 
 
-0.3.5
+0.3.5 
  * File history menu
  * Insert templates menu
  + custom title bar
@@ -282,7 +294,7 @@ release notes of all Kephra testing   versions
  ~ search dialog quicker and with less flicker
  ! several bugfixes
 
-0.3.2 Firefox
+0.3.2
  ? beginning new configurable GUI system, rebuild contexmenus
  * brace navigation with <alt>+<arrow keys>
  * new contextmenu on selected text
@@ -509,21 +521,8 @@ release notes of all Kephra testing   versions
         colored gutter, first syntaxstyle(perl), filename in tab and the title
 
 the VERSION number is like a date in the development timeline of the program,
-no matter which part, a bigger number comes always after a smaller, pce 0.2
+no matter which part, a bigger number comes always after a smaller, Kephra 0.2
 comes after pre 0.1.23
-
-PRE
-0.4.2 : Perl 5.10.0 wxperl 0.93
-0.3.2 : Perl 5.8.8, wxPerl 0.26
-0.3   : Perl 5.8.7, General::Config 0.30
-0.2.00: Perl 5.8.6, libs added, General::Config patched, better starter
-0.1.80: wxPerl 0.21, cpan: Hash::Merge, Clone.pm added
-0.1.60: simplifications
-0.1.55: Perl 5.8.4, Config::General 2.27
-0.1.50: Perl 5.8.3, wxPerl 0.19, Config::General 2.26, more standart libs
-0.1.01: wxPerl 0.18, more libs, simplifications
-0.1.00: Perl 5.6.1, wxPerl 0.17, some standart libs
-
 
 Legend:
  ^ purpose

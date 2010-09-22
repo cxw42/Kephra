@@ -117,8 +117,8 @@ status_syntaxstyle_contextmenu:
   - checkitem document-syntaxmode-none
 
 status_whitespace_contextmenu:
-  - checkitem document-auto-indention
-  - checkitem document-brace-indention
+  - checkitem tool-auto-indention
+  - checkitem tool-brace-indention
   -
   - checkitem view-editpanel-whitespace
   -
@@ -144,7 +144,7 @@ status_whitespace_contextmenu:
   - radioitem document-tabs-hard
 
 status_lineendchar_contextmenu:
-  - checkitem view-editpanel-EOL
+  - checkitem view-editpanel-indicator-EOL
   -
   - item document-EOL-auto
   -

@@ -78,7 +78,7 @@ sub numify_key_code {
 	my %keycode_map = (
 		back => &Wx::WXK_BACK, tab => &Wx::WXK_TAB, enter => &Wx::WXK_RETURN,
 		esc => &Wx::WXK_ESCAPE, space => &Wx::WXK_SPACE,
-		plus => 43, minus => 45, '#' => 47, tilde => 92, 
+		plus => 43, minus => 45, sharp => 47, tilde => 92, 
 		del=> &Wx::WXK_DELETE, ins => &Wx::WXK_INSERT,
 		pgup => &Wx::WXK_PAGEUP, pgdn => &Wx::WXK_PAGEDOWN,
 		home => &Wx::WXK_HOME, end => &Wx::WXK_END,
@@ -117,10 +117,11 @@ sub numify_key_code {
 
 sub eval_cmd_data {
 	my @cmd = @_;
-	#Kephra::Config::existing_dirpath( Kephra::API::settings()->{app}{iconset_path} );
 	my ($item_data, $ico_path);
 	for (@cmd){
 		my $item_data = $list{$_};
+		$item_data->{sub} = $item_data->{call};
+		$item_data->{sub} =~ tr/()&;/  /d if $item_data->{sub};
 		for my $node_type (qw(call state enable)) {
 			$item_data->{$node_type} = eval 'sub {'.$item_data->{$node_type}.'}'
 				if $item_data->{$node_type};
@@ -227,6 +228,8 @@ CommandlistItem
 =item * ID - unique identifier, hashkey, following hash is its value
 
 =item * call - CODEREF : actual action, performed when this command is called
+
+=item * sub - string : name of the called routine
 
 =item * enable - CODEREF : returns enable status (0 for disable)
 

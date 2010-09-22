@@ -8,9 +8,9 @@ Nach Tasten geordnet :
 
      F2                    springe zum nächsten Marker in diesem Dokument
      F3                    suche nächsten Eintrag
-     F4                    spring in den Notitzblock
      F5                    starte Perlprogramm
      F11                   Vollbildmodus ein und ausschalten
+     F12                   spring in den Notitzblock
      Ins                   wechsle zwischen einfügen- und überschreiben-Modus
      Entf                  lösche Markierung
      Pos1                  springe an Zeilenanfang, 1. Buchstaben (2mal drücken)
@@ -26,11 +26,11 @@ Nach Tasten geordnet :
      Shift+BildRunter      erweitere Markierung um 1 Seite nach unten
      Shift+Rück            lösche leerzeichen bis zum nächsten tabstop
 
-     Strg+F2               einen Marker hier umschalten
      Strg+F3               speichere Markierung als Suchtext
-     Strg+F4               schalte Sichtbarkeit des Notizblocks um
+     Strg+F2               einen Marker hier umschalten
      Strg+F5               schalte Sichtbarkeit des Ausgabefensters um
      Strg+F11              Vordergrundmodus
+     Strg+F12              schalte Sichtbarkeit des Notizblocks um
      Strg+Leertaste        rücke um ein Leerzeichen ein
      Strg+Rück             springe zu letztbenutzter Datei
      Strg+Tab              rücke um ein Tab ein
@@ -62,6 +62,7 @@ Nach Tasten geordnet :
      Strg+V                einfügen (Inhalt der Zwischenablage)
      Strg+W                tausche Markierung mit Zwischenablage
      Strg+X                Markierung ausschneiden
+     Strg+Y                wechsle Markierung zwischen Wort, Zeile, Block oder nichts
      Strg+Z                letzte Bearbeitung rückgängig
 
      Strg+Shift+F2         alle Marker im Dokumenten löschen
@@ -91,8 +92,10 @@ Nach Tasten geordnet :
      Strg+Shift+Q          alle anderen Dokumente schließen
      Strg+Shift+R          lösche Zeile rechts vom Textcursor(caret)
      Strg+Shift+S          speichere Datei unter
+     Strg+Shift+V          letztbenutzte Perlvariable des Blocks einfügen
      Strg+Shift+W          akuelle Zeile mit Zwischenablage austauschen
      Strg+Shift+X          Zeile ausschneiden
+     Strg+Shift+Y          markiere Inhalte von Klammern oder Anführungszeichen
      Strg+Shift+Z          Bearbeitung wiederhohlen
 
      Alt+F2                springe zum nächsten Marker in allen Dokument
@@ -240,6 +243,8 @@ Inhaltlich geordnet:
      Shift+BildHoch        erweitere Markierung um 1 Seite nach oben
      Shift+BildRunter      erweitere Markierung um 1 Seite nach unten
      Strg+A                markiere ganzen Text des Dokumentes
+     Strg+Y                wechsle Markierung zwischen Wort, Zeile, Block oder nichts
+     Strg+Shift+Y          markiere Inhalte von Klammern oder Anführungszeichen
 
  
  - Text Bearbeiten
@@ -280,12 +285,14 @@ Inhaltlich geordnet:
 
  - Werkzeuge
 
-     F4                    spring in den Notitzblock
-     Shift+F4              Markierung im Notitzblock anhängen
      F5                    starte Perlprogramm, gib Ergebnis ins Ausgabefenster
      Shift+F5              stoppe Perlprogramm
+     Strg+F5               schalte Sichtbarkeit des Ausgabefensters um
      Strg+Shift+F5         zeige im Ausgabefenster Markierung in dezimal
      Alt+Shift+F5          zeige im Ausgabefenster Markierung in hexadezimal
+     F12                   spring in den Notitzblock
+     Shift+F12             Markierung im Notitzblock anhängen
+     Strg+F12              schalte Sichtbarkeit des Notizblocks um
 
 
  - Dialoge
@@ -305,5 +312,5 @@ Inhaltlich geordnet:
      Alt+F11               Transparenz
      Strg+Alt+M            Menüleiste
      Strg+Alt+T            Reiterleiste
-     Strg+F4               schalte Sichtbarkeit des Notizblocks um
+     Strg+F12              schalte Sichtbarkeit des Notizblocks um
      Strg+F5               schalte Sichtbarkeit des Ausgabefensters um

@@ -1,4 +1,4 @@
-# See end of file for docs, -NI = not implemented or used, -DEP = depreciated
+# See end of file for docs
 package Kephra;
 
 use 5.006;
@@ -6,14 +6,14 @@ use strict;
 use warnings;
 
 our $NAME        = __PACKAGE__;    # name of entire application
-our $VERSION     = '0.4.3.7';      # version of entire app
+our $VERSION     = '0.4.3.13';     # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $LOGLEVEL;                     # flag for benchmark loggings
 our $BENCHMARK;
 
 # Configuration Phase
-sub load_modules {
+sub load_modules { # -NI = not implemented or used, -DEP = depreciated
 	require Cwd;
 	require Encode;
 	require Encode::Guess;
@@ -44,10 +44,12 @@ sub load_modules {
 	require Kephra::App;                   # App start & shut down sequence
 	require Kephra::App::ContextMenu;      # contextmenu manager
 	require Kephra::App::EditPanel;        # Events, marker, visual settings of the EP
+	require Kephra::App::EditPanel::Indicator; # visual marker inside the edit panel
 	require Kephra::App::EditPanel::Fold;  # events and visual stuff of 4 EP marigins
 	require Kephra::App::EditPanel::Margin;# events and visual stuff of 4 EP marigins
 	require Kephra::App::MainToolBar;      # toolbar below the main menu
 	require Kephra::App::MenuBar;          # main menu
+	require Kephra::App::Panel::CommandLine;#
 	require Kephra::App::Panel::Library;   #
 	require Kephra::App::Panel::Notepad;   #
 	require Kephra::App::Panel::Output;    #
@@ -70,11 +72,11 @@ sub load_modules {
 	require Kephra::Config::Interface;     # loading Interface data menus, bars etc
 	require Kephra::Config::Tree;          # data tree manipulation
 	require Kephra::Dialog;                # API 2 dialogs, fileselectors, msgboxes
-	#require Kephra::Dialog::Color;         #
+	#require Kephra::Dialog::Color;         # color browsing tool
 	#require Kephra::Dialog::Config;        # config dialog
 	#require Kephra::Dialog::Exit;          # select files to be saved while exit program
 	#require Kephra::Dialog::Info;          # info box
-	#require Kephra::Dialog::Keymap;        #
+	#require Kephra::Dialog::Keymap;        # -NI
 	#require Kephra::Dialog::Notify         # inform about filechanges from outside
 	#require Kephra::Dialog::Search;        # find and replace dialog
 	require Kephra::Document;              # internal doc handling: create, destroy, etc
@@ -92,17 +94,18 @@ sub load_modules {
 	require Kephra::Edit::Search;          # search menu functions
 	require Kephra::Edit::Search::InputTarget; # enables darg n drob for comboboxes
 	require Kephra::Edit::Select;          # text selection
+	require Kephra::Edit::Special;         # collector of unsorted 
 	require Kephra::EventTable;            # internal app API
 	require Kephra::File;                  # file menu functions
 	require Kephra::File::History;         # list of recent used Files
 	require Kephra::File::IO;              # API 2 FS, read write files
 	require Kephra::File::Session;         # file session handling
 	require Kephra::Help;                  # help docs system
-	require Kephra::Macro;                 # macro recorder
+	require Kephra::Macro;                 # macro recorder, creation, replay
 	require Kephra::Menu;                  # base menu builder
 	require Kephra::Plugin;                # plugin manager
 	require Kephra::Plugin::Demo;          # cookbook for plugin authors
-	require Kephra::ToolBar;               # base toolbar builder
+	require Kephra::ToolBar;               # toolbar builder base
 }
 
 sub configdir {
@@ -144,6 +147,7 @@ sub start {
 				                   or $config_tree->{about}{version} ne $Kephra::VERSION;
 			}
 		}
+
 		#if ($copy_defaults) {
 			#my $dir = File::UserConfig->new();
 			#if ($^O =~ /(?:linux|darwin)/i) {
@@ -172,7 +176,7 @@ sub start {
 	}
 	my $config_dir = File::Spec->catdir($basedir, $config_sub_dir);
 	Kephra::Config::_dir( $config_dir );
-	Kephra::App::splashscreen($splashscreen);
+	#Kephra::App::splashscreen($splashscreen);
 	#use Wx::Perl::SplashFast ( File::Spec->catfile($config_dir, $splashscreen), 150);
 	Kephra::Config::Global::auto_file( File::Spec->catdir($config_dir, $boot_file) );
 	Kephra::Help::_dir( File::Spec->catdir($basedir, $help_sub_dir) );
@@ -208,26 +212,51 @@ and documentation for your programming, web and text authoring.
 =item Main Goals
 
 A visually harmonic and beautiful, sparing and elegantly programed Editor,
-that helpes you with all you tasks. It should be also able to operate in the
-way you prefer and be not afraid to try new things.
+that helpes you with all your daily tasks. It should be also able to operate
+in the way you prefer and be not afraid to try new things.
 
 =item In Depth
 
-My ideal is a balance of:
+I know, I know, there are plenty text editors out there, even some really
+mighty IDE, but still no perfect solution for many programmers. So lets
+learn from Perl what it takes to build a tool thats powerful and fun to
+play with for hours and months.
 
 =over 2
 
-=item * low entrance / easy to use
+=item * make a low entry barrier (usable like notepad)
 
-=item * rich feature set (CPAN IDE)
+=item * copy what people like and are used to and whats not inherently broken
+
+=item * give choices (TimTowtdi) 
+
+=over 2
+
+=item * (e.g. deliver vi and emacs input style)
+
+=item * usable with menu, contextmenu, bars, mouse combo, key combos, commands ...
+
+=item * configure via dialog and yaml/conf files ...
+
+=back
 
 =item * highly configurable / adaptable to personal preferences
 
 =item * beauty / good integration on GUI, code and config level
 
+=item * solve things with minimal effort (no bloat / minimal dependencies)
+
+=item * still everything extendable by easy to write plugins
+
 =back
 
-That sounds maybe generic but we go for the grail of editing, nothing lesser.
+    I believe strongly that there is much more possible with GUI editors
+    and text editors in general than we are used today. So I try to weave
+    fresh ideas wherever I can and design Kephra in a way, that every 
+    programmer can alter and extend it easily. That can speed up progress
+    or at least makes Kephra more comfortable for you.
+
+    That is the plan, but we are currently not nearly that far.
 
 =item Name
 
@@ -289,7 +318,7 @@ From the beginning Kephra was a useful programm and will continue so.
 Beside all the basic stuff that you would expect I listed here some features
 by category in main menu:
 
-=over
+=over 2
 
 =item File
 
@@ -335,75 +364,60 @@ and some help texts to be opened as normal files
 
 =head1 ROADMAP
 
-=head2 Past
+=head2 Overview
 
-A more comlete roadmap you can find L<here|../doc/Roadmap>.
+Stable Release 0.4
 
-=over
+    This release was about getting the editor liquid or highly configurable.
+    Its also about improvements in the user interface and of course the little
+    things we missed. It also contains interpreter output panel and a notepad.
 
-=item  Stable 0.4
+Stable Release 0.5
 
-main new features are: 
+    This release is about getting Kephra into the world out there and adding
+    feature that are most needed and removing most hindering barriers.
 
-GUI abstraction layer, searchbar, output panel, brace navigation, notepad,
-	file history menu, templates, some more context menus
+Stable Release 0.6
 
-This release is about getting the editor liquid or highly configurable.
-Its also about improvements in the user interface and of course the little
-things we missed, but config dialog was delayed.
+    This release will be about extending Kephra internal extentions and Plugins.
 
-=item  Testing 0.4.1
 
-- folding, 
-- test suite
-- new hotpluggable localisation system that also does some UTF semi-automatically
-  - initial czech and norwegian translation
+=head2 This Cycle
 
-=item Testing 0.4.2
+=over 2
 
-- new tabbar and doc ref handling
-- partial test suite fix 
+=item Testing 0.4.1 - code folding
 
-=item Testing 0.4.3
+=item Testing 0.4.2 - folding and GUI refined, movable tabs, 2 more tools, doc data
 
-- codings and right UTF handling
-- code marker
-- better, richer UI
-- more tools
+=item Testing 0.4.3 - utf, marker, folding finished, 3 more tools, help links
+
+=item Testing 0.4.4 - new mouse control, 2 more tools, updated docs
+
+=item Testing 0.4.5 - more encodings, local notepad
+
+=item Testing 0.4.6 - config dialog
+
+=item Stable 0.5 - about dialog
 
 =back
 
 =head2 Future
 
-=over
+=over 2
 
-=item To Do
+=item command line vor vi like usage
 
-- fix and extend test suite
+=item tree lib extention: snippet lib and toolbox in one
 
-=item Testing 0.4.4
+=item file browser
 
-- fix config install under linux and mac
-- config dialog
-- plugin API 
-- file browser or tree lib extension
-
-
-=item Testing 0.4.5
-
-- config dialog
-- stability for 0.5
+=item Plugin API
 
 =back
 
-=head2 Plans up to Stable 0.6
-
-Coding support like L<Perl::Tidy>, outlining, help integration, 
-autocompletition and so on will be the goals for the next round.
-Not all of them but some. Because 0.5 is mainly about a stable
-plugin API also some of the first Plugins should appear.
-Main theme for 0.6 is language specific tools and syntax rich
-modes replacing just bare bone syntax styles.
+Coding support like L<Perl::Tidy>, outlining, help integration, debugger
+autocompletition and so on will be long time goals. Lets see where they fit in.
 
 =head1 SUPPORT
 
@@ -429,9 +443,9 @@ L<http://kephra.sourceforge.net>
 
 =item * Adam Kennedy E<lt>adamk@cpan.orgE<gt> (cpanification)
 
-=item * Gabor Szabo E<lt>szabgab@cpan.orgE<gt> 
-
 =item * Renee Bäcker E<lt>module@renee-baecker.deE<gt> (color picker)
+
+=item * many more since we study other editors a lot and also the padre sources
 
 =back
 
@@ -440,11 +454,12 @@ L<http://kephra.sourceforge.net>
 This Copyright applies only to the "Kephra" Perl software distribution,
 not the icons bundled within.
 
-Copyright 2004 - 2008 Herbert Breunung.
+Copyright 2004 - 2010 Herbert Breunung.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU GPL.
 
 The full text of the license can be found in the LICENSE file included
 with this module.
+
 =cut

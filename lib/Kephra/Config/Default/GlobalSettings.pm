@@ -56,6 +56,7 @@ sub get {
 					eval_with => 'eval',
 					font_family => 'Courier New',
 					font_size => 10,
+					mode => 'local',
 					size => 180,
 					visible => 0,
 				},
@@ -137,7 +138,7 @@ sub get {
 										# $doccount - nr of all opened files
 										# $appname - name of this programm
 										# $version - version of this programm
-				transparency => 0.3,	# how much transparent if active, 1 = 100% = invisible
+				transparency => 0.2,	# how much transparent if active, 1 = 100% = invisible
 				transparent => 0,		# (0|1) trancparency active ?
 			},
 			xp_style => 1,
@@ -155,7 +156,7 @@ sub get {
 				position_y    => 100,
 				position_x    => 100,
 				tooltips      => 1,
-				transparency  => 0.3,  # 0 - full visible .. 1 - invisible
+				transparency  => 0.2,  # 0 - full visible .. 1 - invisible
 				width         => 436,
 			},
 		},
@@ -268,7 +269,7 @@ sub get {
 			defaultsettings => {
 				new => {                  # defaults for new docs
 					EOL      => 'OS',     # (OS|auto|cr|lf|cr+lf) end of line character, OS means current OS standart -NI auto means take setting of the last touched file
-					codepage => '8bit',   # (8bit|utf8) codepage, used for charset
+					codepage => 'ascii',  # (8bit|utf8) codepage, used for charset
 					cursor_pos => 0,
 					readonly => 'no',     # (0|1|2|on|off|protect) if =1 it set a write protection on readonly files
 					syntaxmode => 'perl', # (auto|none|lang_id) which syntaxstyle on new files
@@ -370,13 +371,13 @@ sub get {
 				directory => 'session', # subdir of config where to look for session files
 				history   => {
 					file => 'history.yml',
-					length => 10,
+					length => 13,
 					node => '',
 					save => 1,
 				},
 			},
 			templates => {
-				directory => 'templates',
+				directory => 'template',
 				file      => 'perl.conf',
 			},
 		},

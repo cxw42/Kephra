@@ -1,5 +1,5 @@
 package Kephra::App::Panel::Notepad;
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 use strict;
 use warnings;
@@ -71,9 +71,6 @@ sub create {
 						? Kephra::Edit::Search::set_replace_item($sel)
 						: Kephra::Edit::Search::set_find_item($sel);
 				}
-			} elsif ($key == &Wx::WXK_F4) {
-				Wx::Window::SetFocus( $ep );
-				switch_visibility() if $event->ControlDown;
 			} elsif ($key == &Wx::WXK_F5) {
 				my ( $sel_beg, $sel_end ) = $notepad->GetSelection;
 				Kephra::App::Panel::Output::ensure_visibility();
@@ -89,6 +86,9 @@ sub create {
 					$result = `$interpreter $code`;
 				}
 				Kephra::App::Panel::Output::say($result);
+			} elsif ($key == &Wx::WXK_F12) {
+				Wx::Window::SetFocus( $ep );
+				switch_visibility() if $event->ControlDown;
 			} elsif ($key == 70 and $event->ControlDown) {# F
 				Kephra::CommandList::run_cmd_by_id('view-searchbar-goto');
 			}
@@ -136,13 +136,15 @@ sub note {
 	Wx::Window::SetFocus( _ref() );
 }
 
-sub append_selection {
-	my $selection = Kephra::Edit::get_selection();
-	return unless defined $selection and $selection;
+sub append {
+	my $text = shift;
+	return unless defined $text and $text;
 	my $np = _ref();
-	$selection = "\n" . $selection if $np->GetLength();
-	$np->AddText( $selection );
+	$text = "\n" . $text if $np->GetLength();
+	$np->AppendText( $text );
 }
+
+sub append_selection { append( Kephra::Edit::get_selection() ) }
 
 sub save {
 	my $file_name = _config()->{content_file};

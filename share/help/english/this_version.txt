@@ -1,8 +1,7 @@
 
        --------------------
-      | Kephra Version 0.4 |
+      | Kephra Version 0.5 |
        --------------------
-
 
  1. Preliminary notes
  2. News summary
@@ -27,159 +26,108 @@
 
 
  2. News summary
-    + search bar on the bottom.
-    + first 2 extensions
-    + much better drag 'n drop support
-    + 10 doc spanning bookmarks and goto last edit
-    + context menu on selected text and tab bar, which has 2 new optional icons
-      and movable tabs.
-    + "recent files" and "insert template" menus
-    + menu and toolbar items can be checked and respond to events and states.
-    + all menus and bar can modified via simple config files
-    + menu labels have German umlauts
-    + autosave, autonotify and blockformat
-    + rename file and open all files of a dir
+    * read and write Unicode files
+    * code folding
+    * new mouse click combos
+    + moveable tabs
+    + marker
+    + 8 new tools
+    + 3 new main window modes
+    + definable status bar
+    + links to help web pages
+    * installation over CPAN for Linux, Win und Mac
+    + ... and lots more
 
 
  3. News in detail
 
- - Searchbar
-    + This is probably the most visible and useful addition. You find it usually
-      above the status bar, but you can - as nearly everything in Kephra - change
-      its position as well. It contains an input field you can click on or jump
-      into and back with <Ctrl>+<F>. With every letter you type, it starts a new
-      search with the new search phrase (incremental search). The still existing
-      search dialog can do that as well, but he sometimes covers the finding.
-    + It's now possible to drag text with the mouse into the text input of search
-      bar and search dialog. (Drag'n Drop)
-    + The <Up> and <Down> keys let you skim through the previous used search items.
-    + Following key combination do inside the search bar the same as in the editor.
-      <PageUp>, <PageDown>, both also with <Ctrl> to change the doc as well as 
-      <Ctrl>+<Cursor Keys>.
-    + <Enter> or <Shift>+<Enter> skips to the next or last finding of the search
-      item. It's the same as the two buttons next to the text input. 
-      <Ctrl>+<Enter> jumps to the first finding, +<Shift> to the last.
-    + The third button jumps to the spot of the last text change (goto last edit)
-      (<Ctrl>+<Shift>+<G>).
-    + The last two button are calling the well known goto and search dialog. The
-      ladder contains all the search and replace functions. A right click above
-      the search bar opens a context menu with all search options.
-    + The leftmost, red X, or a <Ctrl>+<Q> closes the bar. It reappears with the
-      next <Ctrl>+<F>. <Esc> jumps back into the editor without closing the bar.
+ - Unicode
+    + UTF-8 files will be recognized when opening and also saved as such.
+    + The fourth pane of the statusbar shows if current coding is utf or ascii.
+    + Coding of empty files can be changed with the Document > Encoding menu,
+    it may (yet) not work otherwise.
+ 
+ - New Mouse Controls
+    Following settings can all be changed or made disable at once.
+    + Left click on the selection does copy it.
+    + Middle click inserts selection.
+    + Middle click on the selection searches for next instance of that string.
+    + In any other case Middle click moves cursor to the position of last edit.
+    + Middle click while holding left pastes from clipboard.
+    + Right click while holding left does cut and selection to clipboard.
 
- - Bookmarks and more Navigation
-    If remembering the position of last change is not enough, use bookmarks. The
-    Editor handles 10, counting from 0 up to 9.
-    + With <Ctrl>+<Shift>+<Number> you set this particular bookmark and a blue
-      arrow appears on the leftmost margin. If not, you should activate the menu
-      item "View > Marker Margin". If this bookmark was already set, it moved to
-      the new position and if it was already on this spot, it is now deleted. 
-    + <Ctrl>+<Nr> jumps to the document and position, if the bookmark is defined.
-    + Moving the cursor block wise you do with <Alt>+<PageUp|PageDown>. Blocks
-      are chunks of text, separated by empty lines.
-    + New is also the brace navigation (<Alt>+<arrow keys>). Vertical translates
-      to a movement between matching braces, braces of the same nesting depth or
-      at least braces of the same kind. Horizontal moves are between any braces.
-    + Rectangular selection is possible with the mouse, holding the <Alt> key or 
-      with <Alt>+<Shift>+<arrow keys>.
-    + <shift>+<Backspace> deletes several spaces, depending on tab width.
-    + Jumping to the last opened document was moved to <Ctrl>+<Shift>+<Backspace>.
+ - Code Folding
+    + Between the line numbers and the text area a new margin appeared, that 
+    marks with symbols the beginnings of all code chunks that can be folded.
+    + Left click or <Ctrl>+<+> folds or defolds (toggles) the current node.
+    + Middle click or <Ctrl>+<Shift>+<+> toggles current node with all children.
+    + Right click or <Alt>+<+> toggles all nodes of that level. All nodes without
+    parent are on level one, its direct children are level two and so forth.
+    + Right click while holding left or <Alt>+<Shift>+<+> toggles all nodes.
+    + A document, reopened from file history has the folding state as when closed.
+ 
+ - Marker
+    Green arrows on the left of the line numbers mark important text spots.
+    + They can be toggled with a left click on marker margin or <Ctrl>+<F2>.
+    + <F2> or <Shift>+<F2> navigate forth and back between marker of a doc.
+    + When adding <Alt>+, Marker in all Docs can be navigated.
+    + Same you achieve with the green arrows at the search bar.
+    + A submenu with all marker functions is inside the search menu.
+    + Also bookmarks can now be toggled with a middle click on the marker margin.
+ 
+ - Richer Interface
+    + The main window has 3 new modes, all closed by the <Esc> key.
+      + <F11> - fullscreen, win consumes the whole screen and has no more border.
+      + <Shift>+<F11> - Max Editpanel, all app bars are toggled.
+      + <Alt>+<F11> - toggles transparency of the main win.
+      + <Ctrl>+<F11> - no other win can stay on top of Kephra.
+    + Tabbar (<Ctrl>+<Alt>+<T>) and menu bar (<Ctrl>+<Alt>+<M>) can be toggled.
+    + Tabs in Tabbar are now also movable with mouse.
+    + The rightmost symbol of the tabbar opens a menu to select the current doc.
+    + In the left margin can now be opened a new context menu.
+    + The status bar can now be defined by a YAML file as other toolbars too.
+    Open that file with the menu item Config > User Interface > Toolbar.
+    + Is a opened file deleted elsewhere, a new dialog tells you that and offers
+    several options to deal with that.
+    + Several icons are redesigned by Jens Neuwerk.
 
- - File menu
-    This menu got a complete redesign, 8 new functions and 2 new submenus.
-    + The "templates" submenu list chunks of text that can contain recent data
-      like the name of the file the template is inserted. Templates can be added
-      by editing the file you open with the menu item "Config > Templates".
-    + To shorten the file menu, all open related functions gone into a submenu.
-      There is also function to open all files of a directory.
-    + "Recently Closed" helps to reopen last used files. The global config key
-      "file > history > length" does determinate the length of that menu.
-    + In the "Save" group is now a call to rename the recent document that also
-      can be called with <Ctrl>+<Alt>+<Shift>+<S>.
-    + All close and exit calls have now an alternative "without save" sibling.
-    + Even the submenu for file sessions has 2 more functions to save and restore
-      a file session without having to type in a session name. This name lays
-      under the global config key "file > session > backup".
+ - More Tools
+    + <Shift>+<F4> copies selection into the notepad.
+    + A new dialog displays selected color values and writes the selected color
+    in HTML hex format into the document.
+    + Content of @INC and %ENV can be written into output panel.
+    + Output panel can show selection, converted into decimal or hexadecimal numbers.
+    + Is caret inside a quoted string, copy that with <Alt>+<Shift>+<C>.
+    + <Ctrl>+<Shift>+<V> inserts the Perl varibale last used in this block.
+    + inserting current time and date
+    + NonASCII character can be converted to HTML-Entities and back.
 
- - Drag 'n Drop
-    Open files and directories via DnD was possible with 0.3, if you dragged them
-    on the tab bar, but this area is so small that maybe no one noticed it. Now it
-    works like it should (windows only). There is also a global config key named
-    "file > open > dir_recursive" to open files in the directory but not in the
-    subdirectories (not recursive), but recursive is default.
-
- - Formating Text
-    The submenu "Edit > Format" has 4 new entries.
-    + In contrast to the view option "line wrap" changes this line wrap the text
-      permanently. All lines that are longer than the chosen width (or exceed the
-      right margin) are cut at an end of a word.
-    + "Blockformat" does the same with one precondition. The lines will be joined
-      and than wrapped. That way a block of text with a desired maximal width is
-      created.
-
- - Context menus and bars
-    Not only over the new searchbar are new context menus to discover:
-    + Maybe the most important new context menu shows above a selected text.
-      Many functions just then make sense or if no text is selected. A useful
-      division into two menus it also made possible to offer more functions.
-    + Tabs in the tab bar can now be moved with <Ctrl>+<PageUp|PageDown>.
-    + The tab bar now has also 2 optional icons. One leftmost to make a new doc,
-      and one rightmost to close the current doc. The same does a middle click,
-      but that can be changed also with the config key "app>tabbar>middle_click".
-    + The context menu of the tab bar lists all opened docs with full paths.
-    + The menus above the status bar cells are now only open with a right click.
-      A left click switches between the most common settings (mostly on and off).
-    + The second cell of the status bar displays now the size (chars and lines)
-      of the selected text or the percental cursor position.
-
- - Configs
-    The new menus and bars are useful, but the real change from version 0.3 to
-    0.4 is the replacement of XRC with homegrown, more powerful technology.
-    + Thats why menus can now contain German umlauts.
-    + Thats why menu entry can now be checked (check or radio button) or disabled.
-      Buttons in tool bars can now have states.
-    + New is also the command list (open via menu item  Config > User Interface).
-      where are defined which internal call, event, icon and key binding belong
-      to every command, the user can call. Labels and hints are stored in the
-      localization files (config menu), that contain everything to translate this
-      program. If you would like to help with translation, please contact us.
-    + The menu: "Config > User Interface" also hold the new YAML files that define
-      every menu and toolbar. A "#" at the end, does comment a line.
-    + Under the global config key "app > window > title" you can now also change
-      the titlebar. Some special variables will insert recent data. More details
-      are listed in the module Kephra::Config::Default::GlobalSettings. 
-    + All displayed file paths are now OS conform.
-    
- - First 2 Extensions
-    + With <Ctrl>+<F4> or the icon in the tool bar you can open or close the 
-      notepad panel on the right side. There you can leave text that always is
-      visible, even after a restart. <F4> let the cursor jump between the editor
-      and the notepad and <F5> does a perl "eval" with the content of the notepad.
-      The output will be shown in the output panel.
-    + Is the cursor at the edit panel active you can run with <F5> the current
-      file as a Perl script and stop that any time with <Shift>+<F5>. <Ctrl>+<F5>
-      opens or closes the output panel.
-    + All settings regarding these panel like color, font size or behavior can
-      be found under app > panel.
+ - More Help
+    + All documentation is updated or rewritten.
+    + A new item in the help menu opens the online documentation in the browser. 
+    + The next item opens a help forum for Perl programmer.
+    + And next 2 items open our online ticket system to report wishes or errors.
+ 
+ - Installation jetzt auch über CPAN-Shell für Linux, Win und Mac
 
 
  4. Known bugs and issues
 
-    Please don't try to change file encoding.
+    Please don't try to change file encoding of nonemty files.
 
 
  5. Hints
+ 
+    + Read the "Advanced - Tour" in the "Help" menu. Many of these useful
+    functions can be overseen very easily.
 
-    + Read the "Advanced - Tour" in the "Help" menu. This is full of goodies, 
-    which makes your editing with Kephra much more effective.
-    
-    + To understand the main config file better, look into the defaults under:
-    kephra/config/global/default/default.conf. It explains many keys and tells
-    you about possible settings.
+    + Look into the Module Kephra::Config::Default::GlobalSettings, a commented
+    version of the main configs.
 
 
  6. Plans for next releases
- 
-    + Plugin API
-    + tree extention for text snipptets and self defined tools
-    + commandline extention for vi like usage
+
+     + Plugin API
+     + tree extention for text snipptets and self defined tools
+     + commandline extention for vi like usage
+     + config dialog

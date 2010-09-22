@@ -105,8 +105,8 @@ sub on_right_click {
 	if ($nr > -1 and $nr < 2 and get_contextmenu_visibility() ){
 		$mouse_y_pos = $event->GetY;
 		$ep->PopupMenu( 
-			Kephra::App::ContextMenu::get( 
-				_edit_config()->{contextmenu}{ID_margin} ), $x, $y);
+			Kephra::App::ContextMenu::get 
+				(_edit_config()->{contextmenu}{ID_margin} ), $x, $y);
 		undef $mouse_y_pos;
 	}
 	elsif ($nr == 2) {
@@ -130,8 +130,6 @@ sub clicked_on_line {
 	}
 	return $ep->LineFromPosition($pos);
 }
-
-
 #
 # line number margin
 #

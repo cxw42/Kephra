@@ -1,5 +1,5 @@
 package Kephra::Edit::Goto;
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 use strict;
 use warnings;
@@ -35,8 +35,8 @@ sub position {
 	$ep->SearchAnchor;
 	#$visible ? $ep->ScrollToLine($fvl) : _center_caret();
 	$ep->EnsureCaretVisible;
-	$ep->EnsureVisible($ep->LineFromPosition($pos));
-	_center_caret();
+	$ep->EnsureVisible( $ep->LineFromPosition($pos) );
+	#_center_caret();
 }
 sub next_visible_pos {
 	my $ep  = _ep_ref();
@@ -60,7 +60,7 @@ sub line    {
 sub line_nr { position( _ep_ref()->PositionFromLine( shift ) ) }
 
 sub last_edit {
-	my $pos = Kephra::Document::Data::attr('edit_pos');
+	my $pos = Kephra::Document::Data::get_attribute('edit_pos');
 	position( $pos ) if defined $pos;
 }
 
@@ -80,7 +80,7 @@ sub prev_brace{
 	$ep->SearchAnchor();
 	my $newpos = $ep->SearchPrev(&Wx::wxSTC_FIND_REGEXP, '[{}()\[\]]');
 	$newpos++ if $ep->BraceMatch($newpos) > $newpos;
-	$newpos > -1 ? $ep->GotoPos($newpos) : $ep->GotoPos($pos);
+	$newpos > -1 ? position($newpos) : position($pos);
 }
 
 sub next_brace{
@@ -90,7 +90,7 @@ sub next_brace{
 	$ep->SearchAnchor();
 	my $newpos = $ep->SearchNext(&Wx::wxSTC_FIND_REGEXP, '[{}()\[\]]');
 	$newpos++ if $ep->BraceMatch($newpos) > $newpos;
-	$newpos > -1 ? $ep->GotoPos($newpos) : $ep->GotoPos($pos);
+	$newpos > -1 ? position($newpos) : position($pos);
 }
 
 sub prev_related_brace{
@@ -100,8 +100,8 @@ sub prev_related_brace{
 	$matchpos = $ep->BraceMatch(++$pos) if $matchpos == -1;
 	if ($matchpos == -1) { prev_brace() }
 	else {
-		if ($matchpos < $pos) { $ep->GotoPos($matchpos+1) }
-		else{
+		if ($matchpos < $pos) { position($matchpos+1) }
+		else { # when there is no matching brace
 			my $open_char = chr $ep->GetCharAt($pos);
 			my $close_char = chr $ep->GetCharAt($matchpos);
 			$ep->GotoPos($pos);
@@ -110,8 +110,15 @@ sub prev_related_brace{
 			$ep->GotoPos($pos);
 			$ep->SearchAnchor();
 			my $next_close = $ep->SearchPrev(0, $close_char);
-			if ($next_open < $next_close) { $ep->GotoPos( $next_open + 1 ) }
-			else						  { $ep->GotoPos( $next_close	) }
+			if ($next_open ==-1 and $next_close == -1) {
+				$ep->GotoPos($ep->GetLength);
+				$ep->SearchAnchor();
+				position( $ep->SearchPrev(0, $close_char) );
+			} else {
+				$next_open > $next_close
+					? position( $next_open + 1 ) 
+					: position( $next_close );
+			}
 		}
 	}
 }
@@ -123,8 +130,8 @@ sub next_related_brace{
 	$matchpos = $ep->BraceMatch(--$pos) if $matchpos == -1;
 	if ($matchpos == -1) { next_brace() }
 	else {
-		if ($matchpos > $pos) { $ep->GotoPos($matchpos) }
-		else{
+		if ($matchpos > $pos) { position($matchpos) }
+		else { # when there is no matching brace
 			my $open_char = chr $ep->GetCharAt($matchpos);
 			my $close_char = chr $ep->GetCharAt($pos);
 			$ep->GotoPos($pos + 1);
@@ -133,8 +140,15 @@ sub next_related_brace{
 			$ep->GotoPos($pos + 1);
 			$ep->SearchAnchor();
 			my $next_close = $ep->SearchNext(0, $close_char);
-			if ($next_open < $next_close) { $ep->GotoPos( $next_open + 1 ) }
-			else						  { $ep->GotoPos( $next_close	) }
+			if ($next_open ==-1 and $next_close == -1) {
+				$ep->GotoPos(0);
+				$ep->SearchAnchor();
+				position( $ep->SearchNext(0, $open_char) );
+			} else {
+				$next_open < $next_close
+					? position( $next_open + 1 ) 
+					: position( $next_close );
+			}
 		}
 	}
 }

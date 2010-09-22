@@ -3,6 +3,13 @@
       | Kephra Version 0.5 |
        --------------------
 
+ 1. Vorbemerkungen
+ 2. Zusammenfassung
+ 2. Neuigkeiten
+ 4. Probleme
+ 5. Hinweise
+ 6. Pläne
+
 
  1.  1. Vorbemerkungen:
 
@@ -20,164 +27,99 @@
 
  2. Zusammenfassung der Neuheiten
     * lesen und schreiben von Unicode-Dateien
-    * Code falten
     * neue Maussteuerung
-    * Installation über CPAN für Linux, Win und Mac
+    * Code falten
+    + Marker
     + bewegliche Reiter
-    + 7 neue Werkzeuge
+    + 8 neue Werkzeuge
     + 3 neue Hauptfenstermodi
     + definierbare Statuszeile
     + Verbindungen zu Netzhilfen im Menü
+    * Installation über CPAN für Linux, Win und Mac
     + vieles mehr
 
 
  3. NEU in dieser Version (ausführlich)
 
- - Suchzeile
-    + Diese sichtbarste und nützlichste Neuerung findet ihr am unteren Rand, über
-      der Statuszeile. Sie enthält eine Textzeile, die man anklicken oder mit
-      <strg>+<F> anwählen kann (und damit auch wieder zurückspringen kann). Fängt
-      man dann an einen Begriff dort einzugeben, wird bereits nach der Eingabe
-      gesucht (inkrementelle Suche). Das war schon vom Dialog bekannt nur konnte
-      der das Gefundene verdecken, die Suchzeile nicht.
-    + Es ist jetzt auch möglich, einen markierten Text in die Textfelder der Such-
-      zeile und des Suchdialoges mit der Maus zu ziehen. (Drag'n Drop)
-    + In der Combobox kann man auch mit den Tasten <Hoch> und <Runter> bereits
-      verwendete Suchbegriffe auswählen.
-    + Folgende Tastaturkombinationen tun das gleiche wie im Textfeld und dienen
-      der Navigation: <Bildhoch>, <Bildrunter>, beides auch mit <Strg> zum wechseln
-      des Dokumentes sowie <Strg>+<Richtungstasten>.
-    + <Enter> bzw. <Shift>+<Enter> sucht nach dem nächsten oder vorigen Vorkommen
-      des Suchbegriffes. Diese Funktionen bringen auch die beiden Knöpfe rechts
-      der Kombobox. <Strg>+<Enter> läßt zum ersten Fundort, +<Shift> zum letzten
-      springen.
-    + Der dritte aktiviert das neue "goto last edit" (<Strg>+<Shift>+<G>),
-      welches den Cursor an die Stelle springen lässt, an dem dieser Text zuletzt
-      geändert wurde.
-    + Der letzte Knopf ruft den bekannten Suchdialog, der alle Such- und Ersetzen-
-      funktionen beinhaltet. Das Ändern der Suchoptionen geht aber auch mit einem
-      Kontextmenü das sich bei Rechtsklick über der Suchzeile öffnet.
-    + Sie kann auch mit dem roten X ganz links zugeklappt werden und wird sich
-      mit dem nächsten Aufruf wieder öffnen. Ein Verlassen mit <Strg>+<Q> schließt
-      auch.
+ - Unicode
+    + UTF-8 Dateien werden beim öffnen erkannt und auch als solche gespeichert.
+    + Das vierte Feld in der Statuszeile zeigt an ob utf oder ascii aktuell sind.
+    + Kodierung leerer Dateien kann im Menü Dokument > Zeichensatz geändert werden,
+    was sonst (noch) zu Problemen führen kann.
+ 
+ - Neue Maussteuerung
+    Folgende Einstellungen sind alle änderbar und auf einmal auch abschaltbar.
+    + Der Linksklick auf die Markierung kopiert sie.
+    + Der Mittelklick fügt die Markierung ein.
+    + Der Mittelklick auf die Markierung läßt das nächste Vorkommen suchen.
+    + Ansonsten lässt der Mittelklick zur letzten Bearbeitung springen.
+    + Der kombinierte Links- dann Mittelklick fügt ein.
+    + Der kombinierte Links- dann Rechtsklick schneidet aus.
 
- - Lesezeichen und noch mehr Navigation
-    Wenn es nicht genügt, daß der Editor den Ort der letzten Änderung speichert,
-    verwendet Lesezeichen. Derer gibt es insgesamt 10, denn ihr Name entspricht
-    den Ziffern 0 bis 9. Mit <Strg>+<Shift>+<Ziffer> wird das Lesezeichen in der
-    aktuellen Zeile gesetzt und erscheint als blauer Pfeil links neben der Zeilen-
-    nummer. Wenn nicht, sollte man im Menü "Ansicht" den "Markerrand" aktivieren.
-    Falls unter dieser Ziffer bereits ein anderes Lesezeichen bestand, wurde es
-    soeben hierher bewegt und falls es sich hier befand, wurde es soeben gelöscht.
-    <Strg>+<Ziffer> bewegt den Cursor zum Dokument und der Stelle des Lesezeichens.
-    + Das Blockweise navigieren mit dem Cursor hab ich auf <Alt>+<Bildhoch>
-      (<Bildrunter>) verlegt. Textblöcke werden von Leerzeilen getrennt.
-    + Neu ist auch die Klammernavigation die mit <Alt>+Richtungstasten bedient
-      wird. Dabei kann man mit den vertikalen Richtungstasten zwischen den Klammern
-      gleicher Art springen, mit den Horizontalen zwischen Klammern aller Art.
-    + Mit <Alt>+<Shift>+<Richtungstasten> kann man allerdings nicht Text zwischen
-      Klammern markieren sondern eine rechteckige Textauswahl treffen, wie es vorher
-      nur möglich war, wenn man <Alt> gedrückt hält und mit der Maus auswählt.
-    + <shift>+<Rück> Zieht Leerzeichen in Tabulatorbreite ein.
-    + Springen zum zuletzt sichtbaren Dokument geht jetzt mit <Strg>+<Shift>+<Rück>.
+ - Code falten
+    + Zwischen Zeilennummern und Textfeld gibt es einen neuen Faltrand der vor
+    allem Stellen hervorhebt, an denen Text gefaltet oder entfaltet werden kann.
+    + Linksklick oder <Strg>+<+> faltet oder entfaltet nur den aktuellen Knoten.
+    + Mittelklick oder <Strg>+<Shift>+<+> faltet oder entwaltet den aktuellen 
+    Knoten und alle seine Kinder.
+    + Rechtsklick oder <Alt>+<+> faltet oder entfaltet alle Knoten auf einer Ebene.
+    Alle Knoten ohne Eltern liegen auf der Ebene 1, deren Kinder auf Ebene 2 u.s.w.
+    + Links- und Rechtsklick oder <Alt>+<Shift>+<+> faltet oder entfaltet alle Knoten.
+    + Wird eine Datei aus dem Menü der kürzlich geschlossenen Dateien wieder
+    geöffnet, sind auch alle Faltungen wieder hergestellt.
+ 
+ - Marker
+    Grüne Pfleie links neben den Zeilennummern markieren wichtige Textstellen.
+    + Sie können einfach mit einem Linksklick auf den Rand oder <Strg>+<F2>
+    gesetzt oder gelöscht werden.
+    + <F2> oder <Shift>+<F2> ermöglicht Sprünge zum nächsten oder vorigen Marker.
+    + Nimmt man <Alt>+ hinzu, werden Marker in allen Dokumenten berücksichtigt.
+    + Dies entspricht den grünen Pfleien in der Suchzeile.
+    + Ein Untermenü mit allen Markerfunktionen ist im Suchmenü.
+    + Auch Lesezeichen können jetzt mit einem (mittlerem) Mausklick in Markerrand
+    gesetzt oder gelöscht werden.
+ 
+ - Reichere Oberfläche
+    + Das Hauptfenster kennt 3 neue Modi, alle mit <Esc> beendbar.
+      + <F11>-Vollbild, Fenster nimmt ganzen Bildschirm ein und hat keinen Rand mehr.
+      + <Shift>+<F11>-Max Editfläche, alle leisten werden geschlossen oder geöffnet.
+      + <Alt>+<F11>-Durchsichtig, Fenster wird halb transparent.
+      + <Strg>+<F11> sorgt jetzt dafür das das Fenster nicht verdeckt werden darf. 
+    + Reiterleiste (<Strg>+<Alt>+<T>) und Menüleiste (<Strg>+<Alt>+<M>) können
+    jetzt einzeln durch Tasten an- oder abgestellt werden.
+    + Die Reiter sind jetzt auch mit der Maus bewegbar.
+    + Das Symbol am rechten Rand der Reiterleiste, öffnet ein Menü für die Auswahl
+    des aktuellen Dokuments.
+    + Im linken Rand läßt sich ein neues Kontextmenü öffnen.
+    + Die Statuszeile ist jetzt, ähnlich wie andere Leisten, durch eine YAML-Datei
+    definierbar, die über das Menü Einstellungen > Benutzerschnittstellen erreichbar
+    ist.
+    + Wurde eine geöffnete Datei anderweitig gelöscht, so weist ein neuer Dialog
+    jetzt darauf hin und bietet mehrere Möglichkeiten damit umzugehen.
+    + Mehrer Symbole wurden von Jens Neuwerk neu gezeichnet.
 
- - Dateimenü
-    Diese Menü erhielt mit 2 neuen Funktionen und 2 neuen Untermenüs die meisten
-    Erweiterungen.
-    + Das Untermenü Templates zählt selbt definierte Textbausteine auf, die man
-      somit einfügen kann. Die zugehörige Datei wird unter file > templates bestimmt
-      und kann über den Menüeintrag Einstellungen > Templates geöffnet werden.
-    + Damit das Dateimenü nicht zu lang wird, habe ich 3 "Öffnen"-Funktionen in
-      ein Untermenü gegeben. Darin befindet sich auch eine Funktion zum öffnen aller
-      Dateien eines Verzeichnisses, die sicher noch erweitert werden kann.
-    + "Zuletzt Verwendete" zählt die zuletzt geschlossenen Dateien auf, die hier
-      wieder geöffnet werden können. file > history > length bestimmt die Länge
-      dieses Menüs.
-    + In der "Speichern"-Gruppe findet sich jetzt eine Funktionen, die auch mit
-      <Strg>+<Alt>+<Shift>+<S> aufrufbar ist, und das Umbenennen der gerade offenen
-      Datei ermöglicht.
-    + Alle Schließen-Funktionen haben nun einen "ohne speichern"-Zwilling.
-    + Auch das Untermenü für Dateigruppen ist um 2 Funktionen reicher. Es kann
-      nun eine alternative Dateigruppe (session) unter einem in der Hauptconfig
-      angegebenen Dateinamen (file > session > backup) gespeichert und wieder
-      hergestellt werden, ohne jedes mal den Dateinamen eingeben zu müssen.
+ - Mehr Werkzeuge
+    + <Shift>+<F4> kopiert die Markierung in den Notizablage.
+    + Ein Farbdialog kann markierte Farbwerte sichtbar machen und ausgewählte
+    Farben wieder in hexadezimale Zahlen umwandeln.
+    + Inhalte der Spezialvariablen können im Ausgabefenster @INC %ENV erscheinen.
+    + Markierte Zeichen können in dezimal oder hexadezimal ausgegeben werden.
+    + Befindet sich der Caret innerhalb einer in Anführungszeichen gesetzten
+    Zeichenkette so kann dies direkt mit <Alt>+<Shift>+<C> kopiert werden.
+    + <Strg>+<Shift>+<V> fügt die in dem Block zuletzt benutzte Perlvariable ein.
+    + Über das Werkzeugmenü kann auch aktuelle Zeit und Datum eingefügt werden.
+    + Umlaute können zu HTML-Kodierung und zurück konvertiert werden.
 
- - Drag 'n Drop
-    Sicher konnte man schon in Version 0.3 Dateien und Verzeichnisse öffnen, in
-    dem man sie über die Reiterleiste zog und dort losließ. Da dies aber keine
-    wirklich große Fläche ist, mag dies vielen nicht aufgefallen sein. Jetzt
-    kann man zum Glück dies über der gesamten Fläche des Editors tun, was für
-    mich auch eine große Erleichterung ist.
-
- - Textbearbeitung
-    + Im Untermenü "Formatieren" sind 4 neue Einträge die 2 neue Funktionen des
-    Editors verwenden. Das ist zum einen "Zeilen umbrechen". Im Gegensatz zum
-    rein optischen Zeilenumbruch, werden hier Zeilen, die eine bestimmte Länge
-    überschreiten, wirklich in mehrere ausgeteilt. "Blockformat" hingegen "füllt"
-    auch halbleere Zeilen mit der nächsten auf und erzeugt so massive Textblöcke,
-    deren linke Begrenzung sich bei aktivierter autoeinrückung an der Einrückung
-    der ersten Zeile orientiert. Beide Funktionen gibt es im in den Varianeten:
-    a) Begrenzung am rechten Rand und b) formatiere auf eine frei wählbare Breite.
-
- - Kontextmenüs und Leisten
-    Nicht nur über der neuen Suchzeile findet ihr neue Kontextmenüs wenn ihr die
-    rechte Maustaste drückt:
-    + Das wichtigste ist vielleicht das Menü das sich bei markiertem Text zeigt.
-      Durch sinnvolles Aufteilen der Funktionen in 2 Menüs konnte ich nicht nur
-      mehr Funktionen einbringen, sondern es bieten sich zumeist nur die Funktionen
-      an, die in der Situation auch sinnvoll sind.
-    + In die Reiterleiste können nun die Reiter auch bewegt werden. Voerst nur mit
-      den Tasten <Strg>+<BildHoch>|<BildRunter>.
-    + Neu sind auch die 2 optionalen Icons in der Reiterleiste je ganz links
-      (neues Dokument) und ganz rechts (Dokument schließen). Auch läßt sich mit dem
-      globalen Einstellungsschlüssel app > tabbar > middle_click definieren, welche
-      funktion die mittlere Maustaste über der Reiterleiste bekommt.
-    + Das Menü über der Reiterleiste listet alle offenen Dokumente mit dem vollen
-      Pfad der zugehörigen Dateien auf und man kann hier auch das aktuelle Dokument
-      wechseln.
-    + Die Kontextmenüs über den Zellen der Statuszeile sind jetzt auch alle nur
-      noch mit dem  Rechtsklick sichtbar zu machen. Ein Linksklick schaltet die
-      Funktioen an oder aus oder wechselt zwischen den wichtigsten Einstellungen.
-    + Die zweite Zelle der Statuszeile zeigt übrigens jetzt auch die Anzahl der
-      markierten Zeilen an.
-
- - Einstellungen
-    Die neuen Menüs und Leisten sind nützlich, aber die wirklich große Änderung
-    von 0.3 zu 0.4 war das Ersetzen des XRC gegen etwas Eigenes und mächtigereres.
-    + Dadurch findet ihr in den Menüs jetzt endlich deutsche Umlaute.
-    + Auch einzelne Einträge können mit einem Häckchen (ja/nein) oder Kreis
-      (Auswahl) versehen sein werden, oder auch deaktiviert werden. Knöpfen in
-      Werkzeugleisten können einen eingedrückten Zustand haben.
-    + Neu ist auch die in dem Menü Einstellungen > Benutzerschnittstellen
-      auffindbare Kommandoliste, in der bestimmt wird, welcher interne Befehl,
-      Tastaturkombination und Symbol zu zu einem Kommando gehört. Auch welche
-      Ereignisse ihn deaktivieren und welche internen Funktionen seinen Zustand
-      bestimmen, wird hier festgelegt. Welches Etikett und welcher Hilfetext zu ihm
-      gehört steht in den Sprachdateien (auch im Menü Einstellungen), die nun die
-      gesamte Übersetzung des Editors in eine Sprache beinhalten. Wenn ihr ihn in
-      eine übersetzen wollt meldet euch ruhig bei mir für Hilfe.
-    + Unter Einstellungen > Benutzerschnittstellen findet ihr auch die neuen
-      Dateien in YAML, mit denen ihr ganz leicht die Menüs und Leisten ändern könnt.
-      Für vorübergehendes kommentieren einzelner Einträge benutzt bitte eine Raute
-      (#) am Ende der Zeile.
-    + mit the global Config-Schlüssel "app > window > title" kann nun auch die
-      Titelleiste verändert werden. Welche Informationen, die sich aktualisieren
-      werden, dort verwendet werden können, steht in den Kommantaren des Moduls
-      Kephra::Config::Default::GlobalSettings.
-    + Die im Titel angezeigten Pfade sind jetzt auch immer OS-konform.
-
- - die ersten 2 Erweiterungen
-    + Mit <Strg>+<F4> oder dem Icon in der Werkzeugleiste öffnet und schließt
-      sich der Notitzblock. In ihm geschriebene Texte sind immer sichtbar, auch
-      beim nächsten Start des Programms. <F4> lässt den Cursor hin oder zurück
-      springen und <F5> evaluiert den Inhalt als Perl.
-    + Befindet sich der Cursor im Beabeitungsfeld führt <F5> das aktuelle Perl-
-      Programm aus und fügt die die Ausgabe ins Ausgabefeld ein. <Shift>+<F5>
-      kann das Programm auch abbrechen lassen und <Strg>+<F5> läßt das Ausgabefeld
-      auf und zuklappen.
-    + Alle Einstellungsmöglichkeiten der Erweiterungen sind unter app > panel
-      zu finden.
-
+ - Mehr Hilfe
+    + Alle Dokumentation wurde überarbeitet und auf den neusten Stand gebracht.
+    + Im Hilfemenü ist ein neuer Eintrag um die Netzversion der Dokumentation im
+    Browser zu öffnen.
+    + Ein weiterer öffnet eine Hilfeforum für Perlprogrammierer.
+    + Auch bei Wünschen oder Fehlerberichten kann die passende Seite direkt vom
+    Menü aus geöffnet werden.
+ 
+ - Installation jetzt auch über CPAN-Shell für Linux, Win und Mac
+ 
 
  4. bekannte Fehler und Probleme
 
@@ -186,12 +128,11 @@
 
  5. Hinweise
 
-    + Lest die "Nützliche Funktionen - Tour". Es gibt einige wenig bekannte aber
-      umso nützlicherere Funktionen für fortgeschrittene Benutzer hier zu entdecken.
+    + Lest die "Nützliche Funktionen - Tour". Es gibt einige leicht übersehbare,
+      aber umso mächtigere Funktionen hier zu entdecken.
 
-    + Um die Haupteinstellungsdatei besser zu verstehen hilft es die Datei mit
-      den Voreinstellungen: kephra/config/global/default/default.conf zu lesen,
-      denn sie ist auskommentiert, wenn auch bloß englisch.
+    + Um die Haupteinstellungsdatei besser zu verstehen hilft es die englischen
+      Kommentare im Modul Kephra::Config::Default::GlobalSettings zu lesen.
 
 
  6. Plan für nächste Versionen
@@ -199,3 +140,4 @@
     + Plugin API
     + Baumerweiterung für Codeschnipsel und selbst definierte Werkzeuge
     + Kommandozeilenerweiterung für eine Benutzung wie im Vi
+    + Konfiguratationsdialog

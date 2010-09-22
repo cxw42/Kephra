@@ -1,6 +1,5 @@
 package Kephra::App::StatusBar;
 our $VERSION = '0.09';
-
 use strict;
 use warnings;
 
@@ -65,7 +64,7 @@ sub create {
 		if    ($field eq 'syntaxmode') {Kephra::Document::SyntaxMode::switch_auto()}
 		#elsif ($field eq 'codepage')   {Kephra::Document::Property::switch_codepage()}
 		elsif ($field eq 'tab')        {Kephra::Document::Property::switch_tab_mode()}
-		elsif ($field eq 'EOL')        {Kephra::App::EditPanel::switch_EOL_visibility()}
+		elsif ($field eq 'EOL')        {Kephra::App::EditPanel::Indicator::switch_EOL_visibility()}
 		elsif ($field eq 'message')    {next_file_info(); }
 	} );
 	Wx::Event::EVT_RIGHT_DOWN ( $bar, sub {
@@ -95,11 +94,11 @@ sub create {
 
 
 	Kephra::EventTable::add_call
-		('caret.move',       'caret_status', \&caret_pos_info,   'status_bar');
+		('caret.move',       'caret_status', \&caret_pos_info,   __PACKAGE__);
 	Kephra::EventTable::add_call
-		('document.text.change', 'info_msg', \&refresh_info_msg, 'status_bar');
+		('document.text.change', 'info_msg', \&refresh_info_msg, __PACKAGE__);
 	Kephra::EventTable::add_call
-		('editpanel.focus',      'info_msg', \&refresh_info_msg, 'status_bar');
+		('editpanel.focus',      'info_msg', \&refresh_info_msg, __PACKAGE__);
 
 	show();
 }

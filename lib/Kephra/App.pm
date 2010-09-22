@@ -14,12 +14,13 @@ sub splashscreen {
 	my $img_file = shift;
 	$img_file = Kephra::Config::filepath( $img_file );
 	Wx::InitAllImageHandlers();
-	Wx::SplashScreen->new(
+	my $sc = Wx::SplashScreen->new(
 		Wx::Bitmap->new( $img_file, &Wx::wxBITMAP_TYPE_ANY ),
-		&Wx::wxSPLASH_CENTRE_ON_SCREEN | &Wx::wxSPLASH_TIMEOUT, 350, undef, -1,
+		&Wx::wxSPLASH_CENTRE_ON_SCREEN | &Wx::wxSPLASH_NO_TIMEOUT, 0, undef, -1,
 		&Wx::wxDefaultPosition, &Wx::wxDefaultSize,
 		&Wx::wxSIMPLE_BORDER | &Wx::wxFRAME_NO_TASKBAR | &Wx::wxSTAY_ON_TOP
 	) if $img_file and -e $img_file;
+	return $sc;
 }
 
 sub assemble_layout {
@@ -111,7 +112,8 @@ sub OnInit {
 	_ref($app);
 	#setup_logging();
 	Wx::InitAllImageHandlers();
-	#splashscreen();             # 2'nd splashscreen can close when app is ready
+	# 2'nd splashscreen can close when app is ready, now called from Kephra.pm
+	my $splashscreen = splashscreen('interface/icon/splash/start_kephra.jpg');
 	my $frame = Kephra::App::Window::create();
 	Kephra::Document::Data::create_slot(0);
 	Kephra::App::TabBar::create();
@@ -153,7 +155,9 @@ sub OnInit {
 			if $Kephra::BENCHMARK;
 		Kephra::App::EditPanel::gets_focus();
 		Kephra::Edit::_let_caret_visible();
+
 		$frame->Show(1);
+		$splashscreen->Destroy(); 
 		print "app startet:",
 			Benchmark::timestr( Benchmark::timediff( new Benchmark, $t0 ) ), "\n"
 			if $Kephra::BENCHMARK;

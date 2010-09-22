@@ -204,13 +204,11 @@ sub eval_config_file {
 	if ($config_path eq substr( $file_path, 0, $l_path)){
 		$file_path = substr $file_path, $l_path+1;
 	}
-	my $conf = $settings{app};
+	my $conf = settings()->{app};
 	my $match = \&Kephra::Config::path_matches;
 
-	if ( &$match( $file_path, 
-		auto_file(),
-		$conf->{localisation_file},
-		$conf->{commandlist}{file}        )) {
+	if ( &$match( $file_path, auto_file(),
+	              $conf->{localisation_file}, $conf->{commandlist}{file} )) {
 		return reload();
 	}
 	if ( &$match( $file_path, $conf->{menubar}{file} ) ) {
@@ -225,11 +223,8 @@ sub eval_config_file {
 		return;
 	}
 	# reload template menu wenn template file changed
-	my $cfg = $settings{file}{templates};
-	my $path = File::Spec->catfile( $cfg->{directory}, $cfg->{file} );
-	if ( substr($file_path, - length $path) eq $path ) {
-		Kephra::Menu::set_absolete('file_insert_templates');
-		Kephra::Menu::ready('file_insert_templates');
+	if ( &$match($file_path,Kephra::Config::path_from_node($settings{file}{templates})) ){
+		Kephra::Menu::set_absolete('insert_templates');
 	}
 }
 
@@ -250,7 +245,6 @@ sub save_as {
 }
 
 sub save_current { save( current_file() ) }
-
 #
 sub merge_with {
 	my $filename = Kephra::Dialog::get_file_open( 

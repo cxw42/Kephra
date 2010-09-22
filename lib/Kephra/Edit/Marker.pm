@@ -221,7 +221,7 @@ sub goto_prev_marker_in_doc {
 	my $do_wrap = _config()->{wrap};
 	my $search_byte = _marker_search_byte();
 	my $line = $ep->MarkerPrevious( $ep->GetCurrentLine - 1, $search_byte );
-	$line = $ep->MarkerPrevious( $ep->LineFromPosition( $ep->GetLineCount() ), $search_byte )
+	$line = $ep->MarkerPrevious( $ep->GetLineCount(), $search_byte )
 		if $line == -1 and $do_wrap;
 	Kephra::Edit::Goto::line_nr( $line ) if $line > -1;
 }

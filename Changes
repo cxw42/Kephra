@@ -1,21 +1,77 @@
 todo:
-   l18n menu gen
-   l18n version update
-   l18n compare tool
-   Config::Tree join & split keys
-   only recent l18n file open with *
-   conf reload
-
+ ! lang selection menu works again
+ ! update configs when update cpan installation
+   select content
    automate meta.yml gen
    new zip release
+   l18n version update
+   Config::Tree join & split keys
+   l18n compare tool
+   rename file
+
+
+0.4.3.13
+ ] introduce command node type sub
+ ] remove old unused command ID
+ ] splashscreen closes on right time
+ ! forgot last_edit pos after restart
+ ! correcting prev_related_brace when jump to previous closinf brace of same depths
+ ! crash while editing after closing doc
+
+0.4.3.12
+ ~ jump from doc end to doc end (auto wrap) when navigating in related braces
+ [ move edit_line submenu 2 up
+ ' update and fix keymap
+ ! left click on selection does copy in output panel too
+ ! missing komma and bad arrows in default command list
+ ! while brace navigation caret cant hidden in folded lines
+
+0.4.3.11
+ + note slection works also in output panel
+ + copy selection in output panel with <enter>
+ + left click on selection does copy in output panel too
+ ~ leaving notepad with F12
+ ~ moving zoom keybinding to strl+shift to allow type ~ again
+ ~ # is written sharp in keymap to prevent quoting a la /#
+ ] init commandline module
+ ' keymap shows marker keybinding back to f2
+ ! note slection really appends
+ ! fixed statusbar context menu
+ ! fixed eol switch
+ ! template menu updates again after saving active template file
+
+0.4.3.10
+ + toggle select with ctrl+y
+ + zoom in, out and back with <ctrl>+<alt>+<+>,<ctrl>+<alt>+<-> and <ctrl>+<alt>+<0>
+ ~ marker keybinding back to f2
+ [ adding zoom and select menu 
+ ! fixed goto_prev_marker_in_doc
+
+0.4.3.9
+ ~ reorder tool menu
+ ~ moved keybinding of marker to f4 and notepad to f12
+ ' updated keymap
+ ' typos in en l18n
+ ! insert on cursor
+ ! copy quoted string works again
+
+0.4.3.8
+ + new menu item tool-brace-completion
+ + new tool: insert time/date
+ ~ doc attr config_file now saved by session files
+ ~ esc in searchbar closes bar, use ctrl+f to just leave
+ ' improved docs: this version, all functions, TestReleases, README
+ [ moved document-auto-indention and document-brace-indention into tools menu
+ ] outsource all visual stuff inside the editpanel to Kephra::App::EditPanel::Indicator
+ ! only recent l18n file open with *
+ ! Kephra::Config::path_matches works as always intended, matches subpathes not just eq
 
 0.4.3.7
  ~ refined editpanel mouse control
- ' improved docs: this version, all functions
  [ start Kephra::Macro.pm
  ! open toolbar file works again
  ! templates works again
-
+ 
 0.4.3.6
  + left click on selection does copy
  + middle click inserts selection
@@ -65,7 +121,7 @@ todo:
  ! file history menu works again
  ! crash when open empty files
 
- 
+
 0.4.2.38
  + marker function do also from context menu pos
 

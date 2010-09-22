@@ -43,6 +43,7 @@ sub set {
 	my $color  = \&Kephra::Config::color;
 	$style = _get_by_fileending() if $style eq 'auto';
 	$style = 'none' unless $style;
+
 	# do nothing when syntaxmode of next doc is the same
 	#return if _ID() eq $style;
 	# prevent clash between big lexer & indicator
@@ -81,7 +82,10 @@ sub set {
 
 	Kephra::Document::Data::set_attribute( 'syntaxmode', $style, $doc_nr);
 	_ID($style);
-	$ep->Colourise( 0, $ep->GetTextLength ); # refresh editpanel painting
+
+	Kephra::EventTable::freeze('document.text.change');
+	$ep->Colourise( 0, $ep->GetTextLength ); # refresh editpanel painting, not needed normally
+	Kephra::EventTable::thaw('document.text.change');
 	# cleanup
 	Kephra::App::EditPanel::Margin::refresh_changeable_settings($ep);
 	Kephra::App::StatusBar::style_info($style);

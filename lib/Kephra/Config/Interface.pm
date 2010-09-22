@@ -1,5 +1,5 @@
 package Kephra::Config::Interface;
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use strict;
 use warnings;
@@ -64,6 +64,8 @@ sub load {
 	}
 	Kephra::CommandList::eval_data();
 	Kephra::Config::Localisation::create_menus();
+	Kephra::App::EditPanel::create_mouse_binding();
+
 }
 
 sub del_temp_data { Kephra::CommandList::del_temp_data() }

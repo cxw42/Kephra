@@ -272,7 +272,7 @@ Content:
    - Soft Tabs means if you press the <Tab> key (with |<-- -->| symbols on it),
      the editor will not create several whitespaces with the same width the tab
      would have instead. config key: file > defaultsetting > tab_use
-   - eOL: Unix(Linux), Mac and Windows are using different characters to indicate
+   - EOL: Unix(Linux), Mac and Windows are using different characters to indicate
      the end of a line, but that no problem for the editor because the lines
      will be cut in any case properly. The editor also recognises which
      lineending is used by the document and if you edit the doc, proper endings
@@ -317,7 +317,7 @@ Content:
        a chosen background color. config key: editpanel > indicator > caret_line
     - "Line Wrap" means that text lines that don't fit into the current window
        size will displayed in several parts among each other.
-    - "end Of Line" (eOL) makes the (otherwise invisible) control character that
+    - "end Of Line" (EOL) makes the (otherwise invisible) control character that
        are marking the end of the line visible. They are 3 different types
        symbolized by 3 different indicators.
     - "Whitespace" sets whitespaces and tabs visible with dot and arrow symbols.
@@ -326,9 +326,10 @@ Content:
        displayed font. see also config key editpanel > font
 
  11 Config menu:
-    Helps to open all config files directly to edit them in the editor itself.
-    Hint: changes will be performed immediately when you save them.
+    Shortcuts for opening all config files directly in the editor.
+    Hint: Files with a leading $ in the tab will be applied immediately while
+    saving them.
 
  12 Help menu:
-    Contains several texts with information about this programm. This may ease
-    the usage for some users or help to understand what this project all about.
+    Contains texts, links and dialogs with information about this programm and 
+    its usage.

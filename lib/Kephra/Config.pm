@@ -14,7 +14,6 @@ sub _dir { if (defined $_[0]) {$dir = $_[0]} else {$dir} }
 
 # Generate a path to a configuration file
 sub filepath { File::Spec->catfile( $dir, @_ ) if $_[0] }
-
 sub existing_filepath {
 	my $path = filepath( @_ );
 	unless ( -f $path ) {
@@ -23,8 +22,19 @@ sub existing_filepath {
 	return $path;
 }
 
-sub dirpath { File::Spec->catdir( $dir, @_ ) }
+sub path_from_node {
+	my $node = shift;
+	return unless defined $node and ref $node eq 'HASH';
+	if (exists $node->{file}){
+		if (exists $node->{directory}){
+			return filepath($node->{directory}, $node->{file});
+		} else {
+			return filepath($node->{file});
+		}
+	} else { warn "Wrong node to build config path from." }
+}
 
+sub dirpath { File::Spec->catdir( $dir, @_ ) }
 sub existing_dirpath {
 	my $path = dirpath( @_ );
 	unless ( -d $path ) {
@@ -34,11 +44,13 @@ sub existing_dirpath {
 }
 
 sub standartize_path_slashes { File::Spec->canonpath( shift ) }
-
 sub path_matches {
 	my $given = shift;
 	return unless defined $given and $given and @_;
-	for my $path (@_) { return 1 if $given eq standartize_path_slashes($path) }
+	for my $path (@_) {
+		return 1 if defined $path 
+		         and index (standartize_path_slashes($path), $given) > -1;
+	}
 	return 0;
 }
 

@@ -35,7 +35,7 @@ sub _set{
 }
 sub set {
 	if (not ref $_[0] and defined $_[1]){_set(@_)}
-	elsif ( ref $_[0] eq 'HASH')        {_set($_, $_[0]->{$_}) for keys %{$_[0]}} 
+	elsif ( ref $_[0] eq 'HASH')        {_set($_, $_[0]->{$_}) for keys %{$_[0]}}
 }
 sub get_file { _get_attr('file_path') }
 sub set_file {
@@ -62,7 +62,7 @@ sub set_codepage {
 	return if $doc_nr < 0 or not defined $new_value;
 	my $old_value = get_codepage($doc_nr);
 	my $ep = _ep_ref($doc_nr);
-	if    ($old_value eq '8bit' and $new_value eq 'utf8'){
+	if    ($old_value eq 'ascii' and $new_value eq 'utf8'){
 		#unless (Encode::is_utf8($ep->GetText())) {
 			Kephra::Document::Data::update_attributes($doc_nr);
 			eval {
@@ -74,7 +74,7 @@ sub set_codepage {
 		#}
 		#print Encode::is_utf8($ep->GetText())."\n";
 	}
-	elsif ($old_value eq 'utf8' and $new_value eq '8bit') {
+	elsif ($old_value eq 'utf8' and $new_value eq 'ascii') {
 		Kephra::Document::Data::update_attributes($doc_nr);
 		$ep->SetText( Encode::encode('utf8', $ep->GetText()) );
 		Kephra::Document::Data::evaluate_attributes($doc_nr);
@@ -85,7 +85,7 @@ sub set_codepage {
 	Kephra::App::StatusBar::codepage_info($new_value);
 }
 sub switch_codepage {
-	set_codepage( get_codepage( _doc_nr() ) eq 'utf8' ? '8bit' : 'utf8' );
+	set_codepage( get_codepage( _doc_nr() ) eq 'utf8' ? 'ascii' : 'utf8' );
 }
 #
 # tab size
@@ -184,28 +184,6 @@ sub detect_EOL_mode {
 		return 'auto';
 	}
 }
-
-
-#
-# auto indention
-sub get_autoindention { Kephra::App::EditPanel::_config()->{auto}{indention} }
-sub set_autoindention {
-	Kephra::App::EditPanel::_config()->{auto}{indention} = shift;
-	Kephra::Edit::eval_newline_sub();
-}
-sub switch_autoindention { set_autoindention( get_autoindention() ^ 1 ) } 
-sub set_autoindent_on    { set_autoindention( 1 ) }
-sub set_autoindent_off   { set_autoindention( 0 ) }
-#
-# brace indention
-sub get_braceindention { Kephra::App::EditPanel::_config()->{auto}{brace}{indention}}
-sub set_braceindention {
-	Kephra::App::EditPanel::_config()->{auto}{brace}{indention} = shift;
-	Kephra::Edit::eval_newline_sub();
-}
-sub switch_braceindention { set_braceindention( get_braceindention() ^ 1 ) }
-sub set_blockindent_on    { set_braceindention( 1 ) }
-sub set_blockindent_off   { set_braceindention( 0 ) }
 #
 # write protection
 sub get_readonly { _get_attr('readonly') }

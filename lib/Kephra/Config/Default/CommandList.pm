@@ -134,6 +134,8 @@ sub get {
 			},
 			select => {
 				document => 'Kephra::Edit::Select::document()',
+				toggle => 'Kephra::Edit::Select::toggle_simple()',
+				content => 'Kephra::Edit::Select::toggle_content()',
 				'to-block-begin' => 'Kephra::Edit::Select::to_block_begin()',
 				'to-block-end' => 'Kephra::Edit::Select::to_block_end()',
 			},
@@ -220,8 +222,6 @@ sub get {
 				'delete-all' => 'Kephra::Edit::Marker::delete_all_marker()',
 			},
 			tool => {
-				note => 'Kephra::App::Panel::Notepad::note()',
-				'note-selection' => 'Kephra::App::Panel::Notepad::append_selection()',
 				'interpreter-run-document' => 'Kephra::App::Panel::Output::run()',
 				'interpreter-stop-document' => 'Kephra::App::Panel::Output::stop()',
 				'output' => {
@@ -230,11 +230,17 @@ sub get {
 					'selection-dec' => 'Kephra::App::Panel::Output::display_selection_dec()',
 					'selection-hex' => 'Kephra::App::Panel::Output::display_selection_hex()',
 				},
-				perl => {
-					'insert-last-var' => 'Kephra::Edit::insert_last_perl_var()',
-					'copy-string' => 'Kephra::Edit::copy_surrounding_string()',
-				},
+				note => 'Kephra::App::Panel::Notepad::note()',
+				'note-selection' => 'Kephra::App::Panel::Notepad::append_selection()',
 				'choose-color' => 'Kephra::Dialog::choose_color()',
+				'insert-time-date' => 'Kephra::Edit::::Special::insert_time_date()',
+				perl => {
+					'insert-last-var' => 'Kephra::Edit::::Special::insert_last_perl_var()',
+					'copy-string' => 'Kephra::Edit::::Special::copy_surrounding_string()',
+				},
+				'auto-indention' => 'Kephra::App::EditPanel::switch_autoindention()',
+				'brace-indention' => 'Kephra::App::EditPanel::switch_braceindention()',
+				'brace-completion' => 'Kephra::App::EditPanel::switch_bracecompletion()',
 			},
 			document => {
 				'auto-indention' => 'Kephra::Document::Property::switch_autoindention()',
@@ -342,19 +348,21 @@ sub get {
 					'this-version' => 'Kephra::Help::version_text()',
 				},
 				editpanel => {
-					EOL => 'Kephra::App::EditPanel::switch_EOL_visibility()',
-					'brace-light' => 'Kephra::App::EditPanel::switch_bracelight()',
-					'caret-line' => 'Kephra::App::EditPanel::switch_caret_line_visibility()',
-					font => 'Kephra::App::EditPanel::change_font()',
-					'indention-guide' => 'Kephra::App::EditPanel::switch_indention_guide_visibility()',
-					'line-wrap' => 'Kephra::App::EditPanel::switch_autowrap_mode()',
-					'right-margin' => 'Kephra::App::EditPanel::switch_LLI_visibility()',
-					whitespace => 'Kephra::App::EditPanel::switch_whitespace_visibility()',
 					contextmenu => {
 						custom => "Kephra::App::EditPanel::set_contextmenu('custom')",
 						no => "Kephra::App::EditPanel::set_contextmenu('none')",
 						default => "Kephra::App::EditPanel::set_contextmenu('default')",
 					},
+					indicator => {
+						EOL => 'Kephra::App::EditPanel::Indicator::switch_EOL_visibility()',
+						'brace-light' => 'Kephra::App::EditPanel::Indicator::switch_bracelight()',
+						'caret-line' => 'Kephra::App::EditPanel::Indicator::switch_caret_line_visibility()',
+						'indention-guide' => 'Kephra::App::EditPanel::Indicator::switch_indention_guide_visibility()',
+						'right-margin' => 'Kephra::App::EditPanel::Indicator::switch_LLI_visibility()',
+						whitespace => 'Kephra::App::EditPanel::Indicator::switch_whitespace_visibility()',
+					},
+					font => 'Kephra::App::EditPanel::change_font()',
+					'line-wrap' => 'Kephra::App::EditPanel::switch_autowrap_mode()',
 					margin => {
 						contexmenu => 'Kephra::App::EditPanel::Margin::switch_contextmenu_visibility()',
 						'line-number' => 'Kephra::App::EditPanel::Margin::switch_line_number()',
@@ -379,6 +387,11 @@ sub get {
 						recursively => 'Kephra::App::EditPanel::Fold::toggle_recursively()',
 					},
 					maximize => 'Kephra::App::Window::switch_max_editpanel_mode()',
+					zoom => {
+						in => 'Kephra::App::EditPanel::zoom_in()',
+						normal => 'Kephra::App::EditPanel::zoom_normal()',
+						out => 'Kephra::App::EditPanel::zoom_out()',
+					},
 				},
 				panel => {
 					notepad => 'Kephra::App::Panel::Notepad::switch_visibility()',
@@ -597,16 +610,19 @@ sub get {
 					0 => 'Kephra::Edit::Marker::bookmark_is_set(0)',
 				},
 			},
+			tool => {
+				'auto-indention' => 'Kephra::App::EditPanel::get_autoindention()',
+				'brace-indention' => 'Kephra::App::EditPanel::get_braceindention()',
+				'brace-completion' => 'Kephra::App::EditPanel::get_bracecompletion()',
+			},
 			document => {
-				'auto-indention' => 'Kephra::Document::Property::get_autoindention()',
-				'brace-indention' => 'Kephra::Document::Property::get_braceindention()',
 				EOL => {
 					'cr+lf' => "Kephra::Document::Property::get_EOL_mode() eq 'cr+lf'",
 					cr => "Kephra::Document::Property::get_EOL_mode() eq 'cr'",
 					lf => "Kephra::Document::Property::get_EOL_mode() eq 'lf'",
 				},
 				encoding => {
-					'8bit' => "Kephra::Document::Property::get_codepage() eq '8bit'",
+					'ascii' => "Kephra::Document::Property::get_codepage() eq 'ascii'",
 					'utf8' => "Kephra::Document::Property::get_codepage() eq 'utf8'",
 				},
 				readonly => {
@@ -676,13 +692,15 @@ sub get {
 			},
 			view => {
 				editpanel => {
-					EOL => 'Kephra::App::EditPanel::EOL_visible();',
-					'brace-light' => 'Kephra::App::EditPanel::bracelight_visible()',
-					'caret-line' => 'Kephra::App::EditPanel::caret_line_visible()',
-					'indention-guide' => 'Kephra::App::EditPanel::indention_guide_visible()',
+					indicator => {
+						EOL => 'Kephra::App::EditPanel::Indicator::EOL_visible()',
+						'brace-light' => 'Kephra::App::EditPanel::Indicator::bracelight_visible()',
+						'caret-line' => 'Kephra::App::EditPanel::Indicator::caret_line_visible()',
+						'indention-guide' => 'Kephra::App::EditPanel::Indicator::indention_guide_visible()',
+						'right-margin' => 'Kephra::App::EditPanel::Indicator::LLI_visible()',
+						whitespace => 'Kephra::App::EditPanel::Indicator::whitespace_visible()',
+					},
 					'line-wrap' => 'Kephra::App::EditPanel::get_autowrap_mode()',
-					'right-margin' => 'Kephra::App::EditPanel::LLI_visible()',
-					whitespace => 'Kephra::App::EditPanel::whitespace_visible()',
 					contextmenu => {
 						custom => "Kephra::App::EditPanel::get_contextmenu() eq 'custom';",
 						no => "Kephra::App::EditPanel::get_contextmenu() eq 'none';",
@@ -890,6 +908,8 @@ sub get {
 			},
 			select => {
 				document => 'ctrl+a',
+				toggle => 'ctrl+y',
+				content => 'ctrl+shift+y',
 				'to-block-begin' => 'alt+shift+pgup',
 				'to-block-end' => 'alt+shift+pgdn',
 			},
@@ -957,8 +977,8 @@ sub get {
 				},
 			},
 			tool => {
-				note => 'f4',
-				'note-selection' => 'shift+f4',
+				note => 'f12',
+				'note-selection' => 'shift+f12',
 				'interpreter-run-document' => 'f5',
 				'interpreter-stop-document' => 'shift+f5',
 				'output-selection-dec' => 'ctrl+shift+f5',
@@ -994,8 +1014,13 @@ sub get {
 						recursively => 'ctrl+shift+plus',
 					},
 					maximize => 'shift+f11',
+					zoom => {
+						in => 'ctrl+shift+plus',
+						normal => 'ctrl+shift+pound',
+						out => 'ctrl+shift+minus',
+					},
 				},
-				'panel-notepad' => 'ctrl+f4',
+				'panel-notepad' => 'ctrl+f12',
 				'panel-output' => 'ctrl+f5',
 				tabbar => 'ctrl+alt+t',
 				window => {

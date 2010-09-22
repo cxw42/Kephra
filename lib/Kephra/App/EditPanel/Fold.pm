@@ -49,7 +49,9 @@ sub restore {
 	return if $doc_nr < 0 or not ref $ep;
 	my $lines = Kephra::Document::Data::get_attribute( _attribute(), $doc_nr);
 	return unless ref $lines eq 'ARRAY';
-	$ep->ToggleFold($_) for @$lines;
+	for (reverse @$lines){
+		$ep->ToggleFold($_) if $ep->GetFoldExpanded($_);
+	}
 }
 #
 # folding functions

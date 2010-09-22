@@ -14,7 +14,6 @@ der Funktionen dennoch interessieren, so schreitet weiter. Alle Config-Schlüssel
 beziehen sich auf die Datei "config/general/autosaved.conf" (Haupteinstellungen).
 
 
-
 Inhalt:
 
   1 im Text Navigieren
@@ -266,7 +265,7 @@ Inhalt:
      um spätere Konflikte zu vermeiden werden die ensprechenden Dokumente mit
      einer Raute im Reiter gekennzeichnet und können nicht im Editor bearbeitet
      werden. Der Schreibschutz ist aber über das Menü an und abschaltbar.
-
+     
  10 Ansicht-Einstellungen
     Ändern nichts am Text sondern nur an der Optik des Textes oder des Programmes.
     Sie gelten für alle Dokumente in gleicher Weise.
@@ -300,9 +299,11 @@ Inhalt:
       verwendeten Schriftart einstellen kann.
 
  11 Konfgurations-Menü:
-    Ist eine Übersicht über alle Konfigurtaions-Dateien die hier schnell geöffnet
-    oder geladen werden können.
+    Ist eine Übersicht über alle Konfigurtaions-Dateien die hiermit direkt geöffnet,
+    werden können.
+    Vorsicht: Erscheint im Reiter ein $, werden alle Änderungen beim Speichern
+    sofot angwandt.
    
  12 Hilfe-Menü:
-    Texte mit Informationen über das Programm. Soll angeblich die Benutzung 
-    erleichtern.
+    Texte, Verknüpfungen und Dialoge mit Informationen über das Programm und
+    seine Benutzung. 

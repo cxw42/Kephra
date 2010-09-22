@@ -24,7 +24,7 @@ sub set_file_name { file_name($_[0]) if defined $_[0]}
 sub file_name {
 	if (defined $_[0]) { _config()->{file} = $_[0] } else { _config()->{file} }
 }
-sub set_lang_by_file { $language = $index{ _config()->{file} }{ language } }
+sub set_lang_by_file { $language = $index{ _config()->{file} }{language} }
 
 #
 sub load {
@@ -46,7 +46,12 @@ sub change_to {
 }
 
 # open localisation file in the editor
-sub open_file { Kephra::Config::open_file( _sub_dir(), $_[0]) }
+sub open_file {
+	my $lang_file = shift;
+	$lang_file eq file_name()
+		? Kephra::Config::open_file( _sub_dir(), $lang_file )
+		: Kephra::Document::add( $lang_file );
+}
 
 # create menus for l18n selection nd opening l18n files
 sub create_menus {
@@ -87,7 +92,7 @@ sub refresh_index {
 	my $index_file = Kephra::Config::filepath
 		(Kephra::Config::Interface::_cache_sub_dir(), 'index_l18n.yml');
 	my $l18n_dir = Kephra::Config::dirpath( _sub_dir() );
-
+	
 	my %old_index = %{ YAML::Tiny::LoadFile( $index_file ) } if -e $index_file;
 	my %new_index;
 
@@ -95,6 +100,7 @@ sub refresh_index {
 	$File::Find::prune = 0;
 	File::Find::find( sub {
 		# don't check directories
+		#            
 		return if -d $_; 
 		$file_name = $_;
 		$age = Kephra::File::IO::get_age($file_name);
@@ -107,8 +113,8 @@ sub refresh_index {
 		binmode($FH, ":raw:crlf");#
 		$line = <$FH>;
 		chomp $line;
-print "$file_name \n";
-print ":::: $line -\n";
+#print "$file_name \n";
+#print ":::: $line -\n";
 		if ($line =~ m|<about>|){
 			while (<$FH>){
 				chomp;
@@ -141,3 +147,12 @@ sub set_documentation_lang {
 }
 
 1;
+
+__END__
+
+=head1 NAME
+
+Kephra::Config::Localisation - L18n setting handling
+
+=head1 DESCRIPTION
+
