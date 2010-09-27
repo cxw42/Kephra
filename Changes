@@ -1,14 +1,18 @@
 todo:
  ! lang selection menu works again
  ! update configs when update cpan installation
-   select content
    automate meta.yml gen
    new zip release
    l18n version update
    Config::Tree join & split keys
    l18n compare tool
    rename file
+ + select content
 
+0.4.3.14
+ ~ correcting toggle select
+ ~ changing command ID select-toggle > select-toggle-simple
+ ~ changing command ID select-content > select-toggle-content, 
 
 0.4.3.13
  ] introduce command node type sub
@@ -113,7 +117,7 @@ todo:
 
 0.4.3
  ' update credits
- 
+
 0.4.2.39
  + copy surrounding quoted string with <strg>+<alt>+<C>
  " getting default settings of new files when opening empty files

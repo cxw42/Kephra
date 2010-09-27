@@ -88,9 +88,9 @@ sub get {
 				'item edit-line-move-page-down',
 			],},
 			{'menu select' => [
-				'item select-toggle',
-				'item select-content',
 				'item select-document',
+				'item select-toggle-simple',
+				'item select-toggle-content',
 			],},
 			{'menu selection' => [
 				'item edit-selection-move-char-left',
