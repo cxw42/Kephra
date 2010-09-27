@@ -9,6 +9,9 @@ todo:
    rename file
  + select content
 
+0.4.3.15
+ ! wrong literals in default commandlist
+
 0.4.3.14
  ~ correcting toggle select
  ~ changing command ID select-toggle > select-toggle-simple

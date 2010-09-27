@@ -134,8 +134,8 @@ sub get {
 			},
 			select => {
 				document => 'Kephra::Edit::Select::document()',
-				toggle-simple => 'Kephra::Edit::Select::toggle_simple()',
-				toggle-content => 'Kephra::Edit::Select::toggle_content()',
+				'toggle-simple' => 'Kephra::Edit::Select::toggle_simple()',
+				'toggle-content' => 'Kephra::Edit::Select::toggle_content()',
 				'to-block-begin' => 'Kephra::Edit::Select::to_block_begin()',
 				'to-block-end' => 'Kephra::Edit::Select::to_block_end()',
 			},
@@ -908,8 +908,8 @@ sub get {
 			},
 			select => {
 				document => 'ctrl+a',
-				toggle-simple => 'ctrl+y',
-				toggle-content => 'ctrl+shift+y',
+				'toggle-simple' => 'ctrl+y',
+				'toggle-content' => 'ctrl+shift+y',
 				'to-block-begin' => 'alt+shift+pgup',
 				'to-block-end' => 'alt+shift+pgdn',
 			},
