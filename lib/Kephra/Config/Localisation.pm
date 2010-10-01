@@ -113,23 +113,25 @@ sub refresh_index {
 		binmode($FH, ":raw:crlf");#
 		$line = <$FH>;
 		chomp $line;
-#print "$file_name \n";
-#print ":::: $line -\n";
+print "$file_name \n";
+print ":::: $line -\n";
 		if ($line =~ m|<about>|){
-			while (<$FH>){
+#			while (<$FH>){
+	my $chunk;
+	#read $FH, $chunk, 1000;
 				chomp;
 				last if $_ =~ m|</about>|;
 				($k, $v) = split /=/;
 				$k =~ tr/ \t//d;
 				$v =~ /\s*(.+)\s*/;
-#print ":::: value : $v\n";
+print "---- value : $v\n";
 				#$new_index{$file_name}{$k} = $1;
-			}
+#			}
 		}
 		$new_index{$file_name}{age} = $age;
 		#if $newindex{$file_name}{purpose} eq 'global localisation'
 	}, $l18n_dir);
-	$File::Find::prune = 0;
+	#$File::Find::prune = 0;
 
 	YAML::Tiny::DumpFile($index_file, \%new_index);
 	_index(\%new_index);

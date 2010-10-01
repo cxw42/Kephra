@@ -16,7 +16,7 @@ sub splashscreen {
 	Wx::InitAllImageHandlers();
 	my $sc = Wx::SplashScreen->new(
 		Wx::Bitmap->new( $img_file, &Wx::wxBITMAP_TYPE_ANY ),
-		&Wx::wxSPLASH_CENTRE_ON_SCREEN | &Wx::wxSPLASH_NO_TIMEOUT, 0, undef, -1,
+		&Wx::wxSPLASH_CENTRE_ON_SCREEN | &Wx::wxSPLASH_TIMEOUT, 100000, undef, -1,
 		&Wx::wxDefaultPosition, &Wx::wxDefaultSize,
 		&Wx::wxSIMPLE_BORDER | &Wx::wxFRAME_NO_TASKBAR | &Wx::wxSTAY_ON_TOP
 	) if $img_file and -e $img_file;
