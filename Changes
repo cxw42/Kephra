@@ -1,5 +1,4 @@
 todo:
- ! lang selection menu works again
  ! update configs when update cpan installation
    automate meta.yml gen
    new zip release
@@ -9,8 +8,14 @@ todo:
    rename file
  + select content
 
+0.4.3.17
+ + selecting right to left and right click deletes (clear) selection (left to right just cuts)
+ ] hardening the feature of previous version
+ ] config reload when changing current l18n works again
+ " improved english l18n (mostly by enrico)++
+
 0.4.3.16
- 
+ ! lang selection menu works again
 
 0.4.3.15
  ! wrong literals in default commandlist

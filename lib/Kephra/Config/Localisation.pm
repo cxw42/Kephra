@@ -1,5 +1,5 @@
 package Kephra::Config::Localisation;
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use strict;
 use warnings;
@@ -50,7 +50,7 @@ sub open_file {
 	my $lang_file = shift;
 	$lang_file eq file_name()
 		? Kephra::Config::open_file( _sub_dir(), $lang_file )
-		: Kephra::Document::add( $lang_file );
+		: Kephra::Document::add( Kephra::Config::filepath(_sub_dir(), $lang_file) );
 }
 
 # create menus for l18n selection nd opening l18n files
@@ -92,46 +92,41 @@ sub refresh_index {
 	my $index_file = Kephra::Config::filepath
 		(Kephra::Config::Interface::_cache_sub_dir(), 'index_l18n.yml');
 	my $l18n_dir = Kephra::Config::dirpath( _sub_dir() );
-	
+
 	my %old_index = %{ YAML::Tiny::LoadFile( $index_file ) } if -e $index_file;
 	my %new_index;
 
-	my ($FH, $file_name, $age, $line, $k, $v);
-	$File::Find::prune = 0;
+	my ($FH, $file_name, $age);
+	#$File::Find::prune = 0;
 	File::Find::find( sub {
-		# don't check directories
-		#            
 		return if -d $_; 
 		$file_name = $_;
 		$age = Kephra::File::IO::get_age($file_name);
 		# if file is known and not refreshed just copy loaded <about> data
-		#if (exists $old_index{$file_name} and $age == $old_index{$file_name}{age}) {
-			#$new_index{$file_name} = $old_index{$file_name};
-			#return;
-		#}
-		open $FH, "<", $file_name ;#:encoding(UTF-8)
-		binmode($FH, ":raw:crlf");#
-		$line = <$FH>;
-		chomp $line;
-print "$file_name \n";
-print ":::: $line -\n";
-		if ($line =~ m|<about>|){
-#			while (<$FH>){
-	my $chunk;
-	#read $FH, $chunk, 1000;
-				chomp;
-				last if $_ =~ m|</about>|;
-				($k, $v) = split /=/;
-				$k =~ tr/ \t//d;
-				$v =~ /\s*(.+)\s*/;
-print "---- value : $v\n";
-				#$new_index{$file_name}{$k} = $1;
-#			}
+		if (exists $old_index{$file_name} and $age == $old_index{$file_name}{age}) {
+			$new_index{$file_name} = $old_index{$file_name};
+			return;
 		}
-		$new_index{$file_name}{age} = $age;
-		#if $newindex{$file_name}{purpose} eq 'global localisation'
+		open $FH, "<", $file_name ; #:encoding(UTF-8)
+		binmode($FH, ":raw");       #:crlf
+		my ($chunk, $header, %filedata) = ('','');
+		 #read just the meta data header
+		do {
+			return if eof $FH;  # abort because no complete about header found
+			read $FH, $chunk, 1000;
+			$header .= $chunk;
+		} until $header =~ m|<about>[\r\n]+(.*)[\r\n]+</about>|s;
+		# split to lines, delete spaces and extract keys and valuse
+		for (split /[\r\n]+/, $1){
+			m/\s*(\S+)\s*=\s*(.+)\s*/;
+			$filedata{$1} = $2;
+		}
+		$filedata{'age'} = $age;
+		$new_index{$file_name} = \%filedata
+			if defined $filedata{'purpose'}
+			and $filedata{'purpose'} eq 'global localisation';
+			;
 	}, $l18n_dir);
-	#$File::Find::prune = 0;
 
 	YAML::Tiny::DumpFile($index_file, \%new_index);
 	_index(\%new_index);
@@ -158,3 +153,10 @@ Kephra::Config::Localisation - L18n setting handling
 
 =head1 DESCRIPTION
 
+This module loads the localized strings and maintaines a table with meta
+informations about all supported languages.
+
+In the "config/localisation" directory are all the strings and in case they
+cant be found, the english backup comes from 
+L<Kephra::Config::Default::Localisation> via the sub localisation() from
+M<Kephra::Config::Default>.

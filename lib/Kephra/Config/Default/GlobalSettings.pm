@@ -56,8 +56,8 @@ sub get {
 					eval_with => 'eval',
 					font_family => 'Courier New',
 					font_size => 10,
-					mode => 'local',
 					size => 180,
+					splitter_pos => 300,
 					visible => 0,
 				},
 				output => {

@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 #
-# testing functions of Kephra::Config::Tree 
+# testing public methods of Kephra::Config::Tree 
 #
 BEGIN {
 	chdir '..' if -d '../t';
@@ -17,8 +17,8 @@ use Kephra::Config::Tree;
 
 my $simple = {'a'=>{ 'very' => {'deep' => 'hash'}}};
 my $sub = Kephra::Config::Tree::subtree($simple, 'a/very');
-is_deeply($sub, {'deep' => 'hash'}, 'subtree');
-is_deeply( Kephra::Config::Tree::copy($simple), $simple, 'copy');
+is_deeply( $sub, {'deep' => 'hash'}, 'subtree' );
+is_deeply( Kephra::Config::Tree::copy($simple), $simple, 'copy' );
 
 my $more = {'a'=>{ 'second' => {'very' => {'deeep' => 'hash'}}}};
 my $merge = Kephra::Config::Tree::merge($simple, $more);

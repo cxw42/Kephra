@@ -223,9 +223,10 @@ sub eval_config_file {
 		return;
 	}
 	# reload template menu wenn template file changed
-	if ( &$match($file_path,Kephra::Config::path_from_node($settings{file}{templates})) ){
-		Kephra::Menu::set_absolete('insert_templates');
+	if ( &$match($file_path, Kephra::Config::path_from_node($settings{file}{templates})) ){
+		return Kephra::Menu::set_absolete('insert_templates');
 	}
+	reload() if Kephra::Document::Data::get_attribute('config_file');
 }
 
 #

@@ -178,9 +178,9 @@ sub detect_EOL_mode {
 
 	if ( length($text) < 1 ) { return 'auto' }
 	else {
-		return 'cr+lf' if $text =~ /\r\n/;
-		return 'cr'    if $text =~ /\r/;
-		return 'lf'    if $text =~ /\n/;
+		#return 'cr+lf' if $text =~ /\r\n/;
+		#return 'cr'    if $text =~ /\r/;
+		#return 'lf'    if $text =~ /\n/;
 		return 'auto';
 	}
 }

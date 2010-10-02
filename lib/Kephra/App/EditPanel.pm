@@ -105,7 +105,9 @@ sub connect_events {
 		my $nr = Kephra::App::EditPanel::Margin::in_nr( $event->GetX, $ep );
 		if ($nr == -1) {
 			if ($event->LeftIsDown){
-				Kephra::Edit::cut();
+				Kephra::Edit::_selection_left_to_right($ep)
+					? Kephra::Edit::cut()
+					: Kephra::Edit::clear();
 				set_caret_on_cursor($event);
 			} else {
 				my $mconf = $config->{contextmenu};

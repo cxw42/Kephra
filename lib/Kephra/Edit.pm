@@ -77,6 +77,13 @@ sub _select_all_if_none {
     return $ep->GetTextRange( $start, $end );
 }
 
+sub _selection_left_to_right {
+	my $ep = shift || _ep_ref();
+	my ($start, $end) = $ep->GetSelection;
+	my $pos = $ep->GetCurrentPos;
+	return -1 if $start == $end;
+	return $start == $pos ? 0 : 1;
+}
 sub can_paste   { _ep_ref()->CanPaste }
 sub can_copy    { Kephra::Document::Data::attr('text_selected') }
 
