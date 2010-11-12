@@ -1,5 +1,5 @@
 package Kephra::File::History;
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 use strict;
 use warnings;
@@ -22,6 +22,10 @@ sub init {
 	if (ref $config_tree->{document} eq 'ARRAY'){
 		@session = @{$config_tree->{document}};
 	}
+	Kephra::EventTable::add_call ( 'document.close', __PACKAGE__, sub {
+		Kephra::File::History::add( Kephra::Document::Data::current_nr() );
+	}, __PACKAGE__ );
+
 	$loaded = 1;
 }
 sub had_init {$loaded}
@@ -58,6 +62,7 @@ sub add {
 	my $doc_nr = Kephra::Document::Data::validate_doc_nr(shift);
 	return if $doc_nr < 0;
 	my $attr = Kephra::Document::Data::_hash($doc_nr);
+	return unless $attr->{'file_name'};
 	my %saved_attr;
 	$saved_attr{$_} = $attr->{$_} for @{ Kephra::File::Session::_saved_properties() };
 	unshift @session, \%saved_attr;

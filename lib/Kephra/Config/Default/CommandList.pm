@@ -885,6 +885,7 @@ sub get {
 					comment => {
 						'add-perl' => 'ctrl+k',
 						'del-perl' => 'ctrl+shift+k',
+						'toggle-perl' => 'ctrl+alt+k',
 						'add-xml' => 'ctrl+i',
 						'del-xml' => 'ctrl+shift+i',
 					},

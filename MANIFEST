@@ -18,11 +18,9 @@ inc/Module/Install/Can.pm
 inc/Module/Install/Fetch.pm
 inc/Module/Install/Makefile.pm
 inc/Module/Install/Metadata.pm
-inc/Module/Install/Msgfmt.pm
 inc/Module/Install/Scripts.pm
 inc/Module/Install/Share.pm
 inc/Module/Install/Win32.pm
-inc/Module/Install/With.pm
 inc/Module/Install/WriteAll.pm
 lib/Kephra.pm
 lib/Kephra/API.pm
@@ -311,6 +309,7 @@ share/help/english/navigation.txt
 share/help/english/special_feature.txt
 share/help/english/this_version.txt
 share/help/english/welcome.txt
+share/help/romana/functiuni.txt
 t/01_compile.t
 t/02_config.t
 t/03_config_default.t

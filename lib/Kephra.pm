@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 our $NAME        = __PACKAGE__;    # name of entire application
-our $VERSION     = '0.4.3.17';     # version of entire app
+our $VERSION     = '0.4.3.19';     # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $LOGLEVEL;                     # flag for benchmark loggings
@@ -366,21 +366,42 @@ and some help texts to be opened as normal files
 
 =head2 Overview
 
-Stable Release 0.4
+Enduser Release 0.1
+
+    a very simple editor
+    
+Enduser Release 0.2
+
+    multiple documents, file session
+    
+Enduser Release 0.3
+
+    searchbar and more comfort
+
+Enduser Release 0.4
 
     This release was about getting the editor liquid or highly configurable.
     Its also about improvements in the user interface and of course the little
     things we missed. It also contains interpreter output panel and a notepad.
 
-Stable Release 0.5
+Enduser Release 0.5
 
-    This release is about getting Kephra into the world out there and adding
-    feature that are most needed and removing most hindering barriers.
+    This release is about getting Kephra into the 'real' world out there
+    and adding feature that are most needed and removing most hindering barriers.
+    Folding, encodings, printing, .... and lot of minor tools and more help.
 
-Stable Release 0.6
+Enduser Release 0.6
 
-    This release will be about extending Kephra internal extentions and Plugins.
+    This release will be about extending Kephra internal extentions like a 
+    file brwoser, command line and tree lib as Plugin API.
 
+Enduser Release 0.7
+
+     Introducing Syntaxmodes, for language sensitive data and functionions.
+
+Enduser Release 0.8
+
+    more heavier stuff like debugger
 
 =head2 This Cycle
 
@@ -401,23 +422,6 @@ Stable Release 0.6
 =item Stable 0.5 - about dialog
 
 =back
-
-=head2 Future
-
-=over 2
-
-=item command line vor vi like usage
-
-=item tree lib extention: snippet lib and toolbox in one
-
-=item file browser
-
-=item Plugin API
-
-=back
-
-Coding support like L<Perl::Tidy>, outlining, help integration, debugger
-autocompletition and so on will be long time goals. Lets see where they fit in.
 
 =head1 SUPPORT
 

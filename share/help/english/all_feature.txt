@@ -3,6 +3,10 @@
       | Kephra Feature List |
        ---------------------
 
+This is the best place to answer questions like : "Does Kephra...?" , "How to
+change...?" or "How do I...in Kephra?". Even if the main menu might do that in
+some cases faster.
+
 Even if the editor currently doesn't do everything we wish, he already has a big
 pile of features. If you're already familiar with text editors, you can skip a
 lot of the following and switch to the "Advanced Tour", also to be found in the 

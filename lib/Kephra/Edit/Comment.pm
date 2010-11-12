@@ -1,5 +1,5 @@
 package Kephra::Edit::Comment;
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use strict;
 use warnings;
@@ -7,55 +7,80 @@ use warnings;
 # Comment
 sub add_block {
 	my $csymbol = shift;
+	my $symlength = length $csymbol;
 	my $ep = &Kephra::App::EditPanel::_ref;
-	my ( $lb, $lie );
+	my ($a, $b) = $ep->GetSelection;
+	my ($al, $bl) = ($ep->LineFromPosition( $a ), $ep->LineFromPosition( $b ));
+	my $lip;
+	my $lipa = $ep->GetLineIndentPosition($al);
+	my $lipb = $ep->GetLineIndentPosition($bl);
+	$a += $symlength if $ep->GetTextRange($lipa, $lipa + $symlength) ne $csymbol
+	                 and $a > $lipa;
+	$b -= $symlength if $ep->GetTextRange($lipb, $lipb + $symlength) ne $csymbol
+	                 and $b <= $lipb;
 
-	#lb = LineBegin; lie = LineIndentEnd
 	$ep->BeginUndoAction;
-	my $a = $ep->LineFromPosition( $ep->GetSelectionStart );
-	my $b = $ep->LineFromPosition( $ep->GetSelectionEnd );
-	for ( $a .. $b ) {
-		$lb  = $ep->PositionFromLine($_);
-		$lie = $ep->GetLineIndentPosition($_);
-		$ep->SetTargetStart($lb);
-		$ep->SetTargetEnd( $lie + length($csymbol) );
-		$ep->InsertText($lie, $csymbol) if $ep->SearchInTarget($csymbol) == -1;
+	for ( $al .. $bl ) {
+		$lip = $ep->GetLineIndentPosition($_);
+		$ep->InsertText($lip, $csymbol), $b += $symlength
+			if $ep->GetTextRange($lip, $lip + $symlength) ne $csymbol;
 	}
+	$ep->SetSelection($a, $b);
 	$ep->EndUndoAction;
 }
 
 sub remove_block {
 	my $csymbol = shift;
+	my $symlength = length $csymbol;
 	my $ep = &Kephra::App::EditPanel::_ref;
-	my $lp;
-	my $a = $ep->LineFromPosition( $ep->GetSelectionStart() );
-	my $b = $ep->LineFromPosition( $ep->GetSelectionEnd() );
+	my ($a, $b) = $ep->GetSelection;
+	my ($al, $bl) = ($ep->LineFromPosition( $a ), $ep->LineFromPosition( $b ));
+	my $lip;
+	my $lipa = $ep->GetLineIndentPosition($al);
+	my $rema = $ep->GetTextRange($lipa, $lipa + $symlength) eq $csymbol;
+	my $lipb = $ep->GetLineIndentPosition($bl);
+	my $remb = $ep->GetTextRange($lipb, $lipb + $symlength) eq $csymbol;
+
 	$ep->BeginUndoAction;
-	for ( $a .. $b ) {
-		$lp = $ep->PositionFromLine($_);
-		$ep->SetTargetStart($lp);
-		$ep->SetTargetEnd( $ep->GetLineIndentPosition($_) + length($csymbol) );
-		$ep->ReplaceTarget("") if $ep->SearchInTarget($csymbol) > -1;
+	for ( $al .. $bl ) {
+		$lip = $ep->GetLineIndentPosition($_);
+		$ep->SetTargetStart($lip);
+		$ep->SetTargetEnd( $lip + $symlength );
+		$ep->ReplaceTarget(''), $b -= $symlength
+			if $ep->SearchInTarget($csymbol) > -1;
 	}
-	$ep->SetSelectionStart( $ep->GetCurrentPos );
+	$a -= $symlength if $rema and $a >  $lipa;
+	$b += $symlength if $remb and $b <= $lipb;
+	$ep->SetSelection($a, $b);
 	$ep->EndUndoAction;
 }
 
 sub toggle_block {
-	my $csymbol  = shift;
+	my $csymbol = shift;
+	my $symlength = length $csymbol;
 	my $ep = &Kephra::App::EditPanel::_ref;
-	my ($lb, $lie);
-	my $a = $ep->LineFromPosition( $ep->GetSelectionStart() );
-	my $b = $ep->LineFromPosition( $ep->GetSelectionEnd() );
+	my $lip;
+
 	$ep->BeginUndoAction;
-	for ($a .. $b) {
-		$lb  = $ep->PositionFromLine($_);
-		$lie = $ep->GetLineIndentPosition($_);
-		$ep->SetTargetStart($lb);
-		$ep->SetTargetEnd( $lie + length($csymbol) );
-		if ($ep->SearchInTarget($csymbol) == -1){$ep->InsertText($lie,$csymbol)}
-		else                                    {$ep->ReplaceTarget("")}
+	my ($a,  $b) = $ep->GetSelection;
+	my ($al, $bl) = ($ep->LineFromPosition( $a ), $ep->LineFromPosition( $b ));
+	$lip = $ep->GetLineIndentPosition($al);
+	my $add = $ep->GetTextRange($lip, $lip + $symlength) ne $csymbol;
+	my $found;
+
+	$ep->BeginUndoAction;
+	for ($al .. $bl) {
+		$lip = $ep->GetLineIndentPosition($_);
+		$ep->SetTargetStart($lip);
+		$ep->SetTargetEnd( $lip + $symlength );
+		$found = $ep->SearchInTarget($csymbol) != -1;
+		if ($add){ $ep->InsertText($lip, $csymbol), $b += $symlength if not $found }
+		else     { $ep->ReplaceTarget('')         , $b -= $symlength if     $found }
 	}
+	$a = $add ? $a + $symlength : $a - $symlength;
+	$a = $ep->PositionFromLine( $al ) if $a < $ep->PositionFromLine( $al );
+	$b = $ep->PositionFromLine( $bl ) if $b < $ep->PositionFromLine( $bl );
+	$ep->SetSelection($a, $b);
 	$ep->EndUndoAction;
 }
 
@@ -169,6 +194,7 @@ sub sub_c         { remove_stream( '/*', '*/' ) }
 
 1;
 
+__END__
 =head1 NAME
 
 Kephra::App::Comment - 

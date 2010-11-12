@@ -1,5 +1,5 @@
 package Kephra::Edit;
-our $VERSION = '0.36';
+our $VERSION = '0.41';
 
 use strict;
 use warnings;
@@ -86,23 +86,88 @@ sub _selection_left_to_right {
 }
 sub can_paste   { _ep_ref()->CanPaste }
 sub can_copy    { Kephra::Document::Data::attr('text_selected') }
-
+#
 # simple textedit
+#
 sub cut         { _ep_ref()->Cut }
-sub copy        { _ep_ref()->Copy }
-sub paste       { _ep_ref()->Paste }
+sub copy        {
+	my $ep = _ep_ref();
+	$ep->Copy;
+	$ep->SelectionIsRectangle()
+		? Kephra::Document::Data::set_value('copied_rect_selection',get_clipboard_text())
+		: Kephra::Document::Data::set_value('copied_rect_selection','');
+}
+sub paste       {
+	my $lch = Kephra::Document::Data::get_value('copied_rect_selection');
+	my $cb = get_clipboard_text();
+	(defined $lch and $lch eq $cb) ? paste_rectangular($cb) :  _ep_ref()->Paste;
+}
+sub paste_rectangular {
+	my $text = shift || get_clipboard_text();
+	my $ep = shift || _ep_ref();
+	my $dragpos = shift;
+	my $droppos = shift;
+	# all additional parameters have to be provided or no one
+	return -1 if defined $dragpos and not defined $droppos;
+
+	my @lines = split( /[\r\n]+/, $text);
+	$droppos = $ep->GetCurrentPos unless defined $dragpos;
+	my $linenr = $ep->LineFromPosition( $droppos );
+	my $colnr = $ep->GetColumn($droppos );
+
+	if (defined $dragpos){
+		# calculate real drop position if dragged foreward
+		# because selection is cut out before inserted and this changed droppos
+		if ($dragpos <= $droppos){
+			my $selwidth = length $lines[0];
+			my $dnddelta = $linenr - $ep->LineFromPosition( $dragpos );
+			my $max = scalar @lines;
+
+			#$dnddelta = $max < $dnddelta ? $max : $dnddelta;
+			#$dnddelta *= $selwidth;
+			#$droppos -= $dnddelta;
+			#print "$dragpos ---$droppos\n";
+		}
+	}
+
+	$ep->BeginUndoAction;
+	$ep->ReplaceSelection(''),$ep->SetCurrentPos($droppos) if defined $dragpos;
+
+	my $insertpos;
+	for my $line (@lines){
+		$insertpos = $ep->PositionFromLine($linenr) + $colnr;
+		$insertpos += $colnr - $ep->GetColumn( $insertpos ) ;
+		$insertpos = $ep->GetLineEndPosition($linenr)
+			if $ep->LineFromPosition( $insertpos ) > $linenr;
+		$ep->InsertText( $insertpos, $line);
+		$linenr++;
+	}
+	$ep->EndUndoAction;
+}
 sub replace     {
 	my $ep = _ep_ref();
-	my $length = ( $ep->GetSelectionEnd - $ep->GetSelectionStart );
-	$ep->BeginUndoAction;
-	$ep->SetSelectionEnd( $ep->GetSelectionStart );
-	$ep->Paste;
-	$ep->SetSelectionEnd( $ep->GetSelectionStart + $length );
-	$ep->Cut;
-	$ep->EndUndoAction;
+	my $text = get_clipboard_text();
+	copy();
+	_ep_ref()->ReplaceSelection($text);
 }
 
 sub clear       { _ep_ref()->Clear }
+sub get_clipboard_text {
+	my $cboard = &Wx::wxTheClipboard;
+	my $text;
+	$cboard->Open;
+	if ( $cboard->IsSupported( &Wx::wxDF_TEXT ) ) {
+		my $data = Wx::TextDataObject->new;
+		my $ok = $cboard->GetData( $data );
+		if ( $ok ) {
+			$text = $data->GetText;
+		} else {
+			# todo: error handling
+		}
+	}
+	$cboard->Close;
+	return defined $text ? $text : -1;
+}
 
 sub del_back_tab{
 	my $ep = _ep_ref();
@@ -117,6 +182,18 @@ sub del_back_tab{
 #
 # Edit Selection
 #
+sub move_target {
+	my $linedelta = shift;
+	return unless defined $linedelta;
+	my $ep = shift || _ep_ref(); 
+	my $targetstart = $ep->GetTargetStart();
+	my $targettext = $ep->GetTextRange($targetstart, $ep->GetTargetEnd());
+	$ep->BeginUndoAction;
+	$ep->ReplaceTarget('');
+	$ep->InsertText($targetstart+$linedelta, $targettext);
+	$ep->EndUndoAction;
+}
+sub move_selection {}
 sub get_selection  { _ep_ref()->GetSelectedText() }
 sub selection_move {
 	my ( $ep, $linedelta ) = @_;
@@ -144,116 +221,139 @@ sub selection_move {
 	&_let_caret_visible;
 }
 
+sub move_lines {
+	my $linedelta = shift;
+	return unless defined $linedelta;
+	my $ep = shift || _ep_ref();
+
+	my ( $selbegin, $selend) = $ep->GetSelection();
+	my $sellength = $selend - $selbegin;
+	my $selstartline = $ep->LineFromPosition($selbegin);
+	my $targetstart = $ep->GetTargetStart();
+	my $targetend = $ep->GetTargetEnd();
+	my $blockbegin = $ep->PositionFromLine($selstartline);
+	my $blockend = $ep->PositionFromLine( $ep->LineFromPosition($selend)+1 );
+	my $selcolumn = $selbegin - $blockbegin;
+
+	# endmode is taken when last line on start or end of operation has no EOL
+	# then i take the the EOL char from the line before instead and have to
+	# insert in a pos before to keep consistent
+	my $endmode;
+	if ($blockend == $ep->GetLength()
+	or  $ep->LineFromPosition($selend) + $linedelta >= $ep->GetLineCount()-1 ) {
+		$blockbegin = $ep->GetLineEndPosition($selstartline-1);
+		$blockend = $ep->GetLineEndPosition( $ep->LineFromPosition($selend) );
+		$endmode = 1;
+	}
+	$selstartline += $linedelta;
+	my $blocktext = $ep->GetTextRange($blockbegin, $blockend);
+	$ep->BeginUndoAction;
+	$ep->SetTargetStart( $blockbegin );
+	$ep->SetTargetEnd( $blockend );
+	$ep->ReplaceTarget('');
+	$selstartline = 0 if $selstartline < 0;
+	$selstartline = $ep->GetLineCount() if $selstartline > $ep->GetLineCount();
+	my $target = $endmode
+		? $ep->GetLineEndPosition($selstartline-1)
+		: $ep->PositionFromLine($selstartline);
+	$ep->InsertText($target, $blocktext);
+	$selbegin = $ep->PositionFromLine($selstartline) + $selcolumn;
+	$ep->SetSelection($selbegin, $selbegin + $sellength);
+	$ep->SetTargetStart($targetstart );
+	$ep->SetTargetEnd( $targetend );
+	$ep->EndUndoAction;
+}
+
 sub selection_move_left {
 	my $ep = _ep_ref();
-	if ( $ep->GetSelectionStart > 0 ) {
-		my $text = $ep->GetSelectedText();
-		my $eoll = Kephra::Document::Data::attr('EOL_length');;
-		$ep->BeginUndoAction;
-		$ep->ReplaceSelection("");
-		my $pos = $ep->GetCurrentPos;
-		if ( $ep->GetColumn($pos) ) { $pos -= 1 }
-		else                        { $pos -= $eoll }
-		$ep->SetCurrentPos($pos);
-		$ep->InsertText( $pos, $text );
-		$ep->SetSelection( $pos, $pos + length($text) );
-		$ep->EndUndoAction;
+	my ($selbegin, $selend) = $ep->GetSelection();
+	if ( $selbegin == $selend
+	or $ep->LineFromPosition( $selbegin ) != $ep->LineFromPosition( $selend ) ) {
+		Kephra::Edit::Format::dedent_tab();
+	} else {
+		if ( $selbegin > 0 ) {
+			my $text = $ep->GetSelectedText();
+			my $eoll = Kephra::Document::Data::attr('EOL_length');;
+			$ep->BeginUndoAction;
+			$ep->ReplaceSelection("");
+			my $pos = $ep->GetCurrentPos;
+			if ( $ep->GetColumn($pos) ) { $pos -= 1 }
+			else                        { $pos -= $eoll }
+			$ep->SetCurrentPos($pos);
+			$ep->InsertText( $pos, $text );
+			$ep->SetSelection( $pos, $pos + length($text) );
+			$ep->EndUndoAction;
+		}
 	}
 }
 
 sub selection_move_right{
 	my $ep = _ep_ref();
-	if ( $ep->GetSelectionEnd < $ep->GetTextLength ) {
-		my $text = $ep->GetSelectedText;
-		my $eoll = Kephra::Document::Data::attr('EOL_length');
-		$ep->BeginUndoAction;
-		$ep->ReplaceSelection("");
-		my $pos  = $ep->GetCurrentPos;
-		if ( $ep->GetColumn( $pos + $eoll ) ) { $pos += 1 }
-		else                                  { $pos += $eoll }
-		$ep->SetCurrentPos( $pos);
-		$ep->InsertText( $pos, $text);
-		$ep->SetSelection( $pos, $pos + length($text) );
-		$ep->EndUndoAction;
+	my ($selbegin, $selend) = $ep->GetSelection();
+	if ( $selbegin == $selend
+	or $ep->LineFromPosition( $selbegin ) != $ep->LineFromPosition( $selend ) ) {
+		Kephra::Edit::Format::indent_tab();
+	} else {
+		if ( $selend < $ep->GetTextLength ) {
+			my $text = $ep->GetSelectedText;
+			my $eoll = Kephra::Document::Data::attr('EOL_length');
+			$ep->BeginUndoAction;
+			$ep->ReplaceSelection("");
+			my $pos  = $ep->GetCurrentPos;
+			if ( $ep->GetColumn( $pos + $eoll ) ) { $pos += 1 }
+			else                                  { $pos += $eoll }
+			$ep->SetCurrentPos( $pos);
+			$ep->InsertText( $pos, $text);
+			$ep->SetSelection( $pos, $pos + length($text) );
+			$ep->EndUndoAction;
+		}
 	}
 }
 
 sub selection_move_up   {
 	my $ep = shift || _ep_ref();
-	if ( $ep->LineFromPosition( $ep->GetSelectionStart ) > 0 ) {
-		if ( $ep->GetSelectionStart == $ep->GetSelectionEnd ) {
-			my $line = $ep->GetCurrentLine;
-			my $col = $ep->GetCurrentPos - $ep->PositionFromLine($line);
-			$ep->BeginUndoAction;
-			$ep->CmdKeyExecute( &Wx::wxSTC_CMD_LINETRANSPOSE );
-			my $pos = $ep->PositionFromLine( $line - 1 ) + $col;
-			$ep->SetCurrentPos( $pos );
-			$ep->SetSelection( $pos, $pos );
-			$ep->EndUndoAction;
-		} else {
-			selection_move( $ep, -1 );
-		}
-	}
+	my ($selbegin, $selend) = $ep->GetSelection();
+	my $firstline = $ep->LineFromPosition( $selbegin );
+	my $lastline = $ep->LineFromPosition( $selend );
+
+	if ( $selbegin != $selend and $firstline == $lastline) {
+	} 
+	else { move_lines( -1, $ep ) }
 }
 
 sub selection_move_down {
 	my $ep = shift || _ep_ref();
-	if ($ep->LineFromPosition( $ep->GetSelectionEnd ) < $ep->GetLineCount - 1) {
-		if ( $ep->GetSelectionStart == $ep->GetSelectionEnd ) {
-			my $line = $ep->GetCurrentLine;
-			my $col = $ep->GetCurrentPos() - $ep->PositionFromLine($line);
-			$ep->BeginUndoAction;
-			$ep->GotoLine( $line + 1 );
-			$ep->CmdKeyExecute( &Wx::wxSTC_CMD_LINETRANSPOSE );
-			my $pos = $ep->PositionFromLine($line + 1) + $col;
-			$ep->SetCurrentPos( $pos );
-			$ep->SetSelection( $pos, $pos );
-			$ep->EndUndoAction;
-		} else {
-			selection_move( $ep, 1 );
-		}
+	my ($selbegin, $selend) = $ep->GetSelection();
+	my $firstline = $ep->LineFromPosition( $selbegin );
+	my $lastline = $ep->LineFromPosition( $selend );
+
+	if ($selbegin != $selend and $firstline == $lastline) {
 	}
+	else { move_lines( 1, $ep ) }
 }
 
 sub selection_move_page_up   {
-	my $ep = _ep_ref();
+	my $ep = shift || _ep_ref();
+	my ($selbegin, $selend) = $ep->GetSelection();
+	my $firstline = $ep->LineFromPosition( $selbegin );
+	my $lastline = $ep->LineFromPosition( $selend );
 	my $linedelta = $ep->LinesOnScreen;
-	if ( $ep->LineFromPosition( $ep->GetSelectionStart ) > 0 ) {
-		if ( $ep->GetSelectionStart == $ep->GetSelectionEnd ) {
-			$ep->BeginUndoAction;
-			my $targetline = $ep->GetCurrentLine - $linedelta;
-			$targetline = 0 if $targetline < 0;
-			for my $i (reverse $targetline + 1 .. $ep->GetCurrentLine ) {
-				$ep->GotoLine($i);
-				$ep->CmdKeyExecute(&Wx::wxSTC_CMD_LINETRANSPOSE);
-			}
-			$ep->GotoLine( $ep->GetCurrentLine - 1 );
-			$ep->EndUndoAction;
-		} else {
-			selection_move( $ep, -$linedelta );
-		}
-	}
+
+	if ($selbegin != $selend and $firstline == $lastline) {
+	} 
+	else { move_lines( -$linedelta, $ep ) }
 }
 
 sub selection_move_page_down {
-	my $ep = _ep_ref();
+	my $ep = shift || _ep_ref();
+	my ($selbegin, $selend) = $ep->GetSelection();
+	my $firstline = $ep->LineFromPosition( $selbegin );
+	my $lastline = $ep->LineFromPosition( $selend );
 	my $linedelta = $ep->LinesOnScreen;
-	if ($ep->LineFromPosition( $ep->GetSelectionEnd ) < $ep->GetLineCount - 1) {
-		if ( $ep->GetSelectionStart == $ep->GetSelectionEnd ) {
-			$ep->BeginUndoAction;
-			my $targetline = $ep->GetCurrentLine + $linedelta;
-			my $lastline   = $ep->LineFromPosition(
-				$ep->PositionFromLine( $ep->GetLineCount ) );
-			$targetline = $lastline if ( $targetline > $lastline );
-			for my $i ($ep->GetCurrentLine + 1 .. $targetline) {
-				$ep->GotoLine($i);
-				$ep->CmdKeyExecute(&Wx::wxSTC_CMD_LINETRANSPOSE);
-			}
-			$ep->EndUndoAction;
-		} else {
-			selection_move( $ep, $linedelta );
-		}
-	}
+
+	if ($selbegin != $selend and $firstline == $lastline) {
+	} 
+	else { move_lines( $linedelta, $ep ) }
 }
 
 #

@@ -117,6 +117,7 @@ sub toggle_content { # selects text inside of < > [] {} () '' ""
 	'>' => '<', ']'=>'[', '}'=>'{', ')'=>'(',
 	'/' => '/', '\'' => '\'', '"' => '"'
 );
+
 # quote styles: 6 7 re styles 17, 18
 #$ep->GetTextRange(
 #$ep->PositionFromLine($line)  $ep->GetLineEndPosition($line);
@@ -132,7 +133,14 @@ sub toggle_content { # selects text inside of < > [] {} () '' ""
 	#my $matchpos = $ep->BraceMatch(--$pos);
 
 	#print '',($ep->GetSelection),"\n";
+	print "--\n";
 }
+
+#ex rectangular selection
+sub expand_rect_left{} 
+sub expand_rect_right{} 
+sub expand_rect_up{} 
+sub expand_rect_down{} 
 
 1;
 

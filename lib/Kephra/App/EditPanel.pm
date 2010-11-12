@@ -13,7 +13,7 @@ sub _set_ref { $ref = $_[0] if is($_[0]) }
 sub _all_ref { Kephra::Document::Data::get_all_ep() }
 sub is       { 1 if ref $_[0] eq 'Wx::StyledTextCtrl'}
 sub _config  { Kephra::API::settings()->{editpanel} }
-
+# splitter_pos
 sub new {
 	my $ep = Wx::StyledTextCtrl->new( Kephra::App::Window::_ref() );
 	$ep->DragAcceptFiles(1) if Wx::wxMSW();
@@ -55,29 +55,47 @@ sub apply_settings_here {
 	connect_events($ep);
 	Kephra::EventTable::add_call ( 'editpanel.focus', 'editpanel', sub {
 		Wx::Window::SetFocus( _ref() ) unless $Kephra::temp{dialog}{active};
-	}, 'editpanel' ) if $conf->{auto}{focus};
+	}, __PACKAGE__ ) if $conf->{auto}{focus};
 	Kephra::EventTable::add_call( 'document.text.change', 'update_edit_pos', sub {
 		Kephra::Document::Data::attr('edit_pos', _ref()->GetCurrentPos());
-	},'editpanel');
+	}, __PACKAGE__);
 }
 
 sub connect_events {
 	my $ep = shift || _ref();
 	my $trigger = \&Kephra::EventTable::trigger;
 	my $config = _config();
+	my $selection;
+	my $rectangular_mode;
+	my ($dragpos,$droppos);
 
 	# override sci presets
 	Wx::Event::EVT_DROP_FILES       ($ep, \&Kephra::File::add_dropped);
-	Wx::Event::EVT_ENTER_WINDOW     ($ep,  sub {&$trigger('editpanel.focus')} );
-	Wx::Event::EVT_LEFT_DOWN        ($ep,  sub {
-		my ($ep, $event) = @_;
-		my $nr = Kephra::App::EditPanel::Margin::in_nr( $event->GetX, $ep );
-		if ($nr == -1) {
-			Kephra::Edit::copy() if clicked_on_selection($event);
-		}
+	Wx::Event::EVT_STC_START_DRAG   ($ep, -1, sub {
+		my ( $ep, $event) = @_;
+		$dragpos = $ep->GetCurrentPos();
+		$selection = $ep->GetSelectedText();
+		$rectangular_mode = $ep->SelectionIsRectangle();
 		$event->Skip;
 	});
-	Wx::Event::EVT_MIDDLE_DOWN      ($ep,  sub {
+	Wx::Event::EVT_STC_DRAG_OVER    ($ep, -1, sub { $droppos = $_[1]->GetPosition });
+	Wx::Event::EVT_STC_DO_DROP      ($ep, -1, sub {
+		my ( $ep, $event) = @_;
+		$rectangular_mode
+		 ? Kephra::Edit::paste_rectangular($selection, $ep, $dragpos, $droppos)
+		 : $event->Skip;
+	});
+
+	Wx::Event::EVT_ENTER_WINDOW     ($ep,     sub { &$trigger('editpanel.focus')} );
+	Wx::Event::EVT_LEFT_DOWN        ($ep,     sub { 
+		my ($ep, $event) = @_;
+		my $nr = Kephra::App::EditPanel::Margin::in_nr( $event->GetX, $ep );
+		if ($nr == -1) { Kephra::Edit::copy() if clicked_on_selection($event) }
+		else { Kephra::App::EditPanel::Margin::on_left_click($ep, $event, $nr) } 
+
+		$event->Skip;
+	});
+	Wx::Event::EVT_MIDDLE_DOWN      ($ep,     sub {
 		my ($ep, $event) = @_;
 		my $nr = Kephra::App::EditPanel::Margin::in_nr( $event->GetX, $ep );
 		# click is above text area
@@ -100,7 +118,7 @@ sub connect_events {
 		} 
 		else { Kephra::App::EditPanel::Margin::on_middle_click($ep, $event, $nr) }
 	});
-	Wx::Event::EVT_RIGHT_DOWN       ($ep,  sub {
+	Wx::Event::EVT_RIGHT_DOWN       ($ep,     sub {
 		my ($ep, $event) = @_;
 		my $nr = Kephra::App::EditPanel::Margin::in_nr( $event->GetX, $ep );
 		if ($nr == -1) {
@@ -120,11 +138,12 @@ sub connect_events {
 			} 
 		} else {Kephra::App::EditPanel::Margin::on_right_click($ep, $event, $nr)}
 	});
-	#Wx::EVT_SET_FOCUS              ($ep,  sub {});
+	#Wx::EVT_SET_FOCUS               ($ep,     sub {});
 	Wx::Event::EVT_STC_SAVEPOINTREACHED($ep, -1, \&Kephra::File::savepoint_reached);
 	Wx::Event::EVT_STC_SAVEPOINTLEFT($ep, -1, \&Kephra::File::savepoint_left);
-	Wx::Event::EVT_STC_MARGINCLICK  ($ep, -1, \&Kephra::App::EditPanel::Margin::on_left_click);
-	Wx::Event::EVT_STC_CHANGE       ($ep, -1,sub {&$trigger('document.text.change')} );
+	# -DEP
+	#Wx::Event::EVT_STC_MARGINCLICK  ($ep, -1, \&Kephra::App::EditPanel::Margin::on_left_click);
+	Wx::Event::EVT_STC_CHANGE       ($ep, -1, sub {&$trigger('document.text.change')} );
 	Wx::Event::EVT_STC_UPDATEUI     ($ep, -1, sub {
 		my ( $ep, $event) = @_;
 		my ( $sel_beg, $sel_end ) = $ep->GetSelection;

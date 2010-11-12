@@ -97,6 +97,9 @@ sub refresh_index {
 	my %new_index;
 
 	my ($FH, $file_name, $age);
+	my $getmetaheader = qr|<about>[\r\n]+(.*)[\r\n]+</about>|s;
+	my $lines = qr/[\r\n]+/;
+	my $seperatekv = qr/\s*(\S+)\s*=\s*(.+)\s*/;
 	#$File::Find::prune = 0;
 	File::Find::find( sub {
 		return if -d $_; 
@@ -115,17 +118,18 @@ sub refresh_index {
 			return if eof $FH;  # abort because no complete about header found
 			read $FH, $chunk, 1000;
 			$header .= $chunk;
-		} until $header =~ m|<about>[\r\n]+(.*)[\r\n]+</about>|s;
+		} until $header =~ /$getmetaheader/;
 		# split to lines, delete spaces and extract keys and valuse
-		for (split /[\r\n]+/, $1){
-			m/\s*(\S+)\s*=\s*(.+)\s*/;
+		for (split /$lines/, $1){
+			/$seperatekv/;
 			$filedata{$1} = $2;
 		}
 		$filedata{'age'} = $age;
 		$new_index{$file_name} = \%filedata
 			if defined $filedata{'purpose'}
-			and $filedata{'purpose'} eq 'global localisation';
-			;
+			and $filedata{'purpose'} eq 'global localisation'
+			# if its an stable enduser version the l18n strings has to be updated
+			and (not defined $Kephra::PATCHLEVEL or $filedata{'version'} eq $Kephra::VERSION);
 	}, $l18n_dir);
 
 	YAML::Tiny::DumpFile($index_file, \%new_index);

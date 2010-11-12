@@ -135,6 +135,7 @@ sub toggle_bookmark_here   { # toggle triggered by margin middle click
 	my ($ep, $event ) = @_;
 	return unless ref $event eq 'Wx::MouseEvent';
 
+
 	my $pos = $ep->PositionFromPoint( $event->GetPosition() );
 	my $marker = $ep->MarkerGet($ep->LineFromPosition($pos) );
 	if ( $marker & ((1 << 10)-1) ){
@@ -208,8 +209,12 @@ sub toggle_marker_in_line { # generic set / delete marker in line
 
 sub toggle_marker_here    { # toggle triggered by margin left click
 	my ($ep, $event ) = @_;
-	return unless ref $event eq 'Wx::StyledTextEvent';
-	toggle_marker_in_line( $ep->LineFromPosition( $event->GetPosition() ) );
+	return unless ref $event eq 'Wx::MouseEvent';
+	#$ep->LineFromPosition( $event->GetPosition() if ref $event eq 'Wx::StyledTextEvent'
+
+	toggle_marker_in_line(
+		$ep->LineFromPosition( $ep->PositionFromPoint( $event->GetPosition() ) )
+	);
 }
 
 sub toggle_marker         { # toggle triggered by keyboard / icon / contextmenu

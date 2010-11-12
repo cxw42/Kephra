@@ -4,15 +4,25 @@ our $VERSION = '0.16';
 use strict;
 use warnings;
 
-my $notepad;
-sub _ref     { $notepad = ref $_[0] eq 'Wx::StyledTextCtrl' ? $_[0] : $notepad }
+my $global_notepad;
+my $local_notepad;
+sub _global_ref {
+	$global_notepad = ref $_[0] eq 'Wx::StyledTextCtrl' ? $_[0] : $global_notepad
+}
+sub _local_ref {
+	$local_notepad = ref $_[0] eq 'Wx::StyledTextCtrl' ? $_[0] : $local_notepad
+} #document.current.number.changed
+sub _ref {
+	_global_ref()
+}
+sub _local_splitter {}
 sub _config  { Kephra::API::settings()->{app}{panel}{notepad} }
 sub _splitter{ $Kephra::app{splitter}{right} }
 
 sub create {
 	my $win    = Kephra::App::Window::_ref();
 	my $notepad;
-	if (_ref()) {$notepad = _ref()}
+	if ( _global_ref()) {$notepad = _global_ref()}
 	else {
 		my $color  = \&Kephra::Config::color;
 		my $indicator = Kephra::App::EditPanel::_config()->{indicator};
@@ -95,8 +105,7 @@ sub create {
 			$event->Skip;
 	});	
 
-	Kephra::EventTable::add_call (
-		'app.splitter.right.changed', 'panel_notepad', sub {
+	Kephra::EventTable::add_call( 'app.splitter.right.changed',__PACKAGE__,sub {
 			if ( get_visibility() and not _splitter()->IsSplit() ) {
 				show( 0 );
 				return;
@@ -104,7 +113,7 @@ sub create {
 			save_size();
 	});
 
-	_ref($notepad);
+	_global_ref($notepad);
 	$notepad;
 }
 
@@ -161,6 +170,7 @@ sub save_size {
 	my $ww=Kephra::App::Window::_ref()->GetSize->GetWidth;
 	_config()->{size} = -1*($ww-($ww-$splitter->GetSashPosition));
 }
+
 
 1;
 

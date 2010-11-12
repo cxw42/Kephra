@@ -178,6 +178,7 @@ sub detect_EOL_mode {
 
 	if ( length($text) < 1 ) { return 'auto' }
 	else {
+#print "win \n" if $text =~ /\r\n/;
 		#return 'cr+lf' if $text =~ /\r\n/;
 		#return 'cr'    if $text =~ /\r/;
 		#return 'lf'    if $text =~ /\n/;
@@ -191,8 +192,8 @@ sub set_readonly {
 	my $status = shift;
 	my $ep     = _ep_ref();
 	if (not $status or $status eq 'off' ) {
-		$ep->SetReadOnly(0);
-		$status = 'off';
+			$ep->SetReadOnly(0);
+			$status = 'off';
 	} elsif ( $status eq 'on' or $status eq '1' ) {
 		$ep->SetReadOnly(1);
 		$status = 'on';
@@ -213,6 +214,7 @@ sub set_readonly_off     { set_readonly('off') }
 sub set_readonly_protect { set_readonly('protect') }
 
 1;
+__END__
 
 =head1 NAME
 

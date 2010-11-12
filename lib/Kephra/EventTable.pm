@@ -9,7 +9,7 @@ my %timer;
 my %table;
 my %group = (
 	edit       =>  [qw(document.text.change document.text.select caret.move)],
-	doc_change =>  [qw(document.current.number.changed 
+	doc_change =>  [qw(document.current.number.changed
 	                   document.savepoint document.text.select)],
 );
 sub _table { \%table }

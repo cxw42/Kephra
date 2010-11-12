@@ -86,13 +86,9 @@ sub switch_contextmenu_visibility { _edit_config()->{contextmenu}{margin} ^= 1 }
 # deciding what to do when clicked on edit panel margin
 #
 sub on_left_click {
-	my ($ep, $event) = @_;
-	my $nr = $event->GetMargin();
-	if      ($nr < 2) {
-		Kephra::Edit::Marker::toggle_marker_here(@_);
-	} elsif ($nr == 2) {
-		Kephra::App::EditPanel::Fold::toggle_here(@_);
-	}
+	my ($ep, $event, $nr) = @_;
+	if      ($nr  < 2)  {Kephra::Edit::Marker::toggle_marker_here(@_) }
+	elsif   ($nr == 2) {Kephra::App::EditPanel::Fold::toggle_here(@_) }
 }
 sub on_middle_click {
 	my ($ep, $event, $nr) = @_;

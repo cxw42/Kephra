@@ -1,33 +1,41 @@
---- #YAML:1.0
-name: Kephra
-version: 0.3.4.3
-abstract: crossplatform GUI Text-Editor
-author: lichtkind@cpan.org
-license: gpl
+---
+abstract: 'crossplatform, GUI-Texteditor along Perl alike Paradigms '
+author:
+  - 'Herbert Breunung'
+build_requires:
+  ExtUtils::MakeMaker: 6.42
+  Test::Exception: 0
+  Test::More: 0.47
+  Test::NoWarnings: 0
+  Test::Script: 0.01
+configure_requires:
+  ExtUtils::MakeMaker: 6.42
 distribution_type: module
-generated_by: Module::Install version 1.00
-no_index: 
-  directory: 
-    - doc
+generated_by: 'Module::Install version 0.95'
+license: gpl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Kephra
+no_index:
+  directory:
     - inc
-    - lib/Kephra
     - share
     - t
     - xt
-requires: 
-  perl: 5.006
+requires:
+  Config::General: 2.4
   Cwd: 0
+  Encode::Guess: 0
+  File::UserConfig: 0
   POSIX: 0
-  Text-Wrap: 0
-  Encode-Guess: 0
-  File-Find: 0
-  File-UserConfig: 0
-  Config-General: 0.30
-  YAML-Tiny: 0.31
-  Wx:   0.91
-  Wx-Perl-ProcessStream: 0
+  Text::Wrap: 0
+  Wx: 0.94
+  Wx::Perl::ProcessStream: 0.25
+  YAML::Tiny: 0.31
+  perl: 5.6.0
 resources:
-  homepage: http://kephra.sf.net
-  repository: http://kephra.svn.sourceforge.net/viewvc/kephra/dev/base/
-  mailinglist: http://lists.sourceforge.net/lists/listinfo/kephra-tester
-  license: http://www.gnu.org/licenses/gpl-2.0.html
+  bugtracker: http://sourceforge.net/tracker/?group_id=169747&atid=851590
+  homepage: http://kephra.sourceforge.net/
+  license: http://opensource.org/licenses/gpl-license.php
+version: 0.4.3.19

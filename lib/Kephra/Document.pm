@@ -59,6 +59,7 @@ sub new   {   # make document empty and reset all document properties to default
 	Kephra::Document::Data::set_current_nr( $doc_nr );
 	Kephra::App::TabBar::raise_tab_by_doc_nr($doc_nr);
 	&reset($doc_nr);
+	Kephra::EventTable::trigger('document.new');
 }
 
 sub reset {   # restore once opened file from its settings
@@ -132,6 +133,7 @@ sub add {     # create a new document if settings allow it
 		Kephra::App::Window::refresh_title();
 		Kephra::App::TabBar::raise_tab_by_doc_nr($doc_nr);
 		Kephra::App::EditPanel::Margin::autosize_line_number();
+		Kephra::EventTable::trigger('document.new');
 		Kephra::EventTable::trigger('document.list');
 	}
 }

@@ -1,18 +1,31 @@
 todo:
- ! update configs when update cpan installation
-   automate meta.yml gen
-   new zip release
    l18n version update
-   Config::Tree join & split keys
    l18n compare tool
-   rename file
+   Config::Tree join & split keys
+ ! update configs when update cpan installation 
+ ! EOL problem in UTF files
  + select content
+ ~ move selection moves now wordwise when part of line selected
 
-0.4.3.17
- + selecting right to left and right click deletes (clear) selection (left to right just cuts)
- ] hardening the feature of previous version
- ] config reload when changing current l18n works again
- " improved english l18n (mostly by enrico)++
+0.4.3.19
+ ~ move selection moves now only complete lines when selected none or several
+ ! old l18n key in romana.conf
+
+0.4.3.18
+ + insert rectangular selections
+ + move line tabwise left and right with <ctrl>+<alt>+<left|right>
+ ~ brace nav is caret pos aware (jumps from inside to inside or outside to outside)
+ ~ toggle # comment with <ctrl>+<alt>+<k>
+ ] automatically hides incomplete translations in enduser releases
+ ! closed unnamed docs appeared in file history
+ ! proper titelbar and tabbar visual updates while rename file
+ ! folding and marker setting with left click on margin works again
+
+ 0.4.3.17
+  + selecting right to left and right click deletes (clear) selection (left to right just cuts)
+  ] hardening the feature of previous version
+  ] config reload when changing current l18n works again
+  " improved english l18n (mostly by enrico)++
 
 0.4.3.16
  ! lang selection menu works again
@@ -1698,4 +1711,4 @@ Legend:
  ] internals
  " configs
  ' help/docu
- / comment
+ / comment 

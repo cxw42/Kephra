@@ -180,7 +180,7 @@ sub get {
 				margin => 1,
 			},
 			control => {
-				mouse_function => {
+				mouse => {
 					'left-selection' => 'edit-copy',
 					'left-middle' => 'edit-paste',
 					'left-right' => 'edit-cut',
@@ -188,7 +188,7 @@ sub get {
 					'middle-selection' => 'find-selection, find-next',
 					'middle' => 'goto-last-edit',
 				},
-				use_mouse_function => 1,
+				use_advanced_mouse_functions => 1,
 			},
 			font => {
 				family => 'Courier New',

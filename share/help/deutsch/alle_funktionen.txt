@@ -3,13 +3,17 @@
       | Kephra Funktionsübersicht |
        ---------------------------
 
+Dies ist der beste Ort um Fragen zu beantworten wie: "Kann Kephra... ?" , "Wie 
+verstell ich...?" oder "Wie macht man...in Kephra?". In vielen ist das Hauptmenü
+dabei schneller.
+
 Auch wenn der Editor noch nicht alles vermag, was wir gerne hätten, so möchten
 wir ihn mächtig nennen weil diese Liste lang ist. Wenn euch Texteditoren bereits
 vertraut sind, kann vieles hier übersprungen werden. Dann empfehle ich die
 'besondere_funktionen.txt' zu lesen, die im Menü auch unter Hilfe > Nützliches
 zu findet ist.
 
-Sollte euch eine volltändige, thematisch nach dem Hauptmenü sortierte Übersicht 
+Sollte euch eine vollständige, thematisch nach dem Hauptmenü sortierte Übersicht 
 der Funktionen dennoch interessieren, so schreitet weiter. Alle Config-Schlüssel 
 beziehen sich auf die Datei "config/general/autosaved.conf" (Haupteinstellungen).
 

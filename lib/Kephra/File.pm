@@ -1,5 +1,5 @@
 package Kephra::File;
-our $VERSION = '0.44';
+our $VERSION = '0.46';
 
 use strict;
 use warnings;
@@ -256,6 +256,8 @@ sub rename   {
 		rename $old_path_name, $new_path_name if $old_path_name;
 		Kephra::Document::Data::set_file_path($new_path_name);
 		Kephra::Document::SyntaxMode::set('auto');
+		Kephra::App::Window::refresh_title();
+		Kephra::App::TabBar::refresh_current_label();
 		_config()->{current}{directory} = 
 			Kephra::Document::Data::get_attribute('directory');
 		Kephra::EventTable::trigger('document.list');
@@ -358,8 +360,8 @@ sub close_nr_unsaved {
 	if ($file){
 		Kephra::App::EditPanel::Fold::store( $doc_nr );
 		Kephra::Edit::Marker::store( $doc_nr );
-		Kephra::File::History::add( $doc_nr );
 	}
+	Kephra::EventTable::trigger('document.close');
 
 	# empty last document
 	if ( $buffer == 1 ) {

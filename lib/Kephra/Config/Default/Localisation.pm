@@ -117,7 +117,7 @@ sub get {
 					reload => 'Reload',
 					'reload-all' => 'Reload All',
 					rename => 'Rename ...',
-					insert => 'Insert From ...',
+					insert => 'Insert From File ...',
 					close => {
 						current => 'Close',
 						all => 'Close All',

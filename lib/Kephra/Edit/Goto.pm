@@ -19,7 +19,7 @@ sub _pos {
 # simple jump calls
 #
 sub pos { position(@_) }
-sub position {
+sub position { # jump caret to character based text position
 	my $pos = shift;
 	return unless $pos;
 	my $ep  = _ep_ref();
@@ -72,35 +72,46 @@ sub next_block{ _ep_ref()->CmdKeyExecute(&Wx::wxSTC_CMD_PARADOWN) }
 #
 # brace navigation
 #
-sub prev_brace{
+sub prev_brace {
 	my $ep  = _ep_ref();
-	my $pos = $ep->GetCurrentPos;
-	$ep->GotoPos($pos - 1) if $ep->BraceMatch($pos) > -1;
-	$ep->GotoPos($pos - 2) if $ep->BraceMatch($pos - 1) > -1;
+	my $oldpos = my $pos = $ep->GetCurrentPos;
+	my $braceleft = 1; # is brace left to caret
+
+	$braceleft--, $pos-- if $ep->BraceMatch($pos-1) > -1;
+	$ep->GotoPos($pos - 1);
 	$ep->SearchAnchor();
 	my $newpos = $ep->SearchPrev(&Wx::wxSTC_FIND_REGEXP, '[{}()\[\]]');
 	$newpos++ if $ep->BraceMatch($newpos) > $newpos;
-	$newpos > -1 ? position($newpos) : position($pos);
+	$newpos-- if not $braceleft and $newpos == $ep->BraceMatch($pos)+1;
+	$newpos > -1 ? position($newpos) : position($oldpos);
 }
 
-sub next_brace{
-	my $ep  = _ep_ref();
-	my $pos = $ep->GetCurrentPos;
-	$ep->GotoPos($pos + 1);
+sub next_brace {
+	my $ep  = _ep_ref(   );
+	my $oldpos = my $pos = $ep->GetCurrentPos;
+	my $braceleft = 0; # is brace left to caret
+
+	$braceleft++, $pos--
+		if $ep->BraceMatch($pos-1) > -1 and $ep->BraceMatch($pos) == -1;
+	$ep->GotoPos($oldpos + 1);
 	$ep->SearchAnchor();
 	my $newpos = $ep->SearchNext(&Wx::wxSTC_FIND_REGEXP, '[{}()\[\]]');
 	$newpos++ if $ep->BraceMatch($newpos) > $newpos;
-	$newpos > -1 ? position($newpos) : position($pos);
+	$newpos++ if not $braceleft and $newpos == $ep->BraceMatch($pos);
+	$newpos > -1 ? position($newpos) : position($oldpos);
 }
 
-sub prev_related_brace{
+sub prev_related_brace {
 	my $ep  = _ep_ref();
 	my $pos = $ep->GetCurrentPos;
+	my $braceright = 1; # is brace right to caret
 	my $matchpos = $ep->BraceMatch(--$pos);
-	$matchpos = $ep->BraceMatch(++$pos) if $matchpos == -1;
+	$braceright--, $matchpos = $ep->BraceMatch(++$pos) if $matchpos == -1;
 	if ($matchpos == -1) { prev_brace() }
 	else {
-		if ($matchpos < $pos) { position($matchpos+1) }
+		if ($matchpos < $pos) { 
+			$braceright ? position($matchpos) : position($matchpos+1); 
+		}
 		else { # when there is no matching brace
 			my $open_char = chr $ep->GetCharAt($pos);
 			my $close_char = chr $ep->GetCharAt($matchpos);
@@ -123,14 +134,17 @@ sub prev_related_brace{
 	}
 }
 
-sub next_related_brace{
+sub next_related_brace {
 	my $ep  = _ep_ref();
 	my $pos = $ep->GetCurrentPos;
+	my $braceleft = 1; # is brace left to caret
 	my $matchpos = $ep->BraceMatch($pos);
-	$matchpos = $ep->BraceMatch(--$pos) if $matchpos == -1;
+	$braceleft--, $matchpos = $ep->BraceMatch(--$pos) if $matchpos == -1;
 	if ($matchpos == -1) { next_brace() }
 	else {
-		if ($matchpos > $pos) { position($matchpos) }
+		if ($matchpos > $pos) {
+			$braceleft ? position($matchpos+1) : position($matchpos); 
+		}
 		else { # when there is no matching brace
 			my $open_char = chr $ep->GetCharAt($matchpos);
 			my $close_char = chr $ep->GetCharAt($pos);
@@ -154,11 +168,13 @@ sub next_related_brace{
 }
 
 1;
-
+__END__
 =head1 NAME
 
 Kephra::App::Goto - caret jump functions
 
 =head1 DESCRIPTION
+
+
 
 =cut

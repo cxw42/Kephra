@@ -3,23 +3,28 @@ release notes of all Kephra testing   versions
 0.4.4 Acme {0.4.3.13}
  * acme like mouse control
    + paste (left+middle)
-   + cut (left+right)
+   + cut (left+right selected left to right)
+   + delete (left+right - selected right to left)
    + search (middle on slection) or goto last edit (if no text selected)
    + middle (insert slection) inspired by from emacs
+ * better basic editing
+   + toggle selection with ctrl+y
+   + select content items with ctrl+shift+y
+   + insert rectangular selections
+   + move line tabwise left and right with <ctrl>+<alt>+<left|right>
  * new tools: 
    + copy surrounding quoted string
    + insert last used perl var in that block
    + insert time and date
    ~ moved to tools menu: autoindention, braceindention, bracecompletion
  + bug and request tracker links in help menu
- + toggle selection with ctrl+y
- + select content with ctrl+shift+y
  + zoom in, out and back with <ctrl>+<shift>+<+>,<ctrl>+<shift>+<-> and <ctrl>+<shift>+<#>
  + works also in output panel
    + note slection (shift+f12)
    + copy with left click on selection 
    + search selection with middle click
- + copy selection in output panel with <enter>
+   + copy selection in output panel with <enter>
+ ~ brace nav is caret pos aware (jumps from inside to inside or outside to outside)
  ~ replace to nothing enabled again
  ? 7 new tests, 17 reactivated
  " added keyword default to perl lexer def 
