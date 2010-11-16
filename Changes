@@ -5,7 +5,10 @@ todo:
  ! update configs when update cpan installation 
  ! EOL problem in UTF files
  + select content
+
+0.4.3.20
  ~ move selection moves now wordwise when part of line selected
+ ' 2 doc typo in Kephra.pm
 
 0.4.3.19
  ~ move selection moves now only complete lines when selected none or several
@@ -55,7 +58,7 @@ todo:
  ! while brace navigation caret cant hidden in folded lines
 
 0.4.3.11
- + note slection works also in output panel
+ + note selection works also in output panel
  + copy selection in output panel with <enter>
  + left click on selection does copy in output panel too
  ~ leaving notepad with F12
@@ -63,7 +66,7 @@ todo:
  ~ # is written sharp in keymap to prevent quoting a la /#
  ] init commandline module
  ' keymap shows marker keybinding back to f2
- ! note slection really appends
+ ! note selection really appends
  ! fixed statusbar context menu
  ! fixed eol switch
  ! template menu updates again after saving active template file

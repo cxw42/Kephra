@@ -1,5 +1,5 @@
 package Kephra::Edit;
-our $VERSION = '0.41';
+our $VERSION = '0.42';
 
 use strict;
 use warnings;
@@ -83,6 +83,32 @@ sub _selection_left_to_right {
 	my $pos = $ep->GetCurrentPos;
 	return -1 if $start == $end;
 	return $start == $pos ? 0 : 1;
+}
+sub _nearest_grid_pos { # position in document from given line and column
+	my $line = shift;
+	my $col = shift;
+	my $ep = shift || _ep_ref();
+	return unless defined $col;
+
+	# first staight foreward attempt
+	my $lpos = $ep->PositionFromLine($line);
+	my $pos = $lpos + $col;
+	return $pos if $ep->GetColumn($pos) == $col
+	            and $ep->LineFromPosition($pos) == $line;
+
+	# if line too short take last pos of line 
+	my $endpos = $ep->GetLineEndPosition($line);
+	return $endpos if $ep->GetColumn($endpos) < $col;
+
+	# if tabs used calculate
+	my $ipos = $ep->GetLineIndentation($line);
+	my $icol = $ep->GetColumn($ipos);
+	return $ipos + $col - $icol if $icol <= $col;
+
+	# if between indenting tabs take neares
+	my $tabsize = $ep->GetTabWidth();
+	my $tabs = $col / $tabsize; 
+	return ($col % $tabsize < $tabsize / 2) ? $lpos + $tabs : $lpos + $tabs + 1;
 }
 sub can_paste   { _ep_ref()->CanPaste }
 sub can_copy    { Kephra::Document::Data::attr('text_selected') }
@@ -182,6 +208,7 @@ sub del_back_tab{
 #
 # Edit Selection
 #
+sub get_selection  { _ep_ref()->GetSelectedText() }
 sub move_target {
 	my $linedelta = shift;
 	return unless defined $linedelta;
@@ -193,34 +220,20 @@ sub move_target {
 	$ep->InsertText($targetstart+$linedelta, $targettext);
 	$ep->EndUndoAction;
 }
-sub move_selection {}
-sub get_selection  { _ep_ref()->GetSelectedText() }
-sub selection_move {
-	my ( $ep, $linedelta ) = @_;
-	my $text = $ep->GetSelectedText();
-
+sub move_selection {
+	my $linedelta = shift;
+	return unless defined $linedelta;
+	my $ep = shift || _ep_ref(); 
+	my ($selbegin, $selend) = $ep->GetSelection();
+	my $targettext = $ep->GetSelectedText();
 	$ep->BeginUndoAction;
-	$ep->ReplaceSelection("");
-	my $targetline = $ep->GetCurrentLine + $linedelta;
-	my $lastline   = $ep->LineFromPosition(
-		$ep->PositionFromLine( $ep->GetLineCount ) );
-	$targetline = 0         if ( $targetline < 0 );
-	$targetline = $lastline if ( $targetline > $lastline );
-	my ( $oldpos, $oldline ) = ( $ep->GetCurrentPos, $ep->GetCurrentLine );
-	my ( $posinline, $newpos)= ( $oldpos - $ep->PositionFromLine($oldline), 0 );
-
-	if ($ep->GetLineEndPosition($targetline) - $ep->PositionFromLine($targetline)
-		  < $posinline ) {
-		$newpos = $ep->GetLineEndPosition($targetline);
-	} else { $newpos = $ep->PositionFromLine($targetline) + $posinline }
-
-	$ep->SetCurrentPos($newpos);
-	$ep->InsertText( $newpos, $text );
-	$ep->SetSelection( $newpos, $newpos + length($text) );
+	$ep->ReplaceSelection('');
+	my $pos = $ep->GetCurrentPos;
+	$pos += $linedelta;
+	$ep->InsertText($pos, $targettext);
+	$ep->SetSelection($pos, $pos + $selend - $selbegin);
 	$ep->EndUndoAction;
-	&_let_caret_visible;
 }
-
 sub move_lines {
 	my $linedelta = shift;
 	return unless defined $linedelta;
@@ -265,48 +278,32 @@ sub move_lines {
 }
 
 sub selection_move_left {
-	my $ep = _ep_ref();
+	my $ep = shift || _ep_ref();
 	my ($selbegin, $selend) = $ep->GetSelection();
 	if ( $selbegin == $selend
 	or $ep->LineFromPosition( $selbegin ) != $ep->LineFromPosition( $selend ) ) {
 		Kephra::Edit::Format::dedent_tab();
-	} else {
-		if ( $selbegin > 0 ) {
-			my $text = $ep->GetSelectedText();
-			my $eoll = Kephra::Document::Data::attr('EOL_length');;
-			$ep->BeginUndoAction;
-			$ep->ReplaceSelection("");
-			my $pos = $ep->GetCurrentPos;
-			if ( $ep->GetColumn($pos) ) { $pos -= 1 }
-			else                        { $pos -= $eoll }
-			$ep->SetCurrentPos($pos);
-			$ep->InsertText( $pos, $text );
-			$ep->SetSelection( $pos, $pos + length($text) );
-			$ep->EndUndoAction;
-		}
+	} 
+	else {
+		my $newpos = $ep->WordStartPosition($selbegin, 1);
+		my $move_delta = $newpos == $selbegin ? -1 : $newpos - $selbegin;
+		move_selection( $move_delta );
 	}
 }
 
 sub selection_move_right{
 	my $ep = _ep_ref();
 	my ($selbegin, $selend) = $ep->GetSelection();
-	if ( $selbegin == $selend
-	or $ep->LineFromPosition( $selbegin ) != $ep->LineFromPosition( $selend ) ) {
+	my $endline = $ep->LineFromPosition( $selend );
+	if ( $selbegin == $selend or $ep->LineFromPosition( $selbegin ) != $endline ) {
 		Kephra::Edit::Format::indent_tab();
-	} else {
-		if ( $selend < $ep->GetTextLength ) {
-			my $text = $ep->GetSelectedText;
-			my $eoll = Kephra::Document::Data::attr('EOL_length');
-			$ep->BeginUndoAction;
-			$ep->ReplaceSelection("");
-			my $pos  = $ep->GetCurrentPos;
-			if ( $ep->GetColumn( $pos + $eoll ) ) { $pos += 1 }
-			else                                  { $pos += $eoll }
-			$ep->SetCurrentPos( $pos);
-			$ep->InsertText( $pos, $text);
-			$ep->SetSelection( $pos, $pos + length($text) );
-			$ep->EndUndoAction;
-		}
+	} 
+	else { 
+		my $newpos = $ep->WordEndPosition($selend, 1);
+		my $move_delta = $newpos == $selend ? 1 : $newpos - $selend;
+		move_selection( $move_delta ) 
+			unless $endline == $ep->GetLineCount() - 1
+			and $ep->GetLineEndPosition($endline) == $selend;
 	}
 }
 
@@ -317,7 +314,12 @@ sub selection_move_up   {
 	my $lastline = $ep->LineFromPosition( $selend );
 
 	if ( $selbegin != $selend and $firstline == $lastline) {
-	} 
+		my $line = $firstline;
+		my $col  = $ep->GetColumn( $selbegin );
+		return unless $line;
+		$line--;
+		move_selection( _nearest_grid_pos($line, $col) - $selbegin );
+	}
 	else { move_lines( -1, $ep ) }
 }
 
@@ -328,6 +330,11 @@ sub selection_move_down {
 	my $lastline = $ep->LineFromPosition( $selend );
 
 	if ($selbegin != $selend and $firstline == $lastline) {
+		my $line = $firstline;
+		my $col  = $ep->GetColumn( $selbegin );
+		return if $line+1 == $ep->GetLineCount();
+		$line++;
+		move_selection( _nearest_grid_pos($line, $col) - $selend );
 	}
 	else { move_lines( 1, $ep ) }
 }
@@ -340,6 +347,12 @@ sub selection_move_page_up   {
 	my $linedelta = $ep->LinesOnScreen;
 
 	if ($selbegin != $selend and $firstline == $lastline) {
+		my $line = $firstline;
+		my $col  = $ep->GetColumn( $selbegin );
+		return unless $line;
+		$line -= $linedelta;
+		$line = 0 if $line < 0;
+		move_selection( _nearest_grid_pos($line, $col) - $selbegin );
 	} 
 	else { move_lines( -$linedelta, $ep ) }
 }
@@ -352,6 +365,12 @@ sub selection_move_page_down {
 	my $linedelta = $ep->LinesOnScreen;
 
 	if ($selbegin != $selend and $firstline == $lastline) {
+		my $line = $firstline;
+		my $col  = $ep->GetColumn( $selbegin );
+		return if $line+1 == $ep->GetLineCount();
+		$line += $linedelta;
+		$line = $ep->GetLineCount()-1 if $line >= $ep->GetLineCount();
+		move_selection( _nearest_grid_pos($line, $col) - $selend );
 	} 
 	else { move_lines( $linedelta, $ep ) }
 }
@@ -404,7 +423,7 @@ sub del_line_right  {_ep_ref()->DelLineRight()}
 
 sub eval_newline_sub{}
 1;
-
+__END__
 =head1 NAME
 
 Kephra::Edit - basic edit menu calls and internals for editing

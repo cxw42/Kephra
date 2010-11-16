@@ -114,12 +114,15 @@ sub toggle_content { # selects text inside of < > [] {} () '' ""
 	my $startline    = $ep->LineFromPosition($start);
 	my $endline      = $ep->LineFromPosition($end);
 	my %delimiter = (  
-	'>' => '<', ']'=>'[', '}'=>'{', ')'=>'(',
-	'/' => '/', '\'' => '\'', '"' => '"'
-);
+		'>' => '<', ']'=>'[', '}'=>'{', ')'=>'(',
+		'/' => '/', '\'' => '\'', '"' => '"'
+	);
+	# quote styles: 6" 7' re styles 17, 18
 
-# quote styles: 6 7 re styles 17, 18
-#$ep->GetTextRange(
+	my $pos = $ep->GetCurrentPos;
+	my $style = $ep->GetStyleAt($pos);
+	print "$start, $end--\n";
+#$ep->GetTextRange();
 #$ep->PositionFromLine($line)  $ep->GetLineEndPosition($line);
 #$ep->BraceMatch($newpos)
 	#my $blockstart = get_block_start($start);
@@ -133,17 +136,16 @@ sub toggle_content { # selects text inside of < > [] {} () '' ""
 	#my $matchpos = $ep->BraceMatch(--$pos);
 
 	#print '',($ep->GetSelection),"\n";
-	print "--\n";
 }
 
-#ex rectangular selection
+
+# expand rectangular selection
 sub expand_rect_left{} 
 sub expand_rect_right{} 
 sub expand_rect_up{} 
 sub expand_rect_down{} 
 
 1;
-
 __END__
 
 =head1 NAME

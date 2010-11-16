@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 our $NAME        = __PACKAGE__;    # name of entire application
-our $VERSION     = '0.4.3.19';     # version of entire app
+our $VERSION     = '0.4.3.20';     # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $LOGLEVEL;                     # flag for benchmark loggings
@@ -310,7 +310,7 @@ depend on outer software like eclipse, even if it's sometimes useful.
 Perl's second slogan is "Keep easy things easy and make hard things possible".
 To me it reads "Don't scare away the beginners and grow as you go". And like
 Perl I want to handle the complex things with as least effort as possible.
-From the beginning Kephra was a useful programm and will continue so.
+From the beginning Kephra was a useful program and will continue so.
 
 
 =head2 Features
@@ -392,7 +392,7 @@ Enduser Release 0.5
 
 Enduser Release 0.6
 
-    This release will be about extending Kephra internal extentions like a 
+    This release will be about extending Kephra internal extensions like a 
     file brwoser, command line and tree lib as Plugin API.
 
 Enduser Release 0.7

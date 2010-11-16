@@ -22,7 +22,7 @@
 #     NAME => q[Kephra]
 #     NO_META => q[1]
 #     PREREQ_PM => { Wx=>q[0.94], Test::Exception=>q[0], YAML::Tiny=>q[0.31], ExtUtils::MakeMaker=>q[6.42], File::UserConfig=>q[0], Test::Script=>q[0.01], Test::NoWarnings=>q[0], Test::More=>q[0.47], POSIX=>q[0], Config::General=>q[2.4], Text::Wrap=>q[0], Wx::Perl::ProcessStream=>q[0.25], Cwd=>q[0], Encode::Guess=>q[0] }
-#     VERSION => q[0.4.3.19]
+#     VERSION => q[0.4.3.20]
 #     dist => { PREOP=>q[$(PERL) -I. "-MModule::Install::Admin" -e "dist_preop(q($(DISTVNAME)))"] }
 #     realclean => { FILES=>q[MYMETA.yml] }
 #     test => { TESTS=>q[t/*.t xt/*.t] }
@@ -64,11 +64,11 @@ DIRFILESEP = \\
 DFSEP = $(DIRFILESEP)
 NAME = Kephra
 NAME_SYM = Kephra
-VERSION = 0.4.3.19
+VERSION = 0.4.3.20
 VERSION_MACRO = VERSION
-VERSION_SYM = 0_4_3_19
+VERSION_SYM = 0_4_3_20
 DEFINE_VERSION = -D$(VERSION_MACRO)=\"$(VERSION)\"
-XS_VERSION = 0.4.3.19
+XS_VERSION = 0.4.3.20
 XS_VERSION_MACRO = XS_VERSION
 XS_DEFINE_VERSION = -D$(XS_VERSION_MACRO)=\"$(XS_VERSION)\"
 INST_ARCHLIB = blib\arch
@@ -467,7 +467,7 @@ RCS_LABEL = rcs -Nv$(VERSION_SYM): -q
 DIST_CP = best
 DIST_DEFAULT = tardist
 DISTNAME = Kephra
-DISTVNAME = Kephra-0.4.3.19
+DISTVNAME = Kephra-0.4.3.20
 
 
 # --- MakeMaker macro section:
@@ -991,7 +991,7 @@ testdb_static :: testdb_dynamic
 # --- MakeMaker ppd section:
 # Creates a PPD (Perl Package Description) for a binary distribution.
 ppd :
-	$(NOECHO) $(ECHO) "<SOFTPKG NAME=\"$(DISTNAME)\" VERSION=\"0.4.3.19\">" > $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) "<SOFTPKG NAME=\"$(DISTNAME)\" VERSION=\"0.4.3.20\">" > $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) "    <ABSTRACT>crossplatform, GUI-Texteditor along Perl alike Paradigms </ABSTRACT>" >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) "    <AUTHOR>Herbert Breunung</AUTHOR>" >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) "    <IMPLEMENTATION>" >> $(DISTNAME).ppd
