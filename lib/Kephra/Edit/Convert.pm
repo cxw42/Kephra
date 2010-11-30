@@ -135,11 +135,11 @@ sub chars2entities  { _tr('fore', @char2entity) }
 sub entities2chars  { _tr('back', @char2entity) }
 
 1;
+__END__
 
 =head1 NAME
 
-Kephra::App::Convert - 
+Kephra::App::Convert - character and word translation functions
 
 =head1 DESCRIPTION
 
-=cut

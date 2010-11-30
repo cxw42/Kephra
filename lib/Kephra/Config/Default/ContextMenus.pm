@@ -32,6 +32,8 @@ sub get {
 			'item replace-selection',
 			'item tool-note-selection',
 			undef,
+			'item edit-selection-comment-toggle-perl',
+			undef,
 			'item edit-selection-convert-uppercase',
 			'item edit-selection-convert-lowercase',
 		],

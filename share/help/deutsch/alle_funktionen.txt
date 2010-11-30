@@ -38,6 +38,9 @@ Inhalt:
  1 Im Text Navigieren - Caret Bewegen
    - Richtungstasten (Tasten mit den Pfeilen drauf) oder ein Links-Klick an die
      entsprechende Position mit der Maus bewegt den Caret (Textcursor)
+     -
+     -
+     
    - <Pos1> Taste bewegt den Caret zum ersten Zeichen der aktuellen Zeile, das 
      kein Leerzeichen ist. Drückt man nochmal <Pos1> steht der Caret am 
      Zeilenanfang. Die <Ende>-Taste bewegt Caret zum letzten Zeichen der Zeile.
@@ -53,7 +56,7 @@ Inhalt:
    - <Alt>+<Hoch> oder <Runter> blättert absatzweise (Absätze werden durch leere
      Zeilen getrennt)
    - Wenn man weiss in welche Zeile man möchte hilft auch <Strg>+<G>.
-   - Mit <Strg>+<+> oder <-> kann man den Text auch zoomen lassen
+   - Mit <Strg>+<Shift>+<+> oder <-> kann man den Text auch zoomen lassen
 
  2 Text Markieren
    - Hält man <Shift> oder linke Maus-Taste gedrückt wird Text markiert (ausgewählt)

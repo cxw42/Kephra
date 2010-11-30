@@ -25,6 +25,8 @@ textselection_contextmenu:
   - item replace-selection
   - item tool-note-selection
   -
+  - item edit-selection-comment-toggle-perl
+  -
   - item edit-selection-convert-uppercase
   - item edit-selection-convert-lowercase
 

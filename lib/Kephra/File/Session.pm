@@ -12,6 +12,7 @@ sub _saved_properties {[ qw(
 	cursor_pos edit_pos marked_lines folded_lines
 	file_path config_file
 )]}
+
 sub _forget_gone_files  {
 	my @true_files = ();
 	my $node       = shift;

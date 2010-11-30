@@ -4,7 +4,11 @@ todo:
    Config::Tree join & split keys
  ! update configs when update cpan installation 
  ! EOL problem in UTF files
- + select content
+
+0.4.3.21
+ + select content - just quotings
+ [ add toggle script comment to selected text context menu
+ ! repaired some POD's
 
 0.4.3.20
  ~ move selection moves now wordwise when part of line selected

@@ -54,7 +54,7 @@ Content:
    - <Alt>+<up> or <down> let the caret jump to the next or previous paragraph.
      Paragraphs are blocks of text, sparated by empty lines.
    - to jump directly to a specific row press <Ctrl>+<G> and enter the number
-   - press <Ctrl>+<+> and <Ctrl>+<-> to zoom your source/text
+   - press <Ctrl>++<Shift><+> and <Ctrl>+<-> to zoom your source/text
 
  2 Selecting text
    - Holding <Shift> or the left mouse button makes it possible to select text by

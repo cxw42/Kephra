@@ -187,17 +187,17 @@ sub add_script    { add_block   ('#') }
 sub sub_script    { remove_block('#') }
 sub toggle_script { toggle_block('#') }
 sub format_script { format_block('#') }
-sub add_xml       { add_stream   ( '<!--', '-->' ) }
 sub sub_xml       { remove_stream( '<!--', '-->' ) }
+sub add_xml       { add_stream   ( '<!--', '-->' ) }
 sub add_c         { add_stream   ( '/*', '*/' ) }
 sub sub_c         { remove_stream( '/*', '*/' ) }
 
 1;
-
 __END__
+
 =head1 NAME
 
-Kephra::App::Comment - 
+Kephra::App::Comment - add and remove comments in your code text
 
 =head1 DESCRIPTION
 

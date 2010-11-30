@@ -68,8 +68,10 @@ sub disconnect_widget{
 
 =head1 NAME
 
-Kephra::App::ContextMenu - 
+Kephra::App::ContextMenu - connect menus to widgets
 
 =head1 DESCRIPTION
+
+
 
 =cut

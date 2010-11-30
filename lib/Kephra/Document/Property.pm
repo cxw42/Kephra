@@ -218,10 +218,22 @@ __END__
 
 =head1 NAME
 
-Kephra::Document::Property - 
+Kephra::Document::Property - external API for document handling
 
 =head1 DESCRIPTION
 
-change doc data and eval it.
+=over 4
 
-=cut
+=item syntaxmode
+
+=item codepage
+
+=item readonly
+
+=item tab size and usage
+
+=item end of line marker
+
+=back
+
+

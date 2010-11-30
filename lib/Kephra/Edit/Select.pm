@@ -110,18 +110,28 @@ sub toggle_simple { # selects word line block or nothing
 
 sub toggle_content { # selects text inside of < > [] {} () '' ""
 	my $ep = _ep_ref( shift );
+	my $min = my $max = my $pos = $ep->GetCurrentPos;
 	my ($start, $end)= $ep->GetSelection;
 	my $startline    = $ep->LineFromPosition($start);
 	my $endline      = $ep->LineFromPosition($end);
-	my %delimiter = (  
-		'>' => '<', ']'=>'[', '}'=>'{', ')'=>'(',
-		'/' => '/', '\'' => '\'', '"' => '"'
-	);
-	# quote styles: 6" 7' re styles 17, 18
+	#my %delimiter = (  
+		#'>' => '<', ']'=>'[', '}'=>'{', ')'=>'(',
+		#'/' => '/', '\'' => '\'', '"' => '"'
+	#);
 
-	my $pos = $ep->GetCurrentPos;
+
 	my $style = $ep->GetStyleAt($pos);
-	print "$start, $end--\n";
+	# select quotetation, styles: 6" 7' re styles 17, 18
+	if ($style == 6 or $style == 7){
+		$min-- while $ep->GetStyleAt($min-1) == $style;
+		$max++ while $ep->GetStyleAt($max+1) == $style;
+
+		unless ($start == $min and $end-1 == $max){
+			if ($start-1 == $min and $end == $max) {$ep->SetSelection($min, $max+1)} 
+			else                                   {$ep->SetSelection($min+1, $max)}
+		}
+	}
+	#print "$start, $end--\n";
 #$ep->GetTextRange();
 #$ep->PositionFromLine($line)  $ep->GetLineEndPosition($line);
 #$ep->BraceMatch($newpos)
@@ -167,5 +177,3 @@ Kephra::Edit::Select - calls to select different text parts
 =item document
 
 =back
-
-=cut

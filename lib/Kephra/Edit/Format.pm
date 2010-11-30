@@ -236,11 +236,10 @@ sub linebreak_window {
 }
 
 1;
+__END__
 
 =head1 NAME
 
-Kephra::App::Format - 
+Kephra::App::Format - functions that play with indention and length of lines
 
 =head1 DESCRIPTION
-
-=cut
