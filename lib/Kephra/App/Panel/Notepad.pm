@@ -173,11 +173,3 @@ sub save_size {
 
 
 1;
-
-=head1 NAME
-
-Kephra::App::Panel::Notepad - notepad panel
-
-=head1 DESCRIPTION
-
-=cut

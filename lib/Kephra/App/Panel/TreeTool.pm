@@ -1,4 +1,4 @@
-package Kephra::App::Panel::Library;
+package Kephra::App::Panel::TreeTool;
 use strict;
 use warnings;
 

@@ -197,10 +197,3 @@ sub raw_exit { Wx::Window::Destroy(shift) }
 
 1;
 
-=head1 NAME
-
-Kephra::App - main GUI class derived from Wx::App
-
-=head1 DESCRIPTION
-
-=cut

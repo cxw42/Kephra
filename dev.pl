@@ -1,8 +1,12 @@
 #!/usr/bin/perl 
+#
+# testing starter for development purposes
+# starter for regular users is in bin/kephra
+#
 use strict;
 use warnings;
 
-BEGIN { 
+BEGIN {
     unshift @INC, 'lib';
     #chdir 'base';
 }

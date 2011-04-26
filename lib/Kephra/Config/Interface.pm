@@ -16,7 +16,7 @@ sub load {
 	my $use_cache = _config()->{cache}{use}; # config allow to use the cache
 	my $load_cache = 0;                      # cache is successful loaded
 	my (%file,%old_index,%new_index);
-	if ($use_cache) {
+	if ($use_cache and 0) { # supend using cache
 		my $read = \&Kephra::Config::File::load;
 		my $path = \&Kephra::Config::filepath;
 		my $get_age = \&Kephra::File::IO::get_age;

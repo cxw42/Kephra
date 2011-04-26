@@ -5,6 +5,19 @@ todo:
  ! update configs when update cpan installation 
  ! EOL problem in UTF files
 
+0.4.3.24
+ ~ see all file in file dialogs even under linux and mac
+ [ fixing graphics of search dialog
+
+0.4.3.23
+ ~ suspend interface caching due coding problems in cache files
+ " ignore backup localisation files while creating l18n menus
+
+0.4.3.22
+ + added spanish localisation (thanks to enriquee nell)
+ [ less clutter in menu labels
+ / moved dev to linux
+
 0.4.3.21
  + select content - just quotings
  [ add toggle script comment to selected text context menu

@@ -8,6 +8,7 @@ doc/interna/sketch.txt
 doc/patches/current-fixes.txt
 doc/patches/outline_parser.pl
 doc/patches/print-draft.pl
+doc/patches/xref.pl
 doc/Roadmap
 doc/StableReleases
 doc/TestingReleases
@@ -34,9 +35,9 @@ lib/Kephra/App/MainToolBar.pm
 lib/Kephra/App/MenuBar.pm
 lib/Kephra/App/Panel.pm
 lib/Kephra/App/Panel/CommandLine.pm
-lib/Kephra/App/Panel/Library.pm
 lib/Kephra/App/Panel/Notepad.pm
 lib/Kephra/App/Panel/Output.pm
+lib/Kephra/App/Panel/TreeTool.pm
 lib/Kephra/App/SearchBar.pm
 lib/Kephra/App/StatusBar.pm
 lib/Kephra/App/TabBar.pm
@@ -237,6 +238,7 @@ share/config/interface/mainmenu.yml
 share/config/localisation/cesky.conf
 share/config/localisation/deutsch.conf
 share/config/localisation/english.conf
+share/config/localisation/espanol.conf
 share/config/localisation/norsk.conf
 share/config/localisation/romana.conf
 share/config/macro/test.macro

@@ -22,7 +22,7 @@
 #     NAME => q[Kephra]
 #     NO_META => q[1]
 #     PREREQ_PM => { Wx=>q[0.94], Test::Exception=>q[0], YAML::Tiny=>q[0.31], ExtUtils::MakeMaker=>q[6.42], File::UserConfig=>q[0], Test::Script=>q[0.01], Test::NoWarnings=>q[0], Test::More=>q[0.47], POSIX=>q[0], Config::General=>q[2.4], Text::Wrap=>q[0], Wx::Perl::ProcessStream=>q[0.25], Cwd=>q[0], Encode::Guess=>q[0] }
-#     VERSION => q[0.4.3.21]
+#     VERSION => q[0.4.3.24]
 #     dist => { PREOP=>q[$(PERL) -I. "-MModule::Install::Admin" -e "dist_preop(q($(DISTVNAME)))"] }
 #     realclean => { FILES=>q[MYMETA.yml] }
 #     test => { TESTS=>q[t/*.t xt/*.t] }
@@ -64,11 +64,11 @@ DIRFILESEP = \\
 DFSEP = $(DIRFILESEP)
 NAME = Kephra
 NAME_SYM = Kephra
-VERSION = 0.4.3.21
+VERSION = 0.4.3.24
 VERSION_MACRO = VERSION
-VERSION_SYM = 0_4_3_21
+VERSION_SYM = 0_4_3_24
 DEFINE_VERSION = -D$(VERSION_MACRO)=\"$(VERSION)\"
-XS_VERSION = 0.4.3.21
+XS_VERSION = 0.4.3.24
 XS_VERSION_MACRO = XS_VERSION
 XS_DEFINE_VERSION = -D$(XS_VERSION_MACRO)=\"$(XS_VERSION)\"
 INST_ARCHLIB = blib\arch
@@ -203,9 +203,9 @@ TO_INST_PM = dev.pl \
 	lib/Kephra/App/MenuBar.pm \
 	lib/Kephra/App/Panel.pm \
 	lib/Kephra/App/Panel/CommandLine.pm \
-	lib/Kephra/App/Panel/Library.pm \
 	lib/Kephra/App/Panel/Notepad.pm \
 	lib/Kephra/App/Panel/Output.pm \
+	lib/Kephra/App/Panel/TreeTool.pm \
 	lib/Kephra/App/SearchBar.pm \
 	lib/Kephra/App/StatusBar.pm \
 	lib/Kephra/App/TabBar.pm \
@@ -345,8 +345,6 @@ PM_TO_BLIB = lib/Kephra/Config/Default/GlobalSettings.pm \
 	blib\lib\Kephra\App\Panel.pm \
 	lib/Kephra.pm \
 	blib\lib\Kephra.pm \
-	lib/Kephra/App/Panel/Library.pm \
-	blib\lib\Kephra\App\Panel\Library.pm \
 	lib/Kephra/File/IO.pm \
 	blib\lib\Kephra\File\IO.pm \
 	lib/Kephra/Dialog/Search.pm \
@@ -363,6 +361,8 @@ PM_TO_BLIB = lib/Kephra/Config/Default/GlobalSettings.pm \
 	blib\lib\Kephra\Help.pm \
 	lib/Kephra/Config/Default/MainMenu.pm \
 	blib\lib\Kephra\Config\Default\MainMenu.pm \
+	lib/Kephra/App/Panel/TreeTool.pm \
+	blib\lib\Kephra\App\Panel\TreeTool.pm \
 	lib/Kephra/App/StatusBar.pm \
 	blib\lib\Kephra\App\StatusBar.pm \
 	lib/Kephra/Config/Localisation.pm \
@@ -467,7 +467,7 @@ RCS_LABEL = rcs -Nv$(VERSION_SYM): -q
 DIST_CP = best
 DIST_DEFAULT = tardist
 DISTNAME = Kephra
-DISTVNAME = Kephra-0.4.3.21
+DISTVNAME = Kephra-0.4.3.24
 
 
 # --- MakeMaker macro section:
@@ -991,7 +991,7 @@ testdb_static :: testdb_dynamic
 # --- MakeMaker ppd section:
 # Creates a PPD (Perl Package Description) for a binary distribution.
 ppd :
-	$(NOECHO) $(ECHO) "<SOFTPKG NAME=\"$(DISTNAME)\" VERSION=\"0.4.3.21\">" > $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) "<SOFTPKG NAME=\"$(DISTNAME)\" VERSION=\"0.4.3.24\">" > $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) "    <ABSTRACT>crossplatform, GUI-Texteditor along Perl alike Paradigms </ABSTRACT>" >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) "    <AUTHOR>Herbert Breunung</AUTHOR>" >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) "    <IMPLEMENTATION>" >> $(DISTNAME).ppd
@@ -1059,7 +1059,6 @@ pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e "pm_to_blib({{@ARGV}, '$(INST_LIB)\auto', q[$(PM_FILTER)], '$(PERM_DIR)')" -- \
 	  lib/Kephra/App/Panel.pm blib\lib\Kephra\App\Panel.pm \
 	  lib/Kephra.pm blib\lib\Kephra.pm \
-	  lib/Kephra/App/Panel/Library.pm blib\lib\Kephra\App\Panel\Library.pm \
 	  lib/Kephra/File/IO.pm blib\lib\Kephra\File\IO.pm \
 	  lib/Kephra/Dialog/Search.pm blib\lib\Kephra\Dialog\Search.pm \
 	  lib/Kephra/Plugin/Demo.pm blib\lib\Kephra\Plugin\Demo.pm \
@@ -1068,6 +1067,7 @@ pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	  lib/Kephra/Config/Default/ContextMenus.pm blib\lib\Kephra\Config\Default\ContextMenus.pm \
 	  lib/Kephra/Help.pm blib\lib\Kephra\Help.pm \
 	  lib/Kephra/Config/Default/MainMenu.pm blib\lib\Kephra\Config\Default\MainMenu.pm \
+	  lib/Kephra/App/Panel/TreeTool.pm blib\lib\Kephra\App\Panel\TreeTool.pm \
 	  lib/Kephra/App/StatusBar.pm blib\lib\Kephra\App\StatusBar.pm \
 	  lib/Kephra/Config/Localisation.pm blib\lib\Kephra\Config\Localisation.pm \
 	  lib/Kephra/Edit/Marker.pm blib\lib\Kephra\Edit\Marker.pm \
@@ -1292,6 +1292,7 @@ config ::
 	$(NOECHO) $(CP) "share\config\localisation\cesky.conf" "$(INST_LIB)\auto\share\dist\$(DISTNAME)\config\localisation\cesky.conf"
 	$(NOECHO) $(CP) "share\config\localisation\deutsch.conf" "$(INST_LIB)\auto\share\dist\$(DISTNAME)\config\localisation\deutsch.conf"
 	$(NOECHO) $(CP) "share\config\localisation\english.conf" "$(INST_LIB)\auto\share\dist\$(DISTNAME)\config\localisation\english.conf"
+	$(NOECHO) $(CP) "share\config\localisation\espanol.conf" "$(INST_LIB)\auto\share\dist\$(DISTNAME)\config\localisation\espanol.conf"
 	$(NOECHO) $(CP) "share\config\localisation\norsk.conf" "$(INST_LIB)\auto\share\dist\$(DISTNAME)\config\localisation\norsk.conf"
 	$(NOECHO) $(CP) "share\config\localisation\romana.conf" "$(INST_LIB)\auto\share\dist\$(DISTNAME)\config\localisation\romana.conf"
 	$(NOECHO) $(MKPATH) "$(INST_LIB)\auto\share\dist\$(DISTNAME)\config\macro"

@@ -114,11 +114,6 @@ sub toggle_content { # selects text inside of < > [] {} () '' ""
 	my ($start, $end)= $ep->GetSelection;
 	my $startline    = $ep->LineFromPosition($start);
 	my $endline      = $ep->LineFromPosition($end);
-	#my %delimiter = (  
-		#'>' => '<', ']'=>'[', '}'=>'{', ')'=>'(',
-		#'/' => '/', '\'' => '\'', '"' => '"'
-	#);
-
 
 	my $style = $ep->GetStyleAt($pos);
 	# select quotetation, styles: 6" 7' re styles 17, 18
@@ -126,11 +121,16 @@ sub toggle_content { # selects text inside of < > [] {} () '' ""
 		$min-- while $ep->GetStyleAt($min-1) == $style;
 		$max++ while $ep->GetStyleAt($max+1) == $style;
 
-		unless ($start == $min and $end-1 == $max){
-			if ($start-1 == $min and $end == $max) {$ep->SetSelection($min, $max+1)} 
-			else                                   {$ep->SetSelection($min+1, $max)}
+		unless ($start==$min and $end-1==$max) {
+			if ($start-1==$min and $end==$max) {$ep->SetSelection($min, $max+1)}
+			else                               {$ep->SetSelection($min+1, $max)}
+			return;
 		}
 	}
+	#my %delimiter = (  
+		#'>' => '<', ']'=>'[', '}'=>'{', ')'=>'(',
+		#'/' => '/', '\'' => '\'', '"' => '"'
+	#);
 	#print "$start, $end--\n";
 #$ep->GetTextRange();
 #$ep->PositionFromLine($line)  $ep->GetLineEndPosition($line);

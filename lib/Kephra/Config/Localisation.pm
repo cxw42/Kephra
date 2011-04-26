@@ -125,6 +125,8 @@ sub refresh_index {
 			$filedata{$1} = $2;
 		}
 		$filedata{'age'} = $age;
+		# filter out local backup files of l18n files  - not save for any file ending
+		return if $filedata{language}.'.conf' ne $file_name;
 		$new_index{$file_name} = \%filedata
 			if defined $filedata{'purpose'}
 			and $filedata{'purpose'} eq 'global localisation'
@@ -149,18 +151,3 @@ sub set_documentation_lang {
 
 1;
 
-__END__
-
-=head1 NAME
-
-Kephra::Config::Localisation - L18n setting handling
-
-=head1 DESCRIPTION
-
-This module loads the localized strings and maintaines a table with meta
-informations about all supported languages.
-
-In the "config/localisation" directory are all the strings and in case they
-cant be found, the english backup comes from 
-L<Kephra::Config::Default::Localisation> via the sub localisation() from
-M<Kephra::Config::Default>.

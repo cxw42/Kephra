@@ -137,7 +137,10 @@ sub build_fileendings2syntaxstyle_map {
 sub build_fileendings_filterstring {
 	my $l18n  = Kephra::Config::Localisation::strings()->{dialog};
 	my $files = $l18n->{file}{files};
-	my $all   = $l18n->{general}{all} . " $files (*.*)|*.*";
+	my $all   = $l18n->{general}{all} . " $files ";
+	$all .= $^O =~ /win/i
+		? "(*.*)|*.*"
+		: "(*)|*";
 	my $tfile = $Kephra::temp{file};
 	$tfile->{filterstring}{all} = $all;
 	my $conf = Kephra::API::settings()->{file};

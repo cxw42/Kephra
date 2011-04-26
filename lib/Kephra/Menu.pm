@@ -1,5 +1,5 @@
 package Kephra::Menu;
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 
 use strict;
 use warnings;
@@ -229,7 +229,7 @@ sub assemble_data_from_def {
 				for ('call','enable','state','label','help','icon'){
 					$item{$_} = $cmd_data->{$_} if $cmd_data->{$_};
 				}
-				$item{label} .= "\t  '" . $cmd_data->{key} . "'" if $cmd_data->{key};
+				$item{label} .= "\t  " . $cmd_data->{key} . "`" if $cmd_data->{key};
 			}
 		}
 		push @mds, \%item;
@@ -333,12 +333,3 @@ sub destroy {
 
 1;
 
-=head1 NAME 
-
-Kephra::App::Menu - Menu creation and storage
-
-=head1 DESCRIPTION
-
-Module Kephra::App::Menu - Menu handling for the main app
-
-=cut

@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 our $NAME        = __PACKAGE__;    # name of entire application
-our $VERSION     = '0.4.3.21';     # version of entire app
+our $VERSION     = '0.4.3.24';     # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $LOGLEVEL;                     # flag for benchmark loggings
@@ -50,7 +50,7 @@ sub load_modules { # -NI = not implemented or used, -DEP = depreciated
 	require Kephra::App::MainToolBar;      # toolbar below the main menu
 	require Kephra::App::MenuBar;          # main menu
 	require Kephra::App::Panel::CommandLine;#
-	require Kephra::App::Panel::Library;   #
+	require Kephra::App::Panel::TreeTool;  #
 	require Kephra::App::Panel::Notepad;   #
 	require Kephra::App::Panel::Output;    #
 	require Kephra::App::SearchBar;        # Toolbar for searching and navigation
@@ -447,7 +447,7 @@ L<http://kephra.sourceforge.net>
 
 =item * Adam Kennedy E<lt>adamk@cpan.orgE<gt> (cpanification)
 
-=item * Renee Bäcker E<lt>module@renee-baecker.deE<gt> (color picker)
+=item * Renee Bï¿½cker E<lt>module@renee-baecker.deE<gt> (color picker)
 
 =item * many more since we study other editors a lot and also the padre sources
 

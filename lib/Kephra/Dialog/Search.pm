@@ -88,11 +88,11 @@ sub ready   { # display find and replace dialog
 		$d->{find_label}   = Wx::StaticText->new($d, -1, $label->{search_for} );
 		$d->{replace_label}= Wx::StaticText->new($d, -1, $label->{replace_with} );
 		$d->{find_input} = Wx::ComboBox->new
-			($d, -1,'', [-1,-1], [324,22], [@find_history], &Wx::wxTE_PROCESS_ENTER );
+			($d, -1,'', [-1,-1], [334,-1], [@find_history], &Wx::wxTE_PROCESS_ENTER );
 		$d->{find_input}->SetDropTarget
 			( Kephra::Edit::Search::InputTarget->new($d->{find_input}, 'find'));
 		$d->{replace_input} = Wx::ComboBox->new
-			($d, -1, '', [-1,-1], [324,22], [@replace_history], &Wx::wxTE_PROCESS_ENTER);
+			($d, -1, '', [-1,-1], [334,-1], [@replace_history], &Wx::wxTE_PROCESS_ENTER);
 		$d->{replace_input}->SetDropTarget
 			( Kephra::Edit::Search::InputTarget->new($d->{replace_input}, 'replace'));
 		$d->{sep_line} = Wx::StaticLine->new(
@@ -268,10 +268,11 @@ sub ready   { # display find and replace dialog
 			$d->{document_radio}->SetValue(1);
 		}
 
-		# asembling
+		# assembling
+		my $aborder = 15;
 		my $option_sizer = Wx::BoxSizer->new(&Wx::wxVERTICAL);
 		$option_sizer->Add( $d->{inc_box},   0, &Wx::wxTOP,  0 );
-		$option_sizer->Add( $d->{case_box},  0, &Wx::wxTOP, 15 );
+		$option_sizer->Add( $d->{case_box},  0, &Wx::wxTOP, $aborder );
 		$option_sizer->Add( $d->{begin_box}, 0, &Wx::wxTOP,  5 );
 		$option_sizer->Add( $d->{word_box},  0, &Wx::wxTOP,  5 );
 		$option_sizer->Add( $d->{regex_box}, 0, &Wx::wxTOP,  5 );
@@ -285,14 +286,14 @@ sub ready   { # display find and replace dialog
 		$range_sizer->Add( $rbz, 0, &Wx::wxGROW | &Wx::wxTOP, 10 );
 
 		my $pad_grid = Wx::FlexGridSizer->new( 4, 2, 0 , 1 );
-		$pad_grid->Add( $d->{replace_back}, 0, &Wx::wxBOTTOM, 5);
-		$pad_grid->Add( $d->{replace_fore}, 0, &Wx::wxBOTTOM, 5);
+		$pad_grid->Add( $d->{replace_back}, 0, &Wx::wxTOP|&Wx::wxBOTTOM, 10);
+		$pad_grid->Add( $d->{replace_fore}, 0, &Wx::wxTOP|&Wx::wxBOTTOM, 10);
 		$pad_grid->Add( $d->{backward_button}, 0, ,0);
 		$pad_grid->Add( $d->{foreward_button}, 0, ,0);
 		$pad_grid->Add( $d->{fast_back_button},0, ,0);
 		$pad_grid->Add( $d->{fast_fore_button},0, ,0);
 		$pad_grid->Add( $d->{first_button},    0, ,0);
-		$pad_grid->Add( $d->{last_button},     0, ,0);
+		$pad_grid->Add( $d->{last_button},     0, &Wx::wxRIGHT, $aborder);
 
 		my $pads_sizer = Wx::BoxSizer->new(&Wx::wxHORIZONTAL);
 		$pads_sizer->Add( $option_sizer,0,&Wx::wxALIGN_LEFT  ,0);
@@ -300,7 +301,7 @@ sub ready   { # display find and replace dialog
 		$pads_sizer->Add( $pad_grid    ,0,&Wx::wxALIGN_RIGHT ,0);
 
 		my $button_sizer = Wx::BoxSizer->new(&Wx::wxHORIZONTAL);
-		$button_sizer->Add( $d->{search_button},  0, &Wx::wxLEFT, 15 );
+		$button_sizer->Add( $d->{search_button},  0, &Wx::wxLEFT, $aborder );
 		$button_sizer->Add( $d->{replace_button}, 0, &Wx::wxLEFT, 10 );
 		$button_sizer->Add( $d->{confirm_button}, 0, &Wx::wxLEFT, 10 );
 		$button_sizer->AddStretchSpacer;
@@ -308,16 +309,16 @@ sub ready   { # display find and replace dialog
 
 		my $b_grid = Wx::FlexGridSizer->new( 3, 2, 10, 0 );
 		$b_grid->Add($d->{find_label}, 0, &Wx::wxLEFT | &Wx::wxRIGHT | &Wx::wxALIGN_CENTER_VERTICAL | &Wx::wxALIGN_RIGHT, 10);
-		$b_grid->Add($d->{find_input}, 0, &Wx::wxTOP, 0);
+		$b_grid->Add($d->{find_input}, 1, &Wx::wxRIGHT, $aborder);
 		$b_grid->Add($d->{replace_label}, 0, &Wx::wxLEFT | &Wx::wxRIGHT | &Wx::wxALIGN_CENTER_VERTICAL | &Wx::wxALIGN_RIGHT, 10);
-		$b_grid->Add($d->{replace_input}, 0, &Wx::wxTOP, 0);
+		$b_grid->Add($d->{replace_input}, 1, &Wx::wxRIGHT, $aborder);
 		$b_grid->AddSpacer(5);
 		$b_grid->Add($pads_sizer, 1, &Wx::wxTOP|&Wx::wxGROW, 5);
 
 		my $d_sizer = Wx::BoxSizer->new(&Wx::wxVERTICAL);
-		$d_sizer->Add($b_grid,          1, &Wx::wxTOP                            , 15);
+		$d_sizer->Add($b_grid,          1, &Wx::wxTOP                            , $aborder);
 		$d_sizer->Add($d->{sep_line},   0, &Wx::wxTOP | &Wx::wxALIGN_CENTER_HORIZONTAL | &Wx::wxGROW,  8);
-		$d_sizer->Add($button_sizer,    0, &Wx::wxTOP | &Wx::wxBOTTOM | &Wx::wxGROW        ,  9);
+		$d_sizer->Add($button_sizer,    0, &Wx::wxTOP | &Wx::wxBOTTOM | &Wx::wxGROW ,  9);
 
 		$d->SetSizer($d_sizer);
 		$d->Fit();
