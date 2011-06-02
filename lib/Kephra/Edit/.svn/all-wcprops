@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svnroot/kephra/!svn/ver/724/dev/base/lib/Kephra/Edit
+END
+Search.pm
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/kephra/!svn/ver/606/dev/base/lib/Kephra/Edit/Search.pm
+END
+Format.pm
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/kephra/!svn/ver/721/dev/base/lib/Kephra/Edit/Format.pm
+END
+Goto.pm
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/kephra/!svn/ver/698/dev/base/lib/Kephra/Edit/Goto.pm
+END
+Select.pm
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/kephra/!svn/ver/724/dev/base/lib/Kephra/Edit/Select.pm
+END
+Convert.pm
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svnroot/kephra/!svn/ver/721/dev/base/lib/Kephra/Edit/Convert.pm
+END
+Special.pm
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svnroot/kephra/!svn/ver/643/dev/base/lib/Kephra/Edit/Special.pm
+END
+History.pm
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svnroot/kephra/!svn/ver/466/dev/base/lib/Kephra/Edit/History.pm
+END
+Marker.pm
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/kephra/!svn/ver/704/dev/base/lib/Kephra/Edit/Marker.pm
+END
+Comment.pm
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svnroot/kephra/!svn/ver/721/dev/base/lib/Kephra/Edit/Comment.pm
+END

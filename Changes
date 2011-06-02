@@ -5,9 +5,12 @@ todo:
  ! update configs when update cpan installation 
  ! EOL problem in UTF files
 
+0.4.3.25
+
+
 0.4.3.24
  ~ see all file in file dialogs even under linux and mac
- [ fixing graphics of search dialog
+ [ fixing layout of search dialog
 
 0.4.3.23
  ~ suspend interface caching due coding problems in cache files

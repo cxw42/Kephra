@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svnroot/kephra/!svn/ver/735/dev/base/lib/Kephra/Dialog
+END
+Config.pm
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svnroot/kephra/!svn/ver/467/dev/base/lib/Kephra/Dialog/Config.pm
+END
+Search.pm
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svnroot/kephra/!svn/ver/735/dev/base/lib/Kephra/Dialog/Search.pm
+END
+Keymap.pm
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svnroot/kephra/!svn/ver/467/dev/base/lib/Kephra/Dialog/Keymap.pm
+END
+Notify.pm
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svnroot/kephra/!svn/ver/467/dev/base/lib/Kephra/Dialog/Notify.pm
+END
+Exit.pm
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/kephra/!svn/ver/600/dev/base/lib/Kephra/Dialog/Exit.pm
+END
+Info.pm
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/kephra/!svn/ver/535/dev/base/lib/Kephra/Dialog/Info.pm
+END
+Color.pm
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svnroot/kephra/!svn/ver/625/dev/base/lib/Kephra/Dialog/Color.pm
+END

@@ -1,0 +1,263 @@
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svnroot/kephra/!svn/ver/610/dev/base/share/config/syntaxhighlighter
+END
+html.pm
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/html.pm
+END
+cs.pm
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/cs.pm
+END
+diff.pm
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/kephra/!svn/ver/58/dev/base/share/config/syntaxhighlighter/diff.pm
+END
+fortran.pm
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/fortran.pm
+END
+ave.pm
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/kephra/!svn/ver/58/dev/base/share/config/syntaxhighlighter/ave.pm
+END
+nsis.pm
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/nsis.pm
+END
+js.pm
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/js.pm
+END
+asm.pm
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/asm.pm
+END
+batch.pm
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/kephra/!svn/ver/58/dev/base/share/config/syntaxhighlighter/batch.pm
+END
+python.pm
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/python.pm
+END
+ruby.pm
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/ruby.pm
+END
+ps.pm
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/ps.pm
+END
+tcl.pm
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/tcl.pm
+END
+context.pm
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/context.pm
+END
+conf.pm
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/conf.pm
+END
+php.pm
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/kephra/!svn/ver/39/dev/base/share/config/syntaxhighlighter/php.pm
+END
+css.pm
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/css.pm
+END
+eiffel.pm
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/eiffel.pm
+END
+matlab.pm
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/kephra/!svn/ver/58/dev/base/share/config/syntaxhighlighter/matlab.pm
+END
+tex.pm
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/tex.pm
+END
+xml.pm
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/kephra/!svn/ver/39/dev/base/share/config/syntaxhighlighter/xml.pm
+END
+perl.pm
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/kephra/!svn/ver/610/dev/base/share/config/syntaxhighlighter/perl.pm
+END
+yaml.pm
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/yaml.pm
+END
+scheme.pm
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/kephra/!svn/ver/58/dev/base/share/config/syntaxhighlighter/scheme.pm
+END
+lisp.pm
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/lisp.pm
+END
+vb.pm
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/vb.pm
+END
+idl.pm
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/idl.pm
+END
+sh.pm
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/sh.pm
+END
+make.pm
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/kephra/!svn/ver/58/dev/base/share/config/syntaxhighlighter/make.pm
+END
+latex.pm
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/latex.pm
+END
+lua.pm
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/lua.pm
+END
+java.pm
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/java.pm
+END
+cpp.pm
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svnroot/kephra/!svn/ver/9/dev/base/share/config/syntaxhighlighter/cpp.pm
+END
+forth.pm
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/forth.pm
+END
+property.pm
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/kephra/!svn/ver/58/dev/base/share/config/syntaxhighlighter/property.pm
+END
+ada.pm
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/kephra/!svn/ver/58/dev/base/share/config/syntaxhighlighter/ada.pm
+END
+cs2.pm
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/cs2.pm
+END
+err.pm
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/kephra/!svn/ver/58/dev/base/share/config/syntaxhighlighter/err.pm
+END
+vbs.pm
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/vbs.pm
+END
+sql.pm
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/sql.pm
+END
+baan.pm
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/kephra/!svn/ver/58/dev/base/share/config/syntaxhighlighter/baan.pm
+END
+pascal.pm
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/pascal.pm
+END
+as.pm
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svnroot/kephra/!svn/ver/1/dev/base/share/config/syntaxhighlighter/as.pm
+END

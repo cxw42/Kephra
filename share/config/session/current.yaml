@@ -1,0 +1,146 @@
+---
+current_nr: 10
+document:
+  -
+    EOL: auto
+    codepage: 8bit
+    config_file: ~
+    cursor_pos: 4062
+    edit_pos: '-1'
+    file_path: '/usr/local/lib/perl5/site_perl/5.12.2/Wx/DemoModules/wxDND.pm'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: perl
+    tab_size: 4
+    tab_use: 0
+  -
+    EOL: auto
+    codepage: 8bit
+    config_file: ~
+    cursor_pos: 9
+    edit_pos: 8
+    file_path: '/home/lichtkind/txt/artikel/$foo/tipps1.txt'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: none
+    tab_size: 4
+    tab_use: auto
+  -
+    EOL: auto
+    codepage: 8bit
+    config_file: ~
+    cursor_pos: 263
+    edit_pos: 262
+    file_path: '/home/lichtkind/code/perl/project/editor/dev/base/Changes'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: none
+    tab_size: 4
+    tab_use: 0
+  -
+    EOL: auto
+    codepage: utf8
+    config_file: ~
+    cursor_pos: 8794
+    edit_pos: 8794
+    file_path: '/home/lichtkind/code/perl/project/editor/dev/base/lib/Kephra.pm'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: perl
+    tab_size: 4
+    tab_use: 1
+  -
+    EOL: auto
+    codepage: utf8
+    config_file: ~
+    cursor_pos: 3462
+    edit_pos: 5633
+    file_path: '/home/lichtkind/code/perl/project/editor/dev/base/lib/Kephra/App/EditPanel.pm'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: perl
+    tab_size: 4
+    tab_use: 1
+  -
+    EOL: auto
+    codepage: 8bit
+    config_file: ~
+    cursor_pos: 0
+    edit_pos: 1773
+    file_path: '/home/lichtkind/code/perl/test/wx/app/acc.pl'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: perl
+    tab_size: 4
+    tab_use: 1
+  -
+    EOL: auto
+    codepage: 8bit
+    config_file: ~
+    cursor_pos: 253
+    edit_pos: 0
+    file_path: '/home/lichtkind/code/perl/lehr/ref/perl/drafts/links.txt'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: none
+    tab_size: 4
+    tab_use: auto
+  -
+    EOL: auto
+    codepage: utf8
+    config_file: ~
+    cursor_pos: 286
+    edit_pos: '-1'
+    file_path: '/home/lichtkind/txt/artikel/heise/Moose.txt'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: none
+    tab_size: 4
+    tab_use: 0
+  -
+    EOL: auto
+    codepage: 8bit
+    config_file: ~
+    cursor_pos: 0
+    edit_pos: '-1'
+    file_path: '/home/lichtkind/code/perl/project/editor/dev/base/t/01_compile.t'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: perl
+    tab_size: 4
+    tab_use: 1
+  -
+    EOL: auto
+    codepage: 8bit
+    config_file: ~
+    cursor_pos: 0
+    edit_pos: '-1'
+    file_path: '/home/lichtkind/code/perl/project/editor/dev/xp/Kephra/t/00-load.t'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: perl
+    tab_size: 4
+    tab_use: 0
+  -
+    EOL: auto
+    codepage: 8bit
+    config_file: ~
+    cursor_pos: 42
+    edit_pos: 4979
+    file_path: '/home/lichtkind/txt/artikel/$foo/gsoc.txt'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: none
+    tab_size: 4
+    tab_use: 1

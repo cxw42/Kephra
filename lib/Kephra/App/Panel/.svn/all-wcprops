@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svnroot/kephra/!svn/ver/733/dev/base/lib/Kephra/App/Panel
+END
+CommandLine.pm
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svnroot/kephra/!svn/ver/733/dev/base/lib/Kephra/App/Panel/CommandLine.pm
+END
+Notepad.pm
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svnroot/kephra/!svn/ver/733/dev/base/lib/Kephra/App/Panel/Notepad.pm
+END
+TreeTool.pm
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svnroot/kephra/!svn/ver/725/dev/base/lib/Kephra/App/Panel/TreeTool.pm
+END
+Output.pm
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svnroot/kephra/!svn/ver/665/dev/base/lib/Kephra/App/Panel/Output.pm
+END

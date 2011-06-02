@@ -1,0 +1,95 @@
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svnroot/kephra/!svn/ver/737/dev/base/lib/Kephra
+END
+Menu.pm
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svnroot/kephra/!svn/ver/730/dev/base/lib/Kephra/Menu.pm
+END
+Config.pm
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svnroot/kephra/!svn/ver/736/dev/base/lib/Kephra/Config.pm
+END
+API.pm
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svnroot/kephra/!svn/ver/632/dev/base/lib/Kephra/API.pm
+END
+CommandList.pm
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svnroot/kephra/!svn/ver/677/dev/base/lib/Kephra/CommandList.pm
+END
+Document.pm
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svnroot/kephra/!svn/ver/693/dev/base/lib/Kephra/Document.pm
+END
+File.pm
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svnroot/kephra/!svn/ver/693/dev/base/lib/Kephra/File.pm
+END
+App.pm
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svnroot/kephra/!svn/ver/737/dev/base/lib/Kephra/App.pm
+END
+Log.pm
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svnroot/kephra/!svn/ver/467/dev/base/lib/Kephra/Log.pm
+END
+Edit.pm
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svnroot/kephra/!svn/ver/714/dev/base/lib/Kephra/Edit.pm
+END
+Help.pm
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svnroot/kephra/!svn/ver/617/dev/base/lib/Kephra/Help.pm
+END
+EventTable.pm
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/kephra/!svn/ver/693/dev/base/lib/Kephra/EventTable.pm
+END
+Plugin.pm
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svnroot/kephra/!svn/ver/464/dev/base/lib/Kephra/Plugin.pm
+END
+Dialog.pm
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svnroot/kephra/!svn/ver/510/dev/base/lib/Kephra/Dialog.pm
+END
+Macro.pm
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svnroot/kephra/!svn/ver/643/dev/base/lib/Kephra/Macro.pm
+END
+ToolBar.pm
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/kephra/!svn/ver/504/dev/base/lib/Kephra/ToolBar.pm
+END
