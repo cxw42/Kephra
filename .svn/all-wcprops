@@ -15,6 +15,12 @@ svn:wc:ra_dav:version-url
 V 44
 /svnroot/kephra/!svn/ver/60/dev/base/LICENSE
 END
+MANIFEST
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svnroot/kephra/!svn/ver/742/dev/base/MANIFEST
+END
 Makefile.PL
 K 25
 svn:wc:ra_dav:version-url
@@ -25,13 +31,19 @@ Changes
 K 25
 svn:wc:ra_dav:version-url
 V 45
-/svnroot/kephra/!svn/ver/741/dev/base/Changes
+/svnroot/kephra/!svn/ver/742/dev/base/Changes
 END
 dev.pl
 K 25
 svn:wc:ra_dav:version-url
 V 44
 /svnroot/kephra/!svn/ver/725/dev/base/dev.pl
+END
+MANIFEST.SKIP
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svnroot/kephra/!svn/ver/742/dev/base/MANIFEST.SKIP
 END
 README
 K 25

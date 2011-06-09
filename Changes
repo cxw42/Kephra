@@ -5,6 +5,9 @@ todo:
  ! update configs when update cpan installation 
  ! EOL problem in UTF files
 
+0.4.3.27
+ ] included Module::Install again
+
 0.4.3.26
  ? deleted xt which only can fail
 
