@@ -101,7 +101,6 @@ MANIFEST			This list of files
 MANIFEST.SKIP
 META.yml
 README
-share/config/global/autosaved.conf
 share/config/global/autosaved.conf.old
 share/config/global/data/notepad_content.txt
 share/config/global/data/search.yml

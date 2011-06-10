@@ -1,7 +1,7 @@
 ---
 # http://module-build.sourceforge.net/META-spec.html
 name:         Kephra
-version:      0.4.3.28
+version:      0.4.3.29
 abstract:     crossplatform, GUI-Texteditor along Perl alike Paradigms 
 distribution_type: script
 author:       Herbert Breunung <lichtkind@cpan.org>
@@ -29,11 +29,11 @@ requires:
   Encode::Guess: 0
   File::Find: 0
   File::Spec::Functions: 0
-  File::UserConfig
-  Config::General
-  YAML::Tiny;
+  File::UserConfig: 0
+  Config::General: 0
+  YAML::Tiny: 0
   Wx: 0.74
-  Wx::Perl::ProcessStream
+  Wx::Perl::ProcessStream: 0
 resources:
   bugtracker: http://rt.cpan.org/Public/Dist/Display.html?Name=Kephra
   homepage: http://kephra.sourceforge.net

@@ -5,6 +5,9 @@ todo:
  ! update configs when update cpan installation 
  ! EOL problem in UTF files
 
+0.4.3.28
+ ] with META.yml again
+ 
 0.4.3.27
  ] included Module::Install again
 
@@ -1102,6 +1105,7 @@ todo:
  
 0.3.4.2
  ! searchbar fixes
+
 
 0.3.4.1
  ! exit dialog entitles also unnamed files

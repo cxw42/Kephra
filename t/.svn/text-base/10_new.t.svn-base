@@ -12,7 +12,6 @@ BEGIN {
 use Test::NoWarnings;
 use Test::More tests => 1;
 
-#use Test::NoWarnings;
 #use Test::Exception;
 #use Kephra::App;
 #use Kephra::Config;
