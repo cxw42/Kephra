@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 our $NAME        = __PACKAGE__;    # name of entire application
-our $VERSION     = '0.4.3.27';     # version of entire app
+our $VERSION     = '0.4.3.28';     # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $LOGLEVEL;                     # flag for benchmark loggings
@@ -218,10 +218,10 @@ in the way you prefer and be not afraid to try new things.
 
 I know, I know, there are plenty text editors out there, even some really
 mighty IDE, but still no perfect solution for many programmers. So lets
+=over 2
 learn from Perl what it takes to build a tool thats powerful and fun to
 play with for hours and months.
 
-=over 2
 
 =item * make a low entry barrier (usable like notepad)
 

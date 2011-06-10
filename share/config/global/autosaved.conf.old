@@ -1,6 +1,6 @@
 <about>
     purpose = build in global settings
-    version = 0.4.3.27
+    version = 0.4.3.26
 </about>
 <app>
     app_data_sub_dir = interface
@@ -116,8 +116,8 @@
         icon = interface/icon/app/proton.xpm
         max_number = 1
         maximize_editpanel = 0
-        position_x = 911
-        position_y = 162
+        position_x = 939
+        position_y = 228
         save_position = 1
         size_x = 770
         size_y = 824
@@ -249,14 +249,14 @@
 </editpanel>
 <file>
     <current>
-        directory = /home/lichtkind/txt/artikel/freiesmagazin/
+        directory = 
     </current>
     <defaultsettings>
         <new>
             EOL = OS
             codepage = ascii
             cursor_pos = 0
-            readonly = 0
+            readonly = no
             syntaxmode = perl
             tab_size = 4
             tab_use = 1

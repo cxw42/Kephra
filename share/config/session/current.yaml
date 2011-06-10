@@ -1,3 +1,16 @@
 ---
 current_nr: 0
-document: []
+document:
+  -
+    EOL: auto
+    codepage: utf8
+    config_file: ~
+    cursor_pos: 0
+    edit_pos: '-1'
+    file_path: '/home/lichtkind/txt/artikel/freiesmagazin/perlintro.txt'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: none
+    tab_size: 4
+    tab_use: auto
