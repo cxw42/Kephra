@@ -5,8 +5,11 @@ todo:
  ! update configs when update cpan installation 
  ! EOL problem in UTF files
 
+0.4.3.31
+ ] installer, no .svn files
+ 
 0.4.3.30
- ] it
+ ] fixed module type :)
 
 0.4.3.29
  ] grmpfl, repair Meta.yml
@@ -1716,6 +1719,7 @@ todo:
         save config on the fly, release history, reopen, save copy as,
         Replace, Undo History, brace comment, 3Bookmarks, find selection
         new view options: hard tabs, whitespace, 4Margins, Line Wrap
+
 0.1.12: Fontselect and many other fixes
 0.1.11: Selection Move, fixes & updates
 0.1.10: indent unindent,  script comment uncomment, CSS Style, several fixes
