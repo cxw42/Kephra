@@ -23,7 +23,7 @@ sub apply_all_here {
 			( 1, &$color( $indicator->{selection}{fore_color} ) );
 	}
 	$ep->SetSelBackground( 1, &$color( $indicator->{selection}{back_color}));
-		$ep->SetWhitespaceForeground
+	$ep->SetWhitespaceForeground
 		( 1, &$color( $indicator->{whitespace}{color} ) );
 
 	apply_whitespace_settings_here($ep);

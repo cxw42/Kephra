@@ -95,13 +95,14 @@ lib/Kephra/Plugin.pm
 lib/Kephra/Plugin/Demo.pm
 lib/Kephra/ToolBar.pm
 LICENSE
-Makefile
 Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
 META.yml
 README
+share/config/global/autosaved.conf
 share/config/global/autosaved.conf.old
+share/config/global/autosaved.conf~
 share/config/global/data/notepad_content.txt
 share/config/global/data/search.yml
 share/config/global/sub/documentation/cesky.conf

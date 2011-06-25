@@ -1,8 +1,20 @@
 ---
 bookmark: {}
 find:
-  history: []
-  item: ''
+  history:
+    - add
+    - GetDataHere
+    - Knopfdruck
+    - EVT_TOOL
+    - abgefangen
+    - '$img'
+    - auslösen
+    - einigen
+    - manch
+    - muss
+    - betätig
+    - betätigen
+  item: add
 replace:
   history: []
   item: ''

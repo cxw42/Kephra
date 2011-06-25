@@ -1,16 +1,185 @@
 ---
-current_nr: 0
+current_nr: 13
 document:
+  -
+    EOL: lf
+    codepage: utf8
+    config_file: ~
+    cursor_pos: 8966
+    edit_pos: 2526
+    file_path: '/home/lichtkind/txt/artikel/$foo/perl6_up4.txt'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: none
+    tab_size: 4
+    tab_use: 0
   -
     EOL: auto
     codepage: utf8
     config_file: ~
     cursor_pos: 0
-    edit_pos: '-1'
-    file_path: '/home/lichtkind/txt/artikel/freiesmagazin/perlintro.txt'
+    edit_pos: 6887
+    file_path: '/home/lichtkind/txt/artikel/$foo/rezension-klassik.txt'
     folded_lines: []
     marked_lines: []
     readonly: protect
     syntaxmode: none
     tab_size: 4
     tab_use: auto
+  -
+    EOL: auto
+    codepage: utf8
+    config_file: ~
+    cursor_pos: 3003
+    edit_pos: 3003
+    file_path: '/home/lichtkind/txt/artikel/heise/Moose.txt'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: none
+    tab_size: 4
+    tab_use: auto
+  -
+    EOL: auto
+    codepage: 8bit
+    config_file: ~
+    cursor_pos: 296
+    edit_pos: 296
+    file_path: '/home/lichtkind/code/perl/project/editor/dev/xp/Kephra/lib/Kephra/App.pm'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: perl
+    tab_size: 4
+    tab_use: 0
+  -
+    EOL: lf
+    codepage: utf8
+    config_file: ~
+    cursor_pos: 429
+    edit_pos: 428
+    file_path: '/home/lichtkind/code/perl/project/editor/dev/xp/Kephra/lib/Kephra/App/Window.pm'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: perl
+    tab_size: 4
+    tab_use: 0
+  -
+    EOL: auto
+    codepage: 8bit
+    config_file: ~
+    cursor_pos: 474
+    edit_pos: 904
+    file_path: '/home/lichtkind/code/perl/project/editor/dev/xp/Kephra/lib/Kephra/App/TabBar.pm'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: perl
+    tab_size: 4
+    tab_use: 0
+  -
+    EOL: auto
+    codepage: utf8
+    config_file: ~
+    cursor_pos: 717
+    edit_pos: 890
+    file_path: '/home/lichtkind/code/perl/project/editor/dev/xp/Kephra/lib/Kephra/App/EditPanel.pm'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: perl
+    tab_size: 4
+    tab_use: 0
+  -
+    EOL: auto
+    codepage: 8bit
+    config_file: ~
+    cursor_pos: 1504
+    edit_pos: 932
+    file_path: '/home/lichtkind/code/perl/project/editor/dev/xp/Kephra/lib/Kephra/App/Helper.pm'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: perl
+    tab_size: 4
+    tab_use: 0
+  -
+    EOL: lf
+    codepage: utf8
+    config_file: ~
+    cursor_pos: 207
+    edit_pos: 206
+    file_path: '/home/lichtkind/code/perl/project/editor/dev/xp/Kephra/lib/Kephra/App/Menu.pm'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: perl
+    tab_size: 4
+    tab_use: 0
+  -
+    EOL: lf
+    codepage: utf8
+    config_file: ~
+    cursor_pos: 9507
+    edit_pos: 10383
+    file_path: '/home/lichtkind/txt/artikel/$foo/wxperl-tut_8.txt'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: none
+    tab_size: 4
+    tab_use: 0
+  -
+    EOL: auto
+    codepage: utf8
+    config_file: ~
+    cursor_pos: 18548
+    edit_pos: 18548
+    file_path: '/home/lichtkind/txt/artikel/$foo/wxperl-tut_7.txt'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: none
+    tab_size: 4
+    tab_use: 0
+  -
+    EOL: auto
+    codepage: utf8
+    config_file: ~
+    cursor_pos: 8706
+    edit_pos: 7456
+    file_path: '/home/lichtkind/txt/artikel/$foo/wxperl-tut_6.txt'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: none
+    tab_size: 4
+    tab_use: 1
+  -
+    EOL: auto
+    codepage: utf8
+    config_file: ~
+    cursor_pos: 0
+    edit_pos: '-1'
+    file_path: '/home/lichtkind/txt/artikel/$foo/wxperl-tut_5.txt'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: none
+    tab_size: 4
+    tab_use: 1
+  -
+    EOL: auto
+    codepage: utf8
+    config_file: ~
+    cursor_pos: 6437
+    edit_pos: '-1'
+    file_path: '/home/lichtkind/txt/artikel/$foo/wxperl-tut_4.txt'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: none
+    tab_size: 4
+    tab_use: 0

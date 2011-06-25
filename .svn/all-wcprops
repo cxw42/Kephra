@@ -19,19 +19,19 @@ MANIFEST
 K 25
 svn:wc:ra_dav:version-url
 V 46
-/svnroot/kephra/!svn/ver/743/dev/base/MANIFEST
+/svnroot/kephra/!svn/ver/744/dev/base/MANIFEST
 END
 Makefile.PL
 K 25
 svn:wc:ra_dav:version-url
 V 49
-/svnroot/kephra/!svn/ver/590/dev/base/Makefile.PL
+/svnroot/kephra/!svn/ver/744/dev/base/Makefile.PL
 END
 Changes
 K 25
 svn:wc:ra_dav:version-url
 V 45
-/svnroot/kephra/!svn/ver/743/dev/base/Changes
+/svnroot/kephra/!svn/ver/744/dev/base/Changes
 END
 dev.pl
 K 25
