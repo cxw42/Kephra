@@ -1,6 +1,6 @@
 <about>
     purpose = build in global settings
-    version = 0.4.3.27
+    version = 0.4.3.29
 </about>
 <app>
     app_data_sub_dir = interface
@@ -48,7 +48,7 @@
             eval_with = eval
             font_family = Nimbus Sans L
             font_size = 10
-            size = 180
+            size = -876
             splitter_pos = 300
             visible = 0
         </notepad>
@@ -59,8 +59,8 @@
             font_size = 9
             fore_color = ffffff
             interpreter_path = perl
-            size = 100
-            visible = 0
+            size = -1064
+            visible = 1
         </output>
     </panel>
     <searchbar>
@@ -116,11 +116,11 @@
         icon = interface/icon/app/proton.xpm
         max_number = 1
         maximize_editpanel = 0
-        position_x = 911
-        position_y = 162
+        position_x = 0
+        position_y = 24
         save_position = 1
-        size_x = 770
-        size_y = 824
+        size_x = 1920
+        size_y = 1176
         stay_on_top = 0
         title = \$filepath - \$appname \$version
         transparency = 0.2
@@ -142,7 +142,7 @@
         save_position = 1
         tooltips = 1
         transparency = 0.2
-        width = 436
+        width = 496
     </search>
 </dialog>
 <editpanel>
@@ -242,14 +242,14 @@
             fore_color = 000055
             visible = 1
         </marker>
-        text = 2
+        text = 6
     </margin>
     scroll_width = 640
-    word_chars = \$%-@_abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ0123456789
+    word_chars = \$%-@_abcdefghijklmnopqrstuvwxyzÃ¤Ã¶Ã¼ÃŸABCDEFGHIJKLMNOPQRSTUVWXYZÃ„Ã–Ãœ0123456789
 </editpanel>
 <file>
     <current>
-        directory = /home/lichtkind/txt/artikel/freiesmagazin/
+        directory = /home/lichtkind/code/perl/project/trigon/src/
     </current>
     <defaultsettings>
         <new>

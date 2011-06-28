@@ -2,19 +2,19 @@
 bookmark: {}
 find:
   history:
-    - add
-    - GetDataHere
-    - Knopfdruck
-    - EVT_TOOL
-    - abgefangen
-    - '$img'
-    - auslösen
-    - einigen
-    - manch
-    - muss
-    - betätig
-    - betätigen
-  item: add
+    - speicher_suchbegriffe
+    - _suchbegriffe
+    - lade_eigene_suchbegriffe
+    - '$suchlisten'
+    - ' ..'
+    - checkfilter
+    - check_only_3
+    - '$worteingabe'
+    - wort
+    - zeichne_komplett
+    - '$help_msg'
+    - eingabefilter
+  item: speicher_suchbegriffe
 replace:
   history: []
   item: ''

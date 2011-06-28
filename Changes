@@ -5,6 +5,9 @@ todo:
  ! update configs when update cpan installation 
  ! EOL problem in UTF files
 
+0.4.3.32
+ ] optimise CPAN appearance
+ 
 0.4.3.31
  ] installer, no .svn files
  

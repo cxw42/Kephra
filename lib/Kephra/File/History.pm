@@ -94,13 +94,3 @@ sub open_all {
 }
 
 1;
-
-=head1 NAME 
-
-Kephra::File::History - managing a history of recently closed files
-
-=head1 DESCRIPTION
-
-Module Kephra::App::Menu - Menu handling for the main app
-
-=cut

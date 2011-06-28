@@ -1,7 +1,7 @@
 ---
 # http://module-build.sourceforge.net/META-spec.html
 name:         Kephra
-version:      0.4.3.31
+version:      0.4.3.32
 abstract:     crossplatform, GUI-Texteditor along Perl alike Paradigms 
 distribution_type: module
 author:       Herbert Breunung <lichtkind@cpan.org>
@@ -21,6 +21,7 @@ generated_by: 'Module::Install'
 no_index:
   directory:
     - inc
+    - share
     - t
 requires:
   perl: 5.6.0

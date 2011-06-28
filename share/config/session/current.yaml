@@ -1,37 +1,11 @@
 ---
-current_nr: 13
+current_nr: 0
 document:
   -
-    EOL: lf
-    codepage: utf8
-    config_file: ~
-    cursor_pos: 8966
-    edit_pos: 2526
-    file_path: '/home/lichtkind/txt/artikel/$foo/perl6_up4.txt'
-    folded_lines: []
-    marked_lines: []
-    readonly: protect
-    syntaxmode: none
-    tab_size: 4
-    tab_use: 0
-  -
     EOL: auto
     codepage: utf8
     config_file: ~
-    cursor_pos: 0
-    edit_pos: 6887
-    file_path: '/home/lichtkind/txt/artikel/$foo/rezension-klassik.txt'
-    folded_lines: []
-    marked_lines: []
-    readonly: protect
-    syntaxmode: none
-    tab_size: 4
-    tab_use: auto
-  -
-    EOL: auto
-    codepage: utf8
-    config_file: ~
-    cursor_pos: 3003
+    cursor_pos: 573
     edit_pos: 3003
     file_path: '/home/lichtkind/txt/artikel/heise/Moose.txt'
     folded_lines: []
@@ -122,8 +96,8 @@ document:
     EOL: lf
     codepage: utf8
     config_file: ~
-    cursor_pos: 9507
-    edit_pos: 10383
+    cursor_pos: 11025
+    edit_pos: 11027
     file_path: '/home/lichtkind/txt/artikel/$foo/wxperl-tut_8.txt'
     folded_lines: []
     marked_lines: []
@@ -171,10 +145,10 @@ document:
     tab_size: 4
     tab_use: 1
   -
-    EOL: auto
+    EOL: cr+lf
     codepage: utf8
     config_file: ~
-    cursor_pos: 6437
+    cursor_pos: 4938
     edit_pos: '-1'
     file_path: '/home/lichtkind/txt/artikel/$foo/wxperl-tut_4.txt'
     folded_lines: []

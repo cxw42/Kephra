@@ -238,15 +238,3 @@ sub export_scite {
 }
 
 1;
-
-=head1 NAME
-
-Kephra::File::Session - 
-
-=head1 DESCRIPTION
-
-file session handling
-
-current session is the group of all opened files
-sessionfiles contain metadata like syntaxmode, tabsize, cursorpos, -NI codset
-=cut

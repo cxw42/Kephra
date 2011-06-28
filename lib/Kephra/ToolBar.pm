@@ -144,11 +144,3 @@ sub destroy {
 }
 
 1;
-
-=head1 NAME
-
-Kephra::ToolBar - general toolbar creation and handling
-
-=head1 DESCRIPTION
-
-=cut

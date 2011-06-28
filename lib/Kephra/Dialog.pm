@@ -96,11 +96,3 @@ sub save_on_exit {
 }
 
 1;
-
-=head1 NAME
-
-Kephra::Dialog - API for all dialogs and messg boxes
-
-=head1 DESCRIPTION
-
-=cut

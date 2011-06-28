@@ -1,51 +1,12 @@
 ---
 document:
   -
-    EOL: auto
-    codepage: 8bit
-    config_file: ~
-    cursor_pos: 140
-    edit_pos: 172
-    file_path: '/home/lichtkind/code/perl/test/wx/app/DataObjects.pm'
-    folded_lines: []
-    marked_lines: []
-    readonly: protect
-    syntaxmode: perl
-    tab_size: 4
-    tab_use: 1
-  -
-    EOL: auto
-    codepage: 8bit
-    config_file: ~
-    cursor_pos: 590
-    edit_pos: 1359
-    file_path: '/home/lichtkind/code/perl/test/wx/app/cp.pl'
-    folded_lines: []
-    marked_lines: []
-    readonly: protect
-    syntaxmode: perl
-    tab_size: 4
-    tab_use: 1
-  -
-    EOL: auto
-    codepage: 8bit
-    config_file: ~
-    cursor_pos: 1511
-    edit_pos: '-1'
-    file_path: '/home/lichtkind/code/perl/test/wx/app/acc.pl'
-    folded_lines: []
-    marked_lines: []
-    readonly: protect
-    syntaxmode: perl
-    tab_size: 4
-    tab_use: 1
-  -
-    EOL: lf
+    EOL: cr+lf
     codepage: utf8
     config_file: ~
-    cursor_pos: 0
-    edit_pos: 2582
-    file_path: '/home/lichtkind/txt/artikel/perlzeitung/kephra.txt'
+    cursor_pos: 8966
+    edit_pos: 703
+    file_path: '/home/lichtkind/txt/artikel/$foo/perl6_up4.txt'
     folded_lines: []
     marked_lines: []
     readonly: protect
@@ -53,12 +14,12 @@ document:
     tab_size: 4
     tab_use: 0
   -
-    EOL: lf
+    EOL: cr+lf
     codepage: utf8
     config_file: ~
     cursor_pos: 0
-    edit_pos: 999
-    file_path: '/home/lichtkind/txt/artikel/$foo/wxperl-tut_9.txt'
+    edit_pos: 6887
+    file_path: '/home/lichtkind/txt/artikel/$foo/rezension-klassik.txt'
     folded_lines: []
     marked_lines: []
     readonly: protect
@@ -66,51 +27,12 @@ document:
     tab_size: 4
     tab_use: auto
   -
-    EOL: lf
+    EOL: cr+lf
     codepage: utf8
     config_file: ~
-    cursor_pos: 450
+    cursor_pos: 13141
     edit_pos: '-1'
-    file_path: '/home/lichtkind/code/perl/test/wx/jpg.pl'
-    folded_lines: []
-    marked_lines: []
-    readonly: protect
-    syntaxmode: perl
-    tab_size: 4
-    tab_use: 0
-  -
-    EOL: auto
-    codepage: 8bit
-    config_file: ~
-    cursor_pos: 0
-    edit_pos: '-1'
-    file_path: '/home/lichtkind/code/perl/test/wx/edit.pl'
-    folded_lines: []
-    marked_lines: []
-    readonly: protect
-    syntaxmode: perl
-    tab_size: 4
-    tab_use: 0
-  -
-    EOL: auto
-    codepage: 8bit
-    config_file: ~
-    cursor_pos: 0
-    edit_pos: '-1'
-    file_path: '/home/lichtkind/code/perl/test/wx/splash.pl'
-    folded_lines: []
-    marked_lines: []
-    readonly: protect
-    syntaxmode: perl
-    tab_size: 4
-    tab_use: auto
-  -
-    EOL: lf
-    codepage: utf8
-    config_file: ~
-    cursor_pos: 16839
-    edit_pos: 16838
-    file_path: '/home/lichtkind/code/perl/project/trigon/src/wxtrigon.pl'
+    file_path: '/home/lichtkind/code/perl/project/wx/Kephra/lib/Kephra/File.pm'
     folded_lines: []
     marked_lines: []
     readonly: protect
@@ -118,11 +40,50 @@ document:
     tab_size: 4
     tab_use: 1
   -
+    EOL: cr+lf
+    codepage: utf8
+    config_file: ~
+    cursor_pos: 205
+    edit_pos: 205
+    file_path: '/home/lichtkind/code/perl/project/wx/Kephra/Changes'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: none
+    tab_size: 4
+    tab_use: 0
+  -
+    EOL: cr+lf
+    codepage: utf8
+    config_file: ~
+    cursor_pos: 182
+    edit_pos: 181
+    file_path: '/home/lichtkind/code/perl/project/wx/Kephra/lib/Kephra.pm'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: perl
+    tab_size: 4
+    tab_use: 1
+  -
+    EOL: cr+lf
+    codepage: utf8
+    config_file: ~
+    cursor_pos: 0
+    edit_pos: 99
+    file_path: '/home/lichtkind/code/perl/project/wx/Kephra/META.yml'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: yaml
+    tab_size: 4
+    tab_use: 0
+  -
     EOL: auto
     codepage: utf8
     config_file: ~
-    cursor_pos: 84
-    edit_pos: 83
+    cursor_pos: 0
+    edit_pos: 1817
     file_path: '/home/lichtkind/code/perl/project/trigon/src/Trigon.pm'
     folded_lines: []
     marked_lines: []
@@ -131,12 +92,52 @@ document:
     tab_size: 4
     tab_use: 1
   -
+    EOL: cr+lf
+    codepage: utf8
+    config_file: ~
+    cursor_pos: 9706
+    edit_pos: 1568
+    file_path: '/home/lichtkind/code/perl/project/trigon/src/wxtrigon.pl'
+    folded_lines: []
+    marked_lines:
+      - 184
+    readonly: protect
+    syntaxmode: perl
+    tab_size: 4
+    tab_use: 1
+  -
     EOL: lf
     codepage: utf8
     config_file: ~
-    cursor_pos: 5410
+    cursor_pos: 2251
+    edit_pos: 2251
+    file_path: '/home/lichtkind/code/perl/project/wx/Kephra/lib/Kephra/Dialog.pm'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: perl
+    tab_size: 4
+    tab_use: 1
+  -
+    EOL: lf
+    codepage: utf8
+    config_file: ~
+    cursor_pos: 2663
+    edit_pos: 2663
+    file_path: '/home/lichtkind/code/perl/project/wx/Kephra/lib/Kephra/File/History.pm'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: perl
+    tab_size: 4
+    tab_use: 1
+  -
+    EOL: lf
+    codepage: utf8
+    config_file: ~
+    cursor_pos: 2711
     edit_pos: '-1'
-    file_path: '/home/lichtkind/code/perl/project/wx/Kephra/lib/Kephra/App/EditPanel.pm'
+    file_path: '/home/lichtkind/code/perl/project/wx/Kephra/lib/Kephra/File/IO.pm'
     folded_lines: []
     marked_lines: []
     readonly: protect
@@ -145,24 +146,24 @@ document:
     tab_use: 1
   -
     EOL: lf
-    codepage: utf8
-    config_file: ~
-    cursor_pos: 2916
-    edit_pos: 20
-    file_path: '/home/lichtkind/code/perl/project/wx/Kephra/lib/Kephra/App.pm'
-    folded_lines: []
-    marked_lines: []
-    readonly: protect
-    syntaxmode: perl
-    tab_size: 4
-    tab_use: 1
-  -
-    EOL: auto
     codepage: utf8
     config_file: ~
     cursor_pos: 0
-    edit_pos: '-1'
-    file_path: '/home/lichtkind/code/perl/project/wx/Kephra/lib/Kephra.pm'
+    edit_pos: 7278
+    file_path: '/home/lichtkind/code/perl/project/wx/Kephra/lib/Kephra/File/Session.pm'
+    folded_lines: []
+    marked_lines: []
+    readonly: protect
+    syntaxmode: perl
+    tab_size: 4
+    tab_use: 1
+  -
+    EOL: lf
+    codepage: utf8
+    config_file: ~
+    cursor_pos: 4099
+    edit_pos: 4099
+    file_path: '/home/lichtkind/code/perl/project/wx/Kephra/lib/Kephra/ToolBar.pm'
     folded_lines: []
     marked_lines: []
     readonly: protect
