@@ -1,8 +1,8 @@
 ---
 # http://module-build.sourceforge.net/META-spec.html
 name:         Kephra
-version:      0.4.3.33
-abstract:     crossplatform GUI-Texteditor along Perl alike Paradigms 
+version:      0.4.3.32
+abstract:     crossplatform, GUI-Texteditor along Perl alike Paradigms 
 distribution_type: module
 author:       Herbert Breunung <lichtkind@cpan.org>
 license:      gpl_2

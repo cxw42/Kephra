@@ -273,3 +273,10 @@ sub _dotted_number {
 
 1;
 
+=head1 NAME
+
+Kephra::App::StatusBar - 
+
+=head1 DESCRIPTION
+
+=cut

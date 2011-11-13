@@ -1,6 +1,6 @@
 <about>
     purpose = build in global settings
-    version = 0.4.3.29
+    version = 0.4.3.31
 </about>
 <app>
     app_data_sub_dir = interface
@@ -249,7 +249,7 @@
 </editpanel>
 <file>
     <current>
-        directory = /home/lichtkind/code/perl/project/trigon/src/
+        directory = /home/lichtkind/txt/artikel/heise/
     </current>
     <defaultsettings>
         <new>

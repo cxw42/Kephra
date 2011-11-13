@@ -1,6 +1,6 @@
 <about>
     purpose = build in global settings
-    version = 0.4.3.31
+    version = 0.4.3.32
 </about>
 <app>
     app_data_sub_dir = interface
@@ -48,9 +48,9 @@
             eval_with = eval
             font_family = Nimbus Sans L
             font_size = 10
-            size = -876
+            size = -1584
             splitter_pos = 300
-            visible = 0
+            visible = 1
         </notepad>
         <output>
             append = 0
@@ -59,7 +59,7 @@
             font_size = 9
             fore_color = ffffff
             interpreter_path = perl
-            size = -1064
+            size = -1047
             visible = 1
         </output>
     </panel>
@@ -77,7 +77,7 @@
         contextmenu_visible = 1
         file = interface/appbars.yml
         interactive = 1
-        msg_nr = 0
+        msg_nr = 1
         node = statusbar
         visible = 1
     </statusbar>
@@ -137,8 +137,8 @@
         tooltips = 1
     </config>
     <search>
-        position_x = 100
-        position_y = 100
+        position_x = 524
+        position_y = 175
         save_position = 1
         tooltips = 1
         transparency = 0.2
@@ -249,7 +249,7 @@
 </editpanel>
 <file>
     <current>
-        directory = /home/lichtkind/code/perl/project/trigon/src/
+        directory = /home/lichtkind/code/perl/project/editor/dev/xp/Kephra/doc/
     </current>
     <defaultsettings>
         <new>

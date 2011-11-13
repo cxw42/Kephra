@@ -2,19 +2,20 @@
 bookmark: {}
 find:
   history:
-    - speicher_suchbegriffe
-    - _suchbegriffe
-    - lade_eigene_suchbegriffe
-    - '$suchlisten'
-    - ' ..'
-    - checkfilter
-    - check_only_3
-    - '$worteingabe'
-    - wort
-    - zeichne_komplett
-    - '$help_msg'
-    - eingabefilter
-  item: speicher_suchbegriffe
+    - That
+    - '$row2'
+    - '$kundenmail'
+    - vorgestellt
+    - static
+    - Panel
+    - 'man '
+    - Verständnis
+    - gespräch
+    - auch
+    - welche
+    - nur
+  item: exci
 replace:
-  history: []
-  item: ''
+  history:
+    - "<br>\n"
+  item: "<br>\n"
