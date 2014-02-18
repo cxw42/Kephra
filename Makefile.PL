@@ -8,7 +8,7 @@ use 5.006;
 #BEGIN {};
 
 name           'Kephra';
-license        'gpl_1';
+license        'gpl_2';
 author         'Herbert Breunung';
 homepage       'http://kephra.sourceforge.net/';
 bugtracker     'http://sourceforge.net/tracker/?group_id=169747&atid=851590';

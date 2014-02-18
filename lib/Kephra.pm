@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 our $NAME        = __PACKAGE__;    # name of entire application
-our $VERSION     = '0.4.3.33';        # version of entire app
+our $VERSION     = '0.4.3.34';        # version of entire app
 our $PATCHLEVEL;                   # has just stable versions
 our $STANDALONE;                   # starter flag for moveable installations
 our $LOGLEVEL;                     # flag for benchmark loggings
@@ -436,7 +436,7 @@ More info and resources you find on our sourceforge web page under:
 
 L<http://kephra.sourceforge.net>
 
-=head1 AUTHORS
+=head1 ACKNOWLEDGMENTS
 
 =over
 
@@ -449,6 +449,8 @@ L<http://kephra.sourceforge.net>
 =item * Adam Kennedy E<lt>adamk@cpan.orgE<gt> (cpanification)
 
 =item * Renee Bäcker E<lt>module@renee-baecker.deE<gt> (color picker)
+
+=item * Fabrizio Regalli E<lt>fabreg@fabreg.it<gt> (typos)
 
 =item * many more since we study other editors a lot and also the padre sources
 

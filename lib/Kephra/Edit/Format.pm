@@ -90,7 +90,7 @@ sub blockindent_close {
 		$line++;
 	}
 
-	# 2 wenn match dann korrigiere einrückung ansonst letzte - tabsize
+	# 2 wenn match dann korrigiere einrÃ¼ckung ansonst letzte - tabsize
 	if ( $match > -1 ) {
 		$ep->SetLineIndentation( $line,
 			$ep->GetLineIndentation( $ep->LineFromPosition($match) ) );
@@ -105,7 +105,7 @@ sub blockindent_close {
 		? autoindent()
 		: $ep->CmdKeyExecute(&Wx::wxSTC_CMD_NEWLINE);
 
-	# 3 lösche dubs wenn in nächster zeile nur spaces bis dup
+	# 3 lÃ¶sche dubs wenn in nÃ¤chster zeile nur spaces bis dup
 	#if ( _config()->{auto}{brace}{join} ) {
 		#my $delbrace = $ep->PositionFromLine( $line + 2 )
 			#+ $ep->GetLineIndentation( $line + 1 );

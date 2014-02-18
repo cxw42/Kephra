@@ -260,7 +260,7 @@ sub get {
 				text => 2
 			},
 			scroll_width => '640',
-			word_chars => '$%-@_abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ0123456789',
+			word_chars => '$%-@_abcdefghijklmnopqrstuvwxyzÃ¤Ã¶Ã¼ÃŸABCDEFGHIJKLMNOPQRSTUVWXYZÃ„Ã–Ãœ0123456789',
 		},
 		file => {
 			current => {

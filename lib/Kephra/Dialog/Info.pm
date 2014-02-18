@@ -31,7 +31,7 @@ sub simple {
 	elsif ($v eq '2.6.3'){$sciv .= '1.62'}
 	elsif ($v eq '2.8.4'){$sciv .= '1.70'}
 	elsif ($v eq '2.8.7'){$sciv .= '1.70'}
-	elsif ($v eq '.8.10'){$sciv .= '1.70'}
+	elsif ($v eq '2.8.10'){$sciv .= '1.70'}
 	my $content = "Kephra, $info->{motto}\n"
 		. $info->{mady_by} . "  Herbert Breunung\n\n"
 		. $info->{licensed} . " GPL (GNU Public License) \n"
