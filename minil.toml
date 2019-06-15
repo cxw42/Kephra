@@ -1,0 +1,13 @@
+name = "Kephra"
+license = "gpl_2"
+authority = "cpan:LICHTKIND"
+
+# badges = ["travis-ci.com"]
+
+module_maker="ExtUtilsMakeMaker"
+static_install = "auto"
+
+# TODO? install_share  'share';
+#author         'Herbert Breunung';
+#homepage       'http://kephra.sourceforge.net/';
+#bugtracker     'http://sourceforge.net/tracker/?group_id=169747&atid=851590';

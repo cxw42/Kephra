@@ -13,18 +13,6 @@ doc/StableReleases
 doc/TestingReleases
 doc/Todo
 ignore.txt
-inc/Module/Install.pm
-inc/Module/Install/Base.pm
-inc/Module/Install/Can.pm
-inc/Module/Install/Fetch.pm
-inc/Module/Install/Makefile.pm
-inc/Module/Install/MakeMaker.pm
-inc/Module/Install/Metadata.pm
-inc/Module/Install/Scripts.pm
-inc/Module/Install/Share.pm
-inc/Module/Install/TestBase.pm
-inc/Module/Install/Win32.pm
-inc/Module/Install/WriteAll.pm
 lib/Kephra.pm
 lib/Kephra/API.pm
 lib/Kephra/App.pm
@@ -42,7 +30,6 @@ lib/Kephra/App/Panel/Output.pm
 lib/Kephra/App/Panel/TreeTool.pm
 lib/Kephra/App/SearchBar.pm
 lib/Kephra/App/StatusBar.pm
-lib/Kephra/App/StatusBar.pm~
 lib/Kephra/App/TabBar.pm
 lib/Kephra/App/Window.pm
 lib/Kephra/CommandList.pm
@@ -103,7 +90,6 @@ META.yml
 README
 share/config/global/autosaved.conf
 share/config/global/autosaved.conf.old
-share/config/global/autosaved.conf~
 share/config/global/data/notepad_content.txt
 share/config/global/data/search.yml
 share/config/global/sub/documentation/cesky.conf

@@ -1,0 +1,85 @@
+{
+   "abstract" : "crossplatform GUI-Texteditor along Perl alike Paradigms ",
+   "author" : [
+      "- 2010 Herbert Breunung."
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Minilla/v3.1.999, CPAN::Meta::Converter version 2.150010",
+   "license" : [
+      "gpl_2"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Kephra",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "xt",
+         "inc",
+         "share",
+         "eg",
+         "examples",
+         "author",
+         "builder"
+      ]
+   },
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "6.64"
+         }
+      },
+      "develop" : {
+         "requires" : {
+            "Test::CPAN::Meta" : "0",
+            "Test::MinimumVersion::Fast" : "0.04",
+            "Test::PAUSE::Permissions" : "0.07",
+            "Test::Pod" : "1.41",
+            "Test::Spellunker" : "v0.2.7"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Config::General" : "2.40",
+            "Cwd" : "0",
+            "Encode::Guess" : "0",
+            "File::UserConfig" : "0",
+            "POSIX" : "0",
+            "Text::Wrap" : "0",
+            "Wx" : "0.94",
+            "Wx::Perl::ProcessStream" : "0.25",
+            "YAML::Tiny" : "0.31",
+            "perl" : "5.008001"
+         }
+      },
+      "test" : {
+         "requires" : {
+            "Test::Exception" : "0",
+            "Test::More" : "0.98",
+            "Test::NoWarnings" : "0",
+            "Test::Script" : "0.01"
+         }
+      }
+   },
+   "release_status" : "unstable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/cxw42/Kephra/issues"
+      },
+      "homepage" : "https://github.com/cxw42/Kephra",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/cxw42/Kephra.git",
+         "web" : "https://github.com/cxw42/Kephra"
+      }
+   },
+   "version" : "0.4.3.34",
+   "x_authority" : "cpan:LICHTKIND",
+   "x_contributors" : [
+      "Herbert Breunung <lichtkind@cpan.org>"
+   ],
+   "x_serialization_backend" : "JSON::PP version 2.27400_02",
+   "x_static_install" : 0
+}

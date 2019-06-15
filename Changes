@@ -1,19 +1,37 @@
+Revision history for Perl extension Kephra
+
+Legend:
+ ^ purpose
+ * big new feature
+ + new feature
+ ~ change
+ - remove
+ ? tests
+ ! bugfix
+ [ interface
+ ] internals
+ " configs
+ ' help/docu
+ / comment
+
 todo:
    l18n version update
    l18n compare tool
    Config::Tree join & split keys
- ! update configs when update cpan installation 
+ ! update configs when update cpan installation
  ! EOL problem in UTF files
+
+{{$NEXT}}
 
 0.4.3.33
  ' typos as reported by fabreg@fabreg.it
 
 0.4.3.32
  ] optimise CPAN appearance
- 
+
 0.4.3.31
  ] installer, no .svn files
- 
+
 0.4.3.30
  ] fixed module type :)
 
@@ -22,7 +40,7 @@ todo:
 
 0.4.3.28
  ] with META.yml again
- 
+
 0.4.3.27
  ] included Module::Install again
 
@@ -83,7 +101,7 @@ todo:
 0.4.3.14
  ~ correcting toggle select
  ~ changing command ID select-toggle > select-toggle-simple
- ~ changing command ID select-content > select-toggle-content, 
+ ~ changing command ID select-content > select-toggle-content,
 
 0.4.3.13
  ] introduce command node type sub
@@ -119,7 +137,7 @@ todo:
  + toggle select with ctrl+y
  + zoom in, out and back with <ctrl>+<alt>+<+>,<ctrl>+<alt>+<-> and <ctrl>+<alt>+<0>
  ~ marker keybinding back to f2
- [ adding zoom and select menu 
+ [ adding zoom and select menu
  ! fixed goto_prev_marker_in_doc
 
 0.4.3.9
@@ -146,7 +164,7 @@ todo:
  [ start Kephra::Macro.pm
  ! open toolbar file works again
  ! templates works again
- 
+
 0.4.3.6
  + left click on selection does copy
  + middle click inserts selection
@@ -173,7 +191,7 @@ todo:
  ~ replace to nothing again
  ? added t/04_config_data_tree.t
  " advanced czech localisation
- " added keyword default to perl lexer def 
+ " added keyword default to perl lexer def
  ' updated keymap
  ' updated navigation
  [ added tool-perl-copy-string and tool-perl-insert-last-var to tool menu
@@ -225,7 +243,7 @@ todo:
 
 0.4.2.31
  + refresh autosaved configs after cpan update
- ~ changed folding keybinding 
+ ~ changed folding keybinding
    ~ fold here: ctrl+plus, level: alt+plus, recursively: alt+shift+plus
 
 0.4.2.30
@@ -242,7 +260,7 @@ todo:
  + max editpanel mode (disables all bars)
  + transparent mode
  + you can combine stay on top and transparent mode with Ctrl+Alt+F11
- [ new menu: view > main window; 
+ [ new menu: view > main window;
  [ move cmd view-window-stay-on-top there
  [ created commands view-window-fullscreen, view-window-transparent, view-editpanel-maximize
  " changed default font of output panel to arial , 10 px
@@ -258,7 +276,7 @@ todo:
  + writes files also in missing dirs
  ! new Kephra::Dialog API fix
  ! redo comment function calls in commands.conf to older less flexible but working way
- 
+
 0.4.2.25
  + romanian localisation
  " bad config: invisible main menu
@@ -275,7 +293,7 @@ todo:
 0.4.2.22
  + save and restore textfold state in sessions and file history
  ~ change sibling to level fold
- 
+
 0.4.2.21
  + file history is now a session, restore file with all saved property
  + switch menubar visibility
@@ -313,7 +331,7 @@ todo:
  [ switched move left and right in document > change menu
  [ changed marker key binding to standard compliance
  ] refined add/restore in Kephra::File::Session
- 
+
 0.4.2.15
  " move search data file into global/sub dir
  [ contextmenu on markermargin
@@ -331,7 +349,7 @@ todo:
  ! fixed cursor pos on line move
 
 0.4.2.12
- + new tool: output the %ENV 
+ + new tool: output the %ENV
  [ marker nav in searchbar
 
 0.4.2.11
@@ -442,7 +460,7 @@ todo:
  ! toolbar icon respond properly
 
 0.4.1.12
- " default l18n nsync again 
+ " default l18n nsync again
  ! folding works again
 
 0.4.1.11
@@ -473,7 +491,7 @@ todo:
  ~ tool-run-doc => tool-interpreter-run-doc (stop also)
 
 0.4.1.7
- + file > defaultsettings > EOL_new can now be 'OS' => 
+ + file > defaultsettings > EOL_new can now be 'OS' =>
    new files have lineendings according the OS you currently run
  - no menu icons under mac
  ~ rearrange main app layout (right panel goes from toolbar to statusbar)
@@ -543,7 +561,7 @@ todo:
  ! crash if hide main toolbar by next event
 
 0.4.0.9
- [ uncomment foldmargin view option 
+ [ uncomment foldmargin view option
  [ darker (yellow) caret line (was nearly unvisible)
  ] new commandlist leaf: keycode
  ] rehashed parts of Kephra::API::CommandList
@@ -568,7 +586,7 @@ todo:
  ] moving codepage setting from hard wired to config set
  ~ moving File::_age into File::IO
  ! output panel didn't worked
- 
+
 0.4.0.5
  [ cleaner search dialog
  ! updating in localisation default config
@@ -588,13 +606,13 @@ todo:
  ! keep calm when just a unnamed doc is unsaved
 
 0.4.0.2
- ' updating key layout docs 
+ ' updating key layout docs
  ~ close all key binding changed <Alt>+<Q> => <Ctrl>+<Alt>+<Q>
  ~ close app key binding changed <Alt>+<F4> => <Ctrl>+<Q>
- ! UTF problems on files with syntaxmode none 
+ ! UTF problems on files with syntaxmode none
 
 0.4.0.1
- ' updating key layout docs 
+ ' updating key layout docs
  ! quoting doc name in output panel eval
  ! crash while delete all bookmarks
 
@@ -657,7 +675,7 @@ todo:
 
 0.3.10.13
  ! cleanup doc internal mess
- ! fix stting of current syntaxmode 
+ ! fix stting of current syntaxmode
 
 0.3.10.12
  [ search finding better visible
@@ -687,7 +705,7 @@ todo:
  ! repair (beginnings of) czech localisation
 
 0.3.10.7
- - append option in output panel 
+ - append option in output panel
  ] changed session.conf to yaml due sorting problems with current (2.4) C::G
  ] switch to Module::install 0.77
  ! reload configs works again
@@ -732,7 +750,7 @@ todo:
  + Output is resizable ans remembers its size
  + Notepad is resizable ans remembers its size
  ! Notepad knows its split staus after closed per mouse
- 
+
 0.3.9.17
  + output panel has now a stop function to kill hanging prozesses
  [ enhance Notepad as STC that shares some settings with main STC
@@ -759,7 +777,7 @@ todo:
 
 0.3.9.12
  [ + goto line icon
- ~ switched to Config::General 2.4 in windistro 
+ ~ switched to Config::General 2.4 in windistro
  ! fixed about dialog
 
 0.3.9.11
@@ -783,7 +801,7 @@ todo:
 0.3.9.8
  ' extending Kephra.pm's POD
  ] making DragAcceptFiles optional because not supported by GTK
- 
+
 0.3.9.7
  ! seperator in Config::Embedded
  ] renamed Config::Embedded -> Config::Defaults
@@ -807,7 +825,7 @@ todo:
  + matlab highlighter
  + property file highlighter
  ] configs and localisation for 8 new styles
- ' removed "all rightes reserved" 
+ ' removed "all rightes reserved"
 
 0.3.9.3
  ! crash on file open
@@ -844,7 +862,7 @@ todo:
  ! crash when searching with dialog
 
 0.3.8.11
- + added replace selection into context menu over selected text in editpanel 
+ + added replace selection into context menu over selected text in editpanel
  ~ cleared replace selection labels
  ~ ignore in filechange notify dialog now works until next file change happens
 
@@ -855,7 +873,7 @@ todo:
 
 0.3.8.9
  + embedded main menu settings
- ! can handle missing file session file 
+ ! can handle missing file session file
  ! hang while searching after closing search dialog
 
 0.3.8.8
@@ -907,7 +925,7 @@ todo:
 
 0.3.7.12
  + position searchbar in the middle between tabbar and edit panel
- ] hack to disabling acceleratorTable 
+ ] hack to disabling acceleratorTable
  ~ new wx constants
  ! runs with latest Wx (0.83) again
  ! doc attr getter was flawed
@@ -1033,7 +1051,7 @@ todo:
 0.3.5.6
  + blockformat <ctrl>+<shift>+<b>, menu edit > format
  + line break, menu edit > format
- [ removed ambiguity in german mainmenu navigation with keyboard 
+ [ removed ambiguity in german mainmenu navigation with keyboard
  ! optimizing speed and undef value handling of menu data generation
 
 0.3.5.5
@@ -1042,7 +1060,7 @@ todo:
  ! seach dialog icon shows again
  ! file firs names now correct when it has no file ending
  ' some more documenting in default.conf
- 
+
 0.3.5.4
  + firstname: new document property holds filname without ending
  + can use [$$firstname] as template variable too
@@ -1053,13 +1071,13 @@ todo:
 0.3.5.3
  ! move document line and page wise from searchbar input
  [ use wx keycodes, less error prone
- 
+
 0.3.5.2
  + reload templates on save
  + move document line and page wise from searchbar input
  [ internal cleanups
  ! reload all docs switched to last doc
- 
+
 0.3.5.1
  ' advanced feature tour
  ' wrote german 'this version text' for release 0.4
@@ -1103,21 +1121,21 @@ todo:
 
 0.3.4.7
  * history File menu
- 
+
 0.3.4.6
  + custom title bar
- 
+
 0.3.4.5
  + multiple events on GUI element
- ! redo button 
+ ! redo button
  ! better tabbar context menu (still some flaws)
- 
+
 0.3.4.4
  + nonreactive toolbars (disable events)
- 
+
 0.3.4.3
  ! reload config file when saving it in editor
- 
+
 0.3.4.2
  ! searchbar fixes
 
@@ -1746,18 +1764,3 @@ todo:
 0.0.18: save file, bugfix
 0.0.17: new file, open & save as
 0.0.15: First Public Release!: shows the editbox!
-
-
-Legend:
- ^ purpose
- * big new feature
- + new feature
- ~ change
- - remove
- ? tests
- ! bugfix
- [ interface
- ] internals
- " configs
- ' help/docu
- / comment 
